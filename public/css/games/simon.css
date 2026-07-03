@@ -1,0 +1,66 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Simon — four coloured quadrant pads on a square board. Pads are dim by
+   default and light up (during playback and when pressed). The big outer-corner
+   radius on each pad evokes the classic circular Simon disc.
+   ========================================================================== */
+
+:root {
+  --title-color: var(--color-simon);
+}
+
+.simon-board {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: #0f172a;
+}
+
+.simon-pad {
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: var(--pad-color);
+  opacity: 0.4;
+  cursor: pointer;
+  transition:
+    opacity 0.1s ease,
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
+}
+
+.simon-pad:disabled {
+  cursor: default;
+}
+
+.simon-pad:not(:disabled):hover {
+  opacity: 0.6;
+}
+
+.simon-pad.is-lit {
+  opacity: 1;
+  transform: scale(0.97);
+  box-shadow: 0 0 2.5rem 0.3rem var(--pad-color);
+}
+
+/* Order in the grid: 0 = top-left, 1 = top-right, 2 = bottom-left, 3 = bottom-right.
+   Each pad rounds its OUTER corner heavily to form the classic disc. */
+.simon-pad--0 {
+  --pad-color: #22c55e; /* green */
+  border-top-left-radius: 80%;
+}
+.simon-pad--1 {
+  --pad-color: #ef4444; /* red */
+  border-top-right-radius: 80%;
+}
+.simon-pad--2 {
+  --pad-color: #eab308; /* yellow */
+  border-bottom-left-radius: 80%;
+}
+.simon-pad--3 {
+  --pad-color: #3b82f6; /* blue */
+  border-bottom-right-radius: 80%;
+}

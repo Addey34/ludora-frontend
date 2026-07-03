@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Simon" css="/css/games/simon.css" script="./simon-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Simon" key="simon"}}
+    <div class="game-details"></div>
+    <div class="game-board simon-board" id="board"></div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

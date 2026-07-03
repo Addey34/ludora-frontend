@@ -177,6 +177,16 @@ export function playSound(id: SoundId): void {
   }
 }
 
+/**
+ * Plays a single pure tone at `freq` Hz (respects the global mute). For
+ * pitch-based games (e.g. Simon) that need a distinct note per element rather
+ * than a named sound effect.
+ */
+export function playTone(freq: number, duration = 0.35, type: OscillatorType = 'sine'): void {
+  if (_muted) return;
+  tone(ctx(), freq, freq, duration, 0.25, type);
+}
+
 export function setMuted(v: boolean): void {
   _muted = v;
   localStorage.setItem(STORAGE_KEY, v ? '0' : '1');

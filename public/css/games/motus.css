@@ -1,0 +1,135 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Motus / Wordle — a 6×5 guess grid stacked over an on-screen keyboard. Tiles
+   and keys share the same three feedback colours (correct / present / absent).
+   ========================================================================== */
+
+:root {
+  --title-color: var(--color-motus);
+  --motus-correct: #6aaa64;
+  --motus-present: #c9b458;
+  --motus-absent: #787c7e;
+  --motus-border: #d3d6da;
+  --motus-key: #e7e9ee;
+}
+
+.motus-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+/* ── Guess grid ──────────────────────────────────────────────────────────── */
+
+.motus-grid {
+  display: grid;
+  grid-template-rows: repeat(6, 1fr);
+  gap: 5px;
+  width: min(88%, 20rem);
+  aspect-ratio: 5 / 6;
+}
+
+.motus-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+}
+
+.motus-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--motus-border);
+  border-radius: var(--border-radius-xs);
+  font-size: clamp(1rem, 5vmin, 1.8rem);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  color: var(--text-color);
+  user-select: none;
+  transition:
+    border-color 0.1s,
+    transform 0.1s;
+}
+
+.motus-tile.is-filled {
+  border-color: var(--text-color-muted);
+  transform: scale(1.04);
+}
+
+.motus-tile.is-correct,
+.motus-tile.is-present,
+.motus-tile.is-absent {
+  color: var(--white-color);
+  border-color: transparent;
+  transform: none;
+}
+
+.motus-tile.is-correct {
+  background: var(--motus-correct);
+}
+.motus-tile.is-present {
+  background: var(--motus-present);
+}
+.motus-tile.is-absent {
+  background: var(--motus-absent);
+}
+
+/* ── On-screen keyboard ──────────────────────────────────────────────────── */
+
+.motus-keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 30rem;
+}
+
+.motus-krow {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.motus-key {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 2.6rem;
+  height: 3rem;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  background: var(--motus-key);
+  color: var(--text-color);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.1s,
+    transform 0.05s;
+}
+
+.motus-key:active {
+  transform: scale(0.94);
+}
+
+.motus-key--wide {
+  flex: 1.5 1 0;
+  max-width: 4rem;
+  font-size: var(--font-size-xs);
+}
+
+.motus-key.is-correct {
+  background: var(--motus-correct);
+  color: var(--white-color);
+}
+.motus-key.is-present {
+  background: var(--motus-present);
+  color: var(--white-color);
+}
+.motus-key.is-absent {
+  background: var(--motus-absent);
+  color: var(--white-color);
+}

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Minesweeper" css="/css/games/minesweeper.css" script="./minesweeper-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Minesweeper" key="minesweeper"}}
+    <div class="game-details">
+      <button
+        id="flagToggle"
+        class="mine-flag-toggle"
+        type="button"
+        aria-pressed="false"
+        aria-label="Flag mode"
+      >
+        🚩
+      </button>
+      <!-- HUD chips appended here by setupHud() -->
+    </div>
+    <div class="game-board mine-board" id="board"></div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

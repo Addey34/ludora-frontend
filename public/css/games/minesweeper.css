@@ -1,0 +1,110 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Minesweeper — square grid sized by --rows/--cols (set by the game per
+   difficulty). Covered cells are raised buttons; revealed cells are sunken and
+   show their adjacent-mine count in the classic per-number colours.
+   ========================================================================== */
+
+:root {
+  --title-color: var(--color-minesweeper);
+  --mine-line: #94a3b8;
+  --mine-covered: #cbd5e1;
+  --mine-covered-hover: #dbe4ee;
+  --mine-revealed: #eef2f7;
+}
+
+/* Flag-mode toggle, sitting on the left of the details bar. */
+.mine-flag-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--border-radius-sm);
+  background: rgba(255, 255, 255, 0.15);
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    box-shadow 0.15s;
+}
+
+.mine-flag-toggle.is-active {
+  background: var(--white-color);
+  box-shadow: 0 0 0 2px var(--white-color);
+}
+
+.mine-board {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 9), 1fr);
+  grid-template-rows: repeat(var(--rows, 9), 1fr);
+  gap: 2px;
+  padding: 4px;
+  background: var(--mine-line);
+}
+
+.mine-cell {
+  margin: 0;
+  padding: 0;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  font-weight: var(--font-weight-bold);
+  font-size: clamp(0.55rem, 2.2vmin, 1.1rem);
+  line-height: 1;
+  color: var(--text-color);
+  background: var(--mine-covered);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.mine-cell:not(.is-revealed):hover {
+  background: var(--mine-covered-hover);
+}
+
+.mine-cell.is-revealed {
+  background: var(--mine-revealed);
+  cursor: default;
+}
+
+.mine-cell.is-flag {
+  font-size: clamp(0.5rem, 2vmin, 1rem);
+}
+
+.mine-cell.is-mine {
+  background: #fca5a5;
+}
+
+.mine-cell.is-exploded {
+  background: #ef4444;
+}
+
+/* Classic adjacent-count colours. */
+.mine-cell.n1 {
+  color: #2563eb;
+}
+.mine-cell.n2 {
+  color: #16a34a;
+}
+.mine-cell.n3 {
+  color: #dc2626;
+}
+.mine-cell.n4 {
+  color: #7c3aed;
+}
+.mine-cell.n5 {
+  color: #b45309;
+}
+.mine-cell.n6 {
+  color: #0891b2;
+}
+.mine-cell.n7 {
+  color: #111827;
+}
+.mine-cell.n8 {
+  color: #6b7280;
+}

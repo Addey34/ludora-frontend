@@ -27,8 +27,11 @@ services:
       - { type: rewrite, source: /snake, destination: /games/snake/index.html }
       - { type: rewrite, source: /pacman, destination: /games/pacman/index.html }
       - { type: rewrite, source: /2048, destination: /games/2048/index.html }
+      - { type: rewrite, source: /simon, destination: /games/simon/index.html }
+      - { type: rewrite, source: /motus, destination: /games/motus/index.html }
       - { type: rewrite, source: /tetris, destination: /games/tetris/index.html }
       - { type: rewrite, source: /memory, destination: /games/memory/index.html }
+      - { type: rewrite, source: /minesweeper, destination: /games/minesweeper/index.html }
       - { type: rewrite, source: /breakout, destination: /games/breakout/index.html }
       - { type: rewrite, source: /pong, destination: /games/pong/index.html }
       - { type: rewrite, source: /ludo, destination: /games/ludo/index.html }

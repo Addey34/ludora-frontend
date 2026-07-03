@@ -68,6 +68,9 @@
   --color-connect4: #2563eb; /* blue */
   --color-battleship: #0369a1; /* ocean blue */
   --color-goose: #d97706; /* amber — golden goose */
+  --color-simon: #9333ea; /* purple */
+  --color-minesweeper: #475569; /* slate — classic mine-grey */
+  --color-motus: #6aaa64; /* Wordle green */
 
   /* --- Spacing --- */
   --spacing-xxs: 0.125rem;
