@@ -25,6 +25,15 @@
   font-size: clamp(1.1rem, 7vmin, 2.2rem);
   font-variant-numeric: tabular-nums;
   user-select: none;
+  transition: background 0.1s ease;
+}
+
+.tile.is-new {
+  animation: tileSpawn 0.18s ease-out both;
+}
+
+.tile.is-merged {
+  animation: tileMerge 0.2s ease-out both;
 }
 
 /* Smaller font for large numbers. */

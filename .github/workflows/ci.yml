@@ -1,6 +1,6 @@
 name: CI
 
-# Vérifie format, lint, types, build et tests à chaque push et pull request sur main.
+# Checks format, lint, types, build and tests on every push and pull request to main.
 on:
   push:
     branches: [main]

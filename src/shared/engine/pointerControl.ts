@@ -47,14 +47,12 @@ export function setupPaddlePointer(config: PaddlePointerConfig): void {
     onMove(offsetOf(rect, e) / sizeOf(rect));
   };
 
-  // On `window` so the paddle keeps tracking even outside the board.
   window.addEventListener('pointermove', (e) => {
     if (document.pointerLockElement === board) {
       const rect = board.getBoundingClientRect();
       onMove(getRatio() + movementOf(e) / sizeOf(rect));
       return;
     }
-    // Touch: only react while a finger is down (a lifted finger mustn't move it).
     if (e.pointerType === 'touch' && e.buttons === 0) return;
     trackAbsolute(e);
   });
@@ -64,7 +62,6 @@ export function setupPaddlePointer(config: PaddlePointerConfig): void {
       trackAbsolute(e);
       return;
     }
-    // Mouse: grab the pointer for immersive control (best-effort).
     if (shouldLock() && document.pointerLockElement !== board) {
       const result = board.requestPointerLock?.() as unknown;
       if (result && typeof (result as Promise<void>).catch === 'function') {

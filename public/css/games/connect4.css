@@ -105,6 +105,11 @@
   background: var(--connect4-disc-1);
 }
 
+/* Winning discs pulse a white inner ring (visible through the holes). */
+.connect4-cell.is-win .connect4-disc {
+  animation: connect4Win 0.85s ease-in-out infinite;
+}
+
 .connect4-disc.is-drop {
   animation: connect4Drop 0.42s both;
 }

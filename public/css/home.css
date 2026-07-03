@@ -1,62 +1,154 @@
 @import url('./global.css');
 
-.menu {
-  background: var(--white-color);
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow);
-  padding: var(--spacing-lg);
-  max-width: var(--container-width);
-  margin: var(--spacing-lg) auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-md);
-  padding-inline: clamp(1rem, 5%, 2rem);
+/* ------------------------------------------------------------------ */
+/*  Page layout                                                          */
+/* ------------------------------------------------------------------ */
+.home-body {
+  gap: 0;
 }
 
-.menu a {
+.home-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xl);
+  /* Title lands at ~20-25% from the top of the viewport */
+  padding-top: 18vh;
+  padding-bottom: var(--spacing-xl);
+  width: 100%;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Hero / title                                                         */
+/* ------------------------------------------------------------------ */
+.home-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  text-align: center;
+}
+
+.home-title {
+  font-size: clamp(2.8rem, 9vw, 5.5rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+  /* Metallic chrome gradient on the brand blue/indigo palette */
+  background: linear-gradient(
+    150deg,
+    #c7d2fe 0%,
+    #6366f1 14%,
+    #4361ee 28%,
+    #e8ecff 48%,
+    #4361ee 64%,
+    #3730a3 80%,
+    #818cf8 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* 3D relief: stacked drop-shadows create a carved / extruded effect.
+     Uses darker shades of the brand indigo so the depth reads as part
+     of the palette, not a generic black shadow. */
+  filter: drop-shadow(1px 1px 0px #3730a3) drop-shadow(2px 2px 0px #312e81)
+    drop-shadow(3px 3px 0px #1e1b4b) drop-shadow(0px 8px 20px rgba(67, 97, 238, 0.35));
+}
+
+.home-tagline {
+  font-size: var(--font-size-sm);
+  color: var(--text-color-muted);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.03em;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Compact icon grid                                                   */
+/* ------------------------------------------------------------------ */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: var(--spacing-sm);
+  background: var(--white-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow);
+  padding: var(--spacing-lg);
+  max-width: 560px;
+  width: 100%;
+}
+
+.game-tile {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-sm);
-  padding: clamp(0.8rem, 2vw, 1.5rem);
-  background: var(--gradient);
-  color: var(--white-color);
+  aspect-ratio: 1;
+  border-radius: var(--border-radius-md);
   text-decoration: none;
-  border-radius: var(--border-radius-xl);
-  font-weight: var(--font-weight-bold);
-  transition: all var(--transition-speed) ease;
-  box-shadow: var(--shadow);
+  color: var(--nav-accent, var(--primary-color));
+  background: color-mix(in srgb, var(--nav-accent, var(--primary-color)) 10%, var(--white-color));
+  transition:
+    transform var(--transition-speed) ease,
+    box-shadow var(--transition-speed) ease,
+    background var(--transition-speed) ease;
 }
 
-.menu a:hover {
-  transform: translateY(-2px);
+.game-tile:hover,
+.game-tile:focus-visible {
+  transform: translateY(-3px);
   box-shadow: var(--shadow-lg);
+  background: color-mix(in srgb, var(--nav-accent, var(--primary-color)) 22%, var(--white-color));
+  outline: none;
 }
 
-.menu a .game-icon {
-  --game-icon-size: clamp(1.6rem, 3vw, 2.1rem);
+.game-tile .game-icon {
+  --game-icon-size: 2.2rem;
 }
 
-@media (max-width: 768px) {
-  .menu {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-sm);
-    padding-inline: var(--spacing-md);
-  }
-
-  .menu a {
-    padding: var(--spacing-sm) var(--spacing-md);
-    font-size: var(--font-size-md);
-  }
+.game-tile::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text-color);
+  color: var(--white-color);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  padding: 3px 10px;
+  border-radius: var(--border-radius-sm);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 10;
 }
 
-@media (max-width: 480px) {
-  .menu a {
-    padding: var(--spacing-md); /* Increased padding */
-    font-size: var(--font-size-md); /* Increased font size */
-  }
+.game-tile:hover::after,
+.game-tile:focus-visible::after {
+  opacity: 1;
+}
 
-  .menu a .game-icon {
-    --game-icon-size: var(--font-size-xl);
-  }
+/* ------------------------------------------------------------------ */
+/*  Footer                                                              */
+/* ------------------------------------------------------------------ */
+.home-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) 0 var(--spacing-lg);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-sm);
+}
+
+.home-footer a {
+  color: var(--text-color-muted);
+  text-decoration: none;
+}
+
+.home-footer a:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
 }

@@ -1,0 +1,52 @@
+/* =============================================================================
+   Dual-board layout — two equal square grids side-by-side on desktop (>480px),
+   stacked on mobile.
+
+   Usage:
+     Apply .dual-board to the wrapper, .dual-board__side to each column.
+     The grid inside each side should be `width: 100%; aspect-ratio: 1` so it
+     remains square while naturally filling half the available width.
+
+   Pair with --dual-board-frame-width on the game's :root to widen the shell.
+   ========================================================================== */
+
+.dual-board {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: flex-start;
+}
+
+.dual-board__side {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4%;
+  padding: 3%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Visual divider between the two sides. */
+.dual-board__side + .dual-board__side {
+  border-left: 2px solid var(--border-color-light);
+}
+
+/* Mobile: stack vertically, swap vertical divider for horizontal one. */
+@media (max-width: 480px) {
+  .dual-board {
+    flex-direction: column;
+  }
+
+  .dual-board__side {
+    width: 100%;
+  }
+
+  .dual-board__side + .dual-board__side {
+    border-left: none;
+    border-top: 2px solid var(--border-color-light);
+  }
+}

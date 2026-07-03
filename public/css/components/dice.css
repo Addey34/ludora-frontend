@@ -62,22 +62,6 @@
   animation: dicePop 0.3s ease-out;
 }
 
-.dice-hint {
-  position: absolute;
-  top: 64%;
-  padding: 0.15rem 0.7rem;
-  border-radius: var(--border-radius-lg);
-  background: rgba(0, 0, 0, 0.72);
-  color: var(--white-color);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-bold);
-  display: none;
-}
-
-.dice.is-prompt .dice-hint {
-  display: block;
-}
-
 /* Parked small in the stable of the seat currently playing (data-corner set by
    the caller). The die sits at the BASE CENTRE — between the four stable slots
    (which are at ~10% / ~30% of each 6-cell base) — so it never covers that

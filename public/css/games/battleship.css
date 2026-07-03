@@ -1,0 +1,266 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Battleship — two 10×10 grids (your waters / enemy zone) inside a square
+   container. Placement phase: a single grid + ship list.
+   Combat phase: two grids side by side.
+   ========================================================================== */
+
+.battleship-board {
+  aspect-ratio: 1;
+  width: 100%;
+  position: relative;
+  color: var(--text-color);
+}
+
+/* ── Shared grid (placement and combat) ────────────────────────────────────── */
+
+.bs-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  border: 2px solid var(--battleship-border);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  background: var(--battleship-water);
+}
+
+.bs-cell {
+  border: 1px solid var(--battleship-grid-line);
+  background: var(--battleship-water);
+  transition:
+    background 0.12s,
+    transform 0.1s;
+  cursor: default;
+  position: relative;
+}
+
+/* Targetable (enemy grid, our turn) */
+.bs-cell.is-targetable {
+  cursor: crosshair;
+}
+.bs-cell.is-targetable:hover {
+  background: var(--battleship-target-hover);
+  transform: scale(0.82);
+  border-radius: 2px;
+}
+
+/* Placed ship (own grid during placement and combat) */
+.bs-cell.is-ship {
+  background: var(--battleship-ship);
+}
+
+/* Placement preview — valid */
+.bs-cell.is-preview {
+  background: var(--battleship-preview);
+}
+
+/* Placement preview — invalid */
+.bs-cell.is-preview.is-invalid {
+  background: var(--battleship-preview-invalid);
+}
+
+/* Shot results */
+.bs-cell.is-miss::after {
+  content: '';
+  position: absolute;
+  inset: 25%;
+  border-radius: 50%;
+  background: var(--battleship-miss);
+  animation: bsMissPop 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.bs-cell.is-hit {
+  background: var(--battleship-hit);
+  animation: bsHitReveal 0.4s ease-out both;
+}
+
+.bs-cell.is-sunk {
+  background: var(--battleship-sunk);
+  animation: bsSunkReveal 0.5s ease-out both;
+}
+
+/* ── Placement phase ────────────────────────────────────────────────────────── */
+
+.bs-placement {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 2%;
+  box-sizing: border-box;
+  gap: 3%;
+}
+
+.bs-grid-area {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bs-grid-area .bs-grid {
+  height: 100%;
+  width: auto;
+  aspect-ratio: 1;
+  max-width: 100%;
+}
+
+/* List of ships to place */
+.bs-ship-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.8rem;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.bs-ship-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+
+.bs-ship-item.is-placed {
+  opacity: 0.25;
+  text-decoration: line-through;
+}
+
+.bs-ship-item.is-current {
+  opacity: 1;
+}
+
+.bs-ship-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-color-muted);
+  white-space: nowrap;
+}
+
+.bs-ship-item.is-current .bs-ship-label {
+  color: var(--color-battleship);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Visual bar for the ship size */
+.bs-ship-bar {
+  height: 10px;
+  width: calc(var(--ship-size, 2) * 14px);
+  background: var(--battleship-ship);
+  border-radius: 3px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.bs-ship-item.is-placed .bs-ship-bar {
+  background: var(--battleship-miss);
+}
+
+.bs-ship-item.is-current .bs-ship-bar {
+  background: var(--battleship-preview);
+  box-shadow: 0 0 0 2px var(--color-battleship);
+}
+
+/* Buttons + waiting message. The four placement buttons stay on a single line
+   (compact padding); the waiting note wraps onto its own line below them. */
+.bs-placement-actions {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.bs-placement-actions .btn {
+  padding: 0.45rem 0.7rem;
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.bs-waiting {
+  flex-basis: 100%;
+  font-size: var(--font-size-sm);
+  color: var(--text-color-muted);
+  margin: 0;
+  font-style: italic;
+}
+
+/* ── Combat phase ───────────────────────────────────────────────────────────── */
+
+/* Layout delegated to .dual-board / .dual-board__side — battleship-specific
+   overrides for the combat container live below. */
+
+.bs-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-color-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  flex: 0 0 auto;
+  transition: color 0.2s;
+}
+
+/* Enemy grid highlighted when it's the player's turn */
+.bs-side.is-active .bs-label {
+  color: var(--color-battleship);
+}
+
+.bs-side.is-active .bs-grid {
+  border-color: var(--color-battleship);
+  box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.25);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+/* Hint "Click to fire" — absolute, floats below the enemy grid without
+   affecting layout. position:relative on .dual-board__side provides the anchor. */
+
+.bs-fire-hint {
+  display: none;
+  position: absolute;
+  bottom: 0.4rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: var(--font-size-xs);
+  font-style: italic;
+  color: var(--color-battleship);
+  margin: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bs-side.is-active .bs-fire-hint {
+  display: block;
+}
+
+.bs-side .bs-grid {
+  width: 100%;
+  aspect-ratio: 1;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+/* ── Overrides scoped to this game ─────────────────────────────────────────── */
+:root {
+  --title-color: var(--color-battleship);
+}
+
+/* During combat the board is content-driven (two columns), not square. */
+.battleship-board.is-combat {
+  aspect-ratio: unset;
+  overflow: visible;
+}
+
+/* Widen the shell only during combat (two grids side-by-side, no vh cap).
+   The class is toggled on <body> by BattleshipGame so the variable cascades
+   down to .game-shell (CSS vars can't be set on a descendant to affect an
+   ancestor). */
+body.bs-combat-active {
+  --game-frame-width: var(--dual-board-frame-width);
+}

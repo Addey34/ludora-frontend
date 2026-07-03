@@ -29,23 +29,55 @@
 }
 
 .cell--I {
-  background: var(--tetris-i);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, transparent 50%), var(--tetris-i);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .cell--O {
-  background: var(--tetris-o);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, transparent 50%), var(--tetris-o);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .cell--T {
-  background: var(--tetris-t);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, transparent 50%), var(--tetris-t);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .cell--S {
-  background: var(--tetris-s);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, transparent 50%), var(--tetris-s);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .cell--Z {
-  background: var(--tetris-z);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, transparent 50%), var(--tetris-z);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .cell--J {
-  background: var(--tetris-j);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, transparent 50%), var(--tetris-j);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .cell--L {
-  background: var(--tetris-l);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, transparent 50%), var(--tetris-l);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Ghost piece: outlines where the current piece will land. */
+.cell--ghost {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--border-radius-xs);
+  box-sizing: border-box;
+}
+
+/* Danger state: red tint when the stack is getting high. */
+.tetris-board.is-danger {
+  background: color-mix(in srgb, var(--error-color) 6%, var(--background-color-dark));
+  transition: background 0.6s ease;
+}
+/* Only tint empty cells — piece cells (cell--I, --O, etc.) keep their colour. */
+.tetris-board.is-danger .cell:not([class*='cell--']) {
+  background: color-mix(in srgb, var(--error-color) 12%, var(--tetris-empty-bg));
 }

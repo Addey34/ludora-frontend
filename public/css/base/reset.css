@@ -9,6 +9,11 @@
   box-sizing: border-box;
 }
 
+/* Enforce the HTML `hidden` attribute against author `display:` overrides. */
+[hidden] {
+  display: none !important;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
 }

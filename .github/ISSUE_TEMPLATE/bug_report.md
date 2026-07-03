@@ -1,29 +1,29 @@
 ---
-name: 🐛 Signaler un bug
-about: Quelque chose ne fonctionne pas comme prévu
+name: 🐛 Report a bug
+about: Something isn't working as expected
 title: '[Bug] '
 labels: bug
 ---
 
-## Description du bug
+## Bug description
 
-<!-- Décris clairement le problème -->
+<!-- Describe the problem clearly -->
 
-## Étapes pour reproduire
+## Steps to reproduce
 
-1. Aller sur '...'
-2. Cliquer sur '...'
-3. Voir l'erreur
+1. Go to '...'
+2. Click on '...'
+3. See the error
 
-## Comportement attendu
+## Expected behavior
 
-<!-- Ce qui devrait se passer -->
+<!-- What should happen -->
 
-## Environnement
+## Environment
 
-- Jeu concerné :
-- Appareil / navigateur :
+- Game affected:
+- Device / browser:
 
-## Captures d'écran
+## Screenshots
 
-<!-- Si possible, ajoute une image -->
+<!-- If possible, add an image -->

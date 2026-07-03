@@ -39,8 +39,8 @@ const CODE_LENGTH = 4;
  * Game op codes MUST stay below it (Pong uses 1–4, Memory 1–2).
  */
 export const SYS_OP_BASE = 1000;
-const OP_SYS_LOBBY = SYS_OP_BASE; // host → all: { hostId, count }
-const OP_SYS_START = SYS_OP_BASE + 1; // host → all: { order: sessionId[] }
+const OP_SYS_LOBBY = SYS_OP_BASE;
+const OP_SYS_START = SYS_OP_BASE + 1;
 
 /** Roles, kept for authority (host simulates, guests follow). */
 export type MatchRole = 'host' | 'guest';
@@ -124,9 +124,6 @@ async function buildNetMatch(
   capacity: number
 ): Promise<NetMatch> {
   const s = await getSocket();
-  // Identify "self" by SESSION, not user: two tabs of the same (anonymous)
-  // account share a user_id but are distinct sessions, so a user_id filter would
-  // hide one as the other's self and break presence. session_id is per-connection.
   const selfId = match.self?.session_id ?? '';
 
   const messageCbs: ((msg: MatchMessage) => void)[] = [];
@@ -134,14 +131,11 @@ async function buildNetMatch(
   const peerLeaveCbs: ((seat: number) => void)[] = [];
   const closeCbs: (() => void)[] = [];
 
-  // Host-side join order (session ids), seeded with anyone already present.
   const joinOrder: string[] = [];
   for (const p of match.presences ?? []) {
     if (p.session_id !== selfId) joinOrder.push(p.session_id);
   }
 
-  // Shared lobby/seat state. `remoteCount` is the host-reported roster size used
-  // by guests (which don't track the join order themselves).
   const handle: {
     seat: number;
     started: boolean;
@@ -183,9 +177,7 @@ async function buildNetMatch(
   function send(opCode: number, data: unknown): void {
     try {
       s.sendMatchState(match.match_id, opCode, JSON.stringify(data ?? null));
-    } catch {
-      // Best-effort: a dropped message must not crash the loop.
-    }
+    } catch {} // eslint-disable-line no-empty
   }
 
   /** Applies a received START: derive this client's seat, then mark started. */
@@ -194,7 +186,6 @@ async function buildNetMatch(
     handle.order = order;
     handle.seat = order.indexOf(selfId);
     if (handle.seat < 0) {
-      // No seat (joined after the lock / overflow): can't play this round.
       fireClose();
       return;
     }
@@ -214,9 +205,8 @@ async function buildNetMatch(
       data = null;
     }
 
-    // Reserved lobby/seat traffic: consumed here, never forwarded to the game.
     if (d.op_code >= SYS_OP_BASE) {
-      if (role !== 'guest') return; // only guests act on the host's lobby messages
+      if (role !== 'guest') return;
       if (d.op_code === OP_SYS_LOBBY) {
         const m = data as { hostId?: string; count?: number } | null;
         if (m?.hostId) handle.hostId = m.hostId;
@@ -229,7 +219,7 @@ async function buildNetMatch(
       return;
     }
 
-    const msg: MatchMessage = { opCode: d.op_code, data, senderId: d.presence?.user_id ?? '' };
+    const msg: MatchMessage = { opCode: d.op_code, data, senderId: d.presence?.session_id ?? '' };
     for (const cb of messageCbs) cb(msg);
   };
 
@@ -240,7 +230,6 @@ async function buildNetMatch(
     if (!joins.length && !leaves.length) return;
 
     if (role === 'host') {
-      // Maintain the authoritative join order (only meaningful before the start).
       if (!handle.started) {
         for (const id of joins) if (!joinOrder.includes(id)) joinOrder.push(id);
         for (const id of leaves) {
@@ -250,8 +239,6 @@ async function buildNetMatch(
         broadcastLobby();
         fireLobby();
       } else {
-        // After the start: a seated guest leaving frees its seat (bot takeover);
-        // in a pure 1-v-1 the host has no one left → close back to solo.
         for (const id of leaves) {
           const seat = handle.order.indexOf(id);
           if (seat > 0) for (const cb of peerLeaveCbs) cb(seat);
@@ -261,8 +248,6 @@ async function buildNetMatch(
       return;
     }
 
-    // Guest: the host leaving ends the session (no authority left). After the
-    // start, a co-guest leaving frees its seat for the host to botify.
     if (leaves.includes(handle.hostId)) {
       fireClose();
       return;
@@ -306,9 +291,7 @@ async function buildNetMatch(
     async leave() {
       try {
         await s.leaveMatch(match.match_id);
-      } catch {
-        // Already gone / disconnected: nothing to do.
-      }
+      } catch {} // eslint-disable-line no-empty
     },
   };
   return net;

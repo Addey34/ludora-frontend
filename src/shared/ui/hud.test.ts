@@ -12,7 +12,7 @@ describe('setupHud', () => {
   it('renders one chip per stat, hidden until set', () => {
     setupHud([
       { key: 'score', icon: 'star', label: 'Score' },
-      { key: 'time', icon: 'clock', label: 'Temps' },
+      { key: 'time', icon: 'clock', label: 'Time' },
     ]);
     const chips = bar.querySelectorAll('.game-stat');
     expect(chips).toHaveLength(2);
@@ -30,7 +30,7 @@ describe('setupHud', () => {
   });
 
   it('set() with empty/null hides the chip', () => {
-    const hud = setupHud([{ key: 'time', icon: 'clock', label: 'Temps' }]);
+    const hud = setupHud([{ key: 'time', icon: 'clock', label: 'Time' }]);
     hud.set('time', 12);
     const chip = bar.querySelector<HTMLElement>('[data-stat="time"]')!;
     expect(chip.hidden).toBe(false);
@@ -45,7 +45,7 @@ describe('setupHud', () => {
   });
 
   it('toggle() flips a modifier class on the chip', () => {
-    const hud = setupHud([{ key: 'time', icon: 'clock', label: 'Temps' }]);
+    const hud = setupHud([{ key: 'time', icon: 'clock', label: 'Time' }]);
     const chip = bar.querySelector<HTMLElement>('[data-stat="time"]')!;
     hud.toggle('time', 'is-low', true);
     expect(chip.classList.contains('is-low')).toBe(true);
@@ -55,8 +55,8 @@ describe('setupHud', () => {
 
   it('rebuilding clears its own chips but keeps sibling markup', () => {
     bar.innerHTML = '<div class="ludo-players"></div>';
-    setupHud([{ key: 'time', icon: 'clock', label: 'Temps' }]);
-    setupHud([{ key: 'time', icon: 'clock', label: 'Temps' }]);
+    setupHud([{ key: 'time', icon: 'clock', label: 'Time' }]);
+    setupHud([{ key: 'time', icon: 'clock', label: 'Time' }]);
     expect(bar.querySelectorAll('.game-stat')).toHaveLength(1);
     expect(bar.querySelector('.ludo-players')).not.toBeNull();
   });

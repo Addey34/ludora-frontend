@@ -1,0 +1,64 @@
+/* =============================================================================
+   Toast notifications — transient, non-blocking feedback messages.
+   Appear centered vertically on-screen, stack, and auto-dismiss.
+   ========================================================================== */
+
+.toast-container {
+  position: fixed;
+  /* Vertically centred, skewed slightly upward to avoid the game-over overlay. */
+  top: 40%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: 9500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  pointer-events: none;
+}
+
+.toast {
+  padding: 0.45rem 1.1rem;
+  border-radius: var(--border-radius-lg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  box-shadow: var(--shadow-lg);
+
+  /* Hidden by default; JS adds .is-visible for the entrance. */
+  opacity: 0;
+  transform: translateY(6px) scale(0.92);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* --- Variants --- */
+
+.toast--info {
+  background: var(--background-color-card);
+  color: var(--text-color);
+  border: 1px solid var(--border-color-light);
+}
+
+.toast--success {
+  background: #22c55e;
+  color: #fff;
+}
+
+.toast--combo {
+  background: linear-gradient(120deg, #f97316 0%, #ef4444 100%);
+  color: #fff;
+  font-size: calc(var(--font-size-sm) * 1.1);
+}
+
+.toast--warning {
+  background: #f59e0b;
+  color: #fff;
+}

@@ -1,23 +1,23 @@
 ---
-name: 🎮 Proposer un jeu ou une fonctionnalité
-about: Une idée de nouveau jeu ou d'amélioration
-title: '[Idée] '
+name: 🎮 Suggest a game or feature
+about: An idea for a new game or an improvement
+title: '[Idea] '
 labels: enhancement
 ---
 
-## Ton idée
+## Your idea
 
-<!-- Décris le jeu ou la fonctionnalité que tu aimerais voir -->
+<!-- Describe the game or feature you'd like to see -->
 
-## Pourquoi ?
+## Why?
 
-<!-- En quoi ça améliore GamesZone ? -->
+<!-- How does it improve GamesZone? -->
 
-## Détails (optionnel)
+## Details (optional)
 
-<!-- Contrôles, règles, maquette, exemples... -->
+<!-- Controls, rules, mockup, examples... -->
 
-## Veux-tu le développer toi-même ?
+## Do you want to build it yourself?
 
-- [ ] Oui, je proposerai une Pull Request
-- [ ] Non, c'est juste une suggestion
+- [ ] Yes, I'll open a Pull Request
+- [ ] No, it's just a suggestion

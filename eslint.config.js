@@ -3,9 +3,9 @@ import tseslint from 'typescript-eslint';
 import importX from 'eslint-plugin-import-x';
 import prettier from 'eslint-config-prettier';
 
-// Flat config (ESLint 10). Cible le code source TS ; le rendu HTML/CSS et le
-// build sont hors périmètre. `prettier` est placé en dernier pour désactiver
-// les règles de style qui entreraient en conflit avec le formateur.
+// Flat config (ESLint 10). Targets the TS source code; HTML/CSS rendering and
+// the build are out of scope. `prettier` is placed last to disable the style
+// rules that would conflict with the formatter.
 export default tseslint.config(
   { ignores: ['dist', 'node_modules'] },
   js.configs.recommended,
@@ -14,14 +14,14 @@ export default tseslint.config(
     files: ['**/*.ts'],
     plugins: { 'import-x': importX },
     rules: {
-      // TypeScript (lib DOM) connaît déjà document/window/etc. : no-undef ferait
-      // double emploi et lèverait des faux positifs sur les globales du navigateur.
+      // TypeScript (DOM lib) already knows document/window/etc.: no-undef would
+      // be redundant and raise false positives on the browser globals.
       'no-undef': 'off',
-      // Convention du projet : les imports entre modules src/ portent l'extension
-      // .js même si le fichier est .ts (résolution Vite/ESM). On la rend obligatoire.
+      // Project convention: imports between src/ modules carry the .js extension
+      // even though the file is .ts (Vite/ESM resolution). We make it mandatory.
       'import-x/extensions': ['error', 'always', { ignorePackages: true }],
-      // Les paramètres/variables préfixés par _ sont volontairement inutilisés
-      // (hooks du moteur), comme le fait déjà tsconfig (noUnusedParameters).
+      // Parameters/variables prefixed with _ are intentionally unused
+      // (engine hooks), as tsconfig already enforces (noUnusedParameters).
       '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },

@@ -66,7 +66,7 @@
   transform: rotateY(180deg);
 }
 
-/* Matched pair: lock the cursor and signal the success. */
+/* Matched pair: lock the cursor and signal the success with a glow pulse. */
 .memory-card.is-matched {
   cursor: default;
 }
@@ -74,4 +74,10 @@
 .memory-card.is-matched .memory-card-front {
   background: var(--memory-card-matched-bg);
   color: var(--memory-card-matched-icon);
+  animation: memoryMatchGlow 1.8s ease-in-out infinite;
+}
+
+/* Flip transition slightly slower for more satisfying feel. */
+.memory-card-inner {
+  transition: transform 0.35s ease;
 }

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Privacy Policy — Games Zone" css="/css/legal.css"}}
+  <body class="app-body">
+    {{> game-chrome}}
+    <main class="legal-content">
+      <div class="legal-header">
+        <h1 class="legal-title">Privacy Policy</h1>
+        <a class="btn btn--secondary legal-back" href="/">
+          <i class="fas fa-arrow-left" aria-hidden="true"></i>
+          Home
+        </a>
+      </div>
+
+      <p class="legal-text">
+        Games Zone is a personal, non-commercial project. This page explains what data is collected
+        when you use the site.
+      </p>
+
+      <h2 class="legal-section">Authentication data (localStorage)</h2>
+      <p class="legal-text">
+        Three keys are stored in your browser's <code>localStorage</code> to maintain your session
+        between page loads:
+      </p>
+      <ul class="legal-list">
+        <li>
+          <code>gz-nakama-device-id</code> — a random UUID that identifies your anonymous account.
+        </li>
+        <li>
+          <code>gz-nakama-session</code> and <code>gz-nakama-refresh</code> — session tokens that
+          keep you connected.
+        </li>
+      </ul>
+      <p class="legal-text">
+        Clearing your browser storage removes these keys and disconnects you from your account.
+      </p>
+
+      <h2 class="legal-section">Scores &amp; progress (server-side only)</h2>
+      <p class="legal-text">
+        For games with an online leaderboard (Snake, 2048, Tetris, Typing), your scores are stored
+        <strong>only on our server</strong> (Oracle Cloud, Marseille, France) — nothing is written
+        to <code>localStorage</code>. Level progress (Pac-Man) is stored on the server and cached
+        locally as a UI preference only.
+      </p>
+      <p class="legal-text">
+        For local-only games (Breakout, Pong, Memory, Ludo, Connect 4, Battleship, Game of the
+        Goose), scores remain in your browser's <code>localStorage</code> and are never sent to any
+        server.
+      </p>
+
+      <h2 class="legal-section">Google Sign-In (optional)</h2>
+      <p class="legal-text">
+        If you sign in with Google, Google Identity Services sends us a token containing your
+        display name, email address, and Google ID. We use this solely to link your anonymous
+        account to your Google account so your scores carry over. Your email is not stored for
+        marketing and is not shared with third parties.
+      </p>
+
+      <h2 class="legal-section">Third-party services</h2>
+      <ul class="legal-list">
+        <li>
+          <strong>Google Identity Services</strong> — optional sign-in button. Subject to
+          <a
+            class="legal-link"
+            href="https://policies.google.com/privacy"
+            target="_blank"
+            rel="noopener"
+            >Google's Privacy Policy</a
+          >.
+        </li>
+        <li>
+          <strong>Font Awesome (cdnjs.cloudflare.com)</strong> — icon font loaded from Cloudflare's
+          CDN on every page.
+        </li>
+      </ul>
+
+      <h2 class="legal-section">Hosting</h2>
+      <ul class="legal-list">
+        <li>
+          <strong>Frontend:</strong> Render Inc., 525 Brannan St Suite 300, San Francisco, CA 94107,
+          USA.
+        </li>
+        <li>
+          <strong>Backend (scores &amp; multiplayer):</strong> Oracle Cloud Infrastructure,
+          Marseille, France.
+        </li>
+      </ul>
+
+      <h2 class="legal-section">No tracking</h2>
+      <p class="legal-text">
+        No analytics scripts, advertising cookies, or IP address logging beyond what hosting
+        providers handle by default.
+      </p>
+
+      <h2 class="legal-section">Your rights (GDPR)</h2>
+      <p class="legal-text">
+        You can request access to or deletion of your data by contacting
+        <a class="legal-link" href="mailto:zdey34470@gmail.com">adrian34470@gmail.com</a>.
+      </p>
+
+      <p class="legal-meta">
+        Last updated: July 2, 2026 &nbsp;·&nbsp;
+        <a href="/legal">Legal Notice</a>
+      </p>
+    </main>
+  </body>
+</html>

@@ -66,6 +66,8 @@
   --color-pong: #14b8a6; /* teal */
   --color-ludo: #4f46e5; /* indigo */
   --color-connect4: #2563eb; /* blue */
+  --color-battleship: #0369a1; /* ocean blue */
+  --color-goose: #d97706; /* amber — golden goose */
 
   /* --- Spacing --- */
   --spacing-xxs: 0.125rem;
@@ -116,6 +118,9 @@
      screen without scrolling. We subtract ~7.5rem: the title height + details
      bar + paddings above the square board. */
   --game-frame-width: min(860px, calc(100vh - 7.5rem));
+  /* Wider variant for games with two side-by-side grids (no vh cap since the
+     board is landscape, not square). */
+  --dual-board-frame-width: min(900px, 95vw);
 
   /* --- Misc --- */
   --transition-speed: 0.3s;
@@ -190,4 +195,29 @@
   --connect4-hole: #eff6ff;
   --connect4-disc-0: #ef4444; /* red */
   --connect4-disc-1: #facc15; /* yellow */
+
+  /* --- Battleship: water, ships and shot results --- */
+  --battleship-water: #e0f2fe;
+  --battleship-border: #7dd3fc;
+  --battleship-grid-line: rgba(125, 211, 252, 0.4);
+  --battleship-ship: #1e3a5f;
+  --battleship-miss: #94a3b8;
+  --battleship-hit: #f97316;
+  --battleship-sunk: #dc2626;
+  --battleship-preview: #86efac;
+  --battleship-preview-invalid: #fca5a5;
+  --battleship-target-hover: #38bdf8;
+
+  /* --- Goose: board and special squares --- */
+  --goose-board-bg: #fef9f0;
+  --goose-cell-bg: #fffbf5;
+  --goose-grid-line: #e5d9c8;
+  --goose-sq-goose: #dcfce7; /* light green — goose */
+  --goose-sq-bridge: #dbeafe; /* light blue  — bridge */
+  --goose-sq-inn: #ffedd5; /* light orange — inn */
+  --goose-sq-well: #f3e8ff; /* light purple — well */
+  --goose-sq-labyrinth: #ccfbf1; /* light teal  — labyrinth */
+  --goose-sq-prison: #374151; /* dark gray    — prison */
+  --goose-sq-death: #7f1d1d; /* dark red     — death */
+  --goose-sq-finish: #fef3c7; /* gold         — finish */
 }

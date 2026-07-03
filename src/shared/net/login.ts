@@ -51,8 +51,6 @@ function loadGoogleScript(): Promise<void> {
 async function renderAuthArea(area: HTMLElement): Promise<void> {
   const user = await getCurrentUser();
   if (user?.loggedIn) {
-    // Rail-style row: a sign-out icon (always visible, even on the compact rail)
-    // + the player's name as the label (revealed on hover, like the game links).
     area.innerHTML = `
       <button
         class="sidebar-auth-item"
@@ -65,14 +63,11 @@ async function renderAuthArea(area: HTMLElement): Promise<void> {
         <span class="sidebar-label">${escapeHtml(user.displayName)}</span>
       </button>`;
     area.querySelector('#logoutBtn')?.addEventListener('click', () => {
-      // Drop this browser's cached unlocks so the next player starts clean.
       clearLocalProgress();
       logout();
       location.reload();
     });
   } else {
-    // Same rail-style row: the real Google button (its "G" logo) lives in the
-    // always-visible icon box, and the "Sign in" label is revealed on hover.
     area.innerHTML = `
       <div class="sidebar-auth-item" id="loginItem">
         <span class="sidebar-icon" id="gsiButton"></span>
@@ -80,8 +75,6 @@ async function renderAuthArea(area: HTMLElement): Promise<void> {
       </div>`;
     const target = area.querySelector<HTMLElement>('#gsiButton');
     if (target) {
-      // Icon-only button: compact and width-independent, so it fits the narrow
-      // icon box (Google ignores attempts to shrink the text variant below its label).
       google.accounts.id.renderButton(target, {
         type: 'icon',
         theme: 'filled_blue',
@@ -89,8 +82,6 @@ async function renderAuthArea(area: HTMLElement): Promise<void> {
         shape: 'circle',
       });
     }
-    // Clicking the row's label (not the real Google button) opens the Google
-    // prompt too, so the whole expanded row is actionable.
     area.querySelector('#loginItem')?.addEventListener('click', (event) => {
       if ((event.target as HTMLElement).closest('#gsiButton')) return;
       google.accounts.id.prompt();
@@ -108,8 +99,6 @@ async function init(): Promise<void> {
       callback: (response) => {
         loginWithGoogleToken(response.credential)
           .then((switched) => {
-            // Switched to a different existing account → forget the previous
-            // player's local unlocks so they don't bleed into this account.
             if (switched) clearLocalProgress();
             location.reload();
           })

@@ -22,15 +22,21 @@ services:
     staticPublishPath: ./dist
     routes:
       # Clean URLs -> real file (the URL does not change in the address bar).
-      - { type: rewrite, source: /typing, destination: /typing/index.html }
-      - { type: rewrite, source: /snake, destination: /snake/index.html }
-      - { type: rewrite, source: /pacman, destination: /pacman/index.html }
-      - { type: rewrite, source: /2048, destination: /2048/index.html }
-      - { type: rewrite, source: /tetris, destination: /tetris/index.html }
-      - { type: rewrite, source: /memory, destination: /memory/index.html }
-      - { type: rewrite, source: /breakout, destination: /breakout/index.html }
-      - { type: rewrite, source: /pong, destination: /pong/index.html }
-      - { type: rewrite, source: /ludo, destination: /ludo/index.html }
+      # Games are built to dist/games/<key>/index.html; sidebar links use /<key>.
+      - { type: rewrite, source: /typing, destination: /games/typing/index.html }
+      - { type: rewrite, source: /snake, destination: /games/snake/index.html }
+      - { type: rewrite, source: /pacman, destination: /games/pacman/index.html }
+      - { type: rewrite, source: /2048, destination: /games/2048/index.html }
+      - { type: rewrite, source: /tetris, destination: /games/tetris/index.html }
+      - { type: rewrite, source: /memory, destination: /games/memory/index.html }
+      - { type: rewrite, source: /breakout, destination: /games/breakout/index.html }
+      - { type: rewrite, source: /pong, destination: /games/pong/index.html }
+      - { type: rewrite, source: /ludo, destination: /games/ludo/index.html }
+      - { type: rewrite, source: /connect4, destination: /games/connect4/index.html }
+      - { type: rewrite, source: /battleship, destination: /games/battleship/index.html }
+      - { type: rewrite, source: /goose, destination: /games/goose/index.html }
+      - { type: rewrite, source: /privacy, destination: /privacy/index.html }
+      - { type: rewrite, source: /legal, destination: /legal/index.html }
       # Everything else (old .html URLs, unknown paths) -> home.
       # LAST: the rules above take priority, and so do assets.
       - { type: redirect, source: /*, destination: / }

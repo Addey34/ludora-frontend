@@ -173,15 +173,54 @@ const games = [
       { keys: 'Goal', action: 'Line up four of your discs in a row' },
     ],
   },
+  {
+    key: 'battleship',
+    label: 'Battleship',
+    color: '--color-battleship',
+    mode: 'duo',
+    // Two phases: ship placement (local) then turn-based combat. "Settings"
+    // (bot difficulty) + "Multiplayer" (1-v-1 relay); host-authoritative.
+    settings: true,
+    multiplayer: true,
+    controls: [
+      { keys: 'Click / tap', action: 'Place a ship or fire a shot' },
+      { keys: '<kbd>R</kbd>', action: 'Rotate the ship during placement' },
+      { keys: 'Auto-place', action: 'Place the remaining ships randomly' },
+      { keys: 'Goal', action: 'Sink all 5 enemy ships first' },
+    ],
+  },
+  {
+    key: 'goose',
+    label: 'Game of the Goose',
+    color: '--color-goose',
+    mode: 'multi',
+    settings: true,
+    multiplayer: true,
+    controls: [
+      { keys: 'Click / tap', action: 'Roll the dice' },
+      { keys: '🦢 Goose', action: 'Roll again, moving forward by the same number' },
+      { keys: '🌉 Bridge (6→12)', action: 'Jump straight to square 12' },
+      { keys: '⚓ Inn (19)', action: 'Skip 1 turn' },
+      { keys: '🌀 Well (31) / Prison (52)', action: 'Skip 3 turns' },
+      { keys: '💀 Death (58)', action: 'Back to square 1' },
+      { keys: 'Finish (63)', action: 'Exact count required — first to arrive wins' },
+    ],
+  },
 ];
 
-// Dev/preview equivalent of render.yaml's clean-URL rewrites. Without it Vite's
-// SPA fallback serves the home page for every clean game URL. Two steps:
-//   1. `/<key>`  -> 301 to `/<key>/` so the page-relative module script
-//      (`./<key>-main.ts`) resolves against the game folder, not the site root
-//      (otherwise the page renders but the game's JS 404s — "just the front").
-//   2. `/<key>/` -> internally serve the real file `/<key>/index.html`.
+// Dev/preview equivalent of render.yaml's clean-URL rewrites.
+// Three cases handled, in order:
+//   1. `/<key>`      → 301 to `/<key>/` (trailing-slash redirect so that the
+//      browser resolves sub-resource URLs like `./ludo-main.ts` relative to
+//      `/<key>/`, which this middleware then rewrites to the real path below).
+//   2. `/<key>/`     → serve `src/games/<key>/index.html` (the game's entry
+//      point; static pages like /privacy stay under src/<key>/ not src/games/).
+//   3. `/<key>/foo`  → serve `src/games/<key>/foo` (the game's JS/TS modules
+//      and other sub-resources, e.g. `/ludo/ludo-main.ts` → `/games/ludo/ludo-main.ts`).
+//      Without this the browser's relative import `./ludo-main.ts` would 404
+//      because Vite would look in `src/ludo/` which no longer exists.
 const games_keys = new Set(games.map((g) => g.key));
+const static_pages = new Set(['privacy', 'legal']);
 interface RewriteRes {
   writeHead(status: number, headers: Record<string, string>): void;
   end(): void;
@@ -189,8 +228,25 @@ interface RewriteRes {
 function rewriteCleanUrl(req: { url?: string }, res: RewriteRes, next: () => void): void {
   if (req.url) {
     const [path, rest = ''] = req.url.split(/(?=[?#])/);
-    const key = path.replace(/^\//, '').replace(/\/$/, '');
+    // Split into segments: '/ludo/ludo-main.ts' → ['ludo', 'ludo-main.ts']
+    const segments = path.split('/').filter(Boolean);
+    const key = segments[0] ?? '';
+
     if (games_keys.has(key)) {
+      if (segments.length <= 1 && !path.endsWith('/')) {
+        // Case 1: `/<key>` → redirect to `/<key>/`
+        res.writeHead(301, { Location: `/${key}/${rest}` });
+        res.end();
+        return;
+      }
+      if (segments.length <= 1) {
+        // Case 2: `/<key>/` → game entry point
+        req.url = `/games/${key}/index.html${rest}`;
+      } else {
+        // Case 3: `/<key>/foo` → game sub-resource
+        req.url = `/games/${key}/${segments.slice(1).join('/')}${rest}`;
+      }
+    } else if (static_pages.has(key)) {
       if (!path.endsWith('/')) {
         res.writeHead(301, { Location: `/${key}/${rest}` });
         res.end();
@@ -244,7 +300,11 @@ export default defineConfig({
       // clean URL /<key> (see render.yaml for the rewrite).
       input: {
         main: resolve(srcRoot, 'index.html'),
-        ...Object.fromEntries(games.map((g) => [g.key, resolve(srcRoot, `${g.key}/index.html`)])),
+        privacy: resolve(srcRoot, 'privacy/index.html'),
+        legal: resolve(srcRoot, 'legal/index.html'),
+        ...Object.fromEntries(
+          games.map((g) => [g.key, resolve(srcRoot, `games/${g.key}/index.html`)])
+        ),
       },
     },
   },

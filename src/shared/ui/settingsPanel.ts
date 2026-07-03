@@ -7,7 +7,7 @@ import { setupPopover } from './popover.js';
  * (each a labelled segmented control), and the panel renders them into the shell
  * markup (`#settingsControl` / `#settingsToggle` / `#settingsPanel`) and reports
  * picks back via `onChange`. Open/close is delegated to {@link setupPopover}, like
- * the Niveaux / Leaderboard panels. Reusable by any future game that opts into
+ * the Levels / Leaderboard panels. Reusable by any future game that opts into
  * `settings: true` (see the games array in vite.config.ts).
  */
 

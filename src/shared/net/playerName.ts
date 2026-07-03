@@ -27,9 +27,7 @@ export function setPlayerName(name: string): void {
   if (!clean) return;
   try {
     localStorage.setItem(NAME_KEY, clean);
-  } catch {
-    // Ignore storage errors: the name just won't persist beyond this session.
-  }
+  } catch {} // eslint-disable-line no-empty
 }
 
 /** Whether the player has already chosen a pseudo. */

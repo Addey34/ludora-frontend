@@ -13,62 +13,54 @@ export interface ScoreEntry {
 }
 
 /**
- * Handles the persistence of a leaderboard (top-N) in `localStorage`.
+ * Handles leaderboard persistence.
  *
- * Each game instantiates its own `ScoreManager` with a distinct storage key.
- * Scores are kept sorted in descending order and limited to the `maxScores`
- * best ones.
+ * Two modes:
+ * - **Local** (`online=false`, default): scores stored in `localStorage`. Used
+ *   for games without an online backend (Breakout, Pong, Ludo, …).
+ * - **Online** (`online=true`): Nakama is the single source of truth; no data
+ *   is written to `localStorage`. `saveScore` tracks a session high score in
+ *   memory only; `getScores` always returns `[]` (the engine fetches the global
+ *   leaderboard from Nakama separately).
  */
 export class ScoreManager {
   private storageKey: string;
   private maxScores: number;
+  private readonly online: boolean;
+  /** Best score seen in the current page session (online mode only). */
+  private sessionHighScore: number = 0;
 
-  /**
-   * @param storageKey `localStorage` key specific to the game.
-   * @param maxScores Maximum number of entries kept in the leaderboard.
-   */
-  constructor(storageKey: string, maxScores: number = 10) {
+  constructor(storageKey: string, maxScores: number = 10, online: boolean = false) {
     this.storageKey = storageKey;
     this.maxScores = maxScores;
+    this.online = online;
   }
 
-  /**
-   * Adds an entry to the leaderboard, re-sorts it by descending score and only
-   * keeps the `maxScores` best ones before persisting.
-   */
   saveScore(entry: ScoreEntry): void {
+    if (this.online) {
+      this.sessionHighScore = Math.max(this.sessionHighScore, entry.score);
+      return;
+    }
     const scores = this.getScores();
-    scores.push({
-      ...entry,
-      date: entry.date || new Date(),
-    });
-
+    scores.push({ ...entry, date: entry.date || new Date() });
     scores.sort((a, b) => b.score - a.score);
-
-    const topScores = scores.slice(0, this.maxScores);
-
-    localStorage.setItem(this.storageKey, JSON.stringify(topScores));
+    localStorage.setItem(this.storageKey, JSON.stringify(scores.slice(0, this.maxScores)));
   }
 
   /**
    * Reads the persisted leaderboard. Returns an empty array if no data is
-   * stored or if the content is unreadable.
+   * stored, the content is unreadable, or the game is in online mode.
    */
   getScores(): ScoreEntry[] {
+    if (this.online) return [];
     const stored = localStorage.getItem(this.storageKey);
     if (!stored) return [];
-
     try {
       const parsed: unknown = JSON.parse(stored);
-      // The content may be valid JSON but not an array (corrupted data or
-      // outdated format): in that case we fall back to an empty leaderboard.
       if (!Array.isArray(parsed)) return [];
       return parsed.map((raw): ScoreEntry => {
         const entry = raw as ScoreEntry;
-        return {
-          ...entry,
-          date: entry.date ? new Date(entry.date) : new Date(),
-        };
+        return { ...entry, date: entry.date ? new Date(entry.date) : new Date() };
       });
     } catch {
       return [];
@@ -76,25 +68,27 @@ export class ScoreManager {
   }
 
   /**
-   * Returns the best recorded score (0 if the leaderboard is empty).
+   * Returns the best recorded score. In online mode, returns the session high
+   * score (resets to 0 on page reload; Nakama holds the real historical best).
    */
   getHighScore(): number {
+    if (this.online) return this.sessionHighScore;
     const scores = this.getScores();
     return scores.length > 0 ? scores[0].score : 0;
   }
 
-  /**
-   * Fully clears the persisted leaderboard.
-   */
   clearScores(): void {
+    if (this.online) return;
     localStorage.removeItem(this.storageKey);
   }
 
   /**
-   * Tells whether a score deserves to make the leaderboard: true as long as the
-   * leaderboard is not full, or if the score beats the last entry.
+   * Whether a score deserves a save prompt. In online mode, any positive score
+   * qualifies (Nakama decides the actual ranking). Locally, true as long as the
+   * board is not full or the score beats the last entry.
    */
   isHighScore(score: number): boolean {
+    if (this.online) return score > 0;
     const scores = this.getScores();
     if (scores.length < this.maxScores) return true;
     return score > scores[scores.length - 1].score;

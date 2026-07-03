@@ -1,0 +1,87 @@
+@import url('./global.css');
+
+/* Page card */
+.legal-content {
+  background: var(--white-color);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow);
+  padding: clamp(1rem, 3vw, 2rem);
+  max-width: 720px;
+  width: 100%;
+  margin: var(--spacing-md) auto;
+  align-self: flex-start;
+}
+
+/* Title row: h1 left, back button right */
+.legal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.legal-title {
+  font-size: clamp(1.25rem, 3vw, var(--font-size-xl));
+  font-weight: var(--font-weight-bolder);
+  color: var(--primary-color);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.legal-back {
+  flex-shrink: 0;
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+}
+
+/* Section headings */
+.legal-section {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-color);
+  margin: var(--spacing-md) 0 var(--spacing-xs);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--border-color-light);
+}
+
+/* Body text */
+.legal-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  line-height: 1.7;
+  margin: 0 0 var(--spacing-sm);
+}
+
+/* Lists */
+.legal-list {
+  margin: 0 0 var(--spacing-sm) var(--spacing-md);
+  padding: 0;
+}
+
+.legal-list li {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  line-height: 1.7;
+  margin-bottom: 2px;
+}
+
+/* Inline links inside content */
+.legal-link {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+/* Footer bar inside card */
+.legal-meta {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--border-color-light);
+  font-size: var(--font-size-xs);
+  color: var(--text-color-muted);
+}
+
+.legal-meta a {
+  color: var(--text-color-muted);
+  text-decoration: underline;
+}

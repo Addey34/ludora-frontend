@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Game of the Goose" css="/css/games/goose.css" script="./goose-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Game of the Goose" key="goose"}}
+    <div class="game-details">
+      <div class="goose-log-wrap">
+        <button class="goose-log-btn" type="button" aria-label="History">
+          <i class="fas fa-history"></i>
+        </button>
+        <div id="gooseLog" class="goose-log" aria-live="polite"></div>
+      </div>
+      <div class="goose-players" id="goosePlayers"></div>
+      <!-- HUD timer appended here by setupHud() -->
+    </div>
+    <div class="goose-area">
+      <div class="game-board goose-board" id="board"></div>
+    </div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

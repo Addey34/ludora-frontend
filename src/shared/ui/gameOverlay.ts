@@ -102,8 +102,6 @@ export class GameOverlay {
     this.host.appendChild(root);
     this.root = root;
 
-    // Focus the pseudo field if present (and select its pre-filled value so the
-    // player can edit it at once), otherwise the primary action (Enter restarts).
     const input = root.querySelector<HTMLInputElement>('.game-over-name input');
     if (input) {
       input.focus();
@@ -159,7 +157,6 @@ export class GameOverlay {
         return;
       }
       prompt.onSubmit(value);
-      // Replace the form with a small confirmation so it isn't asked again.
       const done = document.createElement('p');
       done.className = 'game-over-name-done';
       done.textContent = `Score saved as ${value}.`;

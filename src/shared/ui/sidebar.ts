@@ -1,16 +1,5 @@
-// Behavior of the global sidebar (neon rail). Loaded on every page.
-//  1. Marks the link matching the current page (.is-active) based on the URL.
-//  2. Handles open/close in mobile mode (hamburger button + scrim).
-// No hover expansion here: that is pure CSS (desktop). This script only handles
-// the active state and the touch toggle.
-
 const sidebar = document.querySelector('.sidebar');
 if (sidebar) {
-  // --- 1. Active state based on the URL ---------------------------------------
-  // Clean URLs: each game is served at /<key> (e.g. /snake, /2048). We mark
-  // the link whose data-nav matches the 1st path segment — also covering
-  // /<key>/ and /<key>/index.html (direct access or dev server). The home page
-  // has no dedicated entry (the Games Zone logo acts as the way back).
   const path = window.location.pathname;
   for (const link of document.querySelectorAll<HTMLElement>('.sidebar-link')) {
     const nav = link.dataset.nav;
@@ -24,7 +13,6 @@ if (sidebar) {
     document.querySelector('.sidebar-brand')?.setAttribute('aria-current', 'page');
   }
 
-  // --- 2. Mobile toggle ------------------------------------------------------
   const toggle = document.querySelector('.sidebar-toggle');
   const scrim = document.querySelector<HTMLElement>('.sidebar-scrim');
 
@@ -43,5 +31,36 @@ if (sidebar) {
   });
 }
 
-// File treated as an ESM module (loaded via <script type="module">).
+(function wireSoundToggle() {
+  const btn = document.getElementById('soundToggle');
+  const icon = document.getElementById('soundIcon');
+  if (!btn || !icon) return;
+
+  const STORAGE_KEY = 'gz-sound';
+  const isMuted = () => localStorage.getItem(STORAGE_KEY) === '0';
+
+  const updateIcon = (animate = false) => {
+    const muted = isMuted();
+    icon.className = muted ? 'fas fa-volume-xmark' : 'fas fa-volume-high';
+    btn.setAttribute('aria-label', muted ? 'Enable sound' : 'Mute sound');
+    btn.classList.toggle('is-muted', muted);
+    if (animate) {
+      btn.style.transform = 'scale(0.82)';
+      setTimeout(() => {
+        btn.style.transform = '';
+      }, 120);
+    }
+  };
+
+  updateIcon();
+  btn.addEventListener('click', () => {
+    const nowMuted = !isMuted();
+    localStorage.setItem(STORAGE_KEY, nowMuted ? '0' : '1');
+    window.dispatchEvent(new CustomEvent('gz-sound-change', { detail: { muted: nowMuted } }));
+    updateIcon(true);
+  });
+
+  window.addEventListener('gz-sound-change', () => updateIcon());
+})();
+
 export {};

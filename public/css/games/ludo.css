@@ -162,8 +162,8 @@
   border: 2px solid var(--white-color);
   box-shadow: var(--shadow-sm);
   transition:
-    top 0.25s ease,
-    left 0.25s ease,
+    top 0.18s ease,
+    left 0.18s ease,
     transform 0.15s ease;
 }
 .ludo-pawn--s0 {

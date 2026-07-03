@@ -1,0 +1,411 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Game of the Goose — 9 × 7 serpentine board, 4 player tokens, special squares.
+   Layout: players in the top .game-details bar (like Ludo), square board below,
+   move log revealed only on hover of the log button.
+   ========================================================================== */
+
+:root {
+  --title-color: var(--color-goose);
+}
+
+/* Top bar as a 3-column grid: [history | players | timer]. The two side columns
+   are equal (1fr), so the centre column (players) stays perfectly centred and
+   NEVER moves — no matter whether the timer is absent, "9s" or "15s". This is
+   why we don't use flex + space-between here (there, side width shifts the
+   centre). `position/z-index` lifts the whole bar above the board so the player
+   chips' hover tooltips (chips use opacity < 1 → own stacking context) and the
+   history panel are never trapped under the board. */
+.game-details {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.game-details .game-stat[data-stat='time'] {
+  justify-self: end;
+}
+
+/* ── Top-bar player chips (centre column, horizontal row) ─────────────────── */
+
+.goose-players {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.goose-player {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--border-radius-md);
+  border: 2px solid transparent;
+  background: color-mix(in srgb, var(--seat-color) 10%, var(--background-color));
+  opacity: 0.55;
+  transition:
+    opacity 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.goose-player-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--seat-color);
+  flex-shrink: 0;
+}
+
+.goose-player-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: color-mix(in srgb, var(--seat-color) 75%, black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 9rem;
+}
+
+/* Position: a tooltip shown on hover, so the bar keeps a fixed one-line height. */
+.goose-player-pos {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  white-space: nowrap;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  background: rgba(0, 0, 0, 0.85);
+  color: var(--white-color);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+
+.goose-player:hover {
+  z-index: 5;
+}
+
+.goose-player:hover .goose-player-pos {
+  opacity: 1;
+}
+
+.goose-player.is-active {
+  opacity: 1;
+  border-color: var(--seat-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--seat-color) 20%, transparent);
+}
+
+.goose-player.is-active .goose-player-pos {
+  color: color-mix(in srgb, var(--seat-color) 65%, black);
+}
+
+.goose-player.is-penalised .goose-player-name {
+  text-decoration: line-through;
+  text-decoration-color: var(--seat-color);
+}
+
+/* ── Board area ──────────────────────────────────────────────────────────── */
+
+.goose-area {
+  position: relative;
+  width: 100%;
+}
+
+/* ── Move history — icon button on the LEFT of the top bar, panel on hover ── */
+
+.goose-log-wrap {
+  position: relative;
+  justify-self: start;
+  z-index: 40;
+}
+
+.goose-log-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.goose-log-btn:hover {
+  background: var(--white-color);
+  border-color: var(--white-color);
+  color: var(--color-goose);
+}
+
+.goose-log {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 0.4rem);
+  width: 220px;
+  max-height: 260px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--spacing-xs);
+  background: var(--background-color);
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-md);
+}
+
+.goose-log-wrap:hover .goose-log {
+  display: flex;
+}
+
+.goose-log-entry {
+  font-size: var(--font-size-xs);
+  color: var(--text-color-muted);
+  margin: 0;
+  line-height: 1.4;
+  padding: 2px var(--spacing-xs);
+  border-radius: var(--border-radius-xs);
+  flex-shrink: 0;
+}
+
+.goose-log-entry.is-latest {
+  color: var(--text-color);
+  font-weight: var(--font-weight-medium);
+  background: color-mix(in srgb, var(--color-goose) 8%, transparent);
+}
+
+/* ── Board container ─────────────────────────────────────────────────────── */
+
+.goose-board {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--goose-board-bg);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+/* ── 9 × 7 grid (fits inside the square board, centred by height) ─────────── */
+
+.goose-grid {
+  height: 100%;
+  aspect-ratio: 7 / 9;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  gap: 1px;
+  padding: 4px;
+  background: var(--goose-grid-line);
+  border-radius: var(--border-radius-sm);
+}
+
+/* ── Individual cells ────────────────────────────────────────────────────── */
+
+.goose-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 1px;
+  background: var(--goose-cell-bg);
+  overflow: hidden;
+  cursor: default;
+  transition: background 0.15s;
+}
+
+.goose-cell[title] {
+  cursor: help;
+}
+
+.goose-cell-num {
+  position: relative;
+  z-index: 2;
+  font-size: 0.45rem;
+  line-height: 1;
+  color: var(--text-color-muted);
+  font-weight: var(--font-weight-semibold);
+  align-self: flex-start;
+}
+
+/* Glyph marking a special square — sits faint behind the player tokens. */
+.goose-cell-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  line-height: 1;
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Special square colours ──────────────────────────────────────────────── */
+
+.goose-cell.is-goose {
+  background: var(--goose-sq-goose);
+}
+.goose-cell.is-bridge {
+  background: var(--goose-sq-bridge);
+}
+.goose-cell.is-inn {
+  background: var(--goose-sq-inn);
+}
+.goose-cell.is-well {
+  background: var(--goose-sq-well);
+}
+.goose-cell.is-labyrinth {
+  background: var(--goose-sq-labyrinth);
+}
+.goose-cell.is-finish {
+  background: var(--goose-sq-finish);
+  border: 2px solid var(--color-goose);
+}
+
+.goose-cell.is-prison {
+  background: var(--goose-sq-prison);
+  color: var(--white-color);
+}
+.goose-cell.is-prison .goose-cell-num {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.goose-cell.is-death {
+  background: var(--goose-sq-death);
+  color: var(--white-color);
+}
+.goose-cell.is-death .goose-cell-num {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Player tokens inside cells ──────────────────────────────────────────── */
+
+.goose-cell-tokens {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1px;
+  flex: 1;
+}
+
+.goose-token {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--white-color);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.goose-token--s0 {
+  background: var(--ludo-seat-0);
+}
+.goose-token--s1 {
+  background: var(--ludo-seat-1);
+}
+.goose-token--s2 {
+  background: var(--ludo-seat-2);
+}
+.goose-token--s3 {
+  background: var(--ludo-seat-3);
+}
+
+.goose-token.is-active {
+  transform: scale(1.2);
+  box-shadow:
+    0 0 0 2px var(--white-color),
+    var(--shadow-md);
+}
+
+/* ── Dice overlay (two dice centred over the board) ──────────────────────── */
+
+.goose-dice-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.goose-die-wrap {
+  position: relative;
+  width: 21%;
+  aspect-ratio: 1;
+  /* Never block pointer events at the wrapper level — the inner .dice-face
+     button handles its own. This prevents the wrapper from intercepting
+     clicks on overlapping elements (e.g. the start overlay) when hidden. */
+  pointer-events: none;
+}
+
+.goose-die-wrap .dice {
+  position: absolute;
+  inset: 0;
+}
+
+.goose-die-wrap .dice-face {
+  width: 90%;
+  min-width: 40px;
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .goose-players {
+    gap: 4px;
+  }
+
+  .goose-player {
+    padding: 0.15rem 0.4rem;
+  }
+
+  .goose-player-pos {
+    display: none;
+  }
+
+  .goose-token {
+    width: 0.6rem;
+    height: 0.6rem;
+  }
+
+  .goose-cell-num {
+    font-size: 0.38rem;
+  }
+
+  .goose-log {
+    width: 180px;
+    max-height: 200px;
+  }
+}

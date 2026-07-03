@@ -15,7 +15,7 @@ export interface StatDef {
   key: string;
   /** Font Awesome icon name without the `fa-` prefix (e.g. 'clock', 'trophy'). */
   icon: string;
-  /** Accessible label (the icon alone isn't announced), e.g. 'Temps'. */
+  /** Accessible label (the icon alone isn't announced), e.g. 'Time'. */
   label: string;
 }
 
@@ -47,7 +47,7 @@ export function setupHud(defs: StatDef[], host?: HTMLElement | null): HudHandle 
       const chip = document.createElement('span');
       chip.className = 'game-stat';
       chip.dataset.stat = def.key;
-      chip.hidden = true; // revealed on the first set()
+      chip.hidden = true;
       chip.setAttribute('aria-label', def.label);
 
       const icon = document.createElement('i');

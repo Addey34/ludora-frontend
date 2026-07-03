@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+  <!-- Body -->
+  <ellipse cx="10" cy="15" rx="6" ry="5" />
+  <!-- Neck -->
+  <rect x="13" y="8" width="3" height="7" rx="1.5" />
+  <!-- Head -->
+  <circle cx="15" cy="6.5" r="2.5" />
+  <!-- Bill -->
+  <ellipse cx="17.8" cy="6.5" rx="1.8" ry="0.9" />
+  <!-- Wing highlight -->
+  <ellipse cx="9" cy="14" rx="3.5" ry="2" fill="white" opacity="0.25" />
+  <!-- Tail -->
+  <ellipse cx="4.5" cy="16" rx="2" ry="1.2" transform="rotate(-25 4.5 16)" />
+  <!-- Legs -->
+  <rect x="9" y="19.5" width="1.2" height="2.5" rx="0.6" />
+  <rect x="11" y="19.5" width="1.2" height="2.5" rx="0.6" />
+  <!-- Eye -->
+  <circle cx="16" cy="6" r="0.45" fill="white" />
+</svg>

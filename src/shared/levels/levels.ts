@@ -12,9 +12,9 @@ import { readStorage, writeStorage } from '../net/nakama.js';
 
 /** How a level becomes available to play. */
 export type UnlockRule =
-  | { type: 'open' } // playable from the start
-  | { type: 'sequential' } // unlocked once the previous level has been cleared
-  | { type: 'score'; threshold: number }; // unlocked once the best score reaches a threshold
+  | { type: 'open' }
+  | { type: 'sequential' }
+  | { type: 'score'; threshold: number };
 
 /** One level of a game. */
 export interface LevelDef {
@@ -98,9 +98,7 @@ export function clearLocalProgress(): void {
       if (key?.startsWith(PROGRESS_KEY_PREFIX)) keys.push(key);
     }
     for (const key of keys) localStorage.removeItem(key);
-  } catch {
-    // Ignore: nothing to clear if storage is unavailable.
-  }
+  } catch {} // eslint-disable-line no-empty
 }
 
 /** Reads progress synchronously from localStorage (instant, offline). Pure-ish. */
@@ -118,9 +116,7 @@ export function loadLocalProgress(gameKey: string): LevelProgress {
 export function saveProgress(gameKey: string, progress: LevelProgress): void {
   try {
     localStorage.setItem(progressKey(gameKey), JSON.stringify(progress));
-  } catch {
-    // Ignore quota / availability errors: the in-memory copy stays authoritative.
-  }
+  } catch {} // eslint-disable-line no-empty
   void writeStorage(progressKey(gameKey), progress);
 }
 

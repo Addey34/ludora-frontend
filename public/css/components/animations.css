@@ -2,6 +2,65 @@
    All the project's animations (single source — don't redefine elsewhere).
    ========================================================================== */
 
+/* --- Cross-page transitions (MPA, Chrome 126+, silent fallback elsewhere). --- */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root) {
+  animation: 200ms ease both vtFadeOut;
+}
+::view-transition-new(root) {
+  animation: 200ms ease both vtFadeIn;
+}
+@keyframes vtFadeOut {
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+@keyframes vtFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+/* Persistent shell elements: sidebar rail, hamburger button and sound toggle
+   are the same on every page. Giving them a view-transition-name pulls them
+   OUT of the root fade so they stay stable (no flicker/snap) during navigation.
+   The browser treats matched named elements as "shared"; with animation:none they
+   appear completely fixed across page changes while the main content fades. */
+.sidebar {
+  view-transition-name: gz-sidebar;
+}
+.sidebar-toggle {
+  view-transition-name: gz-sidebar-toggle;
+}
+.sound-toggle {
+  view-transition-name: gz-sound-toggle;
+}
+
+::view-transition-old(gz-sidebar),
+::view-transition-new(gz-sidebar),
+::view-transition-old(gz-sidebar-toggle),
+::view-transition-new(gz-sidebar-toggle),
+::view-transition-old(gz-sound-toggle),
+::view-transition-new(gz-sound-toggle) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Fixed viewport canvas overlay for the particle system (shared/fx/particles.ts).
+   Positioned via the fixed layer so it works regardless of game layout. */
+.fx-particles {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9000;
+}
+
 /* Entrance of the game-over modal. */
 @keyframes slideUp {
   from {
@@ -99,5 +158,125 @@
   }
   100% {
     transform: translateY(0);
+  }
+}
+
+/* Connect 4 winning discs: a pulsing white inner ring to celebrate the line. */
+@keyframes connect4Win {
+  0%,
+  100% {
+    box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.22);
+  }
+  50% {
+    box-shadow: inset 0 0 0 0.32rem rgba(255, 255, 255, 0.9);
+  }
+}
+
+/* Battleship — shot result reveals */
+
+/* Hit flash: cell brightens then settles to its hit color. */
+@keyframes bsHitReveal {
+  from {
+    filter: brightness(2.5);
+  }
+  to {
+    filter: brightness(1);
+  }
+}
+
+/* Miss dot: tiny circle pops into place with a slight overshoot. */
+@keyframes bsMissPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  65% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Sunk flash: brighter and longer than a hit to signal the ship is gone. */
+@keyframes bsSunkReveal {
+  0% {
+    filter: brightness(3);
+  }
+  60% {
+    filter: brightness(1.5);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+/* Pong ball: subtle pulsing glow to give it energy. */
+@keyframes pongBallGlow {
+  0%,
+  100% {
+    box-shadow:
+      var(--shadow-sm),
+      0 0 6px 2px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow:
+      var(--shadow-sm),
+      0 0 14px 5px rgba(255, 255, 255, 0.65);
+  }
+}
+
+/* Snake food: slow pulsing glow to attract the eye. */
+@keyframes foodGlow {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.3) drop-shadow(0 0 6px rgba(255, 255, 255, 0.55));
+  }
+}
+
+/* Memory: matched card gentle glow to celebrate the pair. */
+@keyframes memoryMatchGlow {
+  0%,
+  100% {
+    box-shadow: none;
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.5);
+  }
+}
+
+/* 2048: tile popping into existence from a spawned or merged state. */
+@keyframes tileSpawn {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 2048: brief bright flash on a merge, then settle back. */
+@keyframes tileMerge {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.18);
+    filter: brightness(1.4);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
   }
 }

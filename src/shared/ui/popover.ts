@@ -48,16 +48,10 @@ export function setupPopover(ids: PopoverIds): Popover | null {
     toggle.setAttribute('aria-expanded', String(open));
   };
 
-  // A click inside the panel never dismisses a programmatic pin. Crucially this
-  // also survives a content re-render that detaches the clicked node before the
-  // document handler runs (e.g. the multiplayer "Create" button replacing the
-  // panel): a detached target would fail the `contains` check below and wrongly
-  // close the panel.
   panel.addEventListener('click', (event) => {
     event.stopPropagation();
   });
 
-  // A click anywhere outside the control dismisses a programmatic pin.
   document.addEventListener('click', (event) => {
     if (!control.contains(event.target as Node)) setOpen(false);
   });

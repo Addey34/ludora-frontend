@@ -70,7 +70,6 @@ export function recordToScoreEntry(record: RawLeaderboardRecord): ScoreEntry {
     score: record.score ?? 0,
     date: record.update_time ? new Date(record.update_time) : undefined,
   };
-  // Restore game-specific extra fields (e.g. Typing's wpm/lpm).
   for (const [key, value] of Object.entries(meta)) {
     if (key !== 'username') (entry as unknown as Record<string, unknown>)[key] = value;
   }
@@ -82,7 +81,6 @@ export function googleTokenName(idToken: string): string | undefined {
   try {
     const part = idToken.split('.')[1];
     if (!part) return undefined;
-    // JWT payloads are base64url and unpadded: convert and re-pad before atob.
     const base64 = part.replace(/-/g, '+').replace(/_/g, '/');
     const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
     const claims = JSON.parse(atob(padded)) as { name?: string; email?: string };
@@ -126,9 +124,7 @@ function storeSession(session: Session): void {
   try {
     localStorage.setItem(SESSION_TOKEN_KEY, session.token);
     localStorage.setItem(SESSION_REFRESH_KEY, session.refresh_token);
-  } catch {
-    // Ignore storage errors: the in-memory session still works for this load.
-  }
+  } catch {} // eslint-disable-line no-empty
 }
 
 /** Restores a persisted session, refreshing it if expired. Null if none/invalid. */
@@ -167,7 +163,6 @@ export function getSession(): Promise<Session> {
       storeSession(session);
       return session;
     })().catch((err) => {
-      // Reset so a later call can retry instead of reusing the failed promise.
       sessionPromise = null;
       throw err;
     });
@@ -237,9 +232,7 @@ export async function writeStorage<T extends object>(key: string, value: T): Pro
     await getClient().writeStorageObjects(session, [
       { collection: PROGRESS_COLLECTION, key, value, permission_read: 1, permission_write: 1 },
     ]);
-  } catch {
-    // Best-effort: the local copy remains the source of truth offline.
-  }
+  } catch {} // eslint-disable-line no-empty
 }
 
 /** Google OAuth client id (public) used by the front-end sign-in flow. */
@@ -271,7 +264,6 @@ export async function loginWithGoogleToken(idToken: string): Promise<boolean> {
   try {
     await nakama.linkGoogle(session, { token: idToken });
   } catch {
-    // Google already linked elsewhere → sign into that existing account.
     session = await nakama.authenticateGoogle(idToken, true);
     switched = true;
   }
@@ -279,9 +271,7 @@ export async function loginWithGoogleToken(idToken: string): Promise<boolean> {
   if (name) {
     try {
       await nakama.updateAccount(session, { display_name: name });
-    } catch {
-      // Non-fatal: a failed name update must not break the sign-in.
-    }
+    } catch {} // eslint-disable-line no-empty
   }
   sessionPromise = Promise.resolve(session);
   storeSession(session);

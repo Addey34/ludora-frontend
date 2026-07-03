@@ -12,7 +12,6 @@
 export function showStartOverlay(onPlay: () => void, label = 'Play'): void {
   const host = document.querySelector<HTMLElement>('.game-shell');
   if (!host) {
-    // No shell to mount onto: fall back to starting immediately.
     onPlay();
     return;
   }

@@ -18,16 +18,6 @@
   overflow-x: hidden;
 }
 
-/* Fixed gradient bar at the top of every page. */
-.app-body::before {
-  content: '';
-  position: fixed;
-  inset: 0 0 auto 0;
-  height: 5px;
-  background: var(--gradient);
-  z-index: 1000;
-}
-
 .app-title {
   display: flex;
   align-items: center;

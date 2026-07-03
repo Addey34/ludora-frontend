@@ -1,24 +1,36 @@
 <!doctype html>
 <html lang="en">
   {{> head title="Games Zone" css="/css/home.css"}}
-  <body class="app-body">
+  <body class="app-body home-body">
     {{> sidebar}}
-    <h1 class="app-title">
-      <i class="fas fa-gamepad" aria-hidden="true"></i>
-      Games Zone
-      <i class="fas fa-gamepad" aria-hidden="true"></i>
-    </h1>
-    <div class="menu">
-      {{#each games}}
-      <a href="/{{key}}" data-game="{{key}}">
-        <span
-          class="game-icon"
-          style="--game-icon: url(/icons/{{key}}.svg)"
-          aria-hidden="true"
-        ></span>
-        {{label}}
-      </a>
-      {{/each}}
+    <div class="home-main">
+      <header class="home-hero">
+        <h1 class="home-title">Games Zone</h1>
+        <p class="home-tagline">Browser games — play instantly, no download</p>
+      </header>
+      <nav class="game-grid" aria-label="Games">
+        {{#each games}}
+        <a
+          href="/{{key}}"
+          class="game-tile"
+          data-game="{{key}}"
+          aria-label="{{label}}"
+          data-label="{{label}}"
+          style="--nav-accent: var({{color}})"
+        >
+          <span
+            class="game-icon"
+            style="--game-icon: url(/icons/{{key}}.svg)"
+            aria-hidden="true"
+          ></span>
+        </a>
+        {{/each}}
+      </nav>
     </div>
+    <footer class="home-footer">
+      <a href="/privacy">Privacy Policy</a>
+      <span aria-hidden="true">·</span>
+      <a href="/legal">Legal Notice</a>
+    </footer>
   </body>
 </html>

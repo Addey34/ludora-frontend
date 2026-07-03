@@ -40,7 +40,6 @@ const KEY_TO_DIRECTION: Record<string, Direction> = {
   ArrowDown: 'down',
   ArrowLeft: 'left',
   ArrowRight: 'right',
-  // WASD (QWERTY keyboard) and ZQSD (AZERTY keyboard): same directions.
   w: 'up',
   s: 'down',
   a: 'left',
@@ -55,8 +54,6 @@ const KEY_TO_DIRECTION: Record<string, Direction> = {
  * @returns The matching direction, or `null` if the key is not one.
  */
 export function keyboardDirection(event: KeyboardEvent): Direction | null {
-  // event.key may be uppercase (Shift/Caps Lock): we normalize to lowercase
-  // so that W/Z/Q/S/A/D work too.
   return KEY_TO_DIRECTION[event.key] ?? KEY_TO_DIRECTION[event.key.toLowerCase()] ?? null;
 }
 
@@ -98,9 +95,7 @@ export function setupSwipe(target: HTMLElement, options: SwipeOptions): () => vo
     startY = event.clientY;
     try {
       target.setPointerCapture(event.pointerId);
-    } catch {
-      // Capture unavailable (pointer already released): harmless.
-    }
+    } catch {} // eslint-disable-line no-empty
   };
 
   const onPointerUp = (event: PointerEvent): void => {

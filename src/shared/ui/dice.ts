@@ -71,11 +71,7 @@ export function createDice(host: HTMLElement, options: DiceOptions = {}): DiceHa
     pips.push(pip);
   }
 
-  const hint = document.createElement('span');
-  hint.className = 'dice-hint';
-  hint.textContent = 'Lancer';
-
-  root.append(face, hint);
+  root.append(face);
   host.appendChild(root);
 
   let cycle: ReturnType<typeof setInterval> | null = null;

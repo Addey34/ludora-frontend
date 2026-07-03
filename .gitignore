@@ -1,6 +1,6 @@
 /node_modules
 /dist
 
-# Claude Code : réglages locaux/personnels (les réglages partagés vont dans settings.json)
+# Claude Code: local/personal settings (shared settings go in settings.json)
 .claude/settings.local.json
 CLAUDE.md

@@ -128,7 +128,8 @@ export abstract class GameEngine {
 
     this.scoreManager = new ScoreManager(
       this.config.storageKey ?? 'scores',
-      this.config.maxScores ?? 10
+      this.config.maxScores ?? 10,
+      !!this.config.leaderboardId
     );
     this.overlay = new GameOverlay();
   }
@@ -178,7 +179,6 @@ export abstract class GameEngine {
    */
   start(): void {
     if (this.state.isRunning) return;
-    // Clear the Play screen if the loop is starting through any path.
     dismissStartOverlay();
 
     this.state.isRunning = true;
@@ -235,8 +235,6 @@ export abstract class GameEngine {
       cancelAnimationFrame(this.animationFrameId);
       this.animationFrameId = null;
     }
-    // Release the pointer (cursor-driven games grab it for immersive play), so
-    // the game-over overlay buttons are clickable again.
     document.exitPointerLock?.();
     this.updateLevelProgress();
     this.onGameOver();
@@ -244,7 +242,7 @@ export abstract class GameEngine {
 
   /**
    * Sets up the level system: loads progress (locally for an instant read, then
-   * merged with Nakama Storage), selects the saved level, builds the "Niveaux"
+   * merged with Nakama Storage), selects the saved level, builds the "Levels"
    * panel and applies the level's parameters. Games with a `levels` config call
    * this once from `initialize()`. No-op when no levels are configured.
    */
@@ -252,8 +250,6 @@ export abstract class GameEngine {
     const config = this.config.levels;
     if (!config) return;
 
-    // Instant local read so the panel works offline; seed the best score from
-    // the local leaderboard so existing players keep their score-based unlocks.
     this.levelProgress = loadLocalProgress(config.gameKey);
     const topLocal = this.scoreManager.getScores()[0]?.score ?? 0;
     this.levelProgress.bestScore = Math.max(this.levelProgress.bestScore, topLocal);
@@ -268,7 +264,6 @@ export abstract class GameEngine {
       onSelect: (id) => this.selectLevel(id),
     });
 
-    // Cross-device progress (best-effort): merge, then refresh the lock states.
     loadProgress(config.gameKey).then((remote) => {
       remote.bestScore = Math.max(remote.bestScore, topLocal);
       this.levelProgress = remote;
@@ -318,9 +313,7 @@ export abstract class GameEngine {
    * Maps the selected level to the game's parameters (speed, difficulty…).
    * Hook for level-based games to override; must not start the loop.
    */
-  protected onLevelSelected(_levelId: number): void {
-    // Hook for subclasses with a `levels` config.
-  }
+  protected onLevelSelected(_levelId: number): void {}
 
   /**
    * Whether the current level counts as cleared (so the next unlocks). Default
@@ -410,8 +403,6 @@ export abstract class GameEngine {
    * "Play again" (+ "View leaderboard" when the game has a leaderboard panel).
    */
   protected showGameOverOverlay(): void {
-    // Offer the save prompt only when the game actually shows a leaderboard (e.g.
-    // not Pac-Man, which is level-based) and the score makes the top-N board.
     const savable =
       this.leaderboardPanel !== null && this.scoreManager.isHighScore(this.state.score);
 
@@ -517,16 +508,13 @@ export abstract class GameEngine {
    * for the initial display; re-rendered automatically after each save.
    */
   protected renderScoreTable(): void {
-    // Wire the "Leaderboard" panel on first render (no-op for games without one).
     if (!this.leaderboardPanelReady) {
       this.leaderboardPanelReady = true;
       this.leaderboardPanel = setupLeaderboardPanel();
     }
 
-    // Immediate paint from the local leaderboard (also the offline fallback).
     this.renderScoreRows(this.scoreManager.getScores());
 
-    // If the game has an online leaderboard, replace it with the global scores.
     const leaderboardId = this.config.leaderboardId;
     if (!leaderboardId) return;
     listLeaderboardScores(leaderboardId, this.config.maxScores ?? 10)

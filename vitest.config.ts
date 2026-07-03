@@ -1,13 +1,13 @@
 import { defineConfig } from 'vitest/config';
 
-// Config dédiée aux tests unitaires (Vitest la préfère à vite.config.ts).
-// On NE charge pas le plugin Handlebars ni `root: src` : les tests visent la
-// logique pure (TS), pas le rendu HTML/DOM des pages.
+// Dedicated config for unit tests (Vitest prefers it over vite.config.ts).
+// We do NOT load the Handlebars plugin or `root: src`: the tests target the
+// pure (TS) logic, not the HTML/DOM rendering of the pages.
 export default defineConfig({
   test: {
-    // happy-dom fournit localStorage, KeyboardEvent, etc. aux tests.
+    // happy-dom provides localStorage, KeyboardEvent, etc. to the tests.
     environment: 'happy-dom',
-    // Tests co-localisés avec le code, sous src/.
+    // Tests co-located with the code, under src/.
     include: ['src/**/*.{test,spec}.ts'],
   },
 });

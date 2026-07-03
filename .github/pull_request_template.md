@@ -1,26 +1,26 @@
-<!-- Merci pour ta contribution ! Remplis les sections ci-dessous. -->
+<!-- Thanks for your contribution! Fill in the sections below. -->
 
 ## Description
 
-<!-- Que fait cette PR ? Quel jeu / bug / amélioration ? -->
+<!-- What does this PR do? Which game / bug / improvement? -->
 
-## Type de changement
+## Type of change
 
-- [ ] 🎮 Nouveau jeu
-- [ ] ✨ Nouvelle fonctionnalité
-- [ ] 🐛 Correction de bug
+- [ ] 🎮 New game
+- [ ] ✨ New feature
+- [ ] 🐛 Bug fix
 - [ ] 🎨 Style / UI
 - [ ] 📝 Documentation
-- [ ] 🔧 Autre :
+- [ ] 🔧 Other:
 
-## Vérifications
+## Checks
 
-- [ ] `npm run format` est passé
-- [ ] `npm run lint` ne remonte pas d'erreur
-- [ ] `npm test` est vert
-- [ ] `npm run build` réussit
-- [ ] J'ai testé le résultat dans le navigateur (`npm run dev`)
+- [ ] `npm run format` has been run
+- [ ] `npm run lint` reports no errors
+- [ ] `npm test` is green
+- [ ] `npm run build` succeeds
+- [ ] I tested the result in the browser (`npm run dev`)
 
-## Captures d'écran (si pertinent)
+## Screenshots (if relevant)
 
-<!-- Glisse une image ou un GIF du jeu / de la fonctionnalité -->
+<!-- Drop an image or a GIF of the game / feature -->

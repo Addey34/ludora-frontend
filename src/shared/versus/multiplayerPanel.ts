@@ -7,7 +7,7 @@ import { createSession, joinSession, NetMatch, LobbySnapshot } from '../net/matc
  *
  * Owns the whole session lifecycle (create / join by code / lobby / leave) and
  * the roster UI, delegating the network to `net/match.ts` and the open/close to
- * {@link setupPopover} (like the Niveaux / Leaderboard panels). The match opens
+ * {@link setupPopover} (like the Levels / Leaderboard panels). The match opens
  * in a **lobby**: the host sees the code + who has joined and presses "Start"
  * when ready (empty seats are then filled by bots by the game); guests wait for
  * that start. It tells the game what to do through two callbacks —
@@ -48,6 +48,17 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
   const capacity = opts.capacity ?? 2;
   let net: NetMatch | null = null;
   let started = false;
+  /** Guest-side: fires if the host hasn't started a while after joining. */
+  let joinTimer: ReturnType<typeof setTimeout> | null = null;
+  let joinStale = false;
+
+  function clearJoinTimer(): void {
+    if (joinTimer) {
+      clearTimeout(joinTimer);
+      joinTimer = null;
+    }
+    joinStale = false;
+  }
 
   const title = (): HTMLElement => {
     const el = document.createElement('p');
@@ -132,7 +143,6 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
     section.appendChild(roster(snap));
 
     if (net.role === 'host') {
-      // Need the opponent for a 1-v-1; for N-player the host may start with bots.
       const min = capacity === 2 ? 2 : 1;
       const start = document.createElement('button');
       start.type = 'button';
@@ -143,6 +153,14 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
       section.appendChild(start);
     } else {
       section.appendChild(statusLine('Waiting for the host to start…'));
+      if (joinStale) {
+        section.appendChild(
+          statusLine(
+            'Still waiting — the host may have already started or stepped away. Leave and try again.',
+            'is-error'
+          )
+        );
+      }
     }
 
     const leaveBtn = document.createElement('button');
@@ -180,8 +198,6 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
   }
 
   async function doCreate(): Promise<void> {
-    // Pin the panel open: the lobby shows the code + roster, so it must stay up
-    // even once the cursor leaves (no longer just a hover peek).
     open();
     renderConnecting('Creating the session…');
     try {
@@ -202,6 +218,10 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
       net = await joinSession(code, capacity);
       wireNet();
       renderLobby();
+      joinTimer = setTimeout(() => {
+        joinStale = true;
+        renderLobby();
+      }, 30_000);
     } catch {
       renderIdle('Invalid code or server unreachable.', true);
     }
@@ -234,6 +254,7 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
 
   /** Drops the local match handle and flags (without UI). */
   function teardown(): void {
+    clearJoinTimer();
     net?.leave();
     net = null;
     started = false;
@@ -250,7 +271,7 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
     const overlay = new GameOverlay();
     overlay.show({
       title: 'Leave the session?',
-      bodyHtml: '<div>You will return to a game against the bot.</div>',
+      bodyHtml: '<div>You will return to a solo game.</div>',
       buttons: [
         {
           text: 'Quit',
