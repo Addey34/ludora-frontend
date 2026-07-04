@@ -25,11 +25,15 @@
 
 /* --- Grid ------------------------------------------------------------------ */
 
+/* Fill the largest square that fits the card width AND the viewport height,
+   leaving room for the HUD above and the input pad below — so it takes as much
+   space as the other games (and grows in immersive/zen mode) instead of a fixed
+   cap. */
 .sudoku-grid {
   display: grid;
   grid-template-columns: repeat(9, 1fr);
   grid-template-rows: repeat(9, 1fr);
-  width: min(92vw, 60vh, 30rem);
+  width: min(100%, calc(100dvh - 13rem));
   aspect-ratio: 1;
   border: 3px solid var(--sudoku-line);
   border-radius: var(--border-radius-sm);
