@@ -407,11 +407,14 @@ body.sidebar-open .sidebar {
   .sidebar {
     width: var(--sidebar-width);
     transform: none;
-    transition: width var(--transition-speed) ease;
+    /* Delay before collapsing so the cursor can move away without the rail snapping. */
+    transition: width var(--transition-speed) ease 350ms;
   }
 
   .sidebar:hover {
     width: var(--sidebar-width-expanded);
+    /* Open immediately — no delay when entering. */
+    transition: width var(--transition-speed) ease;
   }
 
   /* Labels and mode badges hidden when compact, revealed on rail hover. */
@@ -423,6 +426,15 @@ body.sidebar-open .sidebar {
   .sidebar:hover .sidebar-label,
   .sidebar:hover .sidebar-mode {
     opacity: 1;
+  }
+
+  /* In compact mode hide the scrollbar so it doesn't shift the 64 px rail and
+     misalign the icons; scrolling is available once the rail is expanded. */
+  .sidebar-nav {
+    overflow-y: hidden;
+  }
+  .sidebar:hover .sidebar-nav {
+    overflow-y: auto;
   }
 
   /* No toggle or scrim on desktop. */

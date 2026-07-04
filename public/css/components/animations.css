@@ -50,6 +50,17 @@
   mix-blend-mode: normal;
 }
 
+/* Also freeze the GROUP: without this the browser interpolates the rail's
+   size/position between pages, so navigating while it is hover-expanded (220px)
+   animates a pointless shrink back to the compact 64px on the next page. Killing
+   the group animation keeps the rail perfectly stable across navigation — its
+   open/closed state is driven purely by hover, independent of page changes. */
+::view-transition-group(gz-sidebar),
+::view-transition-group(gz-sidebar-toggle),
+::view-transition-group(gz-sound-toggle) {
+  animation: none;
+}
+
 /* Fixed viewport canvas overlay for the particle system (shared/fx/particles.ts).
    Positioned via the fixed layer so it works regardless of game layout. */
 .fx-particles {
