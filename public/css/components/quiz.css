@@ -1,0 +1,156 @@
+/* =============================================================================
+   Quiz — shared layout for every question/answer game built on QuizGame
+   (Mental Math, Geo Quiz, future trivia/vocabulary). The board stacks a prompt,
+   an answer zone (multiple-choice grid OR a typed field) and a feedback line.
+   Games only set --title-color and tweak the prompt via their own stylesheet.
+   ========================================================================== */
+
+.quiz-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) var(--spacing-md);
+  background: var(--background-color-light);
+  text-align: center;
+}
+
+/* The question. Large and legible; games may scale it further. */
+.quiz-prompt {
+  font-size: clamp(1.6rem, 6vw, 2.8rem);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-color);
+  line-height: 1.2;
+  min-height: 1.2em;
+}
+
+.quiz-prompt strong {
+  color: var(--title-color, var(--primary-color));
+}
+
+/* Answer zone: holds either the choices grid or the typed form. */
+.quiz-answer {
+  width: min(100%, 26rem);
+}
+
+/* --- Multiple choice ------------------------------------------------------- */
+
+.quiz-choices {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-sm);
+}
+
+.quiz-choice {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  min-height: 3rem;
+  border: 2px solid var(--border-color-light);
+  border-radius: var(--border-radius-md);
+  background: var(--white-color);
+  color: var(--text-color);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease,
+    transform 0.1s ease;
+}
+
+.quiz-choice:not(:disabled):hover {
+  border-color: var(--title-color, var(--primary-color));
+  transform: translateY(-2px);
+}
+
+.quiz-choice:focus-visible {
+  outline: 3px solid var(--title-color, var(--primary-color));
+  outline-offset: 2px;
+}
+
+/* Small ordinal chip (keyboard shortcut hint 1-9). */
+.quiz-choice-key {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: var(--border-radius-sm);
+  background: var(--background-color-light);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Reveal after answering. */
+.quiz-choice.is-correct {
+  border-color: var(--success-color, #22c55e);
+  background: color-mix(in srgb, #22c55e 16%, var(--white-color));
+}
+.quiz-choice.is-correct .quiz-choice-key {
+  background: #22c55e;
+  color: var(--white-color);
+}
+.quiz-choice.is-wrong {
+  border-color: var(--error-color);
+  background: color-mix(in srgb, var(--error-color) 14%, var(--white-color));
+}
+
+/* --- Typed answer ---------------------------------------------------------- */
+
+.quiz-form {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+}
+
+.quiz-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 12rem;
+  text-align: center;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.quiz-submit {
+  flex: 0 0 auto;
+}
+
+/* Correct/incorrect ring on the typed field after submitting. */
+.quiz-answer.is-correct .quiz-input {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 2px color-mix(in srgb, #22c55e 60%, transparent);
+}
+.quiz-answer.is-wrong .quiz-input {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--error-color) 55%, transparent);
+}
+
+/* --- Feedback line --------------------------------------------------------- */
+
+.quiz-feedback {
+  min-height: 1.4em;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-color-muted);
+}
+
+.quiz-feedback.is-correct {
+  color: #16a34a;
+}
+.quiz-feedback.is-wrong {
+  color: var(--error-color);
+}
+
+/* --- Mobile ---------------------------------------------------------------- */
+
+@media (max-width: 480px) {
+  .quiz-choices {
+    grid-template-columns: 1fr;
+  }
+}
