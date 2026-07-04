@@ -24,8 +24,7 @@
   padding: var(--spacing-sm) 0 var(--spacing-md);
   background: var(--sidebar-bg);
   box-shadow: var(--shadow-lg);
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   /* Mobile: off-screen, slides in when opened. */
   transform: translateX(-100%);
   transition: transform var(--transition-speed) ease;
@@ -69,6 +68,30 @@ body.sidebar-open .sidebar {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xxs);
+  /* Fill available space between brand and auth; scroll only the game list. */
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Styled thin scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 3px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 2px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.42);
 }
 
 .sidebar-link,

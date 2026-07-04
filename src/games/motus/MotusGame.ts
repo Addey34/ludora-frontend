@@ -43,7 +43,6 @@ export class MotusGame extends GameEngine {
 
   private lang: Lang = 'fr';
   private words: string[] = [];
-  private wordSet = new Set<string>();
 
   private target = '';
   private row = 0;
@@ -95,7 +94,6 @@ export class MotusGame extends GameEngine {
     } catch {
       this.words = FALLBACK[this.lang];
     }
-    this.wordSet = new Set(this.words);
   }
 
   private buildGrid(): void {
@@ -214,10 +212,6 @@ export class MotusGame extends GameEngine {
   private submit(): void {
     if (this.guess.length < WORD_LEN) {
       showToast('Not enough letters', 'warning');
-      return;
-    }
-    if (!this.wordSet.has(this.guess)) {
-      showToast('Not in word list', 'warning');
       return;
     }
 
