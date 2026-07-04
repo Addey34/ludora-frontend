@@ -13,18 +13,35 @@ interface Game2048Config extends GameConfig {
 }
 
 /**
- * Result of sliding a row to the left.
+ * A tile living on the board. Its `id` is stable across moves so the DOM element
+ * persists and its position transitions (slide) instead of being rebuilt. `row`
+ * /`col` are updated to the destination on a move; one-shot `isNew`/`merged`
+ * flags drive the pop animations and are cleared once rendered.
  */
-interface SlideResult {
-  /** Row after compression and merges. */
-  row: number[];
-  /** Points earned by this row's merges. */
-  gained: number;
-  /** Whether the row changed compared to the original. */
-  changed: boolean;
-  /** Column indices in the result row that are the product of a merge. */
-  mergedCols: number[];
+interface Tile {
+  id: number;
+  value: number;
+  row: number;
+  col: number;
+  isNew?: boolean;
+  merged?: boolean;
+  /** Set on the tile consumed by a merge: it slides to the cell then is removed. */
+  removing?: boolean;
 }
+
+/** Outcome of a move: whether it changed the grid, the score gained, and the merges. */
+interface MoveResult {
+  changed: boolean;
+  gained: number;
+  merged: boolean;
+  /** Survivor tile id → its new (doubled) value, applied after the slide. */
+  merges: { id: number; value: number }[];
+  /** The resulting value grid (authoritative for the game logic). */
+  board: number[][];
+}
+
+/** Slide duration (ms) — kept in sync with the CSS `top`/`left` transition. */
+const SLIDE_MS = 125;
 
 /**
  * 2048 game.
@@ -34,6 +51,12 @@ interface SlideResult {
  * move) and credit that sum to the score. After each valid move, a new tile (2
  * at 90%, 4 at 10%) appears on a free cell. The game ends when no move is
  * possible anymore.
+ *
+ * Tiles keep a stable identity ({@link Tile.id}) and are absolutely positioned,
+ * so a move slides them to their destination (CSS transition) rather than
+ * rebuilding the grid. A move therefore plays in two beats: first the slide,
+ * then — after {@link SLIDE_MS} — the merges resolve (doubled value + pop),
+ * consumed tiles are dropped and a fresh tile spawns.
  *
  * Like the typing game, this game is event-driven and does not use the engine's
  * `requestAnimationFrame` loop: {@link start} merely activates the state, and the
@@ -45,11 +68,17 @@ export class Game2048 extends GameEngine {
   private board: number[][] = [];
 
   private boardElement: HTMLElement | null = null;
+  private tileLayer: HTMLElement | null = null;
   private fx: ParticleSystem | null = null;
-  /** Board-space coordinates of tiles that resulted from a merge (set by move(), consumed by render()). */
-  private pendingMerged: { row: number; col: number }[] = [];
-  /** Position of the tile spawned by the last spawnTile() call (consumed by render()). */
-  private pendingSpawn: { row: number; col: number } | null = null;
+
+  /** Live tiles, keyed by id to their DOM element in {@link tileLayer}. */
+  private tiles: Tile[] = [];
+  private tileEls = new Map<number, HTMLElement>();
+  private nextTileId = 1;
+
+  /** True while a move's slide is in flight; further input is ignored until it resolves. */
+  private animating = false;
+  private slideTimer: ReturnType<typeof setTimeout> | null = null;
 
   /**
    * @param config Game configuration (grid size).
@@ -60,8 +89,8 @@ export class Game2048 extends GameEngine {
   }
 
   /**
-   * Binds the DOM elements, wires up the keyboard, initializes the grid with two
-   * tiles then performs the first render.
+   * Binds the DOM elements, builds the static background + tile layer, wires up
+   * the keyboard/swipe, seeds the grid with two tiles then performs the first render.
    */
   initialize(): void {
     this.boardElement = document.getElementById('board');
@@ -71,6 +100,7 @@ export class Game2048 extends GameEngine {
       { key: 'high', icon: 'trophy', label: 'Best' },
     ]);
 
+    this.buildScaffold();
     this.setupEventListeners();
 
     if (this.boardElement) {
@@ -83,6 +113,30 @@ export class Game2048 extends GameEngine {
     this.renderScoreTable();
     this.updateScoreDisplay();
     this.render();
+  }
+
+  /**
+   * Lays out the board once: the `--n` custom property, the static background
+   * slots, and the (initially empty) tile layer that holds the moving tiles.
+   */
+  private buildScaffold(): void {
+    const board = this.boardElement;
+    if (!board) return;
+    board.innerHTML = '';
+    board.style.setProperty('--n', String(this.gridSize));
+
+    const cells = document.createElement('div');
+    cells.className = 'grid-cells';
+    for (let i = 0; i < this.gridSize * this.gridSize; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'grid-cell';
+      cells.appendChild(cell);
+    }
+    board.appendChild(cells);
+
+    this.tileLayer = document.createElement('div');
+    this.tileLayer.className = 'tile-layer';
+    board.appendChild(this.tileLayer);
   }
 
   /**
@@ -111,56 +165,63 @@ export class Game2048 extends GameEngine {
    */
   update(_deltaTime: number): void {}
 
-  /**
-   * Rebuilds the grid display from {@link board}. Newly spawned tiles get
-   * `is-new` (pop-in animation) and merge-destination tiles get `is-merged`
-   * (flash + scale pop). Merge particles are emitted after the DOM is built
-   * so getBoundingClientRect() returns the final tile positions.
-   */
+  /** Reconciles the tile DOM with {@link tiles} (see {@link renderTiles}). */
   render(): void {
-    if (!this.boardElement) return;
+    this.renderTiles();
+  }
 
-    this.boardElement.innerHTML = '';
+  /**
+   * Diffs {@link tiles} against their DOM elements: updates value/position (so a
+   * changed `--row`/`--col` transitions), creates missing tiles (pop-in) and
+   * removes gone ones. One-shot `isNew`/`merged` flags are consumed here.
+   */
+  private renderTiles(): void {
+    const layer = this.tileLayer;
+    if (!layer) return;
 
-    const mergedSet = new Set(this.pendingMerged.map(({ row, col }) => `${row},${col}`));
-
-    this.board.forEach((row, r) => {
-      row.forEach((value, c) => {
-        const tile = document.createElement('div');
-        tile.className = this.tileClass(value);
-        tile.textContent = value > 0 ? value.toString() : '';
-
-        if (this.pendingSpawn?.row === r && this.pendingSpawn?.col === c) {
-          tile.classList.add('is-new');
-        } else if (mergedSet.has(`${r},${c}`)) {
-          tile.classList.add('is-merged');
-        }
-
-        this.boardElement!.appendChild(tile);
-      });
-    });
-
-    if (this.fx && this.pendingMerged.length > 0) {
-      this.emitMergeParticles();
+    const seen = new Set<number>();
+    for (const tile of this.tiles) {
+      seen.add(tile.id);
+      let el = this.tileEls.get(tile.id);
+      if (!el) {
+        el = document.createElement('div');
+        layer.appendChild(el);
+        this.tileEls.set(tile.id, el);
+      }
+      el.className = this.tileClass(tile.value);
+      el.textContent = tile.value > 0 ? tile.value.toString() : '';
+      el.style.setProperty('--row', String(tile.row));
+      el.style.setProperty('--col', String(tile.col));
+      if (tile.isNew) {
+        el.classList.add('is-new');
+        tile.isNew = false;
+      }
+      if (tile.merged) {
+        el.classList.add('is-merged');
+        tile.merged = false;
+      }
     }
 
-    this.pendingMerged = [];
-    this.pendingSpawn = null;
+    for (const [id, el] of this.tileEls) {
+      if (!seen.has(id)) {
+        el.remove();
+        this.tileEls.delete(id);
+      }
+    }
   }
 
   /**
    * Emits an orange particle burst from each merged tile's screen position.
    */
-  private emitMergeParticles(): void {
-    if (!this.boardElement || !this.fx) return;
-    const tileEls = this.boardElement.querySelectorAll<HTMLElement>('.tile');
+  private emitMergeParticles(ids: number[]): void {
+    if (!this.fx) return;
     const colors = ['#ea580c', '#f97316', '#fb923c', '#fdba74', '#fff7ed'];
-
-    this.pendingMerged.forEach(({ row, col }) => {
-      const tileEl = tileEls[row * this.gridSize + col];
-      if (!tileEl) return;
-      const rect = tileEl.getBoundingClientRect();
-      this.fx!.emit(rect.left + rect.width / 2, rect.top + rect.height / 2, {
+    for (const id of ids) {
+      const el = this.tileEls.get(id);
+      if (!el) continue;
+      const rect = el.getBoundingClientRect();
+      if (rect.width === 0) continue;
+      this.fx.emit(rect.left + rect.width / 2, rect.top + rect.height / 2, {
         count: 8,
         speed: 4,
         spread: Math.PI * 2,
@@ -169,7 +230,7 @@ export class Game2048 extends GameEngine {
         size: rect.width * 0.17,
         colors,
       });
-    });
+    }
   }
 
   /**
@@ -177,8 +238,6 @@ export class Game2048 extends GameEngine {
    * numbers shrink the font size).
    */
   private tileClass(value: number): string {
-    if (value === 0) return 'tile';
-
     const digits = value.toString().length;
     const sizeModifier = digits >= 4 ? ' tile--4digits' : digits === 3 ? ' tile--3digits' : '';
     const colorClass = value <= 2048 ? `tile--${value}` : 'tile--super';
@@ -198,61 +257,141 @@ export class Game2048 extends GameEngine {
   }
 
   /**
-   * Plays a move in the given direction (keyboard or swipe). If the grid
-   * changes, spawns a tile, refreshes the display and checks for game over.
+   * Plays a move in the given direction (keyboard or swipe). The tiles slide to
+   * their destinations immediately; the merges/spawn/game-over resolve once the
+   * slide has finished ({@link finalizeMove}). Ignored while a slide is running.
    */
   private applyMove(direction: Direction): void {
-    if (this.state.isGameOver) return;
+    if (this.state.isGameOver || this.animating) return;
 
-    if (this.move(direction)) {
-      const hasMerge = this.pendingMerged.length > 0;
-      this.spawnTile();
-      this.render();
-      playSound(hasMerge ? 'score' : 'move');
-      if (!this.canMove()) {
-        playSound('die');
-        this.gameOver();
+    const result = this.move(direction);
+    if (!result.changed) return;
+
+    this.board = result.board;
+    this.addScore(result.gained);
+    this.animating = true;
+    this.renderTiles();
+    playSound(result.merged ? 'score' : 'move');
+
+    this.slideTimer = setTimeout(() => this.finalizeMove(result.merges), SLIDE_MS);
+  }
+
+  /**
+   * Second beat of a move: applies the doubled values to the merge survivors
+   * (with a pop), removes the consumed tiles, spawns a fresh tile, then checks
+   * whether the game is over.
+   */
+  private finalizeMove(merges: { id: number; value: number }[]): void {
+    this.slideTimer = null;
+
+    for (const { id, value } of merges) {
+      const tile = this.tiles.find((t) => t.id === id);
+      if (tile) {
+        tile.value = value;
+        tile.merged = true;
       }
+    }
+    this.tiles = this.tiles.filter((t) => !t.removing);
+
+    this.spawnTile();
+    this.animating = false;
+    this.renderTiles();
+    this.emitMergeParticles(merges.map((m) => m.id));
+
+    if (!this.canMove()) {
+      playSound('die');
+      this.gameOver();
     }
   }
 
   /**
-   * Slides and merges all the tiles in the given direction, crediting the score
-   * with the merges.
-   *
-   * All directions reduce to a leftward slide via rotation/reflection of the
-   * grid, followed by the inverse transformation. Merge positions are transformed
-   * back to original board space and stored in `pendingMerged` for render().
-   *
-   * @returns `true` if the grid changed (valid move).
+   * Computes the move in `direction`: every tile is oriented into a leftward
+   * slide, compacted and merged within its row (one merge per tile), then mapped
+   * back to board space. Tile positions are mutated to their destinations here so
+   * the render can transition them; merge survivors keep their old value until
+   * {@link finalizeMove}. No side effect when the grid doesn't change.
    */
-  private move(direction: Direction): boolean {
-    const rotated = this.toLeftOriented(this.board, direction);
+  private move(direction: Direction): MoveResult {
+    const n = this.gridSize;
+    const grid: (Tile | null)[][] = Array.from({ length: n }, () =>
+      new Array<Tile | null>(n).fill(null)
+    );
+    for (const tile of this.tiles) {
+      if (tile.removing) continue;
+      const p = this.toLeftOrientedPos(tile.row, tile.col, direction);
+      grid[p.r][p.c] = tile;
+    }
 
     let changed = false;
     let gained = 0;
-    const merges: { row: number; col: number }[] = [];
+    const merges: { id: number; value: number }[] = [];
 
-    const slid = rotated.map((row, r) => {
-      const result = this.slideRow(row);
-      if (result.changed) changed = true;
-      gained += result.gained;
-      result.mergedCols.forEach((c) => merges.push(this.fromLeftOrientedPos(r, c, direction)));
-      return result.row;
-    });
-
-    if (changed) {
-      this.board = this.fromLeftOriented(slid, direction);
-      this.addScore(gained);
-      this.pendingMerged = merges;
+    for (let r = 0; r < n; r++) {
+      const line = grid[r].filter((t): t is Tile => t !== null);
+      let outCol = 0;
+      for (let i = 0; i < line.length; i++) {
+        const tile = line[i];
+        const next = line[i + 1];
+        if (next && next.value === tile.value) {
+          const dest = this.fromLeftOrientedPos(r, outCol, direction);
+          this.setTilePos(tile, dest);
+          this.setTilePos(next, dest);
+          tile.removing = false;
+          next.removing = true;
+          merges.push({ id: tile.id, value: tile.value * 2 });
+          gained += tile.value * 2;
+          changed = true;
+          outCol++;
+          i++;
+        } else {
+          const dest = this.fromLeftOrientedPos(r, outCol, direction);
+          if (tile.row !== dest.row || tile.col !== dest.col) changed = true;
+          this.setTilePos(tile, dest);
+          outCol++;
+        }
+      }
     }
 
-    return changed;
+    const board = Array.from({ length: n }, () => new Array<number>(n).fill(0));
+    for (const tile of this.tiles) {
+      if (tile.removing) continue;
+      const merge = merges.find((m) => m.id === tile.id);
+      board[tile.row][tile.col] = merge ? merge.value : tile.value;
+    }
+
+    return { changed, gained, merged: merges.length > 0, merges, board };
+  }
+
+  /** Moves a tile to a board position (mutates in place). */
+  private setTilePos(tile: Tile, pos: { row: number; col: number }): void {
+    tile.row = pos.row;
+    tile.col = pos.col;
   }
 
   /**
-   * Maps a position (r, c) in the left-oriented grid back to original board coordinates.
-   * Inverse of the transformations applied by toLeftOriented().
+   * Maps a board position to the left-oriented grid, so that a "leftward" slide
+   * corresponds to the requested direction. Inverse of {@link fromLeftOrientedPos}.
+   */
+  private toLeftOrientedPos(
+    row: number,
+    col: number,
+    direction: Direction
+  ): { r: number; c: number } {
+    const n = this.gridSize;
+    switch (direction) {
+      case 'left':
+        return { r: row, c: col };
+      case 'right':
+        return { r: row, c: n - 1 - col };
+      case 'up':
+        return { r: col, c: row };
+      case 'down':
+        return { r: col, c: n - 1 - row };
+    }
+  }
+
+  /**
+   * Maps a position (r, c) in the left-oriented grid back to board coordinates.
    */
   private fromLeftOrientedPos(
     r: number,
@@ -273,85 +412,8 @@ export class Game2048 extends GameEngine {
   }
 
   /**
-   * Orients the grid so that a "leftward" slide corresponds to the requested
-   * direction.
-   */
-  private toLeftOriented(board: number[][], direction: Direction): number[][] {
-    switch (direction) {
-      case 'left':
-        return board.map((row) => [...row]);
-      case 'right':
-        return this.reverseRows(board);
-      case 'up':
-        return this.transpose(board);
-      case 'down':
-        return this.reverseRows(this.transpose(board));
-    }
-  }
-
-  /**
-   * Inverse transformation of {@link toLeftOriented}: brings the slid grid back
-   * to its original orientation.
-   */
-  private fromLeftOriented(board: number[][], direction: Direction): number[][] {
-    switch (direction) {
-      case 'left':
-        return board;
-      case 'right':
-        return this.reverseRows(board);
-      case 'up':
-        return this.transpose(board);
-      case 'down':
-        return this.transpose(this.reverseRows(board));
-    }
-  }
-
-  /**
-   * Compresses a row to the left then merges equal adjacent tiles (one merge per
-   * tile), and pads on the right with empty cells. Also records which columns in
-   * the result came from a merge, so the caller can propagate FX.
-   */
-  private slideRow(row: number[]): SlideResult {
-    const nonZero = row.filter((value) => value !== 0);
-    const merged: number[] = [];
-    const mergedCols: number[] = [];
-    let gained = 0;
-
-    for (let i = 0; i < nonZero.length; i++) {
-      if (i + 1 < nonZero.length && nonZero[i] === nonZero[i + 1]) {
-        const value = nonZero[i] * 2;
-        merged.push(value);
-        mergedCols.push(merged.length - 1);
-        gained += value;
-        i++;
-      } else {
-        merged.push(nonZero[i]);
-      }
-    }
-
-    while (merged.length < row.length) merged.push(0);
-
-    const changed = merged.some((value, index) => value !== row[index]);
-    return { row: merged, gained, changed, mergedCols };
-  }
-
-  /**
-   * Transposes the grid (swaps rows and columns).
-   */
-  private transpose(board: number[][]): number[][] {
-    return board[0].map((_, col) => board.map((row) => row[col]));
-  }
-
-  /**
-   * Returns a copy of the grid with each row reversed.
-   */
-  private reverseRows(board: number[][]): number[][] {
-    return board.map((row) => [...row].reverse());
-  }
-
-  /**
    * Spawns a tile (2 at 90%, 4 at 10%) on a randomly chosen free cell. No-op if
-   * the grid is full. Records the spawn position in `pendingSpawn` for render().
+   * the grid is full.
    */
   private spawnTile(): void {
     const empty: Array<{ x: number; y: number }> = [];
@@ -364,8 +426,9 @@ export class Game2048 extends GameEngine {
     if (empty.length === 0) return;
 
     const cell = empty[Math.floor(Math.random() * empty.length)];
-    this.board[cell.y][cell.x] = Math.random() < 0.9 ? 2 : 4;
-    this.pendingSpawn = { row: cell.y, col: cell.x };
+    const value = Math.random() < 0.9 ? 2 : 4;
+    this.board[cell.y][cell.x] = value;
+    this.tiles.push({ id: this.nextTileId++, value, row: cell.y, col: cell.x, isNew: true });
   }
 
   /**
@@ -385,12 +448,15 @@ export class Game2048 extends GameEngine {
   }
 
   /**
-   * Creates an empty grid and places the two starting tiles on it.
+   * Creates an empty grid + a fresh tile set and places the two starting tiles.
    */
   private resetBoard(): void {
     this.board = Array.from({ length: this.gridSize }, () =>
-      Array.from({ length: this.gridSize }, () => 0)
+      new Array<number>(this.gridSize).fill(0)
     );
+    this.tiles = [];
+    this.tileLayer?.replaceChildren();
+    this.tileEls.clear();
     this.spawnTile();
     this.spawnTile();
   }
@@ -399,11 +465,23 @@ export class Game2048 extends GameEngine {
    * Resets the grid, the score and the state, then performs the render.
    */
   reset(): void {
-    this.pendingMerged = [];
-    this.pendingSpawn = null;
+    if (this.slideTimer !== null) {
+      clearTimeout(this.slideTimer);
+      this.slideTimer = null;
+    }
+    this.animating = false;
     this.resetState();
     this.resetBoard();
     this.updateScoreDisplay();
     this.render();
+  }
+
+  /** Stops the game and cancels a pending slide resolution. */
+  stop(): void {
+    super.stop();
+    if (this.slideTimer !== null) {
+      clearTimeout(this.slideTimer);
+      this.slideTimer = null;
+    }
   }
 }

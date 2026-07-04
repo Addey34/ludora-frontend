@@ -4,17 +4,47 @@
    2048 — game-specific styles (frame/controls/score-bar = shared).
    ========================================================================== */
 
-/* --- Square board: 4x4 grid (logical size set in JS) --- */
+/* --- Square board: an N×N grid (size set in JS via --n). The background slots
+   sit under an absolutely-positioned tile layer, so tiles slide between cells
+   instead of the grid being rebuilt each move. --gap is shared by both. --- */
 .grid-board {
-  display: grid;
-  grid-template: repeat(4, 1fr) / repeat(4, 1fr);
-  gap: var(--spacing-sm);
+  position: relative;
   padding: var(--spacing-sm);
   background: var(--tile-board-bg);
+  --n: 4;
+  --gap: var(--spacing-sm);
 }
 
-/* --- Tile --- */
+/* Static empty slots (the board's holes), laid out as the grid. */
+.grid-cells {
+  position: absolute;
+  inset: var(--spacing-sm);
+  display: grid;
+  grid-template: repeat(var(--n), 1fr) / repeat(var(--n), 1fr);
+  gap: var(--gap);
+}
+
+.grid-cell {
+  border-radius: var(--border-radius-sm);
+  background: var(--tile-empty-bg);
+}
+
+/* Tiles float over the slots; JS sets --row/--col (0-based) per tile. */
+.tile-layer {
+  position: absolute;
+  inset: var(--spacing-sm);
+}
+
+/* --- Tile ---
+   Size and position derive from the cell count and gap so the tile lands exactly
+   on a slot; a change of --row/--col transitions (the slide). --- */
 .tile {
+  position: absolute;
+  --tile-size: calc((100% - (var(--n) - 1) * var(--gap)) / var(--n));
+  width: var(--tile-size);
+  height: var(--tile-size);
+  left: calc(var(--col, 0) * (var(--tile-size) + var(--gap)));
+  top: calc(var(--row, 0) * (var(--tile-size) + var(--gap)));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,7 +55,9 @@
   font-size: clamp(1.1rem, 7vmin, 2.2rem);
   font-variant-numeric: tabular-nums;
   user-select: none;
-  transition: background 0.1s ease;
+  transition:
+    top 0.12s ease,
+    left 0.12s ease;
 }
 
 .tile.is-new {
