@@ -5,7 +5,7 @@
    ========================================================================== */
 
 :root {
-  --title-color: var(--color-conjug);
+  --title-color: var(--color-conjugation);
 }
 
 .quiz-prompt {

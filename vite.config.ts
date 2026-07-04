@@ -289,9 +289,9 @@ const games = [
     ],
   },
   {
-    key: 'conjug',
+    key: 'conjugation',
     label: 'Conjugation',
-    color: '--color-conjug',
+    color: '--color-conjugation',
     mode: 'solo',
     leaderboard: true,
     settings: true,
@@ -315,9 +315,9 @@ const games = [
     ],
   },
   {
-    key: 'pendu',
+    key: 'hangman',
     label: 'Hangman',
-    color: '--color-pendu',
+    color: '--color-hangman',
     mode: 'solo',
     leaderboard: true,
     settings: true,

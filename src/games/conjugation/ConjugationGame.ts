@@ -1,44 +1,44 @@
 import { QuizGame } from '../../shared/quiz/QuizGame.js';
 import { Question } from '../../shared/quiz/quiz.js';
 
-type Tense = 'présent' | 'imparfait' | 'futur';
+type Tense = 'present' | 'imperfect' | 'future';
 
 interface Verb {
   verb: string;
-  présent: string[];
-  imparfait: string[];
-  futur: string[];
+  present: string[];
+  imperfect: string[];
+  future: string[];
 }
 
 /** Subject pronouns, in the conjugation table order. */
 const PRONOUNS = ['je', 'tu', 'il/elle', 'nous', 'vous', 'ils/elles'];
 
-/** Tense display labels (English UI for a French-verb trainer). */
+/** Tense display labels. */
 const TENSE_LABEL: Record<Tense, string> = {
-  présent: 'present',
-  imparfait: 'imperfect',
-  futur: 'future',
+  present: 'present',
+  imperfect: 'imperfect',
+  future: 'future',
 };
 
 /** Tenses unlocked per difficulty (adds one tense each step). */
 const TENSES_BY_DIFFICULTY: Record<string, Tense[]> = {
-  easy: ['présent'],
-  medium: ['présent', 'futur'],
-  hard: ['présent', 'imparfait', 'futur'],
+  easy: ['present'],
+  medium: ['present', 'future'],
+  hard: ['present', 'imperfect', 'future'],
 };
 
 const FALLBACK: Verb[] = [
   {
     verb: 'être',
-    présent: ['suis', 'es', 'est', 'sommes', 'êtes', 'sont'],
-    imparfait: ['étais', 'étais', 'était', 'étions', 'étiez', 'étaient'],
-    futur: ['serai', 'seras', 'sera', 'serons', 'serez', 'seront'],
+    present: ['suis', 'es', 'est', 'sommes', 'êtes', 'sont'],
+    imperfect: ['étais', 'étais', 'était', 'étions', 'étiez', 'étaient'],
+    future: ['serai', 'seras', 'sera', 'serons', 'serez', 'seront'],
   },
   {
     verb: 'avoir',
-    présent: ['ai', 'as', 'a', 'avons', 'avez', 'ont'],
-    imparfait: ['avais', 'avais', 'avait', 'avions', 'aviez', 'avaient'],
-    futur: ['aurai', 'auras', 'aura', 'aurons', 'aurez', 'auront'],
+    present: ['ai', 'as', 'a', 'avons', 'avez', 'ont'],
+    imperfect: ['avais', 'avais', 'avait', 'avions', 'aviez', 'avaient'],
+    future: ['aurai', 'auras', 'aura', 'aurons', 'aurez', 'auront'],
   },
 ];
 
@@ -50,7 +50,7 @@ function elides(form: string): boolean {
 /**
  * French conjugation trainer: given a verb, a tense and a subject pronoun, type
  * the conjugated form. Typed-answer quiz on QuizGame; difficulty unlocks more
- * tenses (présent → + futur → + imparfait). Accents are forgiven by the shared
+ * tenses (present → + future → + imperfect). Accents are forgiven by the shared
  * answer normalisation, so "etait" is accepted for "était".
  */
 export class ConjugationGame extends QuizGame {
@@ -58,8 +58,8 @@ export class ConjugationGame extends QuizGame {
 
   constructor() {
     super({
-      storageKey: 'conjug-scores',
-      leaderboardId: 'conjug',
+      storageKey: 'conjugation-scores',
+      leaderboardId: 'conjugation',
       basePoints: 120,
       rounds: 10,
       timedSeconds: 75,

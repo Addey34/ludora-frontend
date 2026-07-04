@@ -1,14 +1,14 @@
 @import url('../global.css');
 
 /* =============================================================================
-   Le Pendu (Hangman) — gallows figure, masked word, on-screen A–Z keyboard.
+   Le Hangman (Hangman) — gallows figure, masked word, on-screen A–Z keyboard.
    ========================================================================== */
 
 :root {
-  --title-color: var(--color-pendu);
+  --title-color: var(--color-hangman);
 }
 
-.pendu-area {
+.hangman-area {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,7 +20,7 @@
 
 /* --- Gallows + figure ------------------------------------------------------ */
 
-.pendu-figure {
+.hangman-figure {
   flex: 1 1 auto;
   display: flex;
   align-items: center;
@@ -28,31 +28,31 @@
   min-height: 0;
 }
 
-.pendu-svg {
+.hangman-svg {
   height: 100%;
   max-height: 42vh;
   color: var(--title-color);
 }
 
-.pendu-svg line,
-.pendu-svg circle {
+.hangman-svg line,
+.hangman-svg circle {
   stroke: currentColor;
   stroke-width: 4;
   stroke-linecap: round;
   fill: none;
 }
 
-.pendu-part {
+.hangman-part {
   opacity: 0;
   transition: opacity 0.2s ease;
 }
-.pendu-part.is-shown {
+.hangman-part.is-shown {
   opacity: 1;
 }
 
 /* --- Masked word ----------------------------------------------------------- */
 
-.pendu-word {
+.hangman-word {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -60,7 +60,7 @@
   flex: 0 0 auto;
 }
 
-.pendu-slot {
+.hangman-slot {
   display: inline-flex;
   align-items: flex-end;
   justify-content: center;
@@ -73,13 +73,13 @@
   color: var(--text-color);
 }
 
-.pendu-slot.is-filled {
+.hangman-slot.is-filled {
   border-bottom-color: var(--title-color);
 }
 
 /* --- Keyboard -------------------------------------------------------------- */
 
-.pendu-keyboard {
+.hangman-keyboard {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -88,13 +88,13 @@
   flex: 0 0 auto;
 }
 
-.pendu-krow {
+.hangman-krow {
   display: flex;
   justify-content: center;
   gap: 4px;
 }
 
-.pendu-key {
+.hangman-key {
   flex: 1 1 0;
   min-width: 0;
   max-width: 2.6rem;
@@ -112,30 +112,30 @@
     opacity 0.12s;
 }
 
-.pendu-key:not(:disabled):hover {
+.hangman-key:not(:disabled):hover {
   background: color-mix(in srgb, var(--title-color) 14%, var(--white-color));
 }
 
-.pendu-key:active {
+.hangman-key:active {
   transform: scale(0.94);
 }
 
-.pendu-key:focus-visible {
+.hangman-key:focus-visible {
   outline: 2px solid var(--title-color);
   outline-offset: 2px;
 }
 
-.pendu-key:disabled {
+.hangman-key:disabled {
   cursor: default;
 }
 
-.pendu-key.is-hit {
+.hangman-key.is-hit {
   background: #22c55e;
   color: var(--white-color);
   opacity: 1;
 }
 
-.pendu-key.is-miss {
+.hangman-key.is-miss {
   background: var(--error-color);
   color: var(--white-color);
   opacity: 0.6;

@@ -22,29 +22,29 @@ const KEY_ROWS = ['ABCDEFGHI', 'JKLMNOPQR', 'STUVWXYZ'].map((row) => [...row]);
 
 /** SVG of the gallows (always drawn) + the six body parts, revealed one per miss. */
 const FIGURE_SVG = `
-<svg viewBox="0 0 120 140" class="pendu-svg" aria-hidden="true">
-  <g class="pendu-gallows">
+<svg viewBox="0 0 120 140" class="hangman-svg" aria-hidden="true">
+  <g class="hangman-gallows">
     <line x1="10" y1="135" x2="80" y2="135" />
     <line x1="30" y1="135" x2="30" y2="10" />
     <line x1="30" y1="10" x2="80" y2="10" />
     <line x1="80" y1="10" x2="80" y2="28" />
   </g>
-  <circle class="pendu-part" cx="80" cy="40" r="12" fill="none" />
-  <line class="pendu-part" x1="80" y1="52" x2="80" y2="92" />
-  <line class="pendu-part" x1="80" y1="62" x2="62" y2="78" />
-  <line class="pendu-part" x1="80" y1="62" x2="98" y2="78" />
-  <line class="pendu-part" x1="80" y1="92" x2="64" y2="112" />
-  <line class="pendu-part" x1="80" y1="92" x2="96" y2="112" />
+  <circle class="hangman-part" cx="80" cy="40" r="12" fill="none" />
+  <line class="hangman-part" x1="80" y1="52" x2="80" y2="92" />
+  <line class="hangman-part" x1="80" y1="62" x2="62" y2="78" />
+  <line class="hangman-part" x1="80" y1="62" x2="98" y2="78" />
+  <line class="hangman-part" x1="80" y1="92" x2="64" y2="112" />
+  <line class="hangman-part" x1="80" y1="92" x2="96" y2="112" />
 </svg>`;
 
 /**
- * Hangman (Le Pendu): guess the hidden word letter by letter before the figure
+ * Hangman: guess the hidden word letter by letter before the figure
  * is complete (six misses). Word length grows with difficulty and a Language
  * setting (FR/EN) swaps the list — both powered by the shared word service. A
  * win scores more the fewer misses and the longer the word. Event-driven (an
  * on-screen A–Z keyboard + physical keys), no rAF loop.
  */
-export class PenduGame extends GameEngine {
+export class HangmanGame extends GameEngine {
   private wordEl: HTMLElement | null = null;
   private figureEl: HTMLElement | null = null;
   private keyboardEl: HTMLElement | null = null;
@@ -66,7 +66,7 @@ export class PenduGame extends GameEngine {
   private timer: ReturnType<typeof setTimeout> | null = null;
 
   constructor() {
-    super({ storageKey: 'pendu-scores', leaderboardId: 'pendu' });
+    super({ storageKey: 'hangman-scores', leaderboardId: 'hangman' });
   }
 
   async initialize(): Promise<void> {
@@ -82,7 +82,7 @@ export class PenduGame extends GameEngine {
 
     if (this.figureEl) this.figureEl.innerHTML = FIGURE_SVG;
     this.parts = this.figureEl
-      ? [...this.figureEl.querySelectorAll<HTMLElement>('.pendu-part')]
+      ? [...this.figureEl.querySelectorAll<HTMLElement>('.hangman-part')]
       : [];
     this.buildKeyboard();
     this.setupEventListeners();
@@ -129,11 +129,11 @@ export class PenduGame extends GameEngine {
     this.keyEls.clear();
     for (const row of KEY_ROWS) {
       const rowEl = document.createElement('div');
-      rowEl.className = 'pendu-krow';
+      rowEl.className = 'hangman-krow';
       for (const letter of row) {
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'pendu-key';
+        btn.className = 'hangman-key';
         btn.textContent = letter;
         btn.addEventListener('click', () => {
           this.guess(letter);
@@ -243,7 +243,7 @@ export class PenduGame extends GameEngine {
     host.replaceChildren(
       ...[...masked].map((ch, i) => {
         const slot = document.createElement('span');
-        slot.className = 'pendu-slot';
+        slot.className = 'hangman-slot';
         if (ch !== '_') {
           slot.textContent = this.target[i];
           slot.classList.add('is-filled');

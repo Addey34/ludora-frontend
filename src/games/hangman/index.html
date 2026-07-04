@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Hangman" css="/css/games/hangman.css" script="./hangman-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Hangman" key="hangman"}}
+    <div class="game-details"></div>
+    <div class="hangman-area game-board" id="board">
+      <div class="hangman-figure" id="figure"></div>
+      <div class="hangman-word" id="word"></div>
+      <div class="hangman-keyboard" id="keyboard"></div>
+    </div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

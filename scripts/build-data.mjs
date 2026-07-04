@@ -152,7 +152,7 @@ const VERB_LIST = [
 function buildVerbs() {
   const fv = require('french-verbs');
   const lefff = require('french-verbs-lefff/dist/conjugations.json');
-  const tenses = { présent: 'PRESENT', imparfait: 'IMPARFAIT', futur: 'FUTUR' };
+  const tenses = { present: 'PRESENT', imperfect: 'IMPARFAIT', future: 'FUTUR' };
   const out = [];
   for (const verb of VERB_LIST) {
     try {

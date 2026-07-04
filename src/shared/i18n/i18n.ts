@@ -57,9 +57,9 @@ const CATALOG: Record<Locale, Record<string, string>> = {
     game_math: 'Mental Math',
     game_geoquiz: 'Geo Quiz',
     game_trivia: 'Trivia',
-    game_conjug: 'Conjugation',
+    game_conjugation: 'Conjugation',
     game_anagram: 'Anagrams',
-    game_pendu: 'Hangman',
+    game_hangman: 'Hangman',
     game_sudoku: 'Sudoku',
   },
   fr: {
@@ -99,9 +99,9 @@ const CATALOG: Record<Locale, Record<string, string>> = {
     game_math: 'Calcul mental',
     game_geoquiz: 'Quiz Géo',
     game_trivia: 'Quiz culture',
-    game_conjug: 'Conjugaison',
+    game_conjugation: 'Conjugaison',
     game_anagram: 'Anagrammes',
-    game_pendu: 'Le Pendu',
+    game_hangman: 'Le Pendu',
     game_sudoku: 'Sudoku',
   },
 };
