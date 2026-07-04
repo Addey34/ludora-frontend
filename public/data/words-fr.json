@@ -1,302 +1,2402 @@
 [
-  "VOUS",
-  "POUR",
-  "MAIS",
-  "DANS",
-  "NOUS",
-  "ELLE",
-  "BIEN",
-  "SUIS",
-  "AVEC",
-  "TOUT",
-  "PLUS",
-  "FAIT",
-  "ETAIT",
-  "FAIRE",
-  "QUOI",
-  "COMME",
-  "SAIS",
-  "ETRE",
-  "VEUX",
-  "VOTRE",
-  "POURQUOI",
-  "RIEN",
-  "CETTE",
-  "SONT",
-  "QUAND",
-  "PEUX",
-  "DIRE",
-  "AVEZ",
-  "VAIS",
-  "ALORS",
-  "COMMENT",
-  "CHOSE",
-  "MERCI",
-  "JUSTE",
-  "TRES",
-  "JAMAIS",
-  "AUSSI",
-  "AVOIR",
-  "VRAIMENT",
-  "VOIR",
-  "MEME",
-  "TOUS",
-  "PEUT",
-  "DEUX",
-  "ETES",
-  "ALLEZ",
-  "AUTRE",
-  "TEMPS",
-  "QUELQUE",
-  "FAIS",
-  "TOUJOURS",
-  "ENCORE",
-  "NOTRE",
-  "BESOIN",
-  "AVAIT",
-  "ACCORD",
-  "FAUT",
-  "DOIS",
-  "ALLER",
-  "FOIS",
-  "DONC",
-  "SANS",
-  "MONDE",
-  "ETAIS",
-  "PARCE",
-  "AVANT",
-  "TROP",
-  "PARLER",
-  "PERSONNE",
-  "AVAIS",
-  "PERE",
-  "CROIS",
-  "APRES",
-  "DIEU",
-  "OUAIS",
-  "PENSE",
-  "AIME",
-  "LEUR",
-  "HOMME",
-  "VIENS",
-  "VRAI",
-  "FEMME",
-  "DOIT",
-  "VEUT",
-  "CHEZ",
-  "DEJA",
-  "DEPUIS",
-  "BEAUCOUP",
-  "BONNE",
-  "MORT",
-  "MIEUX",
-  "MERE",
-  "SERA",
-  "FILLE",
-  "GENS",
-  "QUEL",
-  "VOIS",
-  "DESOLE",
-  "VOILA",
-  "AVONS",
-  "PETIT",
-  "MAISON",
-  "SOIT",
-  "CELA",
-  "AUTRES",
-  "TOUTE",
-  "SOIR",
-  "PASSE",
-  "PRENDRE",
-  "JOUR",
-  "MONSIEUR",
-  "SAVOIR",
-  "CHOSES",
-  "SALUT",
-  "ARGENT",
-  "BONJOUR",
-  "NUIT",
-  "RAISON",
-  "MOINS",
-  "ARRIVE",
-  "MAMAN",
-  "RESTE",
-  "MOMENT",
-  "VOULAIS",
-  "SEUL",
-  "AIDER",
-  "ENTRE",
-  "PAPA",
-  "AURAIS",
-  "PROBLEME",
-  "PEUR",
-  "REGARDE",
-  "VOULEZ",
-  "GARS",
-  "TROUVE",
-  "FILS",
-  "ATTENDS",
-  "SAVEZ",
-  "TROUVER",
-  "TROIS",
-  "ASSEZ",
-  "FAMILLE",
-  "TOUTES",
-  "PLAIT",
-  "POURRAIT",
-  "TRAVAIL",
-  "PRIS",
-  "TETE",
-  "QUELLE",
-  "SAIT",
-  "SOMMES",
-  "APPELLE",
-  "QUELQUES",
-  "FAITES",
-  "PARTIR",
-  "VITE",
-  "ARRETE",
-  "SEULE",
-  "SERAIT",
-  "VOITURE",
-  "ENFANTS",
-  "TUER",
-  "MERDE",
-  "PENDANT",
-  "IDEE",
-  "CHANCE",
-  "PARLE",
-  "AURAIT",
-  "PART",
-  "ELLES",
-  "JOURS",
-  "GRAND",
-  "VENIR",
-  "DEMAIN",
-  "HEIN",
-  "TARD",
-  "PUIS",
-  "TRUC",
-  "PASSER",
-  "PETITE",
-  "TANT",
-  "CONNAIS",
-  "COMBIEN",
-  "SENS",
-  "POUVEZ",
-  "PORTE",
-  "SORTIR",
-  "SUPER",
-  "HEURE",
-  "CONTRE",
-  "COUP",
-  "COMPRENDS",
-  "ENTENDU",
-  "VIENT",
-  "ALLONS",
-  "ENSEMBLE",
-  "NOUVEAU",
-  "AMOUR",
-  "IMPORTE",
-  "SANG",
-  "DESOLEE",
-  "SOUS",
-  "RESTER",
-  "AMIS",
-  "PRENDS",
-  "FINI",
-  "HOMMES",
-  "QUESTION",
-  "PARTIE",
-  "HISTOIRE",
-  "DEVRAIS",
-  "AIDE",
-  "DERNIERE",
-  "DEMANDE",
-  "CHERCHER",
-  "PENSAIS",
-  "GENRE",
-  "SEULEMENT",
-  "POLICE",
-  "MOIS",
-  "FRERE",
-  "LAISSER",
-  "AUCUN",
-  "METTRE",
-  "LAISSE",
-  "CHAQUE",
-  "VILLE",
-  "DEVRAIT",
-  "VONT",
-  "LONGTEMPS",
-  "AUCUNE",
-  "HEURES",
-  "BEBE",
-  "PLACE",
-  "REVOIR",
-  "PUTAIN",
-  "COMPRIS",
-  "SAVAIS",
-  "LEURS",
-  "ETAIENT",
-  "ATTENTION",
-  "DONNER",
-  "AFFAIRE",
-  "ENDROIT",
-  "POURRAIS",
-  "CORPS",
-  "FACON",
-  "DONNE",
-  "VOICI",
-  "TRAIN",
-  "DONT",
-  "ECOUTE",
-  "YEUX",
-  "POUVOIR",
-  "TYPE",
-  "PERDU",
-  "PREMIER",
-  "PREMIERE",
-  "COTE",
-  "POINT",
-  "TELLEMENT",
-  "MAIN",
-  "TIENS",
-  "SOIS",
-  "ENFANT",
-  "VIEUX",
-  "MATIN",
-  "VENU",
-  "PARDON",
-  "SUITE",
-  "VERS",
-  "MINUTES",
-  "VENEZ",
-  "DEVANT",
-  "ENFIN",
-  "ARRETER",
-  "CAUSE",
-  "NOUVELLE",
-  "ATTENDEZ",
-  "CHAMBRE",
-  "DROIT",
-  "PARTI",
-  "COMPTE",
-  "DIRAIT",
-  "TERRE",
-  "BELLE",
-  "ESPERE",
-  "AIMERAIS",
-  "LOIN",
-  "MARI",
-  "CROIRE",
-  "AURA",
-  "GROS",
-  "BOULOT",
-  "PLUTOT",
-  "CHERIE",
-  "PRET",
-  "FILLES",
-  "BUREAU",
-  "MOURIR"
+  {
+    "w": "est",
+    "d": "easy"
+  },
+  {
+    "w": "pas",
+    "d": "easy"
+  },
+  {
+    "w": "que",
+    "d": "medium"
+  },
+  {
+    "w": "vous",
+    "d": "easy"
+  },
+  {
+    "w": "les",
+    "d": "easy"
+  },
+  {
+    "w": "une",
+    "d": "easy"
+  },
+  {
+    "w": "pour",
+    "d": "easy"
+  },
+  {
+    "w": "des",
+    "d": "easy"
+  },
+  {
+    "w": "qui",
+    "d": "medium"
+  },
+  {
+    "w": "mais",
+    "d": "easy"
+  },
+  {
+    "w": "dans",
+    "d": "easy"
+  },
+  {
+    "w": "nous",
+    "d": "easy"
+  },
+  {
+    "w": "elle",
+    "d": "easy"
+  },
+  {
+    "w": "bien",
+    "d": "easy"
+  },
+  {
+    "w": "suis",
+    "d": "easy"
+  },
+  {
+    "w": "non",
+    "d": "easy"
+  },
+  {
+    "w": "avec",
+    "d": "easy"
+  },
+  {
+    "w": "tout",
+    "d": "easy"
+  },
+  {
+    "w": "plus",
+    "d": "easy"
+  },
+  {
+    "w": "mon",
+    "d": "easy"
+  },
+  {
+    "w": "fait",
+    "d": "easy"
+  },
+  {
+    "w": "moi",
+    "d": "easy"
+  },
+  {
+    "w": "oui",
+    "d": "easy"
+  },
+  {
+    "w": "était",
+    "d": "medium"
+  },
+  {
+    "w": "faire",
+    "d": "easy"
+  },
+  {
+    "w": "ils",
+    "d": "easy"
+  },
+  {
+    "w": "sur",
+    "d": "easy"
+  },
+  {
+    "w": "quoi",
+    "d": "medium"
+  },
+  {
+    "w": "comme",
+    "d": "easy"
+  },
+  {
+    "w": "sais",
+    "d": "easy"
+  },
+  {
+    "w": "être",
+    "d": "medium"
+  },
+  {
+    "w": "veux",
+    "d": "medium"
+  },
+  {
+    "w": "ici",
+    "d": "easy"
+  },
+  {
+    "w": "toi",
+    "d": "easy"
+  },
+  {
+    "w": "dit",
+    "d": "easy"
+  },
+  {
+    "w": "lui",
+    "d": "easy"
+  },
+  {
+    "w": "votre",
+    "d": "easy"
+  },
+  {
+    "w": "pourquoi",
+    "d": "medium"
+  },
+  {
+    "w": "rien",
+    "d": "easy"
+  },
+  {
+    "w": "cette",
+    "d": "easy"
+  },
+  {
+    "w": "sont",
+    "d": "easy"
+  },
+  {
+    "w": "quand",
+    "d": "medium"
+  },
+  {
+    "w": "peux",
+    "d": "medium"
+  },
+  {
+    "w": "dire",
+    "d": "easy"
+  },
+  {
+    "w": "son",
+    "d": "easy"
+  },
+  {
+    "w": "avez",
+    "d": "medium"
+  },
+  {
+    "w": "vais",
+    "d": "easy"
+  },
+  {
+    "w": "alors",
+    "d": "easy"
+  },
+  {
+    "w": "ton",
+    "d": "easy"
+  },
+  {
+    "w": "comment",
+    "d": "medium"
+  },
+  {
+    "w": "par",
+    "d": "easy"
+  },
+  {
+    "w": "chose",
+    "d": "easy"
+  },
+  {
+    "w": "bon",
+    "d": "easy"
+  },
+  {
+    "w": "ont",
+    "d": "easy"
+  },
+  {
+    "w": "merci",
+    "d": "easy"
+  },
+  {
+    "w": "juste",
+    "d": "easy"
+  },
+  {
+    "w": "très",
+    "d": "medium"
+  },
+  {
+    "w": "jamais",
+    "d": "medium"
+  },
+  {
+    "w": "été",
+    "d": "medium"
+  },
+  {
+    "w": "aussi",
+    "d": "easy"
+  },
+  {
+    "w": "avoir",
+    "d": "easy"
+  },
+  {
+    "w": "vraiment",
+    "d": "medium"
+  },
+  {
+    "w": "voir",
+    "d": "easy"
+  },
+  {
+    "w": "même",
+    "d": "medium"
+  },
+  {
+    "w": "maintenant",
+    "d": "hard"
+  },
+  {
+    "w": "tous",
+    "d": "easy"
+  },
+  {
+    "w": "peut",
+    "d": "easy"
+  },
+  {
+    "w": "deux",
+    "d": "medium"
+  },
+  {
+    "w": "ces",
+    "d": "easy"
+  },
+  {
+    "w": "êtes",
+    "d": "medium"
+  },
+  {
+    "w": "allez",
+    "d": "medium"
+  },
+  {
+    "w": "autre",
+    "d": "easy"
+  },
+  {
+    "w": "peu",
+    "d": "easy"
+  },
+  {
+    "w": "temps",
+    "d": "easy"
+  },
+  {
+    "w": "quelque",
+    "d": "medium"
+  },
+  {
+    "w": "fais",
+    "d": "easy"
+  },
+  {
+    "w": "toujours",
+    "d": "medium"
+  },
+  {
+    "w": "encore",
+    "d": "medium"
+  },
+  {
+    "w": "notre",
+    "d": "easy"
+  },
+  {
+    "w": "mes",
+    "d": "easy"
+  },
+  {
+    "w": "besoin",
+    "d": "medium"
+  },
+  {
+    "w": "avait",
+    "d": "easy"
+  },
+  {
+    "w": "accord",
+    "d": "medium"
+  },
+  {
+    "w": "faut",
+    "d": "easy"
+  },
+  {
+    "w": "dois",
+    "d": "easy"
+  },
+  {
+    "w": "vie",
+    "d": "easy"
+  },
+  {
+    "w": "aller",
+    "d": "easy"
+  },
+  {
+    "w": "fois",
+    "d": "easy"
+  },
+  {
+    "w": "donc",
+    "d": "easy"
+  },
+  {
+    "w": "sans",
+    "d": "easy"
+  },
+  {
+    "w": "monde",
+    "d": "easy"
+  },
+  {
+    "w": "étais",
+    "d": "medium"
+  },
+  {
+    "w": "parce",
+    "d": "easy"
+  },
+  {
+    "w": "avant",
+    "d": "easy"
+  },
+  {
+    "w": "sûr",
+    "d": "medium"
+  },
+  {
+    "w": "trop",
+    "d": "easy"
+  },
+  {
+    "w": "parler",
+    "d": "medium"
+  },
+  {
+    "w": "personne",
+    "d": "medium"
+  },
+  {
+    "w": "avais",
+    "d": "easy"
+  },
+  {
+    "w": "père",
+    "d": "medium"
+  },
+  {
+    "w": "crois",
+    "d": "easy"
+  },
+  {
+    "w": "après",
+    "d": "medium"
+  },
+  {
+    "w": "aux",
+    "d": "medium"
+  },
+  {
+    "w": "dieu",
+    "d": "easy"
+  },
+  {
+    "w": "ouais",
+    "d": "easy"
+  },
+  {
+    "w": "ses",
+    "d": "easy"
+  },
+  {
+    "w": "pense",
+    "d": "easy"
+  },
+  {
+    "w": "aime",
+    "d": "easy"
+  },
+  {
+    "w": "leur",
+    "d": "easy"
+  },
+  {
+    "w": "homme",
+    "d": "easy"
+  },
+  {
+    "w": "viens",
+    "d": "easy"
+  },
+  {
+    "w": "vrai",
+    "d": "easy"
+  },
+  {
+    "w": "femme",
+    "d": "easy"
+  },
+  {
+    "w": "doit",
+    "d": "easy"
+  },
+  {
+    "w": "veut",
+    "d": "easy"
+  },
+  {
+    "w": "ans",
+    "d": "easy"
+  },
+  {
+    "w": "mal",
+    "d": "easy"
+  },
+  {
+    "w": "chez",
+    "d": "medium"
+  },
+  {
+    "w": "déjà",
+    "d": "medium"
+  },
+  {
+    "w": "depuis",
+    "d": "medium"
+  },
+  {
+    "w": "beaucoup",
+    "d": "medium"
+  },
+  {
+    "w": "vos",
+    "d": "easy"
+  },
+  {
+    "w": "bonne",
+    "d": "easy"
+  },
+  {
+    "w": "mort",
+    "d": "easy"
+  },
+  {
+    "w": "mieux",
+    "d": "medium"
+  },
+  {
+    "w": "vas",
+    "d": "easy"
+  },
+  {
+    "w": "mère",
+    "d": "medium"
+  },
+  {
+    "w": "sera",
+    "d": "easy"
+  },
+  {
+    "w": "dis",
+    "d": "easy"
+  },
+  {
+    "w": "fille",
+    "d": "easy"
+  },
+  {
+    "w": "tes",
+    "d": "easy"
+  },
+  {
+    "w": "gens",
+    "d": "easy"
+  },
+  {
+    "w": "quel",
+    "d": "medium"
+  },
+  {
+    "w": "vois",
+    "d": "easy"
+  },
+  {
+    "w": "désolé",
+    "d": "medium"
+  },
+  {
+    "w": "voilà",
+    "d": "medium"
+  },
+  {
+    "w": "avons",
+    "d": "easy"
+  },
+  {
+    "w": "petit",
+    "d": "easy"
+  },
+  {
+    "w": "maison",
+    "d": "medium"
+  },
+  {
+    "w": "soit",
+    "d": "easy"
+  },
+  {
+    "w": "cela",
+    "d": "easy"
+  },
+  {
+    "w": "autres",
+    "d": "medium"
+  },
+  {
+    "w": "toute",
+    "d": "easy"
+  },
+  {
+    "w": "soir",
+    "d": "easy"
+  },
+  {
+    "w": "passé",
+    "d": "medium"
+  },
+  {
+    "w": "prendre",
+    "d": "medium"
+  },
+  {
+    "w": "jour",
+    "d": "easy"
+  },
+  {
+    "w": "monsieur",
+    "d": "medium"
+  },
+  {
+    "w": "nos",
+    "d": "easy"
+  },
+  {
+    "w": "savoir",
+    "d": "medium"
+  },
+  {
+    "w": "choses",
+    "d": "medium"
+  },
+  {
+    "w": "salut",
+    "d": "easy"
+  },
+  {
+    "w": "cet",
+    "d": "easy"
+  },
+  {
+    "w": "nom",
+    "d": "easy"
+  },
+  {
+    "w": "argent",
+    "d": "medium"
+  },
+  {
+    "w": "bonjour",
+    "d": "medium"
+  },
+  {
+    "w": "nuit",
+    "d": "easy"
+  },
+  {
+    "w": "raison",
+    "d": "medium"
+  },
+  {
+    "w": "moins",
+    "d": "easy"
+  },
+  {
+    "w": "arrive",
+    "d": "medium"
+  },
+  {
+    "w": "maman",
+    "d": "easy"
+  },
+  {
+    "w": "reste",
+    "d": "easy"
+  },
+  {
+    "w": "moment",
+    "d": "medium"
+  },
+  {
+    "w": "voulais",
+    "d": "medium"
+  },
+  {
+    "w": "seul",
+    "d": "easy"
+  },
+  {
+    "w": "aider",
+    "d": "easy"
+  },
+  {
+    "w": "air",
+    "d": "easy"
+  },
+  {
+    "w": "entre",
+    "d": "easy"
+  },
+  {
+    "w": "papa",
+    "d": "easy"
+  },
+  {
+    "w": "passe",
+    "d": "easy"
+  },
+  {
+    "w": "aurais",
+    "d": "medium"
+  },
+  {
+    "w": "problème",
+    "d": "hard"
+  },
+  {
+    "w": "peur",
+    "d": "easy"
+  },
+  {
+    "w": "regarde",
+    "d": "medium"
+  },
+  {
+    "w": "voulez",
+    "d": "medium"
+  },
+  {
+    "w": "gars",
+    "d": "easy"
+  },
+  {
+    "w": "trouvé",
+    "d": "medium"
+  },
+  {
+    "w": "fils",
+    "d": "easy"
+  },
+  {
+    "w": "attends",
+    "d": "medium"
+  },
+  {
+    "w": "savez",
+    "d": "medium"
+  },
+  {
+    "w": "trouver",
+    "d": "medium"
+  },
+  {
+    "w": "trois",
+    "d": "easy"
+  },
+  {
+    "w": "assez",
+    "d": "medium"
+  },
+  {
+    "w": "famille",
+    "d": "medium"
+  },
+  {
+    "w": "toutes",
+    "d": "medium"
+  },
+  {
+    "w": "plaît",
+    "d": "medium"
+  },
+  {
+    "w": "pourrait",
+    "d": "medium"
+  },
+  {
+    "w": "travail",
+    "d": "medium"
+  },
+  {
+    "w": "pris",
+    "d": "easy"
+  },
+  {
+    "w": "tête",
+    "d": "medium"
+  },
+  {
+    "w": "quelle",
+    "d": "medium"
+  },
+  {
+    "w": "sait",
+    "d": "easy"
+  },
+  {
+    "w": "sommes",
+    "d": "medium"
+  },
+  {
+    "w": "appelle",
+    "d": "medium"
+  },
+  {
+    "w": "quelques",
+    "d": "medium"
+  },
+  {
+    "w": "faites",
+    "d": "medium"
+  },
+  {
+    "w": "partir",
+    "d": "medium"
+  },
+  {
+    "w": "vite",
+    "d": "easy"
+  },
+  {
+    "w": "arrête",
+    "d": "medium"
+  },
+  {
+    "w": "seule",
+    "d": "easy"
+  },
+  {
+    "w": "serait",
+    "d": "medium"
+  },
+  {
+    "w": "voiture",
+    "d": "medium"
+  },
+  {
+    "w": "enfants",
+    "d": "medium"
+  },
+  {
+    "w": "tuer",
+    "d": "easy"
+  },
+  {
+    "w": "merde",
+    "d": "easy"
+  },
+  {
+    "w": "pendant",
+    "d": "medium"
+  },
+  {
+    "w": "idée",
+    "d": "medium"
+  },
+  {
+    "w": "chance",
+    "d": "medium"
+  },
+  {
+    "w": "parle",
+    "d": "easy"
+  },
+  {
+    "w": "aurait",
+    "d": "medium"
+  },
+  {
+    "w": "part",
+    "d": "easy"
+  },
+  {
+    "w": "elles",
+    "d": "easy"
+  },
+  {
+    "w": "jours",
+    "d": "easy"
+  },
+  {
+    "w": "grand",
+    "d": "easy"
+  },
+  {
+    "w": "venir",
+    "d": "easy"
+  },
+  {
+    "w": "ami",
+    "d": "easy"
+  },
+  {
+    "w": "demain",
+    "d": "medium"
+  },
+  {
+    "w": "hein",
+    "d": "easy"
+  },
+  {
+    "w": "tard",
+    "d": "easy"
+  },
+  {
+    "w": "puis",
+    "d": "easy"
+  },
+  {
+    "w": "truc",
+    "d": "easy"
+  },
+  {
+    "w": "passer",
+    "d": "medium"
+  },
+  {
+    "w": "petite",
+    "d": "medium"
+  },
+  {
+    "w": "tant",
+    "d": "easy"
+  },
+  {
+    "w": "connais",
+    "d": "medium"
+  },
+  {
+    "w": "combien",
+    "d": "medium"
+  },
+  {
+    "w": "mec",
+    "d": "easy"
+  },
+  {
+    "w": "sens",
+    "d": "easy"
+  },
+  {
+    "w": "pouvez",
+    "d": "medium"
+  },
+  {
+    "w": "porte",
+    "d": "easy"
+  },
+  {
+    "w": "sortir",
+    "d": "medium"
+  },
+  {
+    "w": "super",
+    "d": "easy"
+  },
+  {
+    "w": "heure",
+    "d": "easy"
+  },
+  {
+    "w": "contre",
+    "d": "medium"
+  },
+  {
+    "w": "coup",
+    "d": "easy"
+  },
+  {
+    "w": "comprends",
+    "d": "hard"
+  },
+  {
+    "w": "entendu",
+    "d": "medium"
+  },
+  {
+    "w": "vient",
+    "d": "easy"
+  },
+  {
+    "w": "allons",
+    "d": "medium"
+  },
+  {
+    "w": "ensemble",
+    "d": "medium"
+  },
+  {
+    "w": "nouveau",
+    "d": "medium"
+  },
+  {
+    "w": "amour",
+    "d": "easy"
+  },
+  {
+    "w": "importe",
+    "d": "medium"
+  },
+  {
+    "w": "sang",
+    "d": "easy"
+  },
+  {
+    "w": "désolée",
+    "d": "hard"
+  },
+  {
+    "w": "cas",
+    "d": "easy"
+  },
+  {
+    "w": "sous",
+    "d": "easy"
+  },
+  {
+    "w": "rester",
+    "d": "medium"
+  },
+  {
+    "w": "amis",
+    "d": "easy"
+  },
+  {
+    "w": "prends",
+    "d": "medium"
+  },
+  {
+    "w": "fini",
+    "d": "easy"
+  },
+  {
+    "w": "hommes",
+    "d": "medium"
+  },
+  {
+    "w": "tué",
+    "d": "medium"
+  },
+  {
+    "w": "question",
+    "d": "medium"
+  },
+  {
+    "w": "partie",
+    "d": "medium"
+  },
+  {
+    "w": "histoire",
+    "d": "medium"
+  },
+  {
+    "w": "devrais",
+    "d": "medium"
+  },
+  {
+    "w": "aide",
+    "d": "easy"
+  },
+  {
+    "w": "dernière",
+    "d": "hard"
+  },
+  {
+    "w": "demande",
+    "d": "medium"
+  },
+  {
+    "w": "chercher",
+    "d": "medium"
+  },
+  {
+    "w": "pensais",
+    "d": "medium"
+  },
+  {
+    "w": "genre",
+    "d": "easy"
+  },
+  {
+    "w": "seulement",
+    "d": "hard"
+  },
+  {
+    "w": "police",
+    "d": "medium"
+  },
+  {
+    "w": "car",
+    "d": "easy"
+  },
+  {
+    "w": "mois",
+    "d": "easy"
+  },
+  {
+    "w": "frère",
+    "d": "medium"
+  },
+  {
+    "w": "laisser",
+    "d": "medium"
+  },
+  {
+    "w": "aucun",
+    "d": "easy"
+  },
+  {
+    "w": "mettre",
+    "d": "medium"
+  },
+  {
+    "w": "eux",
+    "d": "medium"
+  },
+  {
+    "w": "laisse",
+    "d": "medium"
+  },
+  {
+    "w": "chaque",
+    "d": "medium"
+  },
+  {
+    "w": "ville",
+    "d": "easy"
+  },
+  {
+    "w": "arrivé",
+    "d": "medium"
+  },
+  {
+    "w": "devrait",
+    "d": "medium"
+  },
+  {
+    "w": "parlé",
+    "d": "medium"
+  },
+  {
+    "w": "vont",
+    "d": "easy"
+  },
+  {
+    "w": "longtemps",
+    "d": "hard"
+  },
+  {
+    "w": "aucune",
+    "d": "medium"
+  },
+  {
+    "w": "heures",
+    "d": "medium"
+  },
+  {
+    "w": "bébé",
+    "d": "medium"
+  },
+  {
+    "w": "place",
+    "d": "easy"
+  },
+  {
+    "w": "revoir",
+    "d": "medium"
+  },
+  {
+    "w": "putain",
+    "d": "medium"
+  },
+  {
+    "w": "compris",
+    "d": "medium"
+  },
+  {
+    "w": "savais",
+    "d": "medium"
+  },
+  {
+    "w": "leurs",
+    "d": "easy"
+  },
+  {
+    "w": "étaient",
+    "d": "hard"
+  },
+  {
+    "w": "attention",
+    "d": "hard"
+  },
+  {
+    "w": "donner",
+    "d": "medium"
+  },
+  {
+    "w": "affaire",
+    "d": "medium"
+  },
+  {
+    "w": "endroit",
+    "d": "medium"
+  },
+  {
+    "w": "pourrais",
+    "d": "medium"
+  },
+  {
+    "w": "corps",
+    "d": "easy"
+  },
+  {
+    "w": "façon",
+    "d": "medium"
+  },
+  {
+    "w": "donné",
+    "d": "medium"
+  },
+  {
+    "w": "voici",
+    "d": "easy"
+  },
+  {
+    "w": "train",
+    "d": "easy"
+  },
+  {
+    "w": "dont",
+    "d": "easy"
+  },
+  {
+    "w": "écoute",
+    "d": "medium"
+  },
+  {
+    "w": "yeux",
+    "d": "medium"
+  },
+  {
+    "w": "trouve",
+    "d": "medium"
+  },
+  {
+    "w": "pouvoir",
+    "d": "medium"
+  },
+  {
+    "w": "type",
+    "d": "medium"
+  },
+  {
+    "w": "perdu",
+    "d": "easy"
+  },
+  {
+    "w": "premier",
+    "d": "medium"
+  },
+  {
+    "w": "première",
+    "d": "hard"
+  },
+  {
+    "w": "côté",
+    "d": "medium"
+  },
+  {
+    "w": "point",
+    "d": "easy"
+  },
+  {
+    "w": "tellement",
+    "d": "hard"
+  },
+  {
+    "w": "main",
+    "d": "easy"
+  },
+  {
+    "w": "tiens",
+    "d": "easy"
+  },
+  {
+    "w": "sois",
+    "d": "easy"
+  },
+  {
+    "w": "enfant",
+    "d": "medium"
+  },
+  {
+    "w": "vieux",
+    "d": "medium"
+  },
+  {
+    "w": "matin",
+    "d": "easy"
+  },
+  {
+    "w": "venu",
+    "d": "easy"
+  },
+  {
+    "w": "pardon",
+    "d": "medium"
+  },
+  {
+    "w": "suite",
+    "d": "easy"
+  },
+  {
+    "w": "vers",
+    "d": "easy"
+  },
+  {
+    "w": "minutes",
+    "d": "medium"
+  },
+  {
+    "w": "demandé",
+    "d": "hard"
+  },
+  {
+    "w": "venez",
+    "d": "medium"
+  },
+  {
+    "w": "devant",
+    "d": "medium"
+  },
+  {
+    "w": "enfin",
+    "d": "easy"
+  },
+  {
+    "w": "arrêter",
+    "d": "hard"
+  },
+  {
+    "w": "cause",
+    "d": "easy"
+  },
+  {
+    "w": "nouvelle",
+    "d": "medium"
+  },
+  {
+    "w": "attendez",
+    "d": "medium"
+  },
+  {
+    "w": "chambre",
+    "d": "medium"
+  },
+  {
+    "w": "droit",
+    "d": "easy"
+  },
+  {
+    "w": "parti",
+    "d": "easy"
+  },
+  {
+    "w": "mis",
+    "d": "easy"
+  },
+  {
+    "w": "eau",
+    "d": "easy"
+  },
+  {
+    "w": "compte",
+    "d": "medium"
+  },
+  {
+    "w": "dirait",
+    "d": "medium"
+  },
+  {
+    "w": "terre",
+    "d": "easy"
+  },
+  {
+    "w": "belle",
+    "d": "easy"
+  },
+  {
+    "w": "espère",
+    "d": "medium"
+  },
+  {
+    "w": "aimerais",
+    "d": "medium"
+  },
+  {
+    "w": "loin",
+    "d": "easy"
+  },
+  {
+    "w": "mari",
+    "d": "easy"
+  },
+  {
+    "w": "donne",
+    "d": "easy"
+  },
+  {
+    "w": "fin",
+    "d": "easy"
+  },
+  {
+    "w": "croire",
+    "d": "medium"
+  },
+  {
+    "w": "aura",
+    "d": "easy"
+  },
+  {
+    "w": "gros",
+    "d": "easy"
+  },
+  {
+    "w": "boulot",
+    "d": "medium"
+  },
+  {
+    "w": "plutôt",
+    "d": "medium"
+  },
+  {
+    "w": "chérie",
+    "d": "medium"
+  },
+  {
+    "w": "prêt",
+    "d": "medium"
+  },
+  {
+    "w": "filles",
+    "d": "medium"
+  },
+  {
+    "w": "bureau",
+    "d": "medium"
+  },
+  {
+    "w": "mourir",
+    "d": "medium"
+  },
+  {
+    "w": "hier",
+    "d": "easy"
+  },
+  {
+    "w": "possible",
+    "d": "medium"
+  },
+  {
+    "w": "jouer",
+    "d": "easy"
+  },
+  {
+    "w": "demander",
+    "d": "medium"
+  },
+  {
+    "w": "celui",
+    "d": "easy"
+  },
+  {
+    "w": "voulait",
+    "d": "medium"
+  },
+  {
+    "w": "beau",
+    "d": "easy"
+  },
+  {
+    "w": "jeune",
+    "d": "easy"
+  },
+  {
+    "w": "euh",
+    "d": "easy"
+  },
+  {
+    "w": "dehors",
+    "d": "medium"
+  },
+  {
+    "w": "docteur",
+    "d": "medium"
+  },
+  {
+    "w": "confiance",
+    "d": "hard"
+  },
+  {
+    "w": "appeler",
+    "d": "medium"
+  },
+  {
+    "w": "années",
+    "d": "medium"
+  },
+  {
+    "w": "vérité",
+    "d": "medium"
+  },
+  {
+    "w": "école",
+    "d": "medium"
+  },
+  {
+    "w": "chef",
+    "d": "easy"
+  },
+  {
+    "w": "femmes",
+    "d": "medium"
+  },
+  {
+    "w": "propos",
+    "d": "medium"
+  },
+  {
+    "w": "semaine",
+    "d": "medium"
+  },
+  {
+    "w": "vivre",
+    "d": "easy"
+  },
+  {
+    "w": "regardez",
+    "d": "medium"
+  },
+  {
+    "w": "feu",
+    "d": "easy"
+  },
+  {
+    "w": "journée",
+    "d": "hard"
+  },
+  {
+    "w": "madame",
+    "d": "medium"
+  },
+  {
+    "w": "téléphone",
+    "d": "hard"
+  },
+  {
+    "w": "près",
+    "d": "medium"
+  },
+  {
+    "w": "affaires",
+    "d": "medium"
+  },
+  {
+    "w": "meilleur",
+    "d": "medium"
+  },
+  {
+    "w": "devez",
+    "d": "medium"
+  },
+  {
+    "w": "dessus",
+    "d": "medium"
+  },
+  {
+    "w": "mains",
+    "d": "easy"
+  },
+  {
+    "w": "penses",
+    "d": "medium"
+  },
+  {
+    "w": "prie",
+    "d": "easy"
+  },
+  {
+    "w": "équipe",
+    "d": "medium"
+  },
+  {
+    "w": "grande",
+    "d": "medium"
+  },
+  {
+    "w": "manger",
+    "d": "medium"
+  },
+  {
+    "w": "arriver",
+    "d": "medium"
+  },
+  {
+    "w": "dur",
+    "d": "easy"
+  },
+  {
+    "w": "guerre",
+    "d": "medium"
+  },
+  {
+    "w": "ait",
+    "d": "easy"
+  },
+  {
+    "w": "appelé",
+    "d": "medium"
+  },
+  {
+    "w": "marche",
+    "d": "medium"
+  },
+  {
+    "w": "sécurité",
+    "d": "hard"
+  },
+  {
+    "w": "garçon",
+    "d": "medium"
+  },
+  {
+    "w": "essaie",
+    "d": "medium"
+  },
+  {
+    "w": "important",
+    "d": "hard"
+  },
+  {
+    "w": "dites",
+    "d": "easy"
+  },
+  {
+    "w": "exactement",
+    "d": "hard"
+  },
+  {
+    "w": "font",
+    "d": "easy"
+  },
+  {
+    "w": "fort",
+    "d": "easy"
+  },
+  {
+    "w": "presque",
+    "d": "medium"
+  },
+  {
+    "w": "plein",
+    "d": "easy"
+  },
+  {
+    "w": "derrière",
+    "d": "hard"
+  },
+  {
+    "w": "ben",
+    "d": "easy"
+  },
+  {
+    "w": "mariage",
+    "d": "medium"
+  },
+  {
+    "w": "parents",
+    "d": "medium"
+  },
+  {
+    "w": "capitaine",
+    "d": "hard"
+  },
+  {
+    "w": "dernier",
+    "d": "medium"
+  },
+  {
+    "w": "fou",
+    "d": "easy"
+  },
+  {
+    "w": "ceux",
+    "d": "medium"
+  },
+  {
+    "w": "tomber",
+    "d": "medium"
+  },
+  {
+    "w": "attendre",
+    "d": "medium"
+  },
+  {
+    "w": "vue",
+    "d": "easy"
+  },
+  {
+    "w": "pensé",
+    "d": "medium"
+  },
+  {
+    "w": "souviens",
+    "d": "medium"
+  },
+  {
+    "w": "envie",
+    "d": "easy"
+  },
+  {
+    "w": "fête",
+    "d": "medium"
+  },
+  {
+    "w": "jeu",
+    "d": "easy"
+  },
+  {
+    "w": "génial",
+    "d": "medium"
+  },
+  {
+    "w": "pays",
+    "d": "medium"
+  },
+  {
+    "w": "garde",
+    "d": "easy"
+  },
+  {
+    "w": "cours",
+    "d": "easy"
+  },
+  {
+    "w": "bientôt",
+    "d": "hard"
+  },
+  {
+    "w": "numéro",
+    "d": "medium"
+  },
+  {
+    "w": "personnes",
+    "d": "hard"
+  },
+  {
+    "w": "cinq",
+    "d": "medium"
+  },
+  {
+    "w": "parfait",
+    "d": "medium"
+  },
+  {
+    "w": "laissé",
+    "d": "medium"
+  },
+  {
+    "w": "ainsi",
+    "d": "easy"
+  },
+  {
+    "w": "retour",
+    "d": "medium"
+  },
+  {
+    "w": "semble",
+    "d": "medium"
+  },
+  {
+    "w": "autant",
+    "d": "medium"
+  },
+  {
+    "w": "peine",
+    "d": "easy"
+  },
+  {
+    "w": "minute",
+    "d": "medium"
+  },
+  {
+    "w": "essayé",
+    "d": "medium"
+  },
+  {
+    "w": "plan",
+    "d": "easy"
+  },
+  {
+    "w": "instant",
+    "d": "medium"
+  },
+  {
+    "w": "serai",
+    "d": "easy"
+  },
+  {
+    "w": "prison",
+    "d": "medium"
+  },
+  {
+    "w": "penser",
+    "d": "medium"
+  },
+  {
+    "w": "essayer",
+    "d": "medium"
+  },
+  {
+    "w": "prend",
+    "d": "easy"
+  },
+  {
+    "w": "arme",
+    "d": "easy"
+  },
+  {
+    "w": "mauvais",
+    "d": "medium"
+  },
+  {
+    "w": "mot",
+    "d": "easy"
+  },
+  {
+    "w": "travailler",
+    "d": "hard"
+  },
+  {
+    "w": "quatre",
+    "d": "medium"
+  },
+  {
+    "w": "rentrer",
+    "d": "medium"
+  },
+  {
+    "w": "regarder",
+    "d": "medium"
+  },
+  {
+    "w": "choix",
+    "d": "medium"
+  },
+  {
+    "w": "parfois",
+    "d": "medium"
+  },
+  {
+    "w": "film",
+    "d": "easy"
+  },
+  {
+    "w": "abord",
+    "d": "easy"
+  },
+  {
+    "w": "voyez",
+    "d": "medium"
+  },
+  {
+    "w": "faute",
+    "d": "easy"
+  },
+  {
+    "w": "facile",
+    "d": "medium"
+  },
+  {
+    "w": "croyais",
+    "d": "medium"
+  },
+  {
+    "w": "bas",
+    "d": "easy"
+  },
+  {
+    "w": "changer",
+    "d": "medium"
+  },
+  {
+    "w": "entendre",
+    "d": "medium"
+  },
+  {
+    "w": "plaisir",
+    "d": "medium"
+  },
+  {
+    "w": "heureux",
+    "d": "medium"
+  },
+  {
+    "w": "entrer",
+    "d": "medium"
+  },
+  {
+    "w": "voudrais",
+    "d": "medium"
+  },
+  {
+    "w": "propre",
+    "d": "medium"
+  },
+  {
+    "w": "étiez",
+    "d": "medium"
+  },
+  {
+    "w": "tour",
+    "d": "easy"
+  },
+  {
+    "w": "fera",
+    "d": "easy"
+  },
+  {
+    "w": "ensuite",
+    "d": "medium"
+  },
+  {
+    "w": "garder",
+    "d": "medium"
+  },
+  {
+    "w": "agent",
+    "d": "easy"
+  },
+  {
+    "w": "allait",
+    "d": "medium"
+  },
+  {
+    "w": "lit",
+    "d": "easy"
+  },
+  {
+    "w": "travaille",
+    "d": "hard"
+  },
+  {
+    "w": "adore",
+    "d": "easy"
+  },
+  {
+    "w": "amie",
+    "d": "easy"
+  },
+  {
+    "w": "rendre",
+    "d": "medium"
+  },
+  {
+    "w": "route",
+    "d": "easy"
+  },
+  {
+    "w": "lieu",
+    "d": "easy"
+  },
+  {
+    "w": "année",
+    "d": "medium"
+  },
+  {
+    "w": "voit",
+    "d": "easy"
+  },
+  {
+    "w": "commence",
+    "d": "medium"
+  },
+  {
+    "w": "service",
+    "d": "medium"
+  },
+  {
+    "w": "devoir",
+    "d": "medium"
+  },
+  {
+    "w": "attend",
+    "d": "medium"
+  },
+  {
+    "w": "drôle",
+    "d": "medium"
+  },
+  {
+    "w": "difficile",
+    "d": "hard"
+  },
+  {
+    "w": "sûre",
+    "d": "medium"
+  },
+  {
+    "w": "pire",
+    "d": "easy"
+  },
+  {
+    "w": "peuvent",
+    "d": "medium"
+  },
+  {
+    "w": "sujet",
+    "d": "easy"
+  },
+  {
+    "w": "état",
+    "d": "medium"
+  },
+  {
+    "w": "ceci",
+    "d": "easy"
+  },
+  {
+    "w": "impossible",
+    "d": "hard"
+  },
+  {
+    "w": "sorte",
+    "d": "easy"
+  },
+  {
+    "w": "perdre",
+    "d": "medium"
+  },
+  {
+    "w": "dollars",
+    "d": "medium"
+  },
+  {
+    "w": "voulu",
+    "d": "easy"
+  },
+  {
+    "w": "morte",
+    "d": "easy"
+  },
+  {
+    "w": "ira",
+    "d": "easy"
+  },
+  {
+    "w": "faisait",
+    "d": "medium"
+  },
+  {
+    "w": "bizarre",
+    "d": "medium"
+  },
+  {
+    "w": "oublié",
+    "d": "medium"
+  },
+  {
+    "w": "arrêtez",
+    "d": "hard"
+  },
+  {
+    "w": "ferai",
+    "d": "easy"
+  },
+  {
+    "w": "serais",
+    "d": "medium"
+  },
+  {
+    "w": "tôt",
+    "d": "medium"
+  },
+  {
+    "w": "inquiète",
+    "d": "hard"
+  },
+  {
+    "w": "payer",
+    "d": "medium"
+  },
+  {
+    "w": "coeur",
+    "d": "easy"
+  },
+  {
+    "w": "dès",
+    "d": "medium"
+  },
+  {
+    "w": "pouvais",
+    "d": "medium"
+  },
+  {
+    "w": "reviens",
+    "d": "medium"
+  },
+  {
+    "w": "chien",
+    "d": "easy"
+  },
+  {
+    "w": "suffit",
+    "d": "medium"
+  },
+  {
+    "w": "prenez",
+    "d": "medium"
+  },
+  {
+    "w": "pensez",
+    "d": "medium"
+  },
+  {
+    "w": "café",
+    "d": "medium"
+  },
+  {
+    "w": "calme",
+    "d": "easy"
+  },
+  {
+    "w": "cherche",
+    "d": "medium"
+  },
+  {
+    "w": "montrer",
+    "d": "medium"
+  },
+  {
+    "w": "parles",
+    "d": "medium"
+  },
+  {
+    "w": "photo",
+    "d": "easy"
+  },
+  {
+    "w": "ferme",
+    "d": "easy"
+  },
+  {
+    "w": "problèmes",
+    "d": "hard"
+  },
+  {
+    "w": "sûrement",
+    "d": "hard"
+  },
+  {
+    "w": "verre",
+    "d": "easy"
+  },
+  {
+    "w": "aimes",
+    "d": "easy"
+  },
+  {
+    "w": "devons",
+    "d": "medium"
+  },
+  {
+    "w": "veulent",
+    "d": "medium"
+  },
+  {
+    "w": "doute",
+    "d": "easy"
+  },
+  {
+    "w": "musique",
+    "d": "medium"
+  },
+  {
+    "w": "courant",
+    "d": "medium"
+  },
+  {
+    "w": "sauf",
+    "d": "easy"
+  },
+  {
+    "w": "moyen",
+    "d": "medium"
+  },
+  {
+    "w": "nouvelles",
+    "d": "hard"
+  },
+  {
+    "w": "avis",
+    "d": "easy"
+  },
+  {
+    "w": "sauver",
+    "d": "medium"
+  },
+  {
+    "w": "hôpital",
+    "d": "hard"
+  },
+  {
+    "w": "questions",
+    "d": "hard"
+  },
+  {
+    "w": "meurtre",
+    "d": "medium"
+  },
+  {
+    "w": "sérieux",
+    "d": "hard"
+  },
+  {
+    "w": "seconde",
+    "d": "medium"
+  },
+  {
+    "w": "trucs",
+    "d": "easy"
+  },
+  {
+    "w": "comprendre",
+    "d": "hard"
+  },
+  {
+    "w": "allais",
+    "d": "medium"
+  },
+  {
+    "w": "esprit",
+    "d": "medium"
+  },
+  {
+    "w": "cool",
+    "d": "easy"
+  },
+  {
+    "w": "marché",
+    "d": "medium"
+  },
+  {
+    "w": "fous",
+    "d": "easy"
+  },
+  {
+    "w": "haut",
+    "d": "easy"
+  },
+  {
+    "w": "salle",
+    "d": "easy"
+  },
+  {
+    "w": "malade",
+    "d": "medium"
+  },
+  {
+    "w": "changé",
+    "d": "medium"
+  },
+  {
+    "w": "gentil",
+    "d": "medium"
+  },
+  {
+    "w": "allé",
+    "d": "medium"
+  },
+  {
+    "w": "six",
+    "d": "medium"
+  },
+  {
+    "w": "simple",
+    "d": "medium"
+  },
+  {
+    "w": "semaines",
+    "d": "medium"
+  },
+  {
+    "w": "celle",
+    "d": "easy"
+  },
+  {
+    "w": "jack",
+    "d": "medium"
+  },
+  {
+    "w": "appris",
+    "d": "medium"
+  },
+  {
+    "w": "seigneur",
+    "d": "medium"
+  },
+  {
+    "w": "dîner",
+    "d": "medium"
+  },
+  {
+    "w": "sors",
+    "d": "easy"
+  },
+  {
+    "w": "commencé",
+    "d": "hard"
+  },
+  {
+    "w": "suppose",
+    "d": "medium"
+  },
+  {
+    "w": "chemin",
+    "d": "medium"
+  },
+  {
+    "w": "partout",
+    "d": "medium"
+  },
+  {
+    "w": "bras",
+    "d": "easy"
+  },
+  {
+    "w": "cul",
+    "d": "easy"
+  },
+  {
+    "w": "prochaine",
+    "d": "hard"
+  },
+  {
+    "w": "visage",
+    "d": "medium"
+  },
+  {
+    "w": "meilleure",
+    "d": "hard"
+  },
+  {
+    "w": "face",
+    "d": "easy"
+  },
+  {
+    "w": "soirée",
+    "d": "medium"
+  },
+  {
+    "w": "roi",
+    "d": "easy"
+  },
+  {
+    "w": "surtout",
+    "d": "medium"
+  },
+  {
+    "w": "retard",
+    "d": "medium"
+  },
+  {
+    "w": "écrit",
+    "d": "medium"
+  },
+  {
+    "w": "livre",
+    "d": "easy"
+  },
+  {
+    "w": "rapport",
+    "d": "medium"
+  },
+  {
+    "w": "chéri",
+    "d": "medium"
+  },
+  {
+    "w": "message",
+    "d": "medium"
+  },
+  {
+    "w": "vaut",
+    "d": "easy"
+  },
+  {
+    "w": "ferais",
+    "d": "medium"
+  },
+  {
+    "w": "morts",
+    "d": "easy"
+  },
+  {
+    "w": "boire",
+    "d": "easy"
+  },
+  {
+    "w": "soyez",
+    "d": "medium"
+  },
+  {
+    "w": "président",
+    "d": "hard"
+  },
+  {
+    "w": "bois",
+    "d": "easy"
+  },
+  {
+    "w": "sinon",
+    "d": "easy"
+  },
+  {
+    "w": "erreur",
+    "d": "medium"
+  }
 ]

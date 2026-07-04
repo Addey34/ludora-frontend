@@ -1,302 +1,2402 @@
 [
-  "THAT",
-  "WHAT",
-  "THIS",
-  "HAVE",
-  "YOUR",
-  "KNOW",
-  "WITH",
-  "JUST",
-  "THERE",
-  "HERE",
-  "THEY",
-  "LIKE",
-  "RIGHT",
-  "ABOUT",
-  "COME",
-  "WELL",
-  "YEAH",
-  "WILL",
-  "WANT",
-  "THINK",
-  "GOOD",
-  "FROM",
-  "WHEN",
-  "GOING",
-  "TIME",
-  "OKAY",
-  "BACK",
-  "LOOK",
-  "WOULD",
-  "THEM",
-  "WHERE",
-  "WERE",
-  "TAKE",
-  "THEN",
-  "BEEN",
-  "GONNA",
-  "TELL",
-  "REALLY",
-  "SOME",
-  "COULD",
-  "NEED",
-  "SOMETHING",
-  "MORE",
-  "DOWN",
-  "MAKE",
-  "VERY",
-  "NEVER",
-  "ONLY",
-  "PEOPLE",
-  "OVER",
-  "BECAUSE",
-  "LITTLE",
-  "PLEASE",
-  "LOVE",
-  "SHOULD",
-  "MEAN",
-  "SAID",
-  "SORRY",
-  "GIVE",
-  "THANK",
-  "EVEN",
-  "MUCH",
-  "DOING",
-  "SURE",
-  "THING",
-  "THESE",
-  "HELP",
-  "FIRST",
-  "INTO",
-  "ANYTHING",
-  "STILL",
-  "FIND",
-  "LIFE",
-  "NOTHING",
-  "WORK",
-  "THEIR",
-  "AGAIN",
-  "MAYBE",
-  "MUST",
-  "BEFORE",
-  "OTHER",
-  "WAIT",
-  "STOP",
-  "CALL",
-  "AFTER",
-  "TALK",
-  "AWAY",
-  "THAN",
-  "THOUGHT",
-  "HOME",
-  "NIGHT",
-  "GREAT",
-  "THOSE",
-  "LAST",
-  "BETTER",
-  "TOLD",
-  "THINGS",
-  "ALWAYS",
-  "KEEP",
-  "LONG",
-  "YEARS",
-  "LEAVE",
-  "DOES",
-  "MONEY",
-  "AROUND",
-  "NAME",
-  "PLACE",
-  "EVER",
-  "FEEL",
-  "GUYS",
-  "FATHER",
-  "MADE",
-  "WHICH",
-  "DONE",
-  "HELLO",
-  "NICE",
-  "BELIEVE",
-  "GIRL",
-  "SOMEONE",
-  "FINE",
-  "THANKS",
-  "WANTED",
-  "KIND",
-  "COMING",
-  "HOUSE",
-  "EVERY",
-  "THROUGH",
-  "BEING",
-  "COURSE",
-  "STAY",
-  "LEFT",
-  "ENOUGH",
-  "HAPPENED",
-  "CAME",
-  "MOTHER",
-  "WRONG",
-  "WORLD",
-  "MIGHT",
-  "THREE",
-  "TODAY",
-  "LISTEN",
-  "ANOTHER",
-  "HEAR",
-  "REMEMBER",
-  "SAME",
-  "SHOW",
-  "ELSE",
-  "KILL",
-  "TALKING",
-  "FOUND",
-  "NEXT",
-  "GETTING",
-  "CARE",
-  "LOOKING",
-  "WOMAN",
-  "WENT",
-  "DEAD",
-  "MANY",
-  "MIND",
-  "FRIEND",
-  "BEST",
-  "HELL",
-  "MORNING",
-  "TRYING",
-  "TOGETHER",
-  "YOURSELF",
-  "FAMILY",
-  "REAL",
-  "WITHOUT",
-  "BABY",
-  "ROOM",
-  "ALREADY",
-  "MOVE",
-  "MOST",
-  "SEEN",
-  "LIVE",
-  "MISS",
-  "ACTUALLY",
-  "SHIT",
-  "BOTH",
-  "HEARD",
-  "ONCE",
-  "READY",
-  "HEAD",
-  "CALLED",
-  "USED",
-  "IDEA",
-  "KNEW",
-  "HOLD",
-  "HAPPY",
-  "DOOR",
-  "SUCH",
-  "FUCK",
-  "BROTHER",
-  "ALSO",
-  "PRETTY",
-  "TOOK",
-  "HAVEN",
-  "WHOLE",
-  "START",
-  "WHILE",
-  "SINCE",
-  "WIFE",
-  "DAYS",
-  "GUESS",
-  "TOMORROW",
-  "MATTER",
-  "MEET",
-  "BRING",
-  "TONIGHT",
-  "EVERYONE",
-  "WANNA",
-  "HARD",
-  "ALONE",
-  "MYSELF",
-  "SCHOOL",
-  "GONE",
-  "SAYING",
-  "PHONE",
-  "PLAY",
-  "LOOKS",
-  "FUCKING",
-  "PROBLEM",
-  "FRIENDS",
-  "GOTTA",
-  "OPEN",
-  "ANYONE",
-  "KILLED",
-  "HOPE",
-  "FACE",
-  "UNTIL",
-  "LOST",
-  "POLICE",
-  "EXCUSE",
-  "TURN",
-  "BUSINESS",
-  "CASE",
-  "WANTS",
-  "SAYS",
-  "TRUE",
-  "HEART",
-  "SOON",
-  "EACH",
-  "WORRY",
-  "LATER",
-  "YEAR",
-  "WATCH",
-  "MUSIC",
-  "HAND",
-  "HAVING",
-  "PROBABLY",
-  "BEAUTIFUL",
-  "DOCTOR",
-  "THINKING",
-  "YOUNG",
-  "SECOND",
-  "WORKING",
-  "WATER",
-  "PERSON",
-  "PART",
-  "KIDS",
-  "LATE",
-  "STUFF",
-  "EXACTLY",
-  "UNDER",
-  "DEATH",
-  "MINUTE",
-  "CRAZY",
-  "FORGET",
-  "EVERYBODY",
-  "CHANGE",
-  "GAVE",
-  "HAPPEN",
-  "DAMN",
-  "FIVE",
-  "DRINK",
-  "KNOWS",
-  "WHATEVER",
-  "EYES",
-  "SHUT",
-  "TAKING",
-  "EASY",
-  "TIMES",
-  "CHECK",
-  "HANDS",
-  "MINUTES",
-  "DEAL",
-  "DIFFERENT",
-  "MEANS",
-  "POINT",
-  "INSIDE",
-  "MAKES",
-  "ASKED",
-  "SOMEBODY",
-  "MINE",
-  "MAKING",
-  "BODY",
-  "AFRAID",
-  "SLEEP",
-  "CHANCE"
+  {
+    "w": "you",
+    "d": "medium"
+  },
+  {
+    "w": "the",
+    "d": "easy"
+  },
+  {
+    "w": "and",
+    "d": "easy"
+  },
+  {
+    "w": "that",
+    "d": "easy"
+  },
+  {
+    "w": "what",
+    "d": "medium"
+  },
+  {
+    "w": "this",
+    "d": "easy"
+  },
+  {
+    "w": "for",
+    "d": "easy"
+  },
+  {
+    "w": "have",
+    "d": "easy"
+  },
+  {
+    "w": "your",
+    "d": "medium"
+  },
+  {
+    "w": "was",
+    "d": "medium"
+  },
+  {
+    "w": "not",
+    "d": "easy"
+  },
+  {
+    "w": "are",
+    "d": "easy"
+  },
+  {
+    "w": "don",
+    "d": "easy"
+  },
+  {
+    "w": "know",
+    "d": "medium"
+  },
+  {
+    "w": "can",
+    "d": "easy"
+  },
+  {
+    "w": "with",
+    "d": "medium"
+  },
+  {
+    "w": "but",
+    "d": "easy"
+  },
+  {
+    "w": "all",
+    "d": "easy"
+  },
+  {
+    "w": "just",
+    "d": "easy"
+  },
+  {
+    "w": "there",
+    "d": "easy"
+  },
+  {
+    "w": "here",
+    "d": "easy"
+  },
+  {
+    "w": "they",
+    "d": "medium"
+  },
+  {
+    "w": "like",
+    "d": "medium"
+  },
+  {
+    "w": "get",
+    "d": "easy"
+  },
+  {
+    "w": "she",
+    "d": "easy"
+  },
+  {
+    "w": "right",
+    "d": "easy"
+  },
+  {
+    "w": "out",
+    "d": "easy"
+  },
+  {
+    "w": "about",
+    "d": "easy"
+  },
+  {
+    "w": "him",
+    "d": "easy"
+  },
+  {
+    "w": "now",
+    "d": "medium"
+  },
+  {
+    "w": "one",
+    "d": "easy"
+  },
+  {
+    "w": "come",
+    "d": "easy"
+  },
+  {
+    "w": "well",
+    "d": "medium"
+  },
+  {
+    "w": "her",
+    "d": "easy"
+  },
+  {
+    "w": "how",
+    "d": "medium"
+  },
+  {
+    "w": "yeah",
+    "d": "medium"
+  },
+  {
+    "w": "will",
+    "d": "medium"
+  },
+  {
+    "w": "got",
+    "d": "easy"
+  },
+  {
+    "w": "want",
+    "d": "medium"
+  },
+  {
+    "w": "think",
+    "d": "medium"
+  },
+  {
+    "w": "see",
+    "d": "easy"
+  },
+  {
+    "w": "did",
+    "d": "easy"
+  },
+  {
+    "w": "good",
+    "d": "easy"
+  },
+  {
+    "w": "who",
+    "d": "medium"
+  },
+  {
+    "w": "why",
+    "d": "medium"
+  },
+  {
+    "w": "from",
+    "d": "easy"
+  },
+  {
+    "w": "let",
+    "d": "easy"
+  },
+  {
+    "w": "his",
+    "d": "easy"
+  },
+  {
+    "w": "yes",
+    "d": "medium"
+  },
+  {
+    "w": "when",
+    "d": "medium"
+  },
+  {
+    "w": "going",
+    "d": "easy"
+  },
+  {
+    "w": "time",
+    "d": "easy"
+  },
+  {
+    "w": "okay",
+    "d": "medium"
+  },
+  {
+    "w": "back",
+    "d": "medium"
+  },
+  {
+    "w": "look",
+    "d": "medium"
+  },
+  {
+    "w": "would",
+    "d": "medium"
+  },
+  {
+    "w": "them",
+    "d": "easy"
+  },
+  {
+    "w": "where",
+    "d": "medium"
+  },
+  {
+    "w": "were",
+    "d": "medium"
+  },
+  {
+    "w": "take",
+    "d": "medium"
+  },
+  {
+    "w": "then",
+    "d": "easy"
+  },
+  {
+    "w": "had",
+    "d": "easy"
+  },
+  {
+    "w": "been",
+    "d": "easy"
+  },
+  {
+    "w": "our",
+    "d": "easy"
+  },
+  {
+    "w": "gonna",
+    "d": "easy"
+  },
+  {
+    "w": "tell",
+    "d": "easy"
+  },
+  {
+    "w": "really",
+    "d": "medium"
+  },
+  {
+    "w": "man",
+    "d": "easy"
+  },
+  {
+    "w": "some",
+    "d": "easy"
+  },
+  {
+    "w": "say",
+    "d": "medium"
+  },
+  {
+    "w": "hey",
+    "d": "medium"
+  },
+  {
+    "w": "could",
+    "d": "easy"
+  },
+  {
+    "w": "need",
+    "d": "easy"
+  },
+  {
+    "w": "something",
+    "d": "hard"
+  },
+  {
+    "w": "has",
+    "d": "easy"
+  },
+  {
+    "w": "too",
+    "d": "easy"
+  },
+  {
+    "w": "more",
+    "d": "easy"
+  },
+  {
+    "w": "way",
+    "d": "medium"
+  },
+  {
+    "w": "down",
+    "d": "medium"
+  },
+  {
+    "w": "make",
+    "d": "medium"
+  },
+  {
+    "w": "very",
+    "d": "medium"
+  },
+  {
+    "w": "never",
+    "d": "easy"
+  },
+  {
+    "w": "only",
+    "d": "medium"
+  },
+  {
+    "w": "people",
+    "d": "medium"
+  },
+  {
+    "w": "over",
+    "d": "easy"
+  },
+  {
+    "w": "because",
+    "d": "medium"
+  },
+  {
+    "w": "little",
+    "d": "medium"
+  },
+  {
+    "w": "please",
+    "d": "medium"
+  },
+  {
+    "w": "love",
+    "d": "easy"
+  },
+  {
+    "w": "should",
+    "d": "medium"
+  },
+  {
+    "w": "mean",
+    "d": "easy"
+  },
+  {
+    "w": "said",
+    "d": "easy"
+  },
+  {
+    "w": "sorry",
+    "d": "medium"
+  },
+  {
+    "w": "give",
+    "d": "easy"
+  },
+  {
+    "w": "off",
+    "d": "easy"
+  },
+  {
+    "w": "thank",
+    "d": "medium"
+  },
+  {
+    "w": "any",
+    "d": "medium"
+  },
+  {
+    "w": "two",
+    "d": "medium"
+  },
+  {
+    "w": "even",
+    "d": "easy"
+  },
+  {
+    "w": "much",
+    "d": "easy"
+  },
+  {
+    "w": "doing",
+    "d": "easy"
+  },
+  {
+    "w": "sure",
+    "d": "easy"
+  },
+  {
+    "w": "thing",
+    "d": "easy"
+  },
+  {
+    "w": "these",
+    "d": "easy"
+  },
+  {
+    "w": "help",
+    "d": "easy"
+  },
+  {
+    "w": "first",
+    "d": "easy"
+  },
+  {
+    "w": "into",
+    "d": "easy"
+  },
+  {
+    "w": "anything",
+    "d": "medium"
+  },
+  {
+    "w": "still",
+    "d": "easy"
+  },
+  {
+    "w": "find",
+    "d": "easy"
+  },
+  {
+    "w": "life",
+    "d": "easy"
+  },
+  {
+    "w": "nothing",
+    "d": "medium"
+  },
+  {
+    "w": "sir",
+    "d": "easy"
+  },
+  {
+    "w": "day",
+    "d": "medium"
+  },
+  {
+    "w": "god",
+    "d": "easy"
+  },
+  {
+    "w": "work",
+    "d": "medium"
+  },
+  {
+    "w": "their",
+    "d": "easy"
+  },
+  {
+    "w": "again",
+    "d": "easy"
+  },
+  {
+    "w": "maybe",
+    "d": "medium"
+  },
+  {
+    "w": "must",
+    "d": "easy"
+  },
+  {
+    "w": "before",
+    "d": "medium"
+  },
+  {
+    "w": "other",
+    "d": "easy"
+  },
+  {
+    "w": "wait",
+    "d": "medium"
+  },
+  {
+    "w": "stop",
+    "d": "easy"
+  },
+  {
+    "w": "call",
+    "d": "easy"
+  },
+  {
+    "w": "after",
+    "d": "easy"
+  },
+  {
+    "w": "won",
+    "d": "medium"
+  },
+  {
+    "w": "talk",
+    "d": "medium"
+  },
+  {
+    "w": "away",
+    "d": "medium"
+  },
+  {
+    "w": "than",
+    "d": "easy"
+  },
+  {
+    "w": "thought",
+    "d": "medium"
+  },
+  {
+    "w": "home",
+    "d": "easy"
+  },
+  {
+    "w": "night",
+    "d": "easy"
+  },
+  {
+    "w": "put",
+    "d": "easy"
+  },
+  {
+    "w": "great",
+    "d": "easy"
+  },
+  {
+    "w": "those",
+    "d": "easy"
+  },
+  {
+    "w": "last",
+    "d": "easy"
+  },
+  {
+    "w": "better",
+    "d": "medium"
+  },
+  {
+    "w": "everything",
+    "d": "hard"
+  },
+  {
+    "w": "told",
+    "d": "easy"
+  },
+  {
+    "w": "new",
+    "d": "medium"
+  },
+  {
+    "w": "things",
+    "d": "medium"
+  },
+  {
+    "w": "always",
+    "d": "medium"
+  },
+  {
+    "w": "keep",
+    "d": "medium"
+  },
+  {
+    "w": "long",
+    "d": "easy"
+  },
+  {
+    "w": "years",
+    "d": "medium"
+  },
+  {
+    "w": "leave",
+    "d": "easy"
+  },
+  {
+    "w": "does",
+    "d": "easy"
+  },
+  {
+    "w": "money",
+    "d": "medium"
+  },
+  {
+    "w": "around",
+    "d": "medium"
+  },
+  {
+    "w": "name",
+    "d": "easy"
+  },
+  {
+    "w": "place",
+    "d": "easy"
+  },
+  {
+    "w": "ever",
+    "d": "easy"
+  },
+  {
+    "w": "feel",
+    "d": "easy"
+  },
+  {
+    "w": "guys",
+    "d": "medium"
+  },
+  {
+    "w": "father",
+    "d": "medium"
+  },
+  {
+    "w": "guy",
+    "d": "medium"
+  },
+  {
+    "w": "made",
+    "d": "easy"
+  },
+  {
+    "w": "old",
+    "d": "easy"
+  },
+  {
+    "w": "which",
+    "d": "medium"
+  },
+  {
+    "w": "big",
+    "d": "easy"
+  },
+  {
+    "w": "lot",
+    "d": "easy"
+  },
+  {
+    "w": "done",
+    "d": "easy"
+  },
+  {
+    "w": "hello",
+    "d": "easy"
+  },
+  {
+    "w": "nice",
+    "d": "easy"
+  },
+  {
+    "w": "believe",
+    "d": "medium"
+  },
+  {
+    "w": "girl",
+    "d": "easy"
+  },
+  {
+    "w": "someone",
+    "d": "medium"
+  },
+  {
+    "w": "fine",
+    "d": "easy"
+  },
+  {
+    "w": "thanks",
+    "d": "medium"
+  },
+  {
+    "w": "wanted",
+    "d": "medium"
+  },
+  {
+    "w": "kind",
+    "d": "medium"
+  },
+  {
+    "w": "coming",
+    "d": "medium"
+  },
+  {
+    "w": "house",
+    "d": "easy"
+  },
+  {
+    "w": "every",
+    "d": "medium"
+  },
+  {
+    "w": "through",
+    "d": "medium"
+  },
+  {
+    "w": "being",
+    "d": "easy"
+  },
+  {
+    "w": "course",
+    "d": "medium"
+  },
+  {
+    "w": "stay",
+    "d": "medium"
+  },
+  {
+    "w": "left",
+    "d": "easy"
+  },
+  {
+    "w": "dad",
+    "d": "easy"
+  },
+  {
+    "w": "enough",
+    "d": "medium"
+  },
+  {
+    "w": "happened",
+    "d": "medium"
+  },
+  {
+    "w": "came",
+    "d": "easy"
+  },
+  {
+    "w": "may",
+    "d": "medium"
+  },
+  {
+    "w": "mother",
+    "d": "medium"
+  },
+  {
+    "w": "wrong",
+    "d": "medium"
+  },
+  {
+    "w": "world",
+    "d": "medium"
+  },
+  {
+    "w": "bad",
+    "d": "easy"
+  },
+  {
+    "w": "might",
+    "d": "easy"
+  },
+  {
+    "w": "three",
+    "d": "easy"
+  },
+  {
+    "w": "today",
+    "d": "medium"
+  },
+  {
+    "w": "listen",
+    "d": "medium"
+  },
+  {
+    "w": "another",
+    "d": "medium"
+  },
+  {
+    "w": "understand",
+    "d": "hard"
+  },
+  {
+    "w": "hear",
+    "d": "easy"
+  },
+  {
+    "w": "remember",
+    "d": "medium"
+  },
+  {
+    "w": "ask",
+    "d": "medium"
+  },
+  {
+    "w": "own",
+    "d": "medium"
+  },
+  {
+    "w": "same",
+    "d": "easy"
+  },
+  {
+    "w": "show",
+    "d": "medium"
+  },
+  {
+    "w": "else",
+    "d": "easy"
+  },
+  {
+    "w": "kill",
+    "d": "medium"
+  },
+  {
+    "w": "talking",
+    "d": "medium"
+  },
+  {
+    "w": "found",
+    "d": "easy"
+  },
+  {
+    "w": "next",
+    "d": "medium"
+  },
+  {
+    "w": "getting",
+    "d": "medium"
+  },
+  {
+    "w": "care",
+    "d": "easy"
+  },
+  {
+    "w": "car",
+    "d": "easy"
+  },
+  {
+    "w": "looking",
+    "d": "medium"
+  },
+  {
+    "w": "son",
+    "d": "easy"
+  },
+  {
+    "w": "try",
+    "d": "medium"
+  },
+  {
+    "w": "woman",
+    "d": "medium"
+  },
+  {
+    "w": "went",
+    "d": "medium"
+  },
+  {
+    "w": "dead",
+    "d": "easy"
+  },
+  {
+    "w": "many",
+    "d": "medium"
+  },
+  {
+    "w": "mind",
+    "d": "easy"
+  },
+  {
+    "w": "friend",
+    "d": "medium"
+  },
+  {
+    "w": "best",
+    "d": "easy"
+  },
+  {
+    "w": "mom",
+    "d": "easy"
+  },
+  {
+    "w": "hell",
+    "d": "easy"
+  },
+  {
+    "w": "morning",
+    "d": "medium"
+  },
+  {
+    "w": "trying",
+    "d": "medium"
+  },
+  {
+    "w": "boy",
+    "d": "medium"
+  },
+  {
+    "w": "together",
+    "d": "medium"
+  },
+  {
+    "w": "yourself",
+    "d": "medium"
+  },
+  {
+    "w": "job",
+    "d": "easy"
+  },
+  {
+    "w": "saw",
+    "d": "medium"
+  },
+  {
+    "w": "family",
+    "d": "medium"
+  },
+  {
+    "w": "real",
+    "d": "easy"
+  },
+  {
+    "w": "without",
+    "d": "medium"
+  },
+  {
+    "w": "baby",
+    "d": "medium"
+  },
+  {
+    "w": "room",
+    "d": "easy"
+  },
+  {
+    "w": "already",
+    "d": "medium"
+  },
+  {
+    "w": "move",
+    "d": "easy"
+  },
+  {
+    "w": "most",
+    "d": "easy"
+  },
+  {
+    "w": "seen",
+    "d": "easy"
+  },
+  {
+    "w": "live",
+    "d": "easy"
+  },
+  {
+    "w": "miss",
+    "d": "easy"
+  },
+  {
+    "w": "actually",
+    "d": "medium"
+  },
+  {
+    "w": "huh",
+    "d": "easy"
+  },
+  {
+    "w": "shit",
+    "d": "easy"
+  },
+  {
+    "w": "both",
+    "d": "easy"
+  },
+  {
+    "w": "heard",
+    "d": "easy"
+  },
+  {
+    "w": "once",
+    "d": "easy"
+  },
+  {
+    "w": "ready",
+    "d": "medium"
+  },
+  {
+    "w": "head",
+    "d": "easy"
+  },
+  {
+    "w": "called",
+    "d": "medium"
+  },
+  {
+    "w": "used",
+    "d": "easy"
+  },
+  {
+    "w": "idea",
+    "d": "easy"
+  },
+  {
+    "w": "knew",
+    "d": "medium"
+  },
+  {
+    "w": "hold",
+    "d": "easy"
+  },
+  {
+    "w": "happy",
+    "d": "medium"
+  },
+  {
+    "w": "door",
+    "d": "easy"
+  },
+  {
+    "w": "such",
+    "d": "easy"
+  },
+  {
+    "w": "fuck",
+    "d": "medium"
+  },
+  {
+    "w": "brother",
+    "d": "medium"
+  },
+  {
+    "w": "also",
+    "d": "easy"
+  },
+  {
+    "w": "pretty",
+    "d": "medium"
+  },
+  {
+    "w": "bit",
+    "d": "easy"
+  },
+  {
+    "w": "took",
+    "d": "medium"
+  },
+  {
+    "w": "haven",
+    "d": "easy"
+  },
+  {
+    "w": "yet",
+    "d": "medium"
+  },
+  {
+    "w": "men",
+    "d": "easy"
+  },
+  {
+    "w": "whole",
+    "d": "medium"
+  },
+  {
+    "w": "start",
+    "d": "easy"
+  },
+  {
+    "w": "use",
+    "d": "easy"
+  },
+  {
+    "w": "while",
+    "d": "medium"
+  },
+  {
+    "w": "since",
+    "d": "easy"
+  },
+  {
+    "w": "wife",
+    "d": "medium"
+  },
+  {
+    "w": "days",
+    "d": "medium"
+  },
+  {
+    "w": "guess",
+    "d": "easy"
+  },
+  {
+    "w": "tomorrow",
+    "d": "medium"
+  },
+  {
+    "w": "matter",
+    "d": "medium"
+  },
+  {
+    "w": "meet",
+    "d": "easy"
+  },
+  {
+    "w": "bring",
+    "d": "easy"
+  },
+  {
+    "w": "tonight",
+    "d": "medium"
+  },
+  {
+    "w": "everyone",
+    "d": "medium"
+  },
+  {
+    "w": "run",
+    "d": "easy"
+  },
+  {
+    "w": "wanna",
+    "d": "medium"
+  },
+  {
+    "w": "hard",
+    "d": "easy"
+  },
+  {
+    "w": "alone",
+    "d": "easy"
+  },
+  {
+    "w": "myself",
+    "d": "medium"
+  },
+  {
+    "w": "school",
+    "d": "medium"
+  },
+  {
+    "w": "gone",
+    "d": "easy"
+  },
+  {
+    "w": "end",
+    "d": "easy"
+  },
+  {
+    "w": "saying",
+    "d": "medium"
+  },
+  {
+    "w": "phone",
+    "d": "easy"
+  },
+  {
+    "w": "play",
+    "d": "medium"
+  },
+  {
+    "w": "looks",
+    "d": "medium"
+  },
+  {
+    "w": "fucking",
+    "d": "medium"
+  },
+  {
+    "w": "problem",
+    "d": "medium"
+  },
+  {
+    "w": "few",
+    "d": "medium"
+  },
+  {
+    "w": "friends",
+    "d": "medium"
+  },
+  {
+    "w": "gotta",
+    "d": "easy"
+  },
+  {
+    "w": "ago",
+    "d": "easy"
+  },
+  {
+    "w": "open",
+    "d": "easy"
+  },
+  {
+    "w": "anyone",
+    "d": "medium"
+  },
+  {
+    "w": "killed",
+    "d": "medium"
+  },
+  {
+    "w": "hope",
+    "d": "easy"
+  },
+  {
+    "w": "face",
+    "d": "easy"
+  },
+  {
+    "w": "until",
+    "d": "easy"
+  },
+  {
+    "w": "lost",
+    "d": "easy"
+  },
+  {
+    "w": "police",
+    "d": "medium"
+  },
+  {
+    "w": "excuse",
+    "d": "medium"
+  },
+  {
+    "w": "turn",
+    "d": "easy"
+  },
+  {
+    "w": "business",
+    "d": "medium"
+  },
+  {
+    "w": "case",
+    "d": "easy"
+  },
+  {
+    "w": "wants",
+    "d": "medium"
+  },
+  {
+    "w": "says",
+    "d": "medium"
+  },
+  {
+    "w": "true",
+    "d": "easy"
+  },
+  {
+    "w": "die",
+    "d": "easy"
+  },
+  {
+    "w": "heart",
+    "d": "easy"
+  },
+  {
+    "w": "soon",
+    "d": "easy"
+  },
+  {
+    "w": "each",
+    "d": "easy"
+  },
+  {
+    "w": "worry",
+    "d": "medium"
+  },
+  {
+    "w": "later",
+    "d": "easy"
+  },
+  {
+    "w": "year",
+    "d": "medium"
+  },
+  {
+    "w": "watch",
+    "d": "medium"
+  },
+  {
+    "w": "music",
+    "d": "easy"
+  },
+  {
+    "w": "hand",
+    "d": "easy"
+  },
+  {
+    "w": "having",
+    "d": "medium"
+  },
+  {
+    "w": "probably",
+    "d": "medium"
+  },
+  {
+    "w": "beautiful",
+    "d": "hard"
+  },
+  {
+    "w": "doctor",
+    "d": "medium"
+  },
+  {
+    "w": "sit",
+    "d": "easy"
+  },
+  {
+    "w": "eat",
+    "d": "easy"
+  },
+  {
+    "w": "thinking",
+    "d": "medium"
+  },
+  {
+    "w": "young",
+    "d": "medium"
+  },
+  {
+    "w": "second",
+    "d": "medium"
+  },
+  {
+    "w": "working",
+    "d": "medium"
+  },
+  {
+    "w": "water",
+    "d": "medium"
+  },
+  {
+    "w": "person",
+    "d": "medium"
+  },
+  {
+    "w": "part",
+    "d": "easy"
+  },
+  {
+    "w": "kids",
+    "d": "medium"
+  },
+  {
+    "w": "late",
+    "d": "easy"
+  },
+  {
+    "w": "stuff",
+    "d": "easy"
+  },
+  {
+    "w": "exactly",
+    "d": "medium"
+  },
+  {
+    "w": "under",
+    "d": "easy"
+  },
+  {
+    "w": "death",
+    "d": "easy"
+  },
+  {
+    "w": "minute",
+    "d": "medium"
+  },
+  {
+    "w": "pay",
+    "d": "medium"
+  },
+  {
+    "w": "crazy",
+    "d": "medium"
+  },
+  {
+    "w": "forget",
+    "d": "medium"
+  },
+  {
+    "w": "everybody",
+    "d": "hard"
+  },
+  {
+    "w": "kid",
+    "d": "medium"
+  },
+  {
+    "w": "change",
+    "d": "medium"
+  },
+  {
+    "w": "gave",
+    "d": "easy"
+  },
+  {
+    "w": "happen",
+    "d": "medium"
+  },
+  {
+    "w": "damn",
+    "d": "easy"
+  },
+  {
+    "w": "five",
+    "d": "easy"
+  },
+  {
+    "w": "drink",
+    "d": "medium"
+  },
+  {
+    "w": "far",
+    "d": "easy"
+  },
+  {
+    "w": "knows",
+    "d": "medium"
+  },
+  {
+    "w": "its",
+    "d": "easy"
+  },
+  {
+    "w": "whatever",
+    "d": "medium"
+  },
+  {
+    "w": "eyes",
+    "d": "medium"
+  },
+  {
+    "w": "shut",
+    "d": "easy"
+  },
+  {
+    "w": "hit",
+    "d": "easy"
+  },
+  {
+    "w": "taking",
+    "d": "medium"
+  },
+  {
+    "w": "easy",
+    "d": "medium"
+  },
+  {
+    "w": "times",
+    "d": "easy"
+  },
+  {
+    "w": "check",
+    "d": "medium"
+  },
+  {
+    "w": "hands",
+    "d": "easy"
+  },
+  {
+    "w": "minutes",
+    "d": "medium"
+  },
+  {
+    "w": "deal",
+    "d": "easy"
+  },
+  {
+    "w": "different",
+    "d": "hard"
+  },
+  {
+    "w": "means",
+    "d": "easy"
+  },
+  {
+    "w": "point",
+    "d": "easy"
+  },
+  {
+    "w": "inside",
+    "d": "medium"
+  },
+  {
+    "w": "makes",
+    "d": "medium"
+  },
+  {
+    "w": "asked",
+    "d": "medium"
+  },
+  {
+    "w": "somebody",
+    "d": "medium"
+  },
+  {
+    "w": "mine",
+    "d": "easy"
+  },
+  {
+    "w": "making",
+    "d": "medium"
+  },
+  {
+    "w": "body",
+    "d": "medium"
+  },
+  {
+    "w": "afraid",
+    "d": "medium"
+  },
+  {
+    "w": "sleep",
+    "d": "easy"
+  },
+  {
+    "w": "chance",
+    "d": "medium"
+  },
+  {
+    "w": "dear",
+    "d": "easy"
+  },
+  {
+    "w": "quite",
+    "d": "medium"
+  },
+  {
+    "w": "four",
+    "d": "easy"
+  },
+  {
+    "w": "anyway",
+    "d": "medium"
+  },
+  {
+    "w": "close",
+    "d": "easy"
+  },
+  {
+    "w": "ain",
+    "d": "easy"
+  },
+  {
+    "w": "party",
+    "d": "medium"
+  },
+  {
+    "w": "fun",
+    "d": "easy"
+  },
+  {
+    "w": "against",
+    "d": "medium"
+  },
+  {
+    "w": "word",
+    "d": "medium"
+  },
+  {
+    "w": "comes",
+    "d": "easy"
+  },
+  {
+    "w": "important",
+    "d": "hard"
+  },
+  {
+    "w": "set",
+    "d": "easy"
+  },
+  {
+    "w": "shall",
+    "d": "easy"
+  },
+  {
+    "w": "story",
+    "d": "medium"
+  },
+  {
+    "w": "number",
+    "d": "medium"
+  },
+  {
+    "w": "daughter",
+    "d": "medium"
+  },
+  {
+    "w": "least",
+    "d": "easy"
+  },
+  {
+    "w": "waiting",
+    "d": "medium"
+  },
+  {
+    "w": "hurt",
+    "d": "easy"
+  },
+  {
+    "w": "wish",
+    "d": "medium"
+  },
+  {
+    "w": "moment",
+    "d": "medium"
+  },
+  {
+    "w": "fight",
+    "d": "easy"
+  },
+  {
+    "w": "week",
+    "d": "medium"
+  },
+  {
+    "w": "husband",
+    "d": "medium"
+  },
+  {
+    "w": "girls",
+    "d": "easy"
+  },
+  {
+    "w": "rest",
+    "d": "easy"
+  },
+  {
+    "w": "married",
+    "d": "medium"
+  },
+  {
+    "w": "fire",
+    "d": "easy"
+  },
+  {
+    "w": "game",
+    "d": "easy"
+  },
+  {
+    "w": "nobody",
+    "d": "medium"
+  },
+  {
+    "w": "children",
+    "d": "medium"
+  },
+  {
+    "w": "side",
+    "d": "easy"
+  },
+  {
+    "w": "stand",
+    "d": "easy"
+  },
+  {
+    "w": "read",
+    "d": "easy"
+  },
+  {
+    "w": "though",
+    "d": "medium"
+  },
+  {
+    "w": "cut",
+    "d": "easy"
+  },
+  {
+    "w": "started",
+    "d": "medium"
+  },
+  {
+    "w": "sister",
+    "d": "medium"
+  },
+  {
+    "w": "supposed",
+    "d": "medium"
+  },
+  {
+    "w": "between",
+    "d": "medium"
+  },
+  {
+    "w": "child",
+    "d": "easy"
+  },
+  {
+    "w": "goes",
+    "d": "easy"
+  },
+  {
+    "w": "hours",
+    "d": "easy"
+  },
+  {
+    "w": "speak",
+    "d": "medium"
+  },
+  {
+    "w": "women",
+    "d": "medium"
+  },
+  {
+    "w": "behind",
+    "d": "medium"
+  },
+  {
+    "w": "almost",
+    "d": "medium"
+  },
+  {
+    "w": "truth",
+    "d": "easy"
+  },
+  {
+    "w": "blood",
+    "d": "easy"
+  },
+  {
+    "w": "able",
+    "d": "easy"
+  },
+  {
+    "w": "lady",
+    "d": "medium"
+  },
+  {
+    "w": "anymore",
+    "d": "medium"
+  },
+  {
+    "w": "playing",
+    "d": "medium"
+  },
+  {
+    "w": "gets",
+    "d": "easy"
+  },
+  {
+    "w": "shot",
+    "d": "easy"
+  },
+  {
+    "w": "reason",
+    "d": "medium"
+  },
+  {
+    "w": "trouble",
+    "d": "medium"
+  },
+  {
+    "w": "break",
+    "d": "medium"
+  },
+  {
+    "w": "war",
+    "d": "medium"
+  },
+  {
+    "w": "city",
+    "d": "medium"
+  },
+  {
+    "w": "walk",
+    "d": "medium"
+  },
+  {
+    "w": "town",
+    "d": "medium"
+  },
+  {
+    "w": "trust",
+    "d": "easy"
+  },
+  {
+    "w": "met",
+    "d": "easy"
+  },
+  {
+    "w": "office",
+    "d": "medium"
+  },
+  {
+    "w": "question",
+    "d": "medium"
+  },
+  {
+    "w": "brought",
+    "d": "medium"
+  },
+  {
+    "w": "yours",
+    "d": "medium"
+  },
+  {
+    "w": "welcome",
+    "d": "medium"
+  },
+  {
+    "w": "high",
+    "d": "easy"
+  },
+  {
+    "w": "wow",
+    "d": "medium"
+  },
+  {
+    "w": "couple",
+    "d": "medium"
+  },
+  {
+    "w": "half",
+    "d": "easy"
+  },
+  {
+    "w": "died",
+    "d": "easy"
+  },
+  {
+    "w": "cool",
+    "d": "easy"
+  },
+  {
+    "w": "free",
+    "d": "easy"
+  },
+  {
+    "w": "either",
+    "d": "medium"
+  },
+  {
+    "w": "seems",
+    "d": "easy"
+  },
+  {
+    "w": "power",
+    "d": "medium"
+  },
+  {
+    "w": "whoa",
+    "d": "medium"
+  },
+  {
+    "w": "bye",
+    "d": "medium"
+  },
+  {
+    "w": "buy",
+    "d": "medium"
+  },
+  {
+    "w": "telling",
+    "d": "medium"
+  },
+  {
+    "w": "honey",
+    "d": "medium"
+  },
+  {
+    "w": "tried",
+    "d": "easy"
+  },
+  {
+    "w": "front",
+    "d": "easy"
+  },
+  {
+    "w": "team",
+    "d": "easy"
+  },
+  {
+    "w": "answer",
+    "d": "medium"
+  },
+  {
+    "w": "gun",
+    "d": "easy"
+  },
+  {
+    "w": "boys",
+    "d": "medium"
+  },
+  {
+    "w": "line",
+    "d": "easy"
+  },
+  {
+    "w": "send",
+    "d": "easy"
+  },
+  {
+    "w": "news",
+    "d": "medium"
+  },
+  {
+    "w": "stupid",
+    "d": "medium"
+  },
+  {
+    "w": "bed",
+    "d": "easy"
+  },
+  {
+    "w": "hurry",
+    "d": "medium"
+  },
+  {
+    "w": "full",
+    "d": "easy"
+  },
+  {
+    "w": "months",
+    "d": "medium"
+  },
+  {
+    "w": "save",
+    "d": "easy"
+  },
+  {
+    "w": "sometimes",
+    "d": "hard"
+  },
+  {
+    "w": "become",
+    "d": "medium"
+  },
+  {
+    "w": "along",
+    "d": "easy"
+  },
+  {
+    "w": "hate",
+    "d": "easy"
+  },
+  {
+    "w": "food",
+    "d": "easy"
+  },
+  {
+    "w": "outside",
+    "d": "medium"
+  },
+  {
+    "w": "light",
+    "d": "easy"
+  },
+  {
+    "w": "needs",
+    "d": "easy"
+  },
+  {
+    "w": "dog",
+    "d": "easy"
+  },
+  {
+    "w": "country",
+    "d": "medium"
+  },
+  {
+    "w": "clear",
+    "d": "easy"
+  },
+  {
+    "w": "order",
+    "d": "easy"
+  },
+  {
+    "w": "fact",
+    "d": "easy"
+  },
+  {
+    "w": "lord",
+    "d": "easy"
+  },
+  {
+    "w": "captain",
+    "d": "medium"
+  },
+  {
+    "w": "six",
+    "d": "medium"
+  },
+  {
+    "w": "hot",
+    "d": "easy"
+  },
+  {
+    "w": "funny",
+    "d": "medium"
+  },
+  {
+    "w": "black",
+    "d": "medium"
+  },
+  {
+    "w": "alive",
+    "d": "easy"
+  },
+  {
+    "w": "pick",
+    "d": "medium"
+  },
+  {
+    "w": "feeling",
+    "d": "medium"
+  },
+  {
+    "w": "living",
+    "d": "medium"
+  },
+  {
+    "w": "cause",
+    "d": "easy"
+  },
+  {
+    "w": "ahead",
+    "d": "easy"
+  },
+  {
+    "w": "lose",
+    "d": "easy"
+  },
+  {
+    "w": "king",
+    "d": "medium"
+  },
+  {
+    "w": "plan",
+    "d": "easy"
+  },
+  {
+    "w": "dinner",
+    "d": "medium"
+  },
+  {
+    "w": "sighs",
+    "d": "easy"
+  },
+  {
+    "w": "sort",
+    "d": "easy"
+  },
+  {
+    "w": "leaving",
+    "d": "medium"
+  },
+  {
+    "w": "running",
+    "d": "medium"
+  },
+  {
+    "w": "boss",
+    "d": "easy"
+  },
+  {
+    "w": "alright",
+    "d": "medium"
+  },
+  {
+    "w": "promise",
+    "d": "medium"
+  },
+  {
+    "w": "taken",
+    "d": "medium"
+  },
+  {
+    "w": "safe",
+    "d": "easy"
+  },
+  {
+    "w": "book",
+    "d": "medium"
+  },
+  {
+    "w": "sent",
+    "d": "easy"
+  },
+  {
+    "w": "white",
+    "d": "medium"
+  },
+  {
+    "w": "hour",
+    "d": "easy"
+  },
+  {
+    "w": "anybody",
+    "d": "medium"
+  },
+  {
+    "w": "small",
+    "d": "easy"
+  },
+  {
+    "w": "perfect",
+    "d": "medium"
+  },
+  {
+    "w": "lives",
+    "d": "easy"
+  },
+  {
+    "w": "special",
+    "d": "medium"
+  },
+  {
+    "w": "parents",
+    "d": "medium"
+  },
+  {
+    "w": "john",
+    "d": "easy"
+  },
+  {
+    "w": "himself",
+    "d": "medium"
+  },
+  {
+    "w": "perhaps",
+    "d": "medium"
+  },
+  {
+    "w": "sounds",
+    "d": "medium"
+  },
+  {
+    "w": "serious",
+    "d": "medium"
+  },
+  {
+    "w": "sick",
+    "d": "medium"
+  },
+  {
+    "w": "company",
+    "d": "medium"
+  },
+  {
+    "w": "scared",
+    "d": "medium"
+  },
+  {
+    "w": "uncle",
+    "d": "easy"
+  },
+  {
+    "w": "poor",
+    "d": "easy"
+  },
+  {
+    "w": "red",
+    "d": "easy"
+  },
+  {
+    "w": "past",
+    "d": "easy"
+  },
+  {
+    "w": "earth",
+    "d": "easy"
+  },
+  {
+    "w": "possible",
+    "d": "medium"
+  },
+  {
+    "w": "shoot",
+    "d": "easy"
+  },
+  {
+    "w": "touch",
+    "d": "easy"
+  },
+  {
+    "w": "sound",
+    "d": "easy"
+  },
+  {
+    "w": "top",
+    "d": "easy"
+  },
+  {
+    "w": "ass",
+    "d": "easy"
+  },
+  {
+    "w": "laughs",
+    "d": "medium"
+  },
+  {
+    "w": "cannot",
+    "d": "medium"
+  },
+  {
+    "w": "asking",
+    "d": "medium"
+  },
+  {
+    "w": "win",
+    "d": "medium"
+  },
+  {
+    "w": "glad",
+    "d": "easy"
+  },
+  {
+    "w": "control",
+    "d": "medium"
+  },
+  {
+    "w": "hmm",
+    "d": "easy"
+  },
+  {
+    "w": "human",
+    "d": "easy"
+  },
+  {
+    "w": "drive",
+    "d": "easy"
+  },
+  {
+    "w": "hair",
+    "d": "easy"
+  },
+  {
+    "w": "jack",
+    "d": "medium"
+  },
+  {
+    "w": "bitch",
+    "d": "easy"
+  },
+  {
+    "w": "luck",
+    "d": "medium"
+  },
+  {
+    "w": "murder",
+    "d": "medium"
+  },
+  {
+    "w": "happens",
+    "d": "medium"
+  },
+  {
+    "w": "air",
+    "d": "easy"
+  },
+  {
+    "w": "ten",
+    "d": "easy"
+  },
+  {
+    "w": "daddy",
+    "d": "medium"
+  },
+  {
+    "w": "finally",
+    "d": "medium"
+  },
+  {
+    "w": "chuckles",
+    "d": "medium"
+  },
+  {
+    "w": "fast",
+    "d": "easy"
+  },
+  {
+    "w": "cold",
+    "d": "easy"
+  },
+  {
+    "w": "seem",
+    "d": "easy"
+  },
+  {
+    "w": "laughing",
+    "d": "medium"
+  },
+  {
+    "w": "words",
+    "d": "medium"
+  },
+  {
+    "w": "hospital",
+    "d": "medium"
+  },
+  {
+    "w": "street",
+    "d": "medium"
+  },
+  {
+    "w": "hang",
+    "d": "easy"
+  },
+  {
+    "w": "dance",
+    "d": "easy"
+  },
+  {
+    "w": "meeting",
+    "d": "medium"
+  },
+  {
+    "w": "till",
+    "d": "easy"
+  },
+  {
+    "w": "others",
+    "d": "medium"
+  },
+  {
+    "w": "catch",
+    "d": "easy"
+  },
+  {
+    "w": "follow",
+    "d": "medium"
+  },
+  {
+    "w": "sense",
+    "d": "easy"
+  },
+  {
+    "w": "sex",
+    "d": "medium"
+  },
+  {
+    "w": "lie",
+    "d": "easy"
+  },
+  {
+    "w": "evening",
+    "d": "medium"
+  },
+  {
+    "w": "master",
+    "d": "medium"
+  },
+  {
+    "w": "known",
+    "d": "medium"
+  },
+  {
+    "w": "dream",
+    "d": "easy"
+  },
+  {
+    "w": "write",
+    "d": "medium"
+  },
+  {
+    "w": "million",
+    "d": "medium"
+  },
+  {
+    "w": "voice",
+    "d": "easy"
+  },
+  {
+    "w": "sweet",
+    "d": "medium"
+  },
+  {
+    "w": "rather",
+    "d": "medium"
+  },
+  {
+    "w": "felt",
+    "d": "easy"
+  },
+  {
+    "w": "sign",
+    "d": "easy"
+  },
+  {
+    "w": "lucky",
+    "d": "medium"
+  },
+  {
+    "w": "somewhere",
+    "d": "hard"
+  },
+  {
+    "w": "bet",
+    "d": "easy"
+  },
+  {
+    "w": "jesus",
+    "d": "easy"
+  },
+  {
+    "w": "longer",
+    "d": "medium"
+  },
+  {
+    "w": "calling",
+    "d": "medium"
+  }
 ]
