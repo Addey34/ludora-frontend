@@ -52,7 +52,7 @@ export class MinesweeperGame extends GameEngine {
   private timerId: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
-    super({ storageKey: 'minesweeper-scores' });
+    super({ storageKey: 'minesweeper-scores', leaderboardId: 'minesweeper' });
   }
 
   private get def(): DiffDef {

@@ -115,6 +115,11 @@
   transform: scale(0.94);
 }
 
+.motus-key:focus-visible {
+  outline: 2px solid var(--text-color);
+  outline-offset: 2px;
+}
+
 .motus-key--wide {
   flex: 1.5 1 0;
   max-width: 4rem;

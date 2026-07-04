@@ -13,11 +13,14 @@ describe('neighbors', () => {
 });
 
 describe('createBoard', () => {
-  it('places exactly the requested mines, never on the safe cell', () => {
+  it('places exactly the requested mines, keeping the whole safe zone clear', () => {
     const board = createBoard(9, 9, 10, 4, 4);
     const total = board.mine.flat().filter(Boolean).length;
     expect(total).toBe(10);
+    // The clicked cell and its 8 neighbours are mine-free, so it always floods.
     expect(board.mine[4][4]).toBe(false);
+    for (const [nr, nc] of neighbors(4, 4, 9, 9)) expect(board.mine[nr][nc]).toBe(false);
+    expect(board.count[4][4]).toBe(0);
   });
 
   it('computes adjacency counts consistent with the layout', () => {
@@ -41,9 +44,12 @@ describe('floodReveal', () => {
   });
 
   it('does nothing when clicking a mine', () => {
-    const board = createBoard(3, 3, 8, 0, 0); // everything but (0,0) is a mine
+    // Safe zone around (2,2) is (1,1),(1,2),(2,1),(2,2); the other 5 cells all
+    // become mines (8 requested, clamped to the 5 available), so (0,0) is a mine.
+    const board = createBoard(3, 3, 8, 2, 2);
+    expect(board.mine[0][0]).toBe(true);
     const revealed = emptyRevealed(3, 3);
-    floodReveal(board, revealed, 1, 1); // a mine
-    expect(revealed[1][1]).toBe(false);
+    floodReveal(board, revealed, 0, 0); // a mine
+    expect(revealed[0][0]).toBe(false);
   });
 });

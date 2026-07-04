@@ -50,7 +50,7 @@ export class MotusGame extends GameEngine {
   private finished = true;
 
   constructor() {
-    super({ storageKey: 'motus-scores' });
+    super({ storageKey: 'motus-scores', leaderboardId: 'motus' });
   }
 
   async initialize(): Promise<void> {
@@ -131,7 +131,12 @@ export class MotusGame extends GameEngine {
         if (key === KEY_ENTER || key === KEY_DEL) btn.classList.add('motus-key--wide');
         btn.textContent = key === KEY_ENTER ? 'Enter' : key === KEY_DEL ? '⌫' : key;
         btn.dataset.key = key;
-        btn.addEventListener('click', () => this.press(key));
+        // Blur after handling: otherwise the on-screen button keeps focus and a
+        // subsequent physical Enter/Space re-triggers its click (double submit).
+        btn.addEventListener('click', () => {
+          this.press(key);
+          btn.blur();
+        });
         rowEl.appendChild(btn);
         this.keyEls.set(key, btn);
       }

@@ -40,10 +40,22 @@
   opacity: 0.6;
 }
 
+/* Keyboard focus ring (pads are <button>s, also driven by keys 1-4). */
+.simon-pad:focus-visible {
+  outline: 3px solid var(--white-color);
+  outline-offset: -8px;
+  opacity: 0.75;
+}
+
 .simon-pad.is-lit {
   opacity: 1;
   transform: scale(0.97);
   box-shadow: 0 0 2.5rem 0.3rem var(--pad-color);
+}
+
+/* Wrong pad on a miss: override the lit glow with red so the mistake reads. */
+.simon-pad.is-wrong {
+  box-shadow: 0 0 2.5rem 0.4rem #ef4444;
 }
 
 /* Order in the grid: 0 = top-left, 1 = top-right, 2 = bottom-left, 3 = bottom-right.

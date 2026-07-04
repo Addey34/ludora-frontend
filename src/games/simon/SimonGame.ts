@@ -2,6 +2,7 @@ import { GameEngine } from '../../shared/engine/GameEngine.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
+import { screenShake } from '../../shared/fx/screenShake.js';
 import { playSound, playTone } from '../../shared/fx/sound.js';
 import { extendSequence, flashInterval, PADS, Pad } from './simon.js';
 
@@ -36,7 +37,7 @@ export class SimonGame extends GameEngine {
   private timers: ReturnType<typeof setTimeout>[] = [];
 
   constructor() {
-    super({ storageKey: 'simon-scores' });
+    super({ storageKey: 'simon-scores', leaderboardId: 'simon' });
   }
 
   initialize(): void {
@@ -90,7 +91,7 @@ export class SimonGame extends GameEngine {
     this.sequence = [];
     this.inputIndex = 0;
     this.acceptingInput = false;
-    this.pads.forEach((p) => p.classList.remove('is-lit'));
+    this.pads.forEach((p) => p.classList.remove('is-lit', 'is-wrong'));
     this.hud?.set('status', null);
     this.updateScoreDisplay();
   }
@@ -140,16 +141,27 @@ export class SimonGame extends GameEngine {
 
   private onPad(pad: Pad): void {
     if (!this.acceptingInput || !this.state.isRunning) return;
-    this.flashPad(pad, 180);
 
     if (pad !== this.sequence[this.inputIndex]) {
+      // Wrong pad: light it red and shake so the mistake is visible, then hand
+      // over to the game-over flow after a short beat (guarded by the generation
+      // counter so a reset in between cancels it).
       this.acceptingInput = false;
       this.setPadsEnabled(false);
+      const el = this.pads[pad];
+      el?.classList.add('is-lit', 'is-wrong');
+      screenShake(6, 300);
       playSound('die');
-      this.gameOver();
+      const gen = this.gen;
+      this.schedule(() => {
+        if (gen !== this.gen) return;
+        el?.classList.remove('is-lit', 'is-wrong');
+        this.gameOver();
+      }, 550);
       return;
     }
 
+    this.flashPad(pad, 180);
     this.inputIndex++;
     if (this.inputIndex === this.sequence.length) {
       // Round cleared: score is the sequence length reproduced.

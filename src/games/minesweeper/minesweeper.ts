@@ -39,9 +39,11 @@ function grid<T>(rows: number, cols: number, fill: T): T[][] {
 }
 
 /**
- * Builds a board with `mineCount` mines placed at random (via `rng`), never on
- * the first-clicked cell `(safeR, safeC)` — so the first reveal is always safe.
- * Adjacent counts are computed from the final layout.
+ * Builds a board with `mineCount` mines placed at random (via `rng`), keeping the
+ * first-clicked cell `(safeR, safeC)` AND its neighbours mine-free — so the first
+ * reveal always opens an area (the clicked cell has an adjacent count of 0 and
+ * floods) rather than landing on a lone number. Adjacent counts are computed from
+ * the final layout.
  */
 export function createBoard(
   rows: number,
@@ -53,10 +55,14 @@ export function createBoard(
 ): Board {
   const mine = grid(rows, cols, false);
 
+  // The clicked cell plus its neighbours form the guaranteed-safe zone.
+  const safe = new Set<number>([safeR * cols + safeC]);
+  for (const [nr, nc] of neighbors(safeR, safeC, rows, cols)) safe.add(nr * cols + nc);
+
   const cells: Array<[number, number]> = [];
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      if (!(r === safeR && c === safeC)) cells.push([r, c]);
+      if (!safe.has(r * cols + c)) cells.push([r, c]);
     }
   }
   // Fisher-Yates shuffle, then take the first `mineCount` cells.
