@@ -1,0 +1,225 @@
+[
+  {
+    "verb": "être",
+    "présent": ["suis", "es", "est", "sommes", "êtes", "sont"],
+    "imparfait": ["étais", "étais", "était", "étions", "étiez", "étaient"],
+    "futur": ["serai", "seras", "sera", "serons", "serez", "seront"]
+  },
+  {
+    "verb": "avoir",
+    "présent": ["ai", "as", "a", "avons", "avez", "ont"],
+    "imparfait": ["avais", "avais", "avait", "avions", "aviez", "avaient"],
+    "futur": ["aurai", "auras", "aura", "aurons", "aurez", "auront"]
+  },
+  {
+    "verb": "aller",
+    "présent": ["vais", "vas", "va", "allons", "allez", "vont"],
+    "imparfait": ["allais", "allais", "allait", "allions", "alliez", "allaient"],
+    "futur": ["irai", "iras", "ira", "irons", "irez", "iront"]
+  },
+  {
+    "verb": "faire",
+    "présent": ["fais", "fais", "fait", "faisons", "faites", "font"],
+    "imparfait": ["faisais", "faisais", "faisait", "faisions", "faisiez", "faisaient"],
+    "futur": ["ferai", "feras", "fera", "ferons", "ferez", "feront"]
+  },
+  {
+    "verb": "dire",
+    "présent": ["dis", "dis", "dit", "disons", "dites", "disent"],
+    "imparfait": ["disais", "disais", "disait", "disions", "disiez", "disaient"],
+    "futur": ["dirai", "diras", "dira", "dirons", "direz", "diront"]
+  },
+  {
+    "verb": "pouvoir",
+    "présent": ["puis", "peux", "peut", "pouvons", "pouvez", "peuvent"],
+    "imparfait": ["pouvais", "pouvais", "pouvait", "pouvions", "pouviez", "pouvaient"],
+    "futur": ["pourrai", "pourras", "pourra", "pourrons", "pourrez", "pourront"]
+  },
+  {
+    "verb": "voir",
+    "présent": ["vois", "vois", "voit", "voyons", "voyez", "voient"],
+    "imparfait": ["voyais", "voyais", "voyait", "voyions", "voyiez", "voyaient"],
+    "futur": ["verrai", "verras", "verra", "verrons", "verrez", "verront"]
+  },
+  {
+    "verb": "prendre",
+    "présent": ["prends", "prends", "prend", "prenons", "prenez", "prennent"],
+    "imparfait": ["prenais", "prenais", "prenait", "prenions", "preniez", "prenaient"],
+    "futur": ["prendrai", "prendras", "prendra", "prendrons", "prendrez", "prendront"]
+  },
+  {
+    "verb": "vouloir",
+    "présent": ["veux", "veux", "veut", "voulons", "voulez", "veulent"],
+    "imparfait": ["voulais", "voulais", "voulait", "voulions", "vouliez", "voulaient"],
+    "futur": ["voudrai", "voudras", "voudra", "voudrons", "voudrez", "voudront"]
+  },
+  {
+    "verb": "venir",
+    "présent": ["viens", "viens", "vient", "venons", "venez", "viennent"],
+    "imparfait": ["venais", "venais", "venait", "venions", "veniez", "venaient"],
+    "futur": ["viendrai", "viendras", "viendra", "viendrons", "viendrez", "viendront"]
+  },
+  {
+    "verb": "devoir",
+    "présent": ["dois", "dois", "doit", "devons", "devez", "doivent"],
+    "imparfait": ["devais", "devais", "devait", "devions", "deviez", "devaient"],
+    "futur": ["devrai", "devras", "devra", "devrons", "devrez", "devront"]
+  },
+  {
+    "verb": "savoir",
+    "présent": ["sais", "sais", "sait", "savons", "savez", "savent"],
+    "imparfait": ["savais", "savais", "savait", "savions", "saviez", "savaient"],
+    "futur": ["saurai", "sauras", "saura", "saurons", "saurez", "sauront"]
+  },
+  {
+    "verb": "parler",
+    "présent": ["parle", "parles", "parle", "parlons", "parlez", "parlent"],
+    "imparfait": ["parlais", "parlais", "parlait", "parlions", "parliez", "parlaient"],
+    "futur": ["parlerai", "parleras", "parlera", "parlerons", "parlerez", "parleront"]
+  },
+  {
+    "verb": "aimer",
+    "présent": ["aime", "aimes", "aime", "aimons", "aimez", "aiment"],
+    "imparfait": ["aimais", "aimais", "aimait", "aimions", "aimiez", "aimaient"],
+    "futur": ["aimerai", "aimeras", "aimera", "aimerons", "aimerez", "aimeront"]
+  },
+  {
+    "verb": "manger",
+    "présent": ["mange", "manges", "mange", "mangeons", "mangez", "mangent"],
+    "imparfait": ["mangeais", "mangeais", "mangeait", "mangions", "mangiez", "mangeaient"],
+    "futur": ["mangerai", "mangeras", "mangera", "mangerons", "mangerez", "mangeront"]
+  },
+  {
+    "verb": "finir",
+    "présent": ["finis", "finis", "finit", "finissons", "finissez", "finissent"],
+    "imparfait": ["finissais", "finissais", "finissait", "finissions", "finissiez", "finissaient"],
+    "futur": ["finirai", "finiras", "finira", "finirons", "finirez", "finiront"]
+  },
+  {
+    "verb": "partir",
+    "présent": ["pars", "pars", "part", "partons", "partez", "partent"],
+    "imparfait": ["partais", "partais", "partait", "partions", "partiez", "partaient"],
+    "futur": ["partirai", "partiras", "partira", "partirons", "partirez", "partiront"]
+  },
+  {
+    "verb": "mettre",
+    "présent": ["mets", "mets", "met", "mettons", "mettez", "mettent"],
+    "imparfait": ["mettais", "mettais", "mettait", "mettions", "mettiez", "mettaient"],
+    "futur": ["mettrai", "mettras", "mettra", "mettrons", "mettrez", "mettront"]
+  },
+  {
+    "verb": "donner",
+    "présent": ["donne", "donnes", "donne", "donnons", "donnez", "donnent"],
+    "imparfait": ["donnais", "donnais", "donnait", "donnions", "donniez", "donnaient"],
+    "futur": ["donnerai", "donneras", "donnera", "donnerons", "donnerez", "donneront"]
+  },
+  {
+    "verb": "trouver",
+    "présent": ["trouve", "trouves", "trouve", "trouvons", "trouvez", "trouvent"],
+    "imparfait": ["trouvais", "trouvais", "trouvait", "trouvions", "trouviez", "trouvaient"],
+    "futur": ["trouverai", "trouveras", "trouvera", "trouverons", "trouverez", "trouveront"]
+  },
+  {
+    "verb": "penser",
+    "présent": ["pense", "penses", "pense", "pensons", "pensez", "pensent"],
+    "imparfait": ["pensais", "pensais", "pensait", "pensions", "pensiez", "pensaient"],
+    "futur": ["penserai", "penseras", "pensera", "penserons", "penserez", "penseront"]
+  },
+  {
+    "verb": "regarder",
+    "présent": ["regarde", "regardes", "regarde", "regardons", "regardez", "regardent"],
+    "imparfait": ["regardais", "regardais", "regardait", "regardions", "regardiez", "regardaient"],
+    "futur": ["regarderai", "regarderas", "regardera", "regarderons", "regarderez", "regarderont"]
+  },
+  {
+    "verb": "passer",
+    "présent": ["passe", "passes", "passe", "passons", "passez", "passent"],
+    "imparfait": ["passais", "passais", "passait", "passions", "passiez", "passaient"],
+    "futur": ["passerai", "passeras", "passera", "passerons", "passerez", "passeront"]
+  },
+  {
+    "verb": "demander",
+    "présent": ["demande", "demandes", "demande", "demandons", "demandez", "demandent"],
+    "imparfait": ["demandais", "demandais", "demandait", "demandions", "demandiez", "demandaient"],
+    "futur": ["demanderai", "demanderas", "demandera", "demanderons", "demanderez", "demanderont"]
+  },
+  {
+    "verb": "rester",
+    "présent": ["reste", "restes", "reste", "restons", "restez", "restent"],
+    "imparfait": ["restais", "restais", "restait", "restions", "restiez", "restaient"],
+    "futur": ["resterai", "resteras", "restera", "resterons", "resterez", "resteront"]
+  },
+  {
+    "verb": "sortir",
+    "présent": ["sors", "sors", "sort", "sortons", "sortez", "sortent"],
+    "imparfait": ["sortais", "sortais", "sortait", "sortions", "sortiez", "sortaient"],
+    "futur": ["sortirai", "sortiras", "sortira", "sortirons", "sortirez", "sortiront"]
+  },
+  {
+    "verb": "entendre",
+    "présent": ["entends", "entends", "entend", "entendons", "entendez", "entendent"],
+    "imparfait": ["entendais", "entendais", "entendait", "entendions", "entendiez", "entendaient"],
+    "futur": ["entendrai", "entendras", "entendra", "entendrons", "entendrez", "entendront"]
+  },
+  {
+    "verb": "répondre",
+    "présent": ["réponds", "réponds", "répond", "répondons", "répondez", "répondent"],
+    "imparfait": ["répondais", "répondais", "répondait", "répondions", "répondiez", "répondaient"],
+    "futur": ["répondrai", "répondras", "répondra", "répondrons", "répondrez", "répondront"]
+  },
+  {
+    "verb": "écrire",
+    "présent": ["écris", "écris", "écrit", "écrivons", "écrivez", "écrivent"],
+    "imparfait": ["écrivais", "écrivais", "écrivait", "écrivions", "écriviez", "écrivaient"],
+    "futur": ["écrirai", "écriras", "écrira", "écrirons", "écrirez", "écriront"]
+  },
+  {
+    "verb": "lire",
+    "présent": ["lis", "lis", "lit", "lisons", "lisez", "lisent"],
+    "imparfait": ["lisais", "lisais", "lisait", "lisions", "lisiez", "lisaient"],
+    "futur": ["lirai", "liras", "lira", "lirons", "lirez", "liront"]
+  },
+  {
+    "verb": "boire",
+    "présent": ["bois", "bois", "boit", "buvons", "buvez", "boivent"],
+    "imparfait": ["buvais", "buvais", "buvait", "buvions", "buviez", "buvaient"],
+    "futur": ["boirai", "boiras", "boira", "boirons", "boirez", "boiront"]
+  },
+  {
+    "verb": "courir",
+    "présent": ["cours", "cours", "court", "courons", "courez", "courent"],
+    "imparfait": ["courais", "courais", "courait", "courions", "couriez", "couraient"],
+    "futur": ["courrai", "courras", "courra", "courrons", "courrez", "courront"]
+  },
+  {
+    "verb": "ouvrir",
+    "présent": ["ouvre", "ouvres", "ouvre", "ouvrons", "ouvrez", "ouvrent"],
+    "imparfait": ["ouvrais", "ouvrais", "ouvrait", "ouvrions", "ouvriez", "ouvraient"],
+    "futur": ["ouvrirai", "ouvriras", "ouvrira", "ouvrirons", "ouvrirez", "ouvriront"]
+  },
+  {
+    "verb": "tenir",
+    "présent": ["tiens", "tiens", "tient", "tenons", "tenez", "tiennent"],
+    "imparfait": ["tenais", "tenais", "tenait", "tenions", "teniez", "tenaient"],
+    "futur": ["tiendrai", "tiendras", "tiendra", "tiendrons", "tiendrez", "tiendront"]
+  },
+  {
+    "verb": "connaître",
+    "présent": ["connais", "connais", "connaît", "connaissons", "connaissez", "connaissent"],
+    "imparfait": [
+      "connaissais",
+      "connaissais",
+      "connaissait",
+      "connaissions",
+      "connaissiez",
+      "connaissaient"
+    ],
+    "futur": ["connaîtrai", "connaîtras", "connaîtra", "connaîtrons", "connaîtrez", "connaîtront"]
+  },
+  {
+    "verb": "attendre",
+    "présent": ["attends", "attends", "attend", "attendons", "attendez", "attendent"],
+    "imparfait": ["attendais", "attendais", "attendait", "attendions", "attendiez", "attendaient"],
+    "futur": ["attendrai", "attendras", "attendra", "attendrons", "attendrez", "attendront"]
+  }
+]

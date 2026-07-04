@@ -12,6 +12,7 @@
     "lint:fix": "eslint src --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "data": "node scripts/build-data.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "verify": "npm run format:check && npm run lint && npm run build && npm test"
@@ -31,9 +32,13 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.9.1",
+    "an-array-of-english-words": "^2.0.0",
+    "an-array-of-french-words": "^2.0.0",
     "eslint": "^10.5.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import-x": "^4.16.2",
+    "french-verbs": "^5.4.0",
+    "french-verbs-lefff": "^3.4.0",
     "happy-dom": "^20.10.6",
     "prettier": "^3.8.4",
     "typescript": "^6.0.3",
