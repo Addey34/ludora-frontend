@@ -1,3 +1,5 @@
+import { applyTranslations, getLocale, setLocale, t } from '../i18n/i18n.js';
+
 const sidebar = document.querySelector('.sidebar');
 if (sidebar) {
   const path = window.location.pathname;
@@ -57,6 +59,17 @@ if (sidebar) {
   });
 }
 
+(function wireLanguageToggle() {
+  applyTranslations();
+  const btn = document.getElementById('langToggle');
+  const code = document.getElementById('langCode');
+  if (!btn) return;
+  const current = getLocale();
+  if (code) code.textContent = current.toUpperCase();
+  btn.setAttribute('aria-label', `${t('language')}: ${current.toUpperCase()}`);
+  btn.addEventListener('click', () => setLocale(getLocale() === 'en' ? 'fr' : 'en'));
+})();
+
 (function wireSoundToggle() {
   const btn = document.getElementById('soundToggle');
   const icon = document.getElementById('soundIcon');
@@ -68,7 +81,7 @@ if (sidebar) {
   const updateIcon = (animate = false) => {
     const muted = isMuted();
     icon.className = muted ? 'fas fa-volume-xmark' : 'fas fa-volume-high';
-    btn.setAttribute('aria-label', muted ? 'Enable sound' : 'Mute sound');
+    btn.setAttribute('aria-label', muted ? t('enableSound') : t('muteSound'));
     btn.classList.toggle('is-muted', muted);
     if (animate) {
       btn.style.transform = 'scale(0.82)';

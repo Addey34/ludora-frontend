@@ -14,6 +14,7 @@ import {
 import { setupLevelPanel, LevelPanelHandle } from '../levels/levelPanel.js';
 import { setupLeaderboardPanel, LeaderboardPanelHandle } from '../score/leaderboardPanel.js';
 import { HudHandle } from '../ui/hud.js';
+import { t } from '../i18n/i18n.js';
 
 /**
  * Configuration shared by all games, passed to the engine constructor.
@@ -409,7 +410,7 @@ export abstract class GameEngine {
     const content = this.getGameOverContent();
     const buttons = [
       {
-        text: 'Play again',
+        text: t('playAgain'),
         primary: true,
         onClick: () => {
           this.overlay.hide();
@@ -419,7 +420,7 @@ export abstract class GameEngine {
     ];
     if (this.leaderboardPanel) {
       buttons.push({
-        text: 'View leaderboard',
+        text: t('viewLeaderboard'),
         primary: false,
         onClick: () => {
           this.overlay.hide();

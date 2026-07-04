@@ -6,7 +6,7 @@
     <div class="home-main">
       <header class="home-hero">
         <h1 class="home-title">Games Zone</h1>
-        <p class="home-tagline">Browser games — play instantly, no download</p>
+        <p class="home-tagline" data-i18n="tagline">Browser games — play instantly, no download</p>
       </header>
       <nav class="game-grid" aria-label="Games">
         {{#each games}}
@@ -15,7 +15,9 @@
           class="game-tile"
           data-game="{{key}}"
           aria-label="{{label}}"
+          data-i18n-aria="game_{{key}}"
           data-label="{{label}}"
+          data-i18n-label="game_{{key}}"
           style="--nav-accent: var({{color}})"
         >
           <span

@@ -1,4 +1,5 @@
 import { setupPopover } from './popover.js';
+import { t } from '../i18n/i18n.js';
 
 /**
  * Generic "Settings" popover for the game-shell header.
@@ -50,7 +51,7 @@ export function setupSettingsPanel(fields: SettingsField[]): SettingsPanelHandle
 
   const title = document.createElement('p');
   title.className = 'game-pop-title';
-  title.textContent = 'Settings';
+  title.textContent = t('settings');
 
   const fieldEls: HTMLElement[] = [title];
   for (const field of fields) {

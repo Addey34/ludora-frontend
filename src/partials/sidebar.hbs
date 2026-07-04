@@ -31,7 +31,7 @@
         style="--nav-accent: var({{color}})"
       >
         <span class="sidebar-icon"><span class="game-icon" style="--game-icon: url(/icons/{{key}}.svg)" aria-hidden="true"></span></span>
-        <span class="sidebar-label">{{label}}</span>
+        <span class="sidebar-label" data-i18n="game_{{key}}">{{label}}</span>
         {{#if mode}}<span class="sidebar-mode" data-mode="{{mode}}" title="{{mode}}" aria-hidden="true"></span>{{/if}}
       </a>
     </li>
@@ -39,6 +39,11 @@
   </ul>
   <div class="sidebar-auth" id="authArea"></div>
 </nav>
+<!-- Language toggle: fixed top-right, left of the sound bubble. Text (EN/FR)
+     rather than a flag emoji, which doesn't render on Windows. -->
+<button class="lang-toggle" id="langToggle" type="button" aria-label="Language">
+  <span id="langCode">EN</span>
+</button>
 <!-- Sound toggle: fixed top-right bubble, visible on all pages. -->
 <button class="sound-toggle" id="soundToggle" type="button" aria-label="Mute sound">
   <i class="fas fa-volume-high" id="soundIcon" aria-hidden="true"></i>

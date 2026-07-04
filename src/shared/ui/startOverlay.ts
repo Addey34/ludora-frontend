@@ -1,3 +1,5 @@
+import { t } from '../i18n/i18n.js';
+
 /**
  * Modular "Play" start screen, shared by every game that would otherwise start
  * on its own at load time.
@@ -9,7 +11,7 @@
  * no per-game wiring. Games that already wait for an event (e.g. Typing starts
  * on the first keystroke, `autoStart: false`) keep their own behaviour.
  */
-export function showStartOverlay(onPlay: () => void, label = 'Play'): void {
+export function showStartOverlay(onPlay: () => void, label?: string): void {
   const host = document.querySelector<HTMLElement>('.game-shell');
   if (!host) {
     onPlay();
@@ -18,18 +20,19 @@ export function showStartOverlay(onPlay: () => void, label = 'Play'): void {
 
   dismissStartOverlay();
 
+  const caption = label ?? t('play');
   const root = document.createElement('div');
   root.className = 'game-start';
 
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'game-start-button';
-  button.setAttribute('aria-label', label);
+  button.setAttribute('aria-label', caption);
   button.innerHTML = '<i class="fas fa-play" aria-hidden="true"></i>';
 
   const text = document.createElement('span');
   text.className = 'game-start-label';
-  text.textContent = label;
+  text.textContent = caption;
 
   button.addEventListener('click', () => {
     root.remove();
