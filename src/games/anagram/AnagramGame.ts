@@ -1,7 +1,7 @@
 import { QuizGame } from '../../shared/quiz/QuizGame.js';
 import { Question } from '../../shared/quiz/quiz.js';
 import { SettingsField } from '../../shared/ui/settingsPanel.js';
-import { Lang, LENGTH_BY_DIFFICULTY, pickWord, scramble } from '../../shared/words/words.js';
+import { Lang, WordEntry, keyboardForm, pickWord, scramble } from '../../shared/words/words.js';
 import { loadWords } from '../../shared/words/wordBank.js';
 
 /**
@@ -12,7 +12,7 @@ import { loadWords } from '../../shared/words/wordBank.js';
  */
 export class AnagramGame extends QuizGame {
   private lang: Lang = 'en';
-  private words: Record<Lang, string[]> = { fr: [], en: [] };
+  private words: Record<Lang, WordEntry[]> = { fr: [], en: [] };
 
   constructor() {
     super({
@@ -47,9 +47,16 @@ export class AnagramGame extends QuizGame {
     ];
   }
 
+  protected leaderboardVariant(): { key: string; label: string } | null {
+    const cap = (s: string): string => s[0].toUpperCase() + s.slice(1);
+    return {
+      key: `${this.lang}-${this.difficulty}-${this.mode}`,
+      label: `${this.lang.toUpperCase()} · ${cap(this.difficulty)} · ${cap(this.mode)}`,
+    };
+  }
+
   protected makeQuestion(): Question {
-    const [min, max] = LENGTH_BY_DIFFICULTY[this.difficulty];
-    const word = pickWord(this.words[this.lang], min, max);
+    const word = keyboardForm(pickWord(this.words[this.lang], this.difficulty));
     const letters = scramble(word).split('').join(' ');
     return {
       prompt:

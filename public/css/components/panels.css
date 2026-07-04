@@ -71,6 +71,20 @@
   color: var(--title-color, var(--primary-color));
 }
 
+/* Small line under a panel title, e.g. the current leaderboard variant
+   ("EN · Hard"). Hidden when empty. */
+.game-pop-subtitle {
+  margin: -0.35rem 0 var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-color-muted);
+}
+.game-pop-subtitle:empty {
+  display: none;
+}
+
 /* Leaderboard panel: same compact template as the other popovers. The score
    table drops its "standalone" trim (its own border/shadow/margins) and its
    generous padding to fit in as plain panel content. */

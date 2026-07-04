@@ -96,6 +96,8 @@ export abstract class GameEngine {
 
   /** Persisted leaderboard of the game. */
   protected scoreManager: ScoreManager;
+  /** Base localStorage key, so per-variant boards can suffix it (see {@link setLeaderboardVariant}). */
+  private readonly baseStorageKey: string;
   /** Game-over overlay (replaces the old modal). */
   protected overlay: GameOverlay;
   /** Handle to the "Leaderboard" panel, when the game opts into one. */
@@ -127,12 +129,34 @@ export abstract class GameEngine {
       isPaused: false,
     };
 
+    this.baseStorageKey = this.config.storageKey ?? 'scores';
     this.scoreManager = new ScoreManager(
-      this.config.storageKey ?? 'scores',
+      this.baseStorageKey,
       this.config.maxScores ?? 10,
       !!this.config.leaderboardId
     );
     this.overlay = new GameOverlay();
+  }
+
+  /**
+   * Scopes the leaderboard to a variant (e.g. one board per difficulty/language),
+   * so incomparable runs never share a table. Per-variant boards are **local**
+   * (a single online board would mix variants — the very thing this fixes); the
+   * `label` is shown under the "Leaderboard" title. Call from the game on start
+   * and whenever the relevant settings change; pass `null` to use the base board.
+   */
+  protected setLeaderboardVariant(variant: string | null, label = ''): void {
+    const suffix = variant ? `-${variant}` : '';
+    this.scoreManager = new ScoreManager(
+      this.baseStorageKey + suffix,
+      this.config.maxScores ?? 10,
+      variant ? false : !!this.config.leaderboardId
+    );
+    if (variant) this.config.leaderboardId = undefined; // local-only per variant
+    const badge = document.getElementById('leaderboardVariant');
+    if (badge) badge.textContent = variant ? label : '';
+    this.renderScoreTable();
+    this.updateScoreDisplay();
   }
 
   /** DOM binding, listeners and first render. Runs only once. */

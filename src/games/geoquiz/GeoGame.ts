@@ -1,6 +1,7 @@
 import { QuizGame } from '../../shared/quiz/QuizGame.js';
 import { Question, buildChoices } from '../../shared/quiz/quiz.js';
 import { SettingsField } from '../../shared/ui/settingsPanel.js';
+import { getLocale } from '../../shared/i18n/i18n.js';
 
 interface Country {
   name: string;
@@ -45,13 +46,20 @@ export class GeoGame extends QuizGame {
   }
 
   protected async loadData(): Promise<void> {
-    try {
-      const res = await fetch('/data/countries.json');
-      const data = (await res.json()) as Country[];
-      if (Array.isArray(data) && data.length >= 4) this.countries = data;
-    } catch {
-      this.countries = FALLBACK;
+    // Content follows the interface language (the flag toggle reloads the page).
+    for (const file of [`countries-${getLocale()}.json`, 'countries-en.json']) {
+      try {
+        const res = await fetch(`/data/${file}`);
+        const data = (await res.json()) as Country[];
+        if (Array.isArray(data) && data.length >= 4) {
+          this.countries = data;
+          return;
+        }
+      } catch {
+        /* try the English fallback, then the built-in list */
+      }
     }
+    this.countries = FALLBACK;
   }
 
   protected extraSettings(): SettingsField[] {

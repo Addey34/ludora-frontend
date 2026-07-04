@@ -7,8 +7,9 @@ import { screenShake } from '../../shared/fx/screenShake.js';
 import { Difficulty, difficultyMultiplier } from '../../shared/quiz/quiz.js';
 import {
   Lang,
-  LENGTH_BY_DIFFICULTY,
+  WordEntry,
   isWordGuessed,
+  keyboardForm,
   maskWord,
   pickWord,
 } from '../../shared/words/words.js';
@@ -53,7 +54,7 @@ export class HangmanGame extends GameEngine {
 
   private lang: Lang = 'en';
   private difficulty: Difficulty = 'easy';
-  private words: Record<Lang, string[]> = { fr: [], en: [] };
+  private words: Record<Lang, WordEntry[]> = { fr: [], en: [] };
 
   private target = '';
   private guessed = new Set<string>();
@@ -117,9 +118,18 @@ export class HangmanGame extends GameEngine {
       },
     ]);
 
-    this.renderScoreTable();
+    this.applyLeaderboardVariant();
     const [fr, en] = await Promise.all([loadWords('fr'), loadWords('en')]);
     this.words = { fr, en };
+  }
+
+  /** Points the leaderboard at the current language + difficulty board. */
+  private applyLeaderboardVariant(): void {
+    const cap = (s: string): string => s[0].toUpperCase() + s.slice(1);
+    this.setLeaderboardVariant(
+      `${this.lang}-${this.difficulty}`,
+      `${this.lang.toUpperCase()} · ${cap(this.difficulty)}`
+    );
   }
 
   private buildKeyboard(): void {
@@ -156,6 +166,7 @@ export class HangmanGame extends GameEngine {
     if (this.state.isRunning) return;
     dismissStartOverlay();
     this.resetState();
+    this.applyLeaderboardVariant();
     this.solved = 0;
     this.gen += 1;
     this.state.isRunning = true;
@@ -188,18 +199,10 @@ export class HangmanGame extends GameEngine {
     }
   }
 
-  /** Word-length window for the current run: widens as the streak grows. */
-  private wordRange(): [number, number] {
-    const [min, max] = LENGTH_BY_DIFFICULTY[this.difficulty];
-    const ramp = Math.min(Math.floor(this.solved / 4), 4);
-    return [min + ramp, max + ramp];
-  }
-
   /** Serves the next word of the run (fresh figure, letters and keyboard). */
   private newWord(): void {
-    const [min, max] = this.wordRange();
     const list = this.words[this.lang];
-    this.target = list.length > 0 ? pickWord(list, min, max) : 'HOUSE';
+    this.target = list.length > 0 ? keyboardForm(pickWord(list, this.difficulty)) : 'HOUSE';
     this.guessed = new Set();
     this.wrong = 0;
     this.finished = false;

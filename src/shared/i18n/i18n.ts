@@ -24,6 +24,7 @@ const CATALOG: Record<Locale, Record<string, string>> = {
     play: 'Play',
     playAgain: 'Play again',
     viewLeaderboard: 'View leaderboard',
+    leaderboard: 'Leaderboard',
     howToPlay: 'How to play',
     settings: 'Settings',
     difficulty: 'Difficulty',
@@ -38,6 +39,12 @@ const CATALOG: Record<Locale, Record<string, string>> = {
     muteSound: 'Mute sound',
     enableSound: 'Enable sound',
     tagline: 'Browser games — play instantly, no download',
+    // Home categories (keys match the category id: cat_<id>).
+    cat_action: 'Action',
+    cat_puzzle: 'Puzzle',
+    cat_words: 'Words',
+    cat_quiz: 'Quiz',
+    cat_board: 'Board',
     // Game names (keys match the game key: game_<key>).
     game_typing: 'Typing',
     game_snake: 'Snake',
@@ -66,6 +73,7 @@ const CATALOG: Record<Locale, Record<string, string>> = {
     play: 'Jouer',
     playAgain: 'Rejouer',
     viewLeaderboard: 'Voir le classement',
+    leaderboard: 'Classement',
     howToPlay: 'Comment jouer',
     settings: 'Paramètres',
     difficulty: 'Difficulté',
@@ -80,6 +88,12 @@ const CATALOG: Record<Locale, Record<string, string>> = {
     muteSound: 'Couper le son',
     enableSound: 'Activer le son',
     tagline: 'Jeux en ligne — jouez tout de suite, sans téléchargement',
+    // Catégories (clé = cat_<id>).
+    cat_action: 'Action',
+    cat_puzzle: 'Casse-tête',
+    cat_words: 'Mots',
+    cat_quiz: 'Quiz',
+    cat_board: 'Plateau',
     // Noms des jeux (clé = game_<key>).
     game_typing: 'Dactylo',
     game_snake: 'Serpent',

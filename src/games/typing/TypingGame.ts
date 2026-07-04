@@ -2,6 +2,10 @@ import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
 import { ScoreEntry } from '../../shared/score/ScoreManager.js';
 import { CountdownTimer } from '../../shared/ui/countdownTimer.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { setupSettingsPanel } from '../../shared/ui/settingsPanel.js';
+import { Difficulty } from '../../shared/quiz/quiz.js';
+import { Lang, WordEntry } from '../../shared/words/words.js';
+import { loadWords } from '../../shared/words/wordBank.js';
 
 /**
  * Configuration specific to the typing game.
@@ -47,6 +51,12 @@ export class TypingGame extends GameEngine {
   private currentWordIndex: number = 0;
   private readonly timeLimit: number;
   private letterCount: number = 0;
+
+  /** Word language and difficulty tier (Settings); words keep their real accents. */
+  private lang: Lang = 'en';
+  private difficulty: Difficulty = 'easy';
+  /** Loaded word lists per language (both loaded so the language toggle is instant). */
+  private pool: Record<Lang, WordEntry[]> = { fr: [], en: [] };
   /** Shared one-second countdown; ends the game when it reaches zero. */
   private readonly chrono = new CountdownTimer();
 
@@ -77,10 +87,79 @@ export class TypingGame extends GameEngine {
     ]);
 
     this.setupEventListeners();
-    this.words = await this.loadWords();
+    this.setupTypingSettings();
+    const [fr, en] = await Promise.all([loadWords('fr'), loadWords('en')]);
+    this.pool = { fr, en };
+    this.words = this.buildWordList();
     this.updateWords();
-    this.renderScoreTable();
-    this.updateScoreDisplay();
+    this.applyLeaderboardVariant();
+    this.updateChronoDisplay(this.timeLimit);
+  }
+
+  /** Points the leaderboard at the current language + difficulty board. */
+  private applyLeaderboardVariant(): void {
+    const cap = (s: string): string => s[0].toUpperCase() + s.slice(1);
+    this.setLeaderboardVariant(
+      `${this.lang}-${this.difficulty}`,
+      `${this.lang.toUpperCase()} · ${cap(this.difficulty)}`
+    );
+  }
+
+  /** Language (FR/EN) + difficulty settings; changing either reloads the words. */
+  private setupTypingSettings(): void {
+    setupSettingsPanel([
+      {
+        id: 'lang',
+        label: 'Language',
+        choices: [
+          { label: 'EN', value: 'en' },
+          { label: 'FR', value: 'fr' },
+        ],
+        value: this.lang,
+        onChange: (v) => {
+          this.lang = v === 'fr' ? 'fr' : 'en';
+          this.restartWithNewWords();
+        },
+      },
+      {
+        id: 'difficulty',
+        label: 'Difficulty',
+        choices: [
+          { label: 'Easy', value: 'easy' },
+          { label: 'Medium', value: 'medium' },
+          { label: 'Hard', value: 'hard' },
+        ],
+        value: this.difficulty,
+        onChange: (v) => {
+          this.difficulty = (v as Difficulty) ?? 'easy';
+          this.restartWithNewWords();
+        },
+      },
+    ]);
+  }
+
+  /** Shuffled words of the current language + difficulty (real spelling, accents kept). */
+  private buildWordList(): string[] {
+    const entries = this.pool[this.lang];
+    const tier = entries.filter((e) => e.d === this.difficulty);
+    const words = (tier.length >= 10 ? tier : entries).map((e) => e.w);
+    return this.shuffleArray(words);
+  }
+
+  /** Rebuilds the word list after a settings change and returns to a fresh game. */
+  private restartWithNewWords(): void {
+    this.stop();
+    this.overlay.hide();
+    this.words = this.buildWordList();
+    this.currentWordIndex = 0;
+    this.letterCount = 0;
+    this.resetState();
+    if (this.wordInput) {
+      this.wordInput.disabled = false;
+      this.wordInput.value = '';
+    }
+    this.updateWords();
+    this.applyLeaderboardVariant();
     this.updateChronoDisplay(this.timeLimit);
   }
 
@@ -104,26 +183,6 @@ export class TypingGame extends GameEngine {
         }
         this.handleInputChange();
       });
-    }
-  }
-
-  /**
-   * Loads the word list from `/words.txt`, cleaned up and shuffled. On a network
-   * error, returns a fallback list.
-   */
-  private async loadWords(): Promise<string[]> {
-    try {
-      const response = await fetch('/words.txt');
-      const text = await response.text();
-      return this.shuffleArray(
-        text
-          .split('\n')
-          .map((word) => word.trim())
-          .filter((word) => word.length > 0)
-      );
-    } catch (error) {
-      console.error('Error while loading the words:', error);
-      return ['error', 'loading', 'words'];
     }
   }
 
@@ -285,7 +344,7 @@ export class TypingGame extends GameEngine {
    */
   reset(): void {
     this.stop();
-    this.shuffleArray(this.words);
+    this.words = this.buildWordList();
     this.currentWordIndex = 0;
     this.letterCount = 0;
     this.resetState();

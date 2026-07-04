@@ -1,6 +1,7 @@
 import { QuizGame } from '../../shared/quiz/QuizGame.js';
 import { Question, buildChoices } from '../../shared/quiz/quiz.js';
 import { SettingsField } from '../../shared/ui/settingsPanel.js';
+import { getLocale } from '../../shared/i18n/i18n.js';
 
 interface TriviaItem {
   category: string;
@@ -47,13 +48,21 @@ export class TriviaGame extends QuizGame {
   }
 
   protected async loadData(): Promise<void> {
-    try {
-      const res = await fetch('/data/trivia.json');
-      const data = (await res.json()) as TriviaItem[];
-      if (Array.isArray(data) && data.length >= 4) this.items = data;
-    } catch {
-      this.items = FALLBACK;
+    // Content follows the interface language (English until other languages are
+    // curated — there is no free multilingual trivia source).
+    for (const file of [`trivia-${getLocale()}.json`, 'trivia-en.json']) {
+      try {
+        const res = await fetch(`/data/${file}`);
+        const data = (await res.json()) as TriviaItem[];
+        if (Array.isArray(data) && data.length >= 4) {
+          this.items = data;
+          return;
+        }
+      } catch {
+        /* try the English fallback, then the built-in list */
+      }
     }
+    this.items = FALLBACK;
   }
 
   protected extraSettings(): SettingsField[] {

@@ -102,6 +102,15 @@ export abstract class QuizGame extends GameEngine {
     return [];
   }
 
+  /**
+   * Optional per-variant leaderboard: return a `{ key, label }` to give this
+   * difficulty/mode/… combination its own board (so incomparable runs don't
+   * share a table), or `null` (default) to use the game's single board.
+   */
+  protected leaderboardVariant(): { key: string; label: string } | null {
+    return null;
+  }
+
   // --- Lifecycle ------------------------------------------------------------
 
   async initialize(): Promise<void> {
@@ -187,6 +196,8 @@ export abstract class QuizGame extends GameEngine {
     this.resetState();
     this.state.isRunning = true;
     this.gen += 1;
+    const variant = this.leaderboardVariant();
+    if (variant) this.setLeaderboardVariant(variant.key, variant.label);
     this.stats = emptyStats();
     this.roundIndex = 0;
     this.lives = SURVIVAL_LIVES;

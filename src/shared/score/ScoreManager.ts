@@ -36,6 +36,16 @@ export class ScoreManager {
     this.online = online;
   }
 
+  /**
+   * Points the manager at another localStorage board (a per-variant leaderboard,
+   * e.g. one board per difficulty/language). The session high score is reset so
+   * the online best doesn't leak across variants.
+   */
+  setStorageKey(storageKey: string): void {
+    this.storageKey = storageKey;
+    this.sessionHighScore = 0;
+  }
+
   saveScore(entry: ScoreEntry): void {
     if (this.online) {
       this.sessionHighScore = Math.max(this.sessionHighScore, entry.score);

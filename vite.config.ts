@@ -44,8 +44,13 @@ const games = [
     mode: 'solo',
     leaderboard: true,
     speed: true,
+    settings: true,
     controls: [
       { keys: 'Type', action: 'Retype the displayed words' },
+      {
+        keys: 'Settings',
+        action: 'Language (EN/FR) and difficulty (harder = accents, longer words)',
+      },
       { keys: 'Timer', action: 'Starts on the first letter' },
     ],
   },
@@ -344,6 +349,17 @@ const games = [
   },
 ];
 
+// Home-page grouping: each game key is listed under one section, in display
+// order. A new game = add its key to a section here (the home renders sections
+// from `categories`, see the Handlebars context below).
+const categoryDefs = [
+  { id: 'action', label: 'Action', keys: ['snake', 'pacman', 'tetris', 'breakout', 'pong'] },
+  { id: 'puzzle', label: 'Puzzle', keys: ['2048', 'minesweeper', 'sudoku', 'simon', 'memory'] },
+  { id: 'words', label: 'Words', keys: ['typing', 'motus', 'anagram', 'hangman'] },
+  { id: 'quiz', label: 'Quiz', keys: ['math', 'geoquiz', 'trivia', 'conjugation'] },
+  { id: 'board', label: 'Board', keys: ['connect4', 'ludo', 'goose', 'battleship'] },
+];
+
 // Dev/preview equivalent of render.yaml's clean-URL rewrites.
 // Three cases handled, in order:
 //   1. `/<key>`      → 301 to `/<key>/` (trailing-slash redirect so that the
@@ -423,7 +439,13 @@ export default defineConfig({
         // by its folder segment (the home page, src/index.html, has none).
         const path = pagePath.replace(/\\/g, '/');
         const game = games.find((g) => path.includes(`/${g.key}/`));
-        return { games, game };
+        // Home-page sections: each category with its games (in listed order).
+        const categories = categoryDefs.map((c) => ({
+          id: c.id,
+          label: c.label,
+          games: c.keys.map((k) => games.find((g) => g.key === k)).filter(Boolean),
+        }));
+        return { games, game, categories };
       },
     }),
   ],

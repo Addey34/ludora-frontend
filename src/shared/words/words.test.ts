@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isWordGuessed, maskWord, pickWord, scramble } from './words.js';
+import { WordEntry, isWordGuessed, keyboardForm, maskWord, pickWord, scramble } from './words.js';
 
 describe('scramble', () => {
   it('returns a permutation different from the original', () => {
@@ -11,6 +11,13 @@ describe('scramble', () => {
   it('leaves a single letter (or all-same) untouched', () => {
     expect(scramble('A')).toBe('A');
     expect(scramble('AAAA')).toBe('AAAA');
+  });
+});
+
+describe('keyboardForm', () => {
+  it('strips accents and uppercases', () => {
+    expect(keyboardForm('école')).toBe('ECOLE');
+    expect(keyboardForm('château')).toBe('CHATEAU');
   });
 });
 
@@ -26,10 +33,16 @@ describe('maskWord / isWordGuessed', () => {
 });
 
 describe('pickWord', () => {
-  it('respects the length window, falling back when none matches', () => {
-    const words = ['CHAT', 'MAISON', 'ELEPHANT'];
-    expect(pickWord(words, 4, 5, () => 0)).toBe('CHAT');
-    // No word of length 20 → falls back to the whole list.
-    expect(words).toContain(pickWord(words, 20, 25, () => 0));
+  it('picks from the requested tier, falling back when it is empty', () => {
+    const entries: WordEntry[] = [
+      { w: 'cat', d: 'easy' },
+      { w: 'maison', d: 'medium' },
+      { w: 'elephant', d: 'hard' },
+    ];
+    expect(pickWord(entries, 'easy', () => 0)).toBe('cat');
+    expect(pickWord(entries, 'hard', () => 0)).toBe('elephant');
+    // No word of the requested tier → falls back to the whole list.
+    const onlyEasy: WordEntry[] = [{ w: 'cat', d: 'easy' }];
+    expect(pickWord(onlyEasy, 'hard', () => 0)).toBe('cat');
   });
 });

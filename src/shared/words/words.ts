@@ -1,12 +1,13 @@
 /**
- * Words — the shared FR/EN word service used by the vocabulary games (Anagrams,
- * Hangman, and future spelling games). This file is the **pure** part: scrambling,
- * hangman masking and length filtering, all deterministic and unit-tested. The
- * async loading lives in {@link ./wordBank.ts}. Words are stored uppercase A–Z
- * (accents stripped) so an on-screen keyboard and letter matching stay simple.
+ * Words — the shared FR/EN (+ more) word service used by the language games
+ * (Typing, Anagrams, Hangman, …). This is the **pure** part: the word model,
+ * scrambling, hangman masking and the keyboard (accent-free) form, all
+ * deterministic and unit-tested. Async loading lives in {@link ./wordBank.ts}.
  *
- * See the project's "shared dictionary" direction: this is the generic base for
- * every future word/language game (language is a per-game setting).
+ * Words keep their real spelling (accents included) and carry a difficulty tier,
+ * so a game can pick easy/medium/hard words. Games that need an A–Z keyboard
+ * (Anagrams, Hangman) strip accents via {@link keyboardForm}; Typing uses the
+ * real spelling so accents are actually typed.
  */
 
 import { Difficulty } from '../quiz/quiz.js';
@@ -14,19 +15,16 @@ import { Difficulty } from '../quiz/quiz.js';
 export type Lang = 'fr' | 'en';
 export const LANGS: Lang[] = ['fr', 'en'];
 
-/** Word-length window per difficulty (used to pick harder/longer words). */
-export const LENGTH_BY_DIFFICULTY: Record<Difficulty, [number, number]> = {
-  easy: [4, 5],
-  medium: [6, 7],
-  hard: [8, 12],
-};
+/** A word: its real spelling (`w`, accents kept) and its difficulty tier (`d`). */
+export interface WordEntry {
+  w: string;
+  d: Difficulty;
+}
 
-/** Wrong guesses allowed in Hangman, per difficulty. */
-export const HANGMAN_LIVES: Record<Difficulty, number> = {
-  easy: 8,
-  medium: 6,
-  hard: 5,
-};
+/** Accent-free uppercase form (A–Z), for the on-screen-keyboard games. */
+export function keyboardForm(word: string): string {
+  return word.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
+}
 
 /**
  * Returns a shuffled version of `word` guaranteed different from the original
@@ -60,16 +58,16 @@ export function isWordGuessed(word: string, guessed: ReadonlySet<string>): boole
 }
 
 /**
- * Picks a random word whose length falls in `[min, max]`; falls back to the whole
- * list when none matches (so a game never stalls). Pure given `rng`.
+ * Picks a random word of the given difficulty tier; falls back to the whole list
+ * when that tier is empty (so a game never stalls). Returns the real spelling.
+ * Pure given `rng`.
  */
 export function pickWord(
-  words: readonly string[],
-  min: number,
-  max: number,
+  entries: readonly WordEntry[],
+  difficulty: Difficulty,
   rng: () => number = Math.random
 ): string {
-  const inRange = words.filter((w) => w.length >= min && w.length <= max);
-  const pool = inRange.length > 0 ? inRange : words;
-  return pool[Math.floor(rng() * pool.length)] ?? '';
+  const tier = entries.filter((e) => e.d === difficulty);
+  const pool = tier.length > 0 ? tier : entries;
+  return pool[Math.floor(rng() * pool.length)]?.w ?? '';
 }
