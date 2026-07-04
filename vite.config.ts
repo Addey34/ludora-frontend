@@ -352,12 +352,44 @@ const games = [
 // Home-page grouping: each game key is listed under one section, in display
 // order. A new game = add its key to a section here (the home renders sections
 // from `categories`, see the Handlebars context below).
+// `icon` is a Font Awesome glyph name, `color` a token from variables.css; both
+// give the sidebar's category tile its identity (icon + accent flyout).
 const categoryDefs = [
-  { id: 'action', label: 'Action', keys: ['snake', 'pacman', 'tetris', 'breakout', 'pong'] },
-  { id: 'puzzle', label: 'Puzzle', keys: ['2048', 'minesweeper', 'sudoku', 'simon', 'memory'] },
-  { id: 'words', label: 'Words', keys: ['typing', 'motus', 'anagram', 'hangman'] },
-  { id: 'quiz', label: 'Quiz', keys: ['math', 'geoquiz', 'trivia', 'conjugation'] },
-  { id: 'board', label: 'Board', keys: ['connect4', 'ludo', 'goose', 'battleship'] },
+  {
+    id: 'action',
+    label: 'Action',
+    icon: 'fa-bolt',
+    color: '--cat-action',
+    keys: ['snake', 'pacman', 'tetris', 'breakout', 'pong'],
+  },
+  {
+    id: 'puzzle',
+    label: 'Puzzle',
+    icon: 'fa-puzzle-piece',
+    color: '--cat-puzzle',
+    keys: ['2048', 'minesweeper', 'sudoku', 'simon', 'memory'],
+  },
+  {
+    id: 'words',
+    label: 'Words',
+    icon: 'fa-font',
+    color: '--cat-words',
+    keys: ['typing', 'motus', 'anagram', 'hangman'],
+  },
+  {
+    id: 'quiz',
+    label: 'Quiz',
+    icon: 'fa-brain',
+    color: '--cat-quiz',
+    keys: ['math', 'geoquiz', 'trivia', 'conjugation'],
+  },
+  {
+    id: 'board',
+    label: 'Board',
+    icon: 'fa-chess',
+    color: '--cat-board',
+    keys: ['connect4', 'ludo', 'goose', 'battleship'],
+  },
 ];
 
 // Dev/preview equivalent of render.yaml's clean-URL rewrites.
@@ -443,6 +475,8 @@ export default defineConfig({
         const categories = categoryDefs.map((c) => ({
           id: c.id,
           label: c.label,
+          icon: c.icon,
+          color: c.color,
           games: c.keys.map((k) => games.find((g) => g.key === k)).filter(Boolean),
         }));
         return { games, game, categories };

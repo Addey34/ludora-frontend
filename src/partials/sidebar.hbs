@@ -1,11 +1,12 @@
 <!--
   Global sidebar (neon rail) — included on every page (home + games), it
-  replaces the old footer. Compact (icons only) by default, it expands on hover
-  on desktop; on mobile it is off-screen and opens via the .sidebar-toggle button.
-  The active item is marked in JS (.is-active) from the URL, and tinted with the
-  game's accent via --nav-accent (set inline per item from its `color` token).
-  Each link also shows a small mode badge (solo / duo / multi), data-driven from
-  the game's `mode` field — the glyph is painted in CSS from data-mode.
+  replaces the old footer. A compact 64px rail of super-category tiles (Action,
+  Puzzle, Words, Quiz, Board); hovering a tile unfolds a flyout listing that
+  category's games (on mobile the rail slides in via .sidebar-toggle and the
+  categories become tap-to-open accordions). The active game is marked in JS
+  (.is-active) from the URL and its category tile gets .has-active. Each game
+  link is tinted with its accent via --nav-accent (from the game's `color`
+  token) and shows a small mode badge (solo / duo / multi) from `data-mode`.
 -->
 <button
   class="sidebar-toggle"
@@ -22,18 +23,37 @@
     <span class="sidebar-label">Games Zone</span>
   </a>
   <ul class="sidebar-nav">
-    {{#each games}}
-    <li>
-      <a
-        class="sidebar-link"
-        href="/{{key}}"
-        data-nav="{{key}}"
-        style="--nav-accent: var({{color}})"
+    {{#each categories}}
+    <li class="sidebar-cat" data-cat="{{id}}" style="--cat-accent: var({{color}})">
+      <button
+        class="sidebar-cat-head"
+        type="button"
+        aria-expanded="false"
+        aria-label="{{label}}"
       >
-        <span class="sidebar-icon"><span class="game-icon" style="--game-icon: url(/icons/{{key}}.svg)" aria-hidden="true"></span></span>
-        <span class="sidebar-label" data-i18n="game_{{key}}">{{label}}</span>
-        {{#if mode}}<span class="sidebar-mode" data-mode="{{mode}}" title="{{mode}}" aria-hidden="true"></span>{{/if}}
-      </a>
+        <span class="sidebar-icon"><i class="fas {{icon}}" aria-hidden="true"></i></span>
+        <span class="sidebar-label" data-i18n="cat_{{id}}">{{label}}</span>
+        <span class="sidebar-cat-caret" aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+      </button>
+      <div class="sidebar-flyout">
+        <p class="sidebar-flyout-title" data-i18n="cat_{{id}}">{{label}}</p>
+        <ul class="sidebar-cat-games">
+          {{#each games}}
+          <li>
+            <a
+              class="sidebar-link"
+              href="/{{key}}"
+              data-nav="{{key}}"
+              style="--nav-accent: var({{color}})"
+            >
+              <span class="sidebar-icon"><span class="game-icon" style="--game-icon: url(/icons/{{key}}.svg)" aria-hidden="true"></span></span>
+              <span class="sidebar-label" data-i18n="game_{{key}}">{{label}}</span>
+              {{#if mode}}<span class="sidebar-mode" data-mode="{{mode}}" title="{{mode}}" aria-hidden="true"></span>{{/if}}
+            </a>
+          </li>
+          {{/each}}
+        </ul>
+      </div>
     </li>
     {{/each}}
   </ul>

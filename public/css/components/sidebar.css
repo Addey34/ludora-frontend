@@ -62,17 +62,19 @@ body.sidebar-open .sidebar {
   font-size: var(--font-size-xl);
 }
 
-/* --- List & links -------------------------------------------------------- */
+/* --- Category list ------------------------------------------------------- */
+/* Mobile-first: the rail slides in full-width, so each category is a header
+   row (icon + name + caret) with its games as a tap-to-open accordion beneath.
+   Desktop (md+) turns this into a 64 px icon rail with a hover flyout — see the
+   media query at the bottom. */
 .sidebar-nav {
   list-style: none;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xxs);
-  /* Fill available space between brand and auth; scroll only the game list. */
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  /* Styled thin scrollbar */
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
 }
@@ -80,30 +82,149 @@ body.sidebar-open .sidebar {
 .sidebar-nav::-webkit-scrollbar {
   width: 3px;
 }
-
 .sidebar-nav::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .sidebar-nav::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.22);
   border-radius: 2px;
 }
-
 .sidebar-nav::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.42);
 }
 
-.sidebar-link,
-.sidebar-auth-item,
-.sidebar-brand {
+.sidebar-cat {
+  --cat-accent: var(--primary-color);
+  position: relative;
+}
+
+/* Category header — the tappable/hoverable tile. Resets the native button. */
+.sidebar-cat-head {
+  width: auto;
+  display: flex;
+  align-items: center;
+  margin-inline: var(--spacing-sm);
+  padding: 0;
+  border: none;
+  border-radius: var(--border-radius-lg);
+  background: none;
+  color: rgba(255, 255, 255, 0.82);
+  font: inherit;
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--transition-speed) ease,
+    color var(--transition-speed) ease;
+}
+
+.sidebar-cat-head:hover,
+.sidebar-cat.has-active .sidebar-cat-head {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white-color);
+}
+
+/* Fixed-width icon box: the glyph stays centered on the compact rail. */
+.sidebar-icon {
+  flex: 0 0 calc(var(--sidebar-width) - 2 * var(--spacing-sm));
+  display: grid;
+  place-items: center;
+  height: 44px;
+  font-size: var(--font-size-lg);
+}
+
+/* The category glyph is painted in its accent; the active category glows. */
+.sidebar-cat-head .sidebar-icon {
+  color: var(--cat-accent);
+  transition:
+    filter var(--transition-speed) ease,
+    transform var(--transition-speed) ease;
+}
+.sidebar-cat-head:hover .sidebar-icon,
+.sidebar-cat.has-active .sidebar-cat-head .sidebar-icon {
+  filter: drop-shadow(0 0 7px var(--cat-accent));
+  transform: scale(1.08);
+}
+
+/* Label never wraps; shrinks to 0 on the compact desktop rail. */
+.sidebar-label {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Caret hints the fold direction (right = flyout on desktop, rotates down when
+   an accordion opens on mobile). Hidden on the compact desktop rail. */
+.sidebar-cat-caret {
+  flex: 0 0 auto;
+  margin-left: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.5);
+  transition: transform var(--transition-speed) ease;
+}
+.sidebar-cat.is-open .sidebar-cat-caret {
+  transform: rotate(90deg);
+}
+
+/* --- Flyout / accordion panel -------------------------------------------- */
+/* Mobile: an in-flow accordion collapsed to height 0, expanded on .is-open. */
+.sidebar-flyout {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--transition-speed) ease;
+}
+.sidebar-cat.is-open .sidebar-flyout {
+  grid-template-rows: 1fr;
+}
+
+.sidebar-cat-games {
+  list-style: none;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* The flyout repeats the category name as a header — only shown as a real panel
+   title on desktop; redundant with the accordion head on mobile. */
+.sidebar-flyout-title {
+  display: none;
+  margin: 0 0 var(--spacing-xs);
+  padding: 0 var(--spacing-sm);
+  color: var(--cat-accent);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bolder);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* --- Game links ---------------------------------------------------------- */
+.sidebar-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-inline: var(--spacing-sm);
+  border-radius: var(--border-radius-lg);
+  color: rgba(255, 255, 255, 0.78);
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+  transition:
+    background var(--transition-speed) ease,
+    color var(--transition-speed) ease,
+    transform var(--transition-speed) ease;
+}
+
+/* On mobile the game row is indented under its category and its icon box is
+   narrower (the rail is expanded, so there is room for the label). */
+.sidebar-link .sidebar-icon {
+  flex-basis: calc(var(--sidebar-width) - 2 * var(--spacing-sm));
+  font-size: var(--font-size-md);
+}
+
+.sidebar-auth-item {
   position: relative;
   border-radius: var(--border-radius-lg);
   margin-inline: var(--spacing-sm);
-}
-
-.sidebar-link,
-.sidebar-auth-item {
   display: flex;
   align-items: center;
   color: rgba(255, 255, 255, 0.78);
@@ -115,32 +236,17 @@ body.sidebar-open .sidebar {
     transform var(--transition-speed) ease;
 }
 
-/* Fixed-width icon box: the icon stays centered on the compact rail and does
-   not move when the rail expands. */
-.sidebar-icon {
-  flex: 0 0 calc(var(--sidebar-width) - 2 * var(--spacing-sm));
-  display: grid;
-  place-items: center;
-  height: 44px;
-  font-size: var(--font-size-lg);
-}
-
-/* The label flexes from 0 (compact, clipped) to its full width (expanded)
-   without ever wrapping: nowrap prevents any vertical reflow, min-width:0 + flex
-   let it shrink to 0 instead of overflowing. The icon stays fixed. */
-.sidebar-label {
-  flex: 1 1 0;
-  min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+.sidebar-brand {
+  position: relative;
+  border-radius: var(--border-radius-lg);
+  margin-inline: var(--spacing-sm);
 }
 
 /* --- Mode badge (solo / duo / multi) ------------------------------------- */
-/* Small bubble at the end of each link telling how many players the game is
-   for. Data-driven from the game's `mode` field (data-mode); the people glyph
+/* Small bubble at the end of each game link telling how many players the game
+   is for. Data-driven from the game's `mode` field (data-mode); the people glyph
    is painted in CSS from a Font Awesome codepoint, so a new game gets it for
-   free. Revealed with the label (hidden on the compact rail). */
+   free. Lives in the flyout, so it shows whenever the game row is visible. */
 .sidebar-mode {
   flex: 0 0 auto;
   display: grid;
@@ -197,8 +303,9 @@ body.sidebar-open .sidebar {
 }
 
 /* --- Sign-in (Google button / signed-in player) ------------------------- */
-/* Pushes the block to the very bottom of the rail; the inner item follows the
-   same dynamic as the links (fixed icon always visible + label revealed on hover). */
+/* Pushes the block to the very bottom of the rail; the inner item shows the
+   fixed icon (Google widget / avatar), the label collapsing to 0 on the compact
+   rail like the game links. */
 .sidebar-auth {
   margin-top: auto;
   padding-top: var(--spacing-sm);
@@ -444,40 +551,85 @@ body.sidebar-open .sidebar {
 }
 
 /* =============================================================================
-   Desktop: fixed compact rail + expand on hover.
+   Desktop: a fixed 64 px icon rail of category tiles; hovering a tile unfolds a
+   flyout to its right listing that category's games.
    ========================================================================== */
 @media (min-width: 768px) {
   .sidebar {
     width: var(--sidebar-width);
     transform: none;
-    /* Delay before collapsing so the cursor can move away without the rail snapping. */
-    transition: width var(--transition-speed) ease 350ms;
+    /* The rail no longer grows; the flyout overlays the content instead. Let it
+       overflow so the flyout can escape the 64 px strip. */
+    overflow: visible;
   }
 
-  .sidebar:hover {
-    width: var(--sidebar-width-expanded);
-    /* Open immediately — no delay when entering. */
-    transition: width var(--transition-speed) ease;
-  }
-
-  /* Labels and mode badges hidden when compact, revealed on rail hover. */
-  .sidebar-label,
-  .sidebar-mode {
-    opacity: 0;
-    transition: opacity var(--transition-speed) ease;
-  }
-  .sidebar:hover .sidebar-label,
-  .sidebar:hover .sidebar-mode {
-    opacity: 1;
-  }
-
-  /* In compact mode hide the scrollbar so it doesn't shift the 64 px rail and
-     misalign the icons; scrolling is available once the rail is expanded. */
   .sidebar-nav {
-    overflow-y: hidden;
+    overflow: visible;
   }
-  .sidebar:hover .sidebar-nav {
+
+  /* Compact rail: category tile is icon-only, centered; hide name + caret. */
+  .sidebar-cat-head {
+    margin-inline: var(--spacing-xs);
+    justify-content: center;
+  }
+  .sidebar-cat-head .sidebar-label,
+  .sidebar-cat-caret {
+    display: none;
+  }
+
+  /* Flyout: a themed panel anchored flush to the rail's right edge (left:100%,
+     no gap so the cursor can cross into it without dropping the hover). Hidden
+     until the category is hovered or holds keyboard focus. */
+  .sidebar-flyout {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    z-index: 20;
+    display: block;
+    width: 15rem;
+    max-height: min(70vh, 26rem);
     overflow-y: auto;
+    margin-left: var(--spacing-xs);
+    padding: var(--spacing-sm);
+    background: var(--sidebar-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 3px solid var(--cat-accent);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-6px);
+    transition:
+      opacity var(--transition-speed) ease,
+      transform var(--transition-speed) ease,
+      visibility var(--transition-speed) ease;
+  }
+
+  .sidebar-cat:hover .sidebar-flyout,
+  .sidebar-cat:focus-within .sidebar-flyout {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+
+  /* The accordion collapse is a mobile-only concern; on desktop the games are
+     always laid out inside the (hidden) flyout. */
+  .sidebar-flyout-title {
+    display: block;
+  }
+  .sidebar-cat-games {
+    overflow: visible;
+  }
+
+  /* Inside the flyout the rail is wide: give game rows a comfy padded row with
+     a compact icon box, and always show the label + mode badge. */
+  .sidebar-flyout .sidebar-link {
+    margin-inline: 0;
+    padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) 0;
+  }
+  .sidebar-flyout .sidebar-link .sidebar-icon {
+    flex-basis: 2.6rem;
+    height: 2.1rem;
   }
 
   /* No toggle or scrim on desktop. */
@@ -488,6 +640,6 @@ body.sidebar-open .sidebar {
 }
 
 /* The rail is a fixed layer: it ADDS NO offset to the content. Pages stay
-   centered on the real viewport (centering handled by shared .app-body), the
-   compact rail floats over the left gutter and its hover expansion overlays the
-   content. Nothing to do for future pages: .app-body is enough. */
+   centered on the real viewport (centering handled by shared .app-body); the
+   compact rail floats over the left gutter and its flyouts overlay the content.
+   Nothing to do for future pages: .app-body is enough. */

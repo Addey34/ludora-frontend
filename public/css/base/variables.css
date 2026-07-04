@@ -79,6 +79,14 @@
   --color-hangman: #0f766e; /* deep teal — hangman */
   --color-sudoku: #4338ca; /* indigo — logic grid */
 
+  /* Sidebar super-category accents (icon + flyout tint). Distinct hues, one per
+     genre, in the site's vivid palette. */
+  --cat-action: #ef4444; /* red — fast reflexes */
+  --cat-puzzle: #8b5cf6; /* violet — logic */
+  --cat-words: #0ea5e9; /* sky — language */
+  --cat-quiz: #10b981; /* emerald — knowledge */
+  --cat-board: #f59e0b; /* amber — tabletop */
+
   /* --- Spacing --- */
   --spacing-xxs: 0.125rem;
   --spacing-xs: 0.25rem;

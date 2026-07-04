@@ -12,29 +12,23 @@ if (sidebar) {
       activeLink = link;
     }
   }
-  // Center the active game in the nav's scroll viewport (only scrolls when the
-  // list actually overflows; the browser clamps at the ends, so items near the
-  // top/bottom just sit as far as they can go). getBoundingClientRect keeps this
-  // correct regardless of the link's offsetParent.
-  const nav = activeLink?.closest<HTMLElement>('.sidebar-nav') ?? null;
-  if (activeLink && nav) {
-    const link = activeLink;
-    const centerActive = (): void => {
-      const navRect = nav.getBoundingClientRect();
-      const linkRect = link.getBoundingClientRect();
-      nav.scrollTop += linkRect.top - navRect.top - (nav.clientHeight - linkRect.height) / 2;
-    };
-    centerActive();
-    // The sign-in block (.sidebar-auth) is injected asynchronously by login.ts;
-    // it shrinks the flex:1 nav after this runs, which would leave the very last
-    // game clipped. Re-center whenever the nav is resized (auth injection, font
-    // load, window resize) until the user takes over by scrolling manually.
-    const ro = new ResizeObserver(centerActive);
-    ro.observe(nav);
-    const release = (): void => ro.disconnect();
-    nav.addEventListener('wheel', release, { once: true, passive: true });
-    nav.addEventListener('pointerdown', release, { once: true });
-    window.setTimeout(release, 2000);
+
+  // Category accordions (mobile): the head toggles .is-open on its category. On
+  // desktop the flyout is hover-driven, so this class is a harmless no-op there.
+  for (const head of document.querySelectorAll<HTMLElement>('.sidebar-cat-head')) {
+    head.addEventListener('click', () => {
+      const cat = head.closest('.sidebar-cat');
+      const open = cat?.classList.toggle('is-open') ?? false;
+      head.setAttribute('aria-expanded', String(open));
+    });
+  }
+
+  // Highlight the category holding the active game, and pre-open its accordion
+  // so the current game is visible when the mobile rail slides in.
+  const activeCat = activeLink?.closest('.sidebar-cat');
+  if (activeCat) {
+    activeCat.classList.add('has-active', 'is-open');
+    activeCat.querySelector('.sidebar-cat-head')?.setAttribute('aria-expanded', 'true');
   }
 
   if (path === '/' || path === '/index.html') {
