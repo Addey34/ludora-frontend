@@ -30,10 +30,16 @@
 
 .pong-paddle--player {
   background: var(--pong-paddle-player);
+  box-shadow:
+    var(--shadow-sm),
+    0 0 10px rgba(20, 184, 166, 0.4);
 }
 
 .pong-paddle--opponent {
   background: var(--pong-paddle-opponent);
+  box-shadow:
+    var(--shadow-sm),
+    0 0 10px rgba(239, 68, 68, 0.4);
 }
 
 /* --- Ball --- */
@@ -45,17 +51,4 @@
     var(--shadow-sm),
     0 0 8px 2px rgba(255, 255, 255, 0.4);
   animation: pongBallGlow 1.2s ease-in-out infinite;
-}
-
-/* --- Paddles --- */
-.pong-paddle--player {
-  box-shadow:
-    var(--shadow-sm),
-    0 0 10px rgba(20, 184, 166, 0.4);
-}
-
-.pong-paddle--opponent {
-  box-shadow:
-    var(--shadow-sm),
-    0 0 10px rgba(239, 68, 68, 0.4);
 }

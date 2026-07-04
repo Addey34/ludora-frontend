@@ -148,6 +148,10 @@ export class TetrisGame extends GameEngine {
   private fx: ParticleSystem | null = null;
   /** Row indices cleared in the last lockPiece(), consumed by render(). */
   private pendingLineClears: number[] = [];
+  /** Full rows currently flashing white before they collapse (line-clear delay). */
+  private clearingRows: number[] = [];
+  /** Timestamp (ms) at which the flashing rows collapse. */
+  private clearingUntil: number = 0;
 
   /**
    * @param config Game configuration (dimensions, drop rate).
@@ -205,6 +209,13 @@ export class TetrisGame extends GameEngine {
   update(deltaTime: number): void {
     if (this.state.isPaused || this.state.isGameOver) return;
 
+    // Line-clear delay: while full rows flash, the fall is frozen and no piece
+    // is active; once the delay elapses the rows collapse and play resumes.
+    if (this.clearingRows.length > 0) {
+      if (performance.now() >= this.clearingUntil) this.finalizeClear();
+      return;
+    }
+
     this.dropAccumulator += deltaTime;
     if (this.dropAccumulator < this.dropInterval) return;
     this.dropAccumulator = 0;
@@ -241,15 +252,16 @@ export class TetrisGame extends GameEngine {
 
     const cells = this.composeBoard();
     this.boardElement.innerHTML = cells
-      .map((row) =>
-        row
+      .map((row, y) => {
+        const flash = this.clearingRows.includes(y) ? ' cell--clearing' : '';
+        return row
           .map((type) => {
-            if (!type) return '<div class="cell"></div>';
-            if (type === 'ghost') return '<div class="cell cell--ghost"></div>';
-            return `<div class="cell cell--${type}"></div>`;
+            if (!type) return `<div class="cell${flash}"></div>`;
+            if (type === 'ghost') return `<div class="cell cell--ghost${flash}"></div>`;
+            return `<div class="cell cell--${type}${flash}"></div>`;
           })
-          .join('')
-      )
+          .join('');
+      })
       .join('');
 
     this.updateDangerState();
@@ -480,45 +492,48 @@ export class TetrisGame extends GameEngine {
       });
     });
 
-    const cleared = this.clearLines();
-    if (cleared > 0) {
-      this.lines += cleared;
-      this.addScore(LINE_SCORES[cleared] * this.level);
-      this.updateLevel();
-      playSound(cleared >= 4 ? 'tetris' : 'clear');
+    const fullRows = this.getFullRows();
+    if (fullRows.length > 0) {
+      // Start the line-clear delay: keep the piece out, flash the full rows, and
+      // let update() collapse them once the delay elapses (see finalizeClear).
+      this.current = null;
+      this.clearingRows = fullRows;
+      this.clearingUntil = performance.now() + 160;
+      playSound(fullRows.length >= 4 ? 'tetris' : 'clear');
     } else {
       playSound('drop');
+      this.spawnPiece();
     }
+  }
 
-    this.spawnPiece();
+  /** Row indices that are completely filled (candidates for clearing). */
+  private getFullRows(): number[] {
+    const rows: number[] = [];
+    for (let y = 0; y < this.rows; y++) {
+      if (this.grid[y].every((cell) => cell !== null)) rows.push(y);
+    }
+    return rows;
   }
 
   /**
-   * Clears all full lines and drops down the ones above.
-   * Records cleared row indices in `pendingLineClears` so `render()` can emit
-   * particles from the DOM cells before rebuilding the board.
-   * @returns The number of lines cleared.
+   * Ends the line-clear delay: drops the flashed rows, credits score/level, hands
+   * the cleared indices to render() for particles, and spawns the next piece.
    */
-  private clearLines(): number {
-    for (let y = 0; y < this.rows; y++) {
-      if (this.grid[y].every((cell) => cell !== null)) {
-        this.pendingLineClears.push(y);
-      }
+  private finalizeClear(): void {
+    const rows = this.clearingRows;
+    this.clearingRows = [];
+
+    this.grid = this.grid.filter((_, y) => !rows.includes(y));
+    while (this.grid.length < this.rows) {
+      this.grid.unshift(new Array<TetrominoType | null>(this.cols).fill(null));
     }
 
-    let cleared = 0;
-    let y = this.rows - 1;
-    while (y >= 0) {
-      if (this.grid[y].every((cell) => cell !== null)) {
-        this.grid.splice(y, 1);
-        this.grid.unshift(new Array(this.cols).fill(null));
-        cleared++;
-      } else {
-        y--;
-      }
-    }
-
-    return cleared;
+    const cleared = rows.length;
+    this.lines += cleared;
+    this.addScore(LINE_SCORES[cleared] * this.level);
+    this.updateLevel();
+    this.pendingLineClears = rows;
+    this.spawnPiece();
   }
 
   /**
@@ -570,6 +585,8 @@ export class TetrisGame extends GameEngine {
     this.level = 1;
     this.dropInterval = this.baseDropInterval;
     this.dropAccumulator = 0;
+    this.clearingRows = [];
+    this.pendingLineClears = [];
     this.resetBoard();
     this.updateScoreDisplay();
     this.render();

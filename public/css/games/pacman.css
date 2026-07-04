@@ -47,15 +47,18 @@
    movement. Declared after .food/.nofood to win over the cell. */
 .pacman {
   border-radius: 50%;
-  /* Eye (dark dot) laid over the body; oriented for the mouth on the right. */
+  /* Mouth wedge centred on 90deg (right), its half-angle animated via --pac-mouth
+     (see pacChomp). Eye (dark dot) laid on top; orientation via transform below. */
+  --pac-mouth: 33deg;
   background:
     radial-gradient(circle at 56% 30%, var(--background-color-dark) 0 7%, transparent 8%),
     conic-gradient(
-      var(--pacman-yellow) 0 60deg,
-      transparent 60deg 120deg,
-      var(--pacman-yellow) 120deg 360deg
+      var(--pacman-yellow) 0 calc(90deg - var(--pac-mouth)),
+      transparent calc(90deg - var(--pac-mouth)) calc(90deg + var(--pac-mouth)),
+      var(--pacman-yellow) calc(90deg + var(--pac-mouth)) 360deg
     );
   transform: scale(0.92);
+  animation: pacChomp 0.32s ease-in-out infinite;
 }
 /* Left = horizontal mirror (the eye stays on top); up/down = rotations. */
 .pacman--right {

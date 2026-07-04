@@ -291,3 +291,38 @@
     filter: brightness(1);
   }
 }
+
+/* Pac-Man mouth chomp: the half-angle of the mouth wedge oscillates. Registered
+   with @property so the <angle> interpolates smoothly (browsers without it fall
+   back to a discrete open/close, still a chomp). The mouth stays centred on the
+   right (90deg); orientation is handled by the transform on .pacman. */
+@property --pac-mouth {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 33deg;
+}
+@keyframes pacChomp {
+  0%,
+  100% {
+    --pac-mouth: 33deg;
+  }
+  50% {
+    --pac-mouth: 5deg;
+  }
+}
+
+/* --- Reduced motion --------------------------------------------------------
+   Respect the OS "reduce motion" setting: neutralise decorative + looping
+   animations and long transitions site-wide. Kept last so it wins the cascade.
+   Values aren't zeroed (some code waits on transitionend/animationend) — they're
+   made near-instant, so nothing hangs and nothing moves. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -32,7 +32,8 @@
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
-  transition: transform var(--transition-speed);
+  /* Slightly slower than the shared speed for a more satisfying flip. */
+  transition: transform 0.35s ease;
 }
 
 /* A flipped card (pair in progress or found) shows its front face. */
@@ -77,7 +78,9 @@
   animation: memoryMatchGlow 1.8s ease-in-out infinite;
 }
 
-/* Flip transition slightly slower for more satisfying feel. */
-.memory-card-inner {
-  transition: transform 0.35s ease;
+/* Focus ring for keyboard players (cards are <button>s). */
+.memory-card:focus-visible {
+  outline: 3px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-sm);
 }

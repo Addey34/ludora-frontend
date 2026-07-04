@@ -10,11 +10,15 @@
   touch-action: none;
 }
 
-/* --- Bricks --- */
+/* --- Bricks ---
+   Each brick layers a diagonal gloss over its solid colour (like the Tetris
+   cells) plus a thin top highlight, for a bit of depth instead of a flat fill. */
 .brick {
   position: absolute;
   border-radius: var(--border-radius-xs);
-  box-shadow: var(--shadow-xs);
+  box-shadow:
+    var(--shadow-xs),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 /* A destroyed brick disappears (the JS model marks it `alive = false`). */
@@ -23,19 +27,24 @@
 }
 
 .brick--1 {
-  background: var(--breakout-brick-1);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, transparent 55%), var(--breakout-brick-1);
 }
 .brick--2 {
-  background: var(--breakout-brick-2);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, transparent 55%), var(--breakout-brick-2);
 }
 .brick--3 {
-  background: var(--breakout-brick-3);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, transparent 55%), var(--breakout-brick-3);
 }
 .brick--4 {
-  background: var(--breakout-brick-4);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, transparent 55%), var(--breakout-brick-4);
 }
 .brick--5 {
-  background: var(--breakout-brick-5);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, transparent 55%), var(--breakout-brick-5);
 }
 
 /* --- Paddle --- */
@@ -49,7 +58,11 @@
 /* --- Ball --- */
 .ball {
   position: absolute;
-  background: var(--breakout-ball);
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.9) 0 12%, transparent 45%),
+    var(--breakout-ball);
   border-radius: 50%;
-  box-shadow: var(--shadow-sm);
+  box-shadow:
+    var(--shadow-sm),
+    0 0 8px 2px rgba(255, 255, 255, 0.45);
 }

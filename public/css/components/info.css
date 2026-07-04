@@ -19,6 +19,19 @@
   gap: var(--spacing-xs);
 }
 
+/* While one of its panels is open (hover / keyboard focus / pinned), lift the
+   whole cluster above every other layer — board, game-over/countdown overlays
+   and the fixed particle canvas (z 9000) — so the panel is never covered.
+   `.game-shell` establishes no stacking context, so this z-index competes at the
+   root level. Only raised while open, so the resting buttons stay discreet. */
+.game-actions:has(.game-info:hover),
+.game-actions:has(.game-info:focus-within),
+.game-actions:has(.game-pop:hover),
+.game-actions:has(.game-pop:focus-within),
+.game-actions:has(.game-pop.is-open) {
+  z-index: 9600;
+}
+
 /* Help container: hovering/focusing the whole thing (button + panel) drives
    the open, no JS. Positioned relative to anchor its panel. */
 .game-info {
