@@ -14,7 +14,6 @@
   align-items: center;
   gap: var(--spacing-xl);
   /* Title lands at ~20-25% from the top of the viewport */
-  padding-top: 18vh;
   padding-bottom: var(--spacing-xl);
   width: 100%;
 }
