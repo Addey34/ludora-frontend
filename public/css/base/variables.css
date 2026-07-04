@@ -71,6 +71,13 @@
   --color-simon: #9333ea; /* purple */
   --color-minesweeper: #475569; /* slate — classic mine-grey */
   --color-motus: #6aaa64; /* Wordle green */
+  --color-math: #0d9488; /* teal-green — chalkboard maths */
+  --color-geoquiz: #2563eb; /* blue — globe */
+  --color-trivia: #7c3aed; /* violet — quiz culture */
+  --color-conjug: #be123c; /* crimson — French conjugation */
+  --color-anagram: #ca8a04; /* gold — scrambled letters */
+  --color-pendu: #0f766e; /* deep teal — hangman */
+  --color-sudoku: #4338ca; /* indigo — logic grid */
 
   /* --- Spacing --- */
   --spacing-xxs: 0.125rem;

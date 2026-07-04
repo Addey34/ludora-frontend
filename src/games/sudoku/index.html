@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Sudoku" css="/css/games/sudoku.css" script="./sudoku-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Sudoku" key="sudoku"}}
+    <div class="game-details"></div>
+    <div class="sudoku-area" id="board">
+      <div class="sudoku-grid" id="grid"></div>
+      <div class="sudoku-pad" id="pad"></div>
+    </div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

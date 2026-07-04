@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Trivia" css="/css/games/trivia.css" script="./trivia-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Trivia" key="trivia"}}
+    <div class="game-details"></div>
+    <div class="quiz-area game-board" id="board"></div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

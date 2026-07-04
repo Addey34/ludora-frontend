@@ -1,0 +1,20 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Geo Quiz — a quiz game; the layout comes from components/quiz.css. Here we
+   only set the accent colour.
+   ========================================================================== */
+
+:root {
+  --title-color: var(--color-geoquiz);
+}
+
+/* Flag shown in the prompt for the "Flags" quiz type. */
+.geo-flag {
+  display: block;
+  width: min(60%, 12rem);
+  margin: var(--spacing-md) auto 0;
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
+}

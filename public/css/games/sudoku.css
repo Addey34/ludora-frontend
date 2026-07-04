@@ -1,0 +1,130 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Sudoku — 9×9 grid (thick 3×3 box separators) above a 1–9 input pad.
+   ========================================================================== */
+
+:root {
+  --title-color: var(--color-sudoku);
+  --sudoku-line: #334155;
+  --sudoku-thin: #cbd5e1;
+  --sudoku-given: #1e293b;
+  --sudoku-input: var(--color-sudoku);
+  --sudoku-sel: color-mix(in srgb, var(--color-sudoku) 22%, white);
+  --sudoku-peer: color-mix(in srgb, var(--color-sudoku) 8%, white);
+  --sudoku-same: color-mix(in srgb, var(--color-sudoku) 16%, white);
+}
+
+.sudoku-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+/* --- Grid ------------------------------------------------------------------ */
+
+.sudoku-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  width: min(92vw, 60vh, 30rem);
+  aspect-ratio: 1;
+  border: 3px solid var(--sudoku-line);
+  border-radius: var(--border-radius-sm);
+  background: var(--white-color);
+  overflow: hidden;
+}
+
+.sudoku-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--sudoku-thin);
+  background: var(--white-color);
+  color: var(--sudoku-input);
+  font-size: clamp(1rem, 4.5vmin, 1.7rem);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+/* Thick separators between the 3×3 boxes. */
+.sudoku-cell:nth-child(9n + 3),
+.sudoku-cell:nth-child(9n + 6) {
+  border-right: 2px solid var(--sudoku-line);
+}
+.sudoku-cell:nth-child(n + 19):nth-child(-n + 27),
+.sudoku-cell:nth-child(n + 46):nth-child(-n + 54) {
+  border-bottom: 2px solid var(--sudoku-line);
+}
+
+.sudoku-cell.is-given {
+  color: var(--sudoku-given);
+  cursor: default;
+}
+
+.sudoku-cell.is-peer {
+  background: var(--sudoku-peer);
+}
+.sudoku-cell.is-same {
+  background: var(--sudoku-same);
+}
+.sudoku-cell.is-selected {
+  background: var(--sudoku-sel);
+}
+.sudoku-cell.is-conflict {
+  color: var(--error-color);
+  background: color-mix(in srgb, var(--error-color) 14%, white);
+}
+
+.sudoku-cell:focus-visible {
+  outline: 2px solid var(--color-sudoku);
+  outline-offset: -2px;
+  z-index: 1;
+}
+
+/* --- Input pad ------------------------------------------------------------- */
+
+.sudoku-pad {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  width: min(92vw, 30rem);
+}
+
+.sudoku-pad-key {
+  flex: 1 1 2rem;
+  max-width: 3rem;
+  height: 3rem;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  background: var(--white-color);
+  box-shadow: var(--shadow-sm);
+  color: var(--sudoku-given);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    transform 0.05s;
+}
+
+.sudoku-pad-key:hover {
+  background: var(--sudoku-peer);
+}
+.sudoku-pad-key:active {
+  transform: scale(0.94);
+}
+.sudoku-pad-key:focus-visible {
+  outline: 2px solid var(--color-sudoku);
+  outline-offset: 2px;
+}
+
+.sudoku-pad-erase {
+  color: var(--error-color);
+}

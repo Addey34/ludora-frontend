@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Mental Math" css="/css/games/math.css" script="./math-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Mental Math" key="math"}}
+    <div class="game-details"></div>
+    <div class="quiz-area game-board" id="board"></div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

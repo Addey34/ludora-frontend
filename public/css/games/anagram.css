@@ -1,0 +1,28 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Anagrams — a typed quiz game; layout from components/quiz.css.
+   ========================================================================== */
+
+:root {
+  --title-color: var(--color-anagram);
+}
+
+.anagram-letters {
+  display: block;
+  font-size: clamp(1.8rem, 8vw, 3rem);
+  font-weight: var(--font-weight-bolder);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--title-color);
+}
+
+.anagram-count {
+  display: block;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-color-muted);
+  text-transform: none;
+  letter-spacing: normal;
+}

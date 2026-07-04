@@ -1,0 +1,27 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Conjugaison — a typed quiz game; layout from components/quiz.css.
+   ========================================================================== */
+
+:root {
+  --title-color: var(--color-conjug);
+}
+
+.quiz-prompt {
+  font-size: clamp(1.25rem, 4vw, 1.9rem);
+}
+
+.quiz-prompt em {
+  font-style: normal;
+  color: var(--title-color);
+}
+
+/* The pronoun + blank line, a touch larger to draw the eye. */
+.conj-blank {
+  display: inline-block;
+  margin-top: var(--spacing-sm);
+  font-size: 1.2em;
+  font-weight: var(--font-weight-bolder);
+  letter-spacing: 0.06em;
+}

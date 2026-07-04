@@ -1,0 +1,142 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Le Pendu (Hangman) — gallows figure, masked word, on-screen A–Z keyboard.
+   ========================================================================== */
+
+:root {
+  --title-color: var(--color-pendu);
+}
+
+.pendu-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--background-color-light);
+}
+
+/* --- Gallows + figure ------------------------------------------------------ */
+
+.pendu-figure {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.pendu-svg {
+  height: 100%;
+  max-height: 42vh;
+  color: var(--title-color);
+}
+
+.pendu-svg line,
+.pendu-svg circle {
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+  fill: none;
+}
+
+.pendu-part {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.pendu-part.is-shown {
+  opacity: 1;
+}
+
+/* --- Masked word ----------------------------------------------------------- */
+
+.pendu-word {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+}
+
+.pendu-slot {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: 1.1em;
+  padding-bottom: 0.1em;
+  border-bottom: 3px solid var(--text-color-muted);
+  font-size: clamp(1.4rem, 6vw, 2.4rem);
+  font-weight: var(--font-weight-bolder);
+  text-transform: uppercase;
+  color: var(--text-color);
+}
+
+.pendu-slot.is-filled {
+  border-bottom-color: var(--title-color);
+}
+
+/* --- Keyboard -------------------------------------------------------------- */
+
+.pendu-keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 30rem;
+  flex: 0 0 auto;
+}
+
+.pendu-krow {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.pendu-key {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 2.6rem;
+  height: 2.8rem;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  background: var(--white-color);
+  color: var(--text-color);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    transform 0.05s,
+    opacity 0.12s;
+}
+
+.pendu-key:not(:disabled):hover {
+  background: color-mix(in srgb, var(--title-color) 14%, var(--white-color));
+}
+
+.pendu-key:active {
+  transform: scale(0.94);
+}
+
+.pendu-key:focus-visible {
+  outline: 2px solid var(--title-color);
+  outline-offset: 2px;
+}
+
+.pendu-key:disabled {
+  cursor: default;
+}
+
+.pendu-key.is-hit {
+  background: #22c55e;
+  color: var(--white-color);
+  opacity: 1;
+}
+
+.pendu-key.is-miss {
+  background: var(--error-color);
+  color: var(--white-color);
+  opacity: 0.6;
+}

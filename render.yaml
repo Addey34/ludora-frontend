@@ -38,6 +38,13 @@ services:
       - { type: rewrite, source: /connect4, destination: /games/connect4/index.html }
       - { type: rewrite, source: /battleship, destination: /games/battleship/index.html }
       - { type: rewrite, source: /goose, destination: /games/goose/index.html }
+      - { type: rewrite, source: /math, destination: /games/math/index.html }
+      - { type: rewrite, source: /geoquiz, destination: /games/geoquiz/index.html }
+      - { type: rewrite, source: /trivia, destination: /games/trivia/index.html }
+      - { type: rewrite, source: /conjug, destination: /games/conjug/index.html }
+      - { type: rewrite, source: /anagram, destination: /games/anagram/index.html }
+      - { type: rewrite, source: /pendu, destination: /games/pendu/index.html }
+      - { type: rewrite, source: /sudoku, destination: /games/sudoku/index.html }
       - { type: rewrite, source: /privacy, destination: /privacy/index.html }
       - { type: rewrite, source: /legal, destination: /legal/index.html }
       # Everything else (old .html URLs, unknown paths) -> home.

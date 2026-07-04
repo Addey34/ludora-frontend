@@ -1,0 +1,14 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Trivia — a quiz game; the layout comes from components/quiz.css. Here we only
+   set the accent and give the (often longer) question a touch smaller size.
+   ========================================================================== */
+
+:root {
+  --title-color: var(--color-trivia);
+}
+
+.quiz-prompt {
+  font-size: clamp(1.3rem, 4.5vw, 2.1rem);
+}
