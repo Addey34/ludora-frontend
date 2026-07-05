@@ -6,6 +6,7 @@ import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPan
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
 import { playSound } from '../../shared/fx/sound.js';
+import { Stopwatch, formatClock } from '../../shared/ui/stopwatch.js';
 import { Board, createBoard, floodReveal, isWin } from './minesweeper.js';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
@@ -49,8 +50,7 @@ export class MinesweeperGame extends GameEngine {
   /** Touch-friendly: when on, a tap flags instead of revealing. */
   private flagMode = false;
 
-  private elapsed = 0;
-  private timerId: ReturnType<typeof setInterval> | null = null;
+  private readonly clock = new Stopwatch((s) => this.hud?.set('time', formatClock(s)));
 
   constructor() {
     super({ storageKey: 'minesweeper-scores', leaderboardId: 'minesweeper' });
@@ -88,16 +88,15 @@ export class MinesweeperGame extends GameEngine {
 
   /** Builds a fresh, ready-to-play board for the current difficulty (not running). */
   private prepare(): void {
-    this.clearTimer();
+    this.clock.reset();
     this.board = null;
-    this.elapsed = 0;
     const { rows, cols } = this.def;
     this.revealed = this.grid(rows, cols);
     this.flagged = this.grid(rows, cols);
     this.buildGrid();
     this.renderCells();
     this.updateMinesLeft();
-    this.hud?.set('time', this.formatTime(0));
+    this.hud?.set('time', formatClock(0));
     this.hud?.set('high', this.scoreManager.getHighScore());
   }
 
@@ -185,7 +184,7 @@ export class MinesweeperGame extends GameEngine {
     if (!this.board) {
       const { rows, cols, mines } = this.def;
       this.board = createBoard(rows, cols, mines, r, c);
-      this.startTimer();
+      this.clock.start();
     }
 
     if (this.board.mine[r][c]) {
@@ -210,9 +209,9 @@ export class MinesweeperGame extends GameEngine {
   }
 
   private win(): void {
-    this.stopClock();
+    this.clock.stop();
     const { base, par } = this.def;
-    const points = base + Math.max(0, par - this.elapsed);
+    const points = base + Math.max(0, par - this.clock.seconds);
     this.addScore(points);
     playSound('win');
     this.emitBurst();
@@ -221,7 +220,7 @@ export class MinesweeperGame extends GameEngine {
   }
 
   private lose(r: number, c: number): void {
-    this.stopClock();
+    this.clock.stop();
     this.state.isGameOver = true;
     this.state.isRunning = false;
     this.revealAllMines(r, c);
@@ -309,34 +308,9 @@ export class MinesweeperGame extends GameEngine {
     });
   }
 
-  private startTimer(): void {
-    this.clearTimer();
-    this.timerId = setInterval(() => {
-      this.elapsed++;
-      this.hud?.set('time', this.formatTime(this.elapsed));
-    }, 1000);
-  }
-
-  private stopClock(): void {
-    this.clearTimer();
-  }
-
-  private clearTimer(): void {
-    if (this.timerId !== null) {
-      clearInterval(this.timerId);
-      this.timerId = null;
-    }
-  }
-
-  private formatTime(seconds: number): string {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${String(s).padStart(2, '0')}`;
-  }
-
   stop(): void {
     super.stop();
-    this.clearTimer();
+    this.clock.stop();
   }
 
   update(): void {}
@@ -349,6 +323,9 @@ export class MinesweeperGame extends GameEngine {
   }
 
   protected getGameOverContent(): string {
-    return t('minesweeperRecap', { time: this.formatTime(this.elapsed), score: this.state.score });
+    return t('minesweeperRecap', {
+      time: formatClock(this.clock.seconds),
+      score: this.state.score,
+    });
   }
 }

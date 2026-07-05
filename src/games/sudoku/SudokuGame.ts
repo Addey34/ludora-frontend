@@ -4,6 +4,7 @@ import { setupHud } from '../../shared/ui/hud.js';
 import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
 import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
 import { playSound } from '../../shared/fx/sound.js';
+import { Stopwatch, formatClock } from '../../shared/ui/stopwatch.js';
 import { Difficulty } from '../../shared/quiz/quiz.js';
 import { Grid, SIZE, cloneGrid, conflicts, generatePuzzle, isSolved } from './sudoku.js';
 
@@ -32,8 +33,7 @@ export class SudokuGame extends GameEngine {
   private given: boolean[][] = [];
   private selected: { r: number; c: number } | null = null;
 
-  private elapsed = 0;
-  private timerId: ReturnType<typeof setInterval> | null = null;
+  private readonly clock = new Stopwatch((s) => this.hud?.set('time', formatClock(s)));
 
   constructor() {
     super({ storageKey: 'sudoku-scores', leaderboardId: 'sudoku' });
@@ -106,15 +106,14 @@ export class SudokuGame extends GameEngine {
   }
 
   private newGame(): void {
-    this.clearTimer();
-    this.elapsed = 0;
+    this.clock.reset();
     const { puzzle, solution } = generatePuzzle(this.difficulty);
     this.grid = cloneGrid(puzzle);
     this.solution = solution;
     this.given = puzzle.map((row) => row.map((v) => v !== 0));
     this.selected = null;
     this.draw();
-    this.hud?.set('time', this.formatTime(0));
+    this.hud?.set('time', formatClock(0));
     this.hud?.set('score', this.state.score);
     this.hud?.set('high', this.scoreManager.getHighScore());
   }
@@ -125,7 +124,7 @@ export class SudokuGame extends GameEngine {
     this.newGame();
     this.resetState();
     this.state.isRunning = true;
-    this.startTimer();
+    this.clock.start();
   }
 
   reset(): void {
@@ -179,38 +178,17 @@ export class SudokuGame extends GameEngine {
   }
 
   private win(): void {
-    this.clearTimer();
+    this.clock.stop();
     const { base, par } = SCORING[this.difficulty];
-    this.addScore(base + Math.max(0, par - this.elapsed));
+    this.addScore(base + Math.max(0, par - this.clock.seconds));
     this.hud?.set('score', this.state.score);
     playSound('win');
     this.gameOver();
   }
 
-  private startTimer(): void {
-    this.clearTimer();
-    this.timerId = setInterval(() => {
-      this.elapsed += 1;
-      this.hud?.set('time', this.formatTime(this.elapsed));
-    }, 1000);
-  }
-
-  private clearTimer(): void {
-    if (this.timerId !== null) {
-      clearInterval(this.timerId);
-      this.timerId = null;
-    }
-  }
-
-  private formatTime(seconds: number): string {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${String(s).padStart(2, '0')}`;
-  }
-
   stop(): void {
     super.stop();
-    this.clearTimer();
+    this.clock.stop();
   }
 
   handleInput(event: KeyboardEvent): void {
@@ -232,6 +210,6 @@ export class SudokuGame extends GameEngine {
   }
 
   protected getGameOverContent(): string {
-    return t('sudokuRecap', { time: this.formatTime(this.elapsed), score: this.state.score });
+    return t('sudokuRecap', { time: formatClock(this.clock.seconds), score: this.state.score });
   }
 }

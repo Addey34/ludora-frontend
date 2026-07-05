@@ -9,6 +9,7 @@ import {
 } from '../../shared/ui/settingsPanel.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { playSound } from '../../shared/fx/sound.js';
+import { Stopwatch, formatClock } from '../../shared/ui/stopwatch.js';
 import { Difficulty } from '../../shared/quiz/quiz.js';
 import { Lang, WordEntry, keyboardForm } from '../../shared/words/words.js';
 import { loadWords } from '../../shared/words/wordBank.js';
@@ -68,8 +69,7 @@ export class WordSearchGame extends GameEngine {
   private selecting = false;
   private anchor: Cell | null = null;
 
-  private elapsed = 0;
-  private timerId: ReturnType<typeof setInterval> | null = null;
+  private readonly clock = new Stopwatch((s) => this.hud?.set('time', formatClock(s)));
 
   constructor() {
     super({ storageKey: 'wordsearch-scores' });
@@ -128,7 +128,7 @@ export class WordSearchGame extends GameEngine {
     this.applyLeaderboardVariant();
     this.newPuzzle();
     this.state.isRunning = true;
-    this.startTimer();
+    this.clock.start();
   }
 
   reset(): void {
@@ -138,7 +138,7 @@ export class WordSearchGame extends GameEngine {
 
   stop(): void {
     super.stop();
-    this.clearTimer();
+    this.clock.stop();
   }
 
   protected restartAfterGameOver(): void {
@@ -148,15 +148,14 @@ export class WordSearchGame extends GameEngine {
 
   /** Chooses words for the current settings and lays out a fresh grid. */
   private newPuzzle(): void {
-    this.clearTimer();
-    this.elapsed = 0;
+    this.clock.reset();
     this.found = new Set();
     const words = this.pickWords();
     this.puzzle = buildPuzzle(this.def.size, words, this.def.dirs);
     this.buildGrid();
     this.renderWordList();
     this.updateFoundHud();
-    this.hud?.set('time', this.formatTime(0));
+    this.hud?.set('time', formatClock(0));
     this.hud?.set('high', this.scoreManager.getHighScore());
   }
 
@@ -322,9 +321,9 @@ export class WordSearchGame extends GameEngine {
   }
 
   private win(): void {
-    this.clearTimer();
+    this.clock.stop();
     const { base, par } = this.def;
-    this.addScore(base + Math.max(0, par - this.elapsed));
+    this.addScore(base + Math.max(0, par - this.clock.seconds));
     playSound('win');
     this.emitBurst();
     this.gameOver();
@@ -345,27 +344,6 @@ export class WordSearchGame extends GameEngine {
     });
   }
 
-  private startTimer(): void {
-    this.clearTimer();
-    this.timerId = setInterval(() => {
-      this.elapsed++;
-      this.hud?.set('time', this.formatTime(this.elapsed));
-    }, 1000);
-  }
-
-  private clearTimer(): void {
-    if (this.timerId !== null) {
-      clearInterval(this.timerId);
-      this.timerId = null;
-    }
-  }
-
-  private formatTime(seconds: number): string {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${String(s).padStart(2, '0')}`;
-  }
-
   update(): void {}
   render(): void {}
   handleInput(): void {}
@@ -377,7 +355,7 @@ export class WordSearchGame extends GameEngine {
   protected getGameOverContent(): string {
     return t('wordsearchRecap', {
       count: this.puzzle?.placements.length ?? 0,
-      time: this.formatTime(this.elapsed),
+      time: formatClock(this.clock.seconds),
       score: this.state.score,
     });
   }
