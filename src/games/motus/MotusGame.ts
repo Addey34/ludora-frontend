@@ -1,7 +1,8 @@
 import { GameEngine } from '../../shared/engine/GameEngine.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
-import { setupSettingsPanel } from '../../shared/ui/settingsPanel.js';
+import { setupSettingsPanel, languageField } from '../../shared/ui/settingsPanel.js';
 import { showToast } from '../../shared/ui/toast.js';
 import { playSound } from '../../shared/fx/sound.js';
 import { MAX_TRIES, WORD_LEN, Verdict, normalizeWord, scoreGuess } from './motus.js';
@@ -57,26 +58,15 @@ export class MotusGame extends GameEngine {
     this.gridEl = document.getElementById('grid');
     this.keyboardEl = document.getElementById('keyboard');
     this.hud = setupHud([
-      { key: 'tries', icon: 'list-ol', label: 'Tries' },
-      { key: 'high', icon: 'trophy', label: 'Best' },
+      { key: 'tries', icon: 'list-ol', label: t('hudTries') },
+      { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
 
     this.buildGrid();
     this.buildKeyboard();
     this.setupEventListeners();
 
-    setupSettingsPanel([
-      {
-        id: 'lang',
-        label: 'Language',
-        choices: [
-          { label: 'FR', value: 'fr' },
-          { label: 'EN', value: 'en' },
-        ],
-        value: this.lang,
-        onChange: (v) => void this.changeLang(v as Lang),
-      },
-    ]);
+    setupSettingsPanel([languageField(this.lang, (v) => void this.changeLang(v as Lang))]);
 
     this.renderScoreTable();
     await this.loadWords();
@@ -216,7 +206,7 @@ export class MotusGame extends GameEngine {
 
   private submit(): void {
     if (this.guess.length < WORD_LEN) {
-      showToast('Not enough letters', 'warning');
+      showToast(t('motusNotEnough'), 'warning');
       return;
     }
 
@@ -269,11 +259,11 @@ export class MotusGame extends GameEngine {
     this.state.isRunning = false;
     playSound('die');
     this.overlay.show({
-      title: 'Out of tries',
-      bodyHtml: `<p>The word was <strong>${this.target}</strong>.</p>`,
+      title: t('motusOutOfTries'),
+      bodyHtml: t('motusWordWas', { target: this.target }),
       buttons: [
         {
-          text: 'Play again',
+          text: t('playAgain'),
           primary: true,
           onClick: () => {
             this.overlay.hide();
@@ -297,11 +287,15 @@ export class MotusGame extends GameEngine {
   render(): void {}
 
   protected getGameOverTitle(): string {
-    return 'Solved! 🎉';
+    return t('solved');
   }
 
   protected getGameOverContent(): string {
     const tries = this.row;
-    return `<p>Found <strong>${this.target}</strong> in ${tries} ${tries === 1 ? 'try' : 'tries'} — ${this.state.score} points.</p>`;
+    return t(tries === 1 ? 'motusRecapOne' : 'motusRecapMany', {
+      target: this.target,
+      n: tries,
+      score: this.state.score,
+    });
   }
 }

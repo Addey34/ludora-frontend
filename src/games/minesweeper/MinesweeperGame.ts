@@ -1,7 +1,8 @@
 import { GameEngine } from '../../shared/engine/GameEngine.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
-import { setupSettingsPanel } from '../../shared/ui/settingsPanel.js';
+import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
 import { playSound } from '../../shared/fx/sound.js';
@@ -64,9 +65,9 @@ export class MinesweeperGame extends GameEngine {
     this.flagToggle = document.getElementById('flagToggle') as HTMLButtonElement | null;
     this.fx = new ParticleSystem();
     this.hud = setupHud([
-      { key: 'mines', icon: 'bomb', label: 'Mines left' },
-      { key: 'time', icon: 'clock', label: 'Time' },
-      { key: 'high', icon: 'trophy', label: 'Best' },
+      { key: 'mines', icon: 'bomb', label: t('hudMinesLeft') },
+      { key: 'time', icon: 'clock', label: t('hudTime') },
+      { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
 
     // Reveal on left click, flag on right click — both via delegation.
@@ -78,17 +79,7 @@ export class MinesweeperGame extends GameEngine {
     this.flagToggle?.addEventListener('click', () => this.toggleFlagMode());
 
     setupSettingsPanel([
-      {
-        id: 'difficulty',
-        label: 'Difficulty',
-        choices: [
-          { label: 'Easy', value: 'easy' },
-          { label: 'Medium', value: 'medium' },
-          { label: 'Hard', value: 'hard' },
-        ],
-        value: this.difficulty,
-        onChange: (v) => this.changeDifficulty(v as Difficulty),
-      },
+      difficultyField(this.difficulty, (v) => this.changeDifficulty(v as Difficulty)),
     ]);
 
     this.renderScoreTable();
@@ -237,11 +228,11 @@ export class MinesweeperGame extends GameEngine {
     playSound('die');
     screenShake(8, 350);
     this.overlay.show({
-      title: 'Boom! 💥',
-      bodyHtml: '<p>You hit a mine. Better luck next time!</p>',
+      title: t('msBoom'),
+      bodyHtml: t('msHitMine'),
       buttons: [
         {
-          text: 'Play again',
+          text: t('playAgain'),
           primary: true,
           onClick: () => {
             this.overlay.hide();
@@ -354,10 +345,10 @@ export class MinesweeperGame extends GameEngine {
   handleInput(): void {}
 
   protected getGameOverTitle(): string {
-    return 'Cleared! 🎉';
+    return t('cleared');
   }
 
   protected getGameOverContent(): string {
-    return `<p>Swept in <strong>${this.formatTime(this.elapsed)}</strong> — ${this.state.score} points.</p>`;
+    return t('minesweeperRecap', { time: this.formatTime(this.elapsed), score: this.state.score });
   }
 }

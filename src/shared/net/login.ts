@@ -1,5 +1,6 @@
 import { GOOGLE_CLIENT_ID, loginWithGoogleToken, getCurrentUser, logout } from './nakama.js';
 import { clearLocalProgress } from '../levels/levels.js';
+import { t } from '../i18n/i18n.js';
 
 /**
  * Drives the "Sign in with Google" widget in the sidebar (`#authArea`), loaded
@@ -56,8 +57,8 @@ async function renderAuthArea(area: HTMLElement): Promise<void> {
         class="sidebar-auth-item"
         type="button"
         id="logoutBtn"
-        title="Sign out (${escapeHtml(user.displayName)})"
-        aria-label="Sign out"
+        title="${escapeHtml(t('signOutOf', { name: user.displayName }))}"
+        aria-label="${t('signOut')}"
       >
         <span class="sidebar-icon"><i class="fas fa-right-from-bracket" aria-hidden="true"></i></span>
         <span class="sidebar-label">${escapeHtml(user.displayName)}</span>
@@ -71,7 +72,7 @@ async function renderAuthArea(area: HTMLElement): Promise<void> {
     area.innerHTML = `
       <div class="sidebar-auth-item" id="loginItem">
         <span class="sidebar-icon" id="gsiButton"></span>
-        <span class="sidebar-label">Sign in</span>
+        <span class="sidebar-label">${t('signIn')}</span>
       </div>`;
     const target = area.querySelector<HTMLElement>('#gsiButton');
     if (target) {

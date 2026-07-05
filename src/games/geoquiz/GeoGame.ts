@@ -1,6 +1,7 @@
 import { QuizGame } from '../../shared/quiz/QuizGame.js';
 import { Question, buildChoices } from '../../shared/quiz/quiz.js';
 import { SettingsField } from '../../shared/ui/settingsPanel.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { getLocale } from '../../shared/i18n/i18n.js';
 
 interface Country {
@@ -66,11 +67,11 @@ export class GeoGame extends QuizGame {
     return [
       {
         id: 'quizType',
-        label: 'Quiz',
+        label: t('quizType'),
         choices: [
-          { label: 'Capitals', value: 'capital' },
-          { label: 'Flags', value: 'flag' },
-          { label: 'Mixed', value: 'mixed' },
+          { label: t('geoCapitals'), value: 'capital' },
+          { label: t('geoFlags'), value: 'flag' },
+          { label: t('geoMixed'), value: 'mixed' },
         ],
         value: this.quizType,
         onChange: (v) => {

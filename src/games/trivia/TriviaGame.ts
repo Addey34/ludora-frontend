@@ -1,7 +1,7 @@
 import { QuizGame } from '../../shared/quiz/QuizGame.js';
 import { Question, buildChoices } from '../../shared/quiz/quiz.js';
 import { SettingsField } from '../../shared/ui/settingsPanel.js';
-import { getLocale } from '../../shared/i18n/i18n.js';
+import { getLocale, t } from '../../shared/i18n/i18n.js';
 
 interface TriviaItem {
   category: string;
@@ -11,11 +11,11 @@ interface TriviaItem {
 
 /** Category ids ↔ display labels (also drives the settings picker). */
 const CATEGORIES: { value: string; label: string }[] = [
-  { value: 'all', label: 'All' },
-  { value: 'science', label: 'Science' },
-  { value: 'history', label: 'History' },
-  { value: 'culture', label: 'Culture' },
-  { value: 'nature', label: 'Nature' },
+  { value: 'all', label: t('catAll') },
+  { value: 'science', label: t('catScience') },
+  { value: 'history', label: t('catHistory') },
+  { value: 'culture', label: t('catCulture') },
+  { value: 'nature', label: t('catNature') },
 ];
 
 const FALLBACK: TriviaItem[] = [
@@ -69,7 +69,7 @@ export class TriviaGame extends QuizGame {
     return [
       {
         id: 'category',
-        label: 'Category',
+        label: t('category'),
         choices: CATEGORIES,
         value: this.category,
         onChange: (v) => {

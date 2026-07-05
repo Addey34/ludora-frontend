@@ -1,5 +1,6 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { setupPaddlePointer } from '../../shared/engine/pointerControl.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
@@ -113,8 +114,8 @@ export class BreakoutGame extends GameEngine {
     this.boardElement = document.getElementById('board');
     this.fx = new ParticleSystem();
     this.hud = setupHud([
-      { key: 'score', icon: 'star', label: 'Score' },
-      { key: 'lives', icon: 'heart', label: 'Lives' },
+      { key: 'score', icon: 'star', label: t('score') },
+      { key: 'lives', icon: 'heart', label: t('hudLives') },
     ]);
 
     this.buildBoard();

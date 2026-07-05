@@ -1,8 +1,13 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { ScoreEntry } from '../../shared/score/ScoreManager.js';
 import { CountdownTimer } from '../../shared/ui/countdownTimer.js';
 import { setupHud } from '../../shared/ui/hud.js';
-import { setupSettingsPanel } from '../../shared/ui/settingsPanel.js';
+import {
+  setupSettingsPanel,
+  difficultyField,
+  languageField,
+} from '../../shared/ui/settingsPanel.js';
 import { Difficulty } from '../../shared/quiz/quiz.js';
 import { Lang, WordEntry } from '../../shared/words/words.js';
 import { loadWords } from '../../shared/words/wordBank.js';
@@ -82,8 +87,8 @@ export class TypingGame extends GameEngine {
     this.wordContainer = document.getElementById('wordContainer');
     this.wordInput = document.getElementById('wordInput') as HTMLInputElement;
     this.hud = setupHud([
-      { key: 'score', icon: 'star', label: 'Score' },
-      { key: 'time', icon: 'clock', label: 'Time' },
+      { key: 'score', icon: 'star', label: t('score') },
+      { key: 'time', icon: 'clock', label: t('hudTime') },
     ]);
 
     this.setupEventListeners();
@@ -108,33 +113,14 @@ export class TypingGame extends GameEngine {
   /** Language (FR/EN) + difficulty settings; changing either reloads the words. */
   private setupTypingSettings(): void {
     setupSettingsPanel([
-      {
-        id: 'lang',
-        label: 'Language',
-        choices: [
-          { label: 'EN', value: 'en' },
-          { label: 'FR', value: 'fr' },
-        ],
-        value: this.lang,
-        onChange: (v) => {
-          this.lang = v === 'fr' ? 'fr' : 'en';
-          this.restartWithNewWords();
-        },
-      },
-      {
-        id: 'difficulty',
-        label: 'Difficulty',
-        choices: [
-          { label: 'Easy', value: 'easy' },
-          { label: 'Medium', value: 'medium' },
-          { label: 'Hard', value: 'hard' },
-        ],
-        value: this.difficulty,
-        onChange: (v) => {
-          this.difficulty = (v as Difficulty) ?? 'easy';
-          this.restartWithNewWords();
-        },
-      },
+      languageField(this.lang, (v) => {
+        this.lang = v === 'fr' ? 'fr' : 'en';
+        this.restartWithNewWords();
+      }),
+      difficultyField(this.difficulty, (v) => {
+        this.difficulty = (v as Difficulty) ?? 'easy';
+        this.restartWithNewWords();
+      }),
     ]);
   }
 
@@ -351,7 +337,7 @@ export class TypingGame extends GameEngine {
 
     if (this.wordInput) {
       this.wordInput.disabled = false;
-      this.wordInput.placeholder = 'Type the word here...';
+      this.wordInput.placeholder = t('typingPlaceholder');
       this.wordInput.style.opacity = '1';
       this.wordInput.style.cursor = 'text';
       this.wordInput.value = '';
@@ -371,7 +357,7 @@ export class TypingGame extends GameEngine {
 
     if (this.wordInput) {
       this.wordInput.disabled = true;
-      this.wordInput.placeholder = 'Game over!';
+      this.wordInput.placeholder = t('gameOver');
       this.wordInput.style.opacity = '0.7';
       this.wordInput.style.cursor = 'not-allowed';
     }
@@ -383,7 +369,7 @@ export class TypingGame extends GameEngine {
    * Title of the game-over modal.
    */
   protected getGameOverTitle(): string {
-    return 'Game over!';
+    return t('gameOver');
   }
 
   /**
@@ -392,10 +378,10 @@ export class TypingGame extends GameEngine {
   protected getGameOverContent(): string {
     const speed = this.calculateSpeed();
     return `
-      <div>Correct words: ${this.state.score}</div>
-      <div>Typed letters: ${this.letterCount}</div>
-      <div>Speed: ${speed.wpm} words/minute</div>
-      <div>Speed: ${speed.lpm} letters/minute</div>
+      <div>${t('typingCorrectWords', { n: this.state.score })}</div>
+      <div>${t('typingTypedLetters', { n: this.letterCount })}</div>
+      <div>${t('typingWpm', { n: speed.wpm })}</div>
+      <div>${t('typingLpm', { n: speed.lpm })}</div>
     `;
   }
 

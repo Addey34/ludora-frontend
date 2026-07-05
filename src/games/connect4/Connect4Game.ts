@@ -1,8 +1,13 @@
 import { BoardGame } from '../../shared/turn/BoardGame.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { TurnRules } from '../../shared/turn/turnGame.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { playSound } from '../../shared/fx/sound.js';
-import { setupSettingsPanel, SettingsPanelHandle } from '../../shared/ui/settingsPanel.js';
+import {
+  setupSettingsPanel,
+  SettingsPanelHandle,
+  difficultyField,
+} from '../../shared/ui/settingsPanel.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { Difficulty } from '../../shared/bot/difficulty.js';
 import {
@@ -64,8 +69,8 @@ export class Connect4Game extends BoardGame<Connect4State, Connect4Move> {
     this.boardEl = document.getElementById('board');
     this.fx = new ParticleSystem();
     this.hud = setupHud([
-      { key: 'turn', icon: 'circle-dot', label: 'Turn' },
-      { key: 'time', icon: 'clock', label: 'Time' },
+      { key: 'turn', icon: 'circle-dot', label: t('hudTurn') },
+      { key: 'time', icon: 'clock', label: t('hudTime') },
     ]);
 
     this.buildBoard();
@@ -73,25 +78,15 @@ export class Connect4Game extends BoardGame<Connect4State, Connect4Move> {
     this.setupBoardPointer();
 
     this.settings = setupSettingsPanel([
-      {
-        id: 'difficulty',
-        label: 'Difficulty',
-        choices: [
-          { label: 'Easy', value: 'easy' },
-          { label: 'Medium', value: 'medium' },
-          { label: 'Hard', value: 'hard' },
-        ],
-        value: this.difficulty,
-        onChange: (value) => {
-          this.difficulty = value as Difficulty;
-        },
-      },
+      difficultyField(this.difficulty, (value) => {
+        this.difficulty = value as Difficulty;
+      }),
       {
         id: 'first',
-        label: 'First move',
+        label: t('firstMove'),
         choices: [
-          { label: 'Me', value: 'me' },
-          { label: 'You', value: 'you' },
+          { label: t('me'), value: 'me' },
+          { label: t('you'), value: 'you' },
         ],
         value: this.botStarts ? 'you' : 'me',
         onChange: (value) => {
@@ -307,8 +302,8 @@ export class Connect4Game extends BoardGame<Connect4State, Connect4Move> {
   }
 
   protected getGameOverTitle(): string {
-    if (this.game.winner === null) return "It's a draw!";
-    return this.game.winner === this.mySeat ? 'You win! 🏆' : 'You lose…';
+    if (this.game.winner === null) return t('draw');
+    return this.game.winner === this.mySeat ? t('youWin') : t('youLose');
   }
 
   protected getGameOverContent(): string {

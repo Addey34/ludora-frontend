@@ -1,7 +1,8 @@
 import { GameEngine } from '../../shared/engine/GameEngine.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
-import { setupSettingsPanel } from '../../shared/ui/settingsPanel.js';
+import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
 import { playSound } from '../../shared/fx/sound.js';
 import { Difficulty } from '../../shared/quiz/quiz.js';
 import { Grid, SIZE, cloneGrid, conflicts, generatePuzzle, isSolved } from './sudoku.js';
@@ -42,9 +43,9 @@ export class SudokuGame extends GameEngine {
     this.gridEl = document.getElementById('grid');
     this.padEl = document.getElementById('pad');
     this.hud = setupHud([
-      { key: 'time', icon: 'clock', label: 'Time' },
-      { key: 'score', icon: 'star', label: 'Score' },
-      { key: 'high', icon: 'trophy', label: 'Best' },
+      { key: 'time', icon: 'clock', label: t('hudTime') },
+      { key: 'score', icon: 'star', label: t('score') },
+      { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
 
     this.buildGrid();
@@ -52,22 +53,12 @@ export class SudokuGame extends GameEngine {
     this.setupEventListeners();
 
     setupSettingsPanel([
-      {
-        id: 'difficulty',
-        label: 'Difficulty',
-        choices: [
-          { label: 'Easy', value: 'easy' },
-          { label: 'Medium', value: 'medium' },
-          { label: 'Hard', value: 'hard' },
-        ],
-        value: this.difficulty,
-        onChange: (v) => {
-          this.difficulty = (v as Difficulty) ?? 'easy';
-          this.overlay.hide();
-          this.stop();
-          this.start();
-        },
-      },
+      difficultyField(this.difficulty, (v) => {
+        this.difficulty = (v as Difficulty) ?? 'easy';
+        this.overlay.hide();
+        this.stop();
+        this.start();
+      }),
     ]);
 
     this.renderScoreTable();
@@ -109,7 +100,7 @@ export class SudokuGame extends GameEngine {
     erase.type = 'button';
     erase.className = 'sudoku-pad-key sudoku-pad-erase';
     erase.innerHTML = '<i class="fas fa-eraser" aria-hidden="true"></i>';
-    erase.setAttribute('aria-label', 'Erase');
+    erase.setAttribute('aria-label', t('erase'));
     erase.addEventListener('click', () => this.enter(0));
     host.appendChild(erase);
   }
@@ -237,10 +228,10 @@ export class SudokuGame extends GameEngine {
   render(): void {} // engine loop unused; the DOM is drawn by draw() on each change
 
   protected getGameOverTitle(): string {
-    return 'Solved! 🎉';
+    return t('solved');
   }
 
   protected getGameOverContent(): string {
-    return `<p>Grid solved in <strong>${this.formatTime(this.elapsed)}</strong> — ${this.state.score} points.</p>`;
+    return t('sudokuRecap', { time: this.formatTime(this.elapsed), score: this.state.score });
   }
 }

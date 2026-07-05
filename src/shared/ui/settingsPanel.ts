@@ -30,6 +30,47 @@ export interface SettingsField {
   onChange: (value: string) => void;
 }
 
+/**
+ * Ready-made, translated **Difficulty** field (Easy / Medium / Hard) — the
+ * ubiquitous bot/level-difficulty control. A game passes only its current value
+ * and change handler instead of repeating the same three choices everywhere.
+ */
+export function difficultyField(
+  value: string,
+  onChange: (value: string) => void,
+  label: string = t('difficulty')
+): SettingsField {
+  return {
+    id: 'difficulty',
+    label,
+    value,
+    choices: [
+      { label: t('easy'), value: 'easy' },
+      { label: t('medium'), value: 'medium' },
+      { label: t('hard'), value: 'hard' },
+    ],
+    onChange,
+  };
+}
+
+/**
+ * Ready-made **Language** field (EN / FR) for content-language games (Typing,
+ * Motus, Anagrams, Hangman). The option labels stay the language codes (EN/FR
+ * read the same in both locales); only the field label is translated.
+ */
+export function languageField(value: string, onChange: (value: string) => void): SettingsField {
+  return {
+    id: 'language',
+    label: t('language'),
+    value,
+    choices: [
+      { label: 'EN', value: 'en' },
+      { label: 'FR', value: 'fr' },
+    ],
+    onChange,
+  };
+}
+
 /** Handle returned by {@link setupSettingsPanel}. */
 export interface SettingsPanelHandle {
   /** Greys out and blocks the whole panel (e.g. while in a multiplayer session). */

@@ -1,6 +1,6 @@
 import { QuizGame } from '../../shared/quiz/QuizGame.js';
 import { Question } from '../../shared/quiz/quiz.js';
-import { SettingsField } from '../../shared/ui/settingsPanel.js';
+import { SettingsField, languageField } from '../../shared/ui/settingsPanel.js';
 import { Lang, WordEntry, keyboardForm, pickWord, scramble } from '../../shared/words/words.js';
 import { loadWords } from '../../shared/words/wordBank.js';
 
@@ -31,19 +31,10 @@ export class AnagramGame extends QuizGame {
 
   protected extraSettings(): SettingsField[] {
     return [
-      {
-        id: 'lang',
-        label: 'Language',
-        choices: [
-          { label: 'FR', value: 'fr' },
-          { label: 'EN', value: 'en' },
-        ],
-        value: this.lang,
-        onChange: (v) => {
-          this.lang = v === 'en' ? 'en' : 'fr';
-          this.restartRound();
-        },
-      },
+      languageField(this.lang, (v) => {
+        this.lang = v === 'en' ? 'en' : 'fr';
+        this.restartRound();
+      }),
     ];
   }
 

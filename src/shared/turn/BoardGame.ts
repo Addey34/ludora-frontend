@@ -5,6 +5,7 @@ import { GameOverlayButton } from '../ui/gameOverlay.js';
 import { TurnRules } from './turnGame.js';
 import { NetMatch, MatchMessage } from '../net/match.js';
 import { setupMultiplayerPanel, MultiplayerHandle } from '../versus/multiplayerPanel.js';
+import { t } from '../i18n/i18n.js';
 
 /**
  * Host-authoritative, turn-based controller shared by every board game
@@ -57,9 +58,9 @@ export abstract class BoardGame<S, M> extends GameEngine {
   /** Seconds a seat has before its move is played automatically. */
   protected turnSeconds = 20;
 
-  protected rematchLabel = 'Rematch';
-  protected quitLabel = 'Quit';
-  protected waitingForRematchText = 'Waiting for a rematch from the host…';
+  protected rematchLabel = t('rematch');
+  protected quitLabel = t('quit');
+  protected waitingForRematchText = t('waitingForRematch');
 
   /** The authoritative board state (the host owns it; guests mirror it). */
   protected game: S;

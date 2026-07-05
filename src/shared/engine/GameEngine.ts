@@ -459,10 +459,10 @@ export abstract class GameEngine {
       score: content === undefined ? this.state.score : undefined,
       prompt: savable
         ? {
-            label: 'Save your score to the leaderboard',
-            placeholder: 'Nickname',
+            label: t('saveScorePrompt'),
+            placeholder: t('nickname'),
             value: getPlayerName() ?? '',
-            submitLabel: 'Save',
+            submitLabel: t('save'),
             onSubmit: (value) => {
               setPlayerName(value);
               this.saveScore(value);
@@ -499,7 +499,7 @@ export abstract class GameEngine {
    * Title of the game-over overlay. Override to customize it (e.g. "You won!").
    */
   protected getGameOverTitle(): string {
-    return 'Game Over!';
+    return t('gameOver');
   }
 
   /**

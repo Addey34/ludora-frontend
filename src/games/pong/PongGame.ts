@@ -1,9 +1,14 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { setupPaddlePointer } from '../../shared/engine/pointerControl.js';
 import { Difficulty } from '../../shared/bot/difficulty.js';
 import { pongBotTargetY } from './pongBot.js';
 import { VersusRole } from '../../shared/versus/opponent.js';
-import { setupSettingsPanel, SettingsPanelHandle } from '../../shared/ui/settingsPanel.js';
+import {
+  setupSettingsPanel,
+  SettingsPanelHandle,
+  difficultyField,
+} from '../../shared/ui/settingsPanel.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { setupMultiplayerPanel, MultiplayerHandle } from '../../shared/versus/multiplayerPanel.js';
 import { NetMatch, MatchMessage } from '../../shared/net/match.js';
@@ -147,8 +152,8 @@ export class PongGame extends GameEngine {
     this.fx = new ParticleSystem();
     this.boardElement = document.getElementById('board');
     this.hud = setupHud([
-      { key: 'score', icon: 'user', label: 'Me' },
-      { key: 'opp', icon: 'user', label: 'Opponent' },
+      { key: 'score', icon: 'user', label: t('me') },
+      { key: 'opp', icon: 'user', label: t('opponent') },
     ]);
 
     this.buildBoard();
@@ -186,22 +191,12 @@ export class PongGame extends GameEngine {
   /** Builds the Settings panel (bot difficulty + win score). No-op without markup. */
   private setupSettings(): void {
     this.settings = setupSettingsPanel([
-      {
-        id: 'difficulty',
-        label: 'Difficulty',
-        value: this.difficulty,
-        choices: [
-          { label: 'Easy', value: 'easy' },
-          { label: 'Medium', value: 'medium' },
-          { label: 'Hard', value: 'hard' },
-        ],
-        onChange: (value) => {
-          this.difficulty = value as Difficulty;
-        },
-      },
+      difficultyField(this.difficulty, (value) => {
+        this.difficulty = value as Difficulty;
+      }),
       {
         id: 'winScore',
-        label: 'First to',
+        label: t('firstTo'),
         value: String(this.winScore),
         choices: WIN_SCORES.map((n) => ({ label: `${n} pts`, value: String(n) })),
         onChange: (value) => {
@@ -502,7 +497,7 @@ export class PongGame extends GameEngine {
 
   /** Title of the game-over overlay: win or loss. */
   protected getGameOverTitle(): string {
-    return this.state.score > this.opponentScore ? 'You win! 🏆' : 'You lose…';
+    return this.state.score > this.opponentScore ? t('youWin') : t('youLose');
   }
 
   /** Final score in the overlay body. */
@@ -614,7 +609,7 @@ export class PongGame extends GameEngine {
     const buttons: GameOverlayButton[] = [];
     if (this.role === 'host') {
       buttons.push({
-        text: 'Rematch',
+        text: t('rematch'),
         primary: true,
         onClick: () => {
           this.overlay.hide();
@@ -623,7 +618,7 @@ export class PongGame extends GameEngine {
       });
     }
     buttons.push({
-      text: 'Quit',
+      text: t('quit'),
       primary: this.role !== 'host',
       onClick: () => {
         this.overlay.hide();
@@ -631,10 +626,10 @@ export class PongGame extends GameEngine {
       },
     });
     const waiting =
-      this.role === 'guest' ? '<p class="mp-status">Waiting for a rematch from the host…</p>' : '';
+      this.role === 'guest' ? `<p class="mp-status">${t('waitingForRematch')}</p>` : '';
     this.overlay.show({
-      title: won ? 'You win! 🏆' : 'You lose…',
-      bodyHtml: `<div>You: ${this.state.score} — Opponent: ${this.opponentScore}</div>${waiting}`,
+      title: won ? t('youWin') : t('youLose'),
+      bodyHtml: `<div>${t('you')}: ${this.state.score} — ${t('opponent')}: ${this.opponentScore}</div>${waiting}`,
       buttons,
     });
   }

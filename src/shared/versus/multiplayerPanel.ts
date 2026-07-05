@@ -1,6 +1,7 @@
 import { setupPopover } from '../ui/popover.js';
 import { GameOverlay } from '../ui/gameOverlay.js';
 import { createSession, joinSession, NetMatch, LobbySnapshot } from '../net/match.js';
+import { t } from '../i18n/i18n.js';
 
 /**
  * The collapsible "Multiplayer" panel shown in the game-shell header.
@@ -63,7 +64,7 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
   const title = (): HTMLElement => {
     const el = document.createElement('p');
     el.className = 'game-pop-title';
-    el.textContent = 'Multiplayer';
+    el.textContent = t('multiplayer');
     return el;
   };
 
@@ -75,26 +76,26 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
     const create = document.createElement('button');
     create.type = 'button';
     create.className = 'btn btn--primary';
-    create.textContent = 'Create a session';
+    create.textContent = t('mpCreate');
     create.addEventListener('click', () => void doCreate());
 
     const or = document.createElement('div');
     or.className = 'mp-or';
-    or.textContent = 'or';
+    or.textContent = t('mpOr');
 
     const join = document.createElement('form');
     join.className = 'mp-join';
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'input-field';
-    input.placeholder = 'Code';
+    input.placeholder = t('mpCode');
     input.maxLength = 4;
     input.autocapitalize = 'characters';
-    input.setAttribute('aria-label', 'Session code to join');
+    input.setAttribute('aria-label', t('mpCodeAria'));
     const joinBtn = document.createElement('button');
     joinBtn.type = 'submit';
     joinBtn.className = 'btn btn--secondary';
-    joinBtn.textContent = 'Join';
+    joinBtn.textContent = t('mpJoin');
     join.append(input, joinBtn);
     join.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -133,7 +134,7 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
       const copy = document.createElement('button');
       copy.type = 'button';
       copy.className = 'mp-code-copy';
-      copy.setAttribute('aria-label', 'Copy code');
+      copy.setAttribute('aria-label', t('mpCopyCode'));
       copy.innerHTML = '<i class="fas fa-copy" aria-hidden="true"></i>';
       copy.addEventListener('click', () => void navigator.clipboard?.writeText(net?.code ?? ''));
       code.append(value, copy);
@@ -147,26 +148,21 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
       const start = document.createElement('button');
       start.type = 'button';
       start.className = 'btn btn--primary';
-      start.textContent = 'Start';
+      start.textContent = t('mpStart');
       start.disabled = snap.count < min;
       start.addEventListener('click', () => net?.startMatch());
       section.appendChild(start);
     } else {
-      section.appendChild(statusLine('Waiting for the host to start…'));
+      section.appendChild(statusLine(t('mpWaitingHost')));
       if (joinStale) {
-        section.appendChild(
-          statusLine(
-            'Still waiting — the host may have already started or stepped away. Leave and try again.',
-            'is-error'
-          )
-        );
+        section.appendChild(statusLine(t('mpStillWaiting'), 'is-error'));
       }
     }
 
     const leaveBtn = document.createElement('button');
     leaveBtn.type = 'button';
     leaveBtn.className = 'btn btn--secondary';
-    leaveBtn.textContent = 'Leave session';
+    leaveBtn.textContent = t('mpLeave');
     leaveBtn.addEventListener('click', confirmLeave);
     section.appendChild(leaveBtn);
 
@@ -184,7 +180,7 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
     if (snap.capacity > snap.count) {
       const note = document.createElement('span');
       note.className = 'mp-roster-note';
-      note.textContent = 'Empty seats will be filled by bots.';
+      note.textContent = t('mpBotsNote');
       wrap.appendChild(note);
     }
     return wrap;
@@ -199,13 +195,13 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
 
   async function doCreate(): Promise<void> {
     open();
-    renderConnecting('Creating the session…');
+    renderConnecting(t('mpCreating'));
     try {
       net = await createSession(capacity);
       wireNet();
       renderLobby();
     } catch {
-      renderIdle('Cannot connect to the server.', true);
+      renderIdle(t('mpCannotConnect'), true);
     }
   }
 
@@ -213,7 +209,7 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
     const code = rawCode.trim();
     if (!code) return;
     open();
-    renderConnecting('Connecting…');
+    renderConnecting(t('mpConnecting'));
     try {
       net = await joinSession(code, capacity);
       wireNet();
@@ -223,7 +219,7 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
         renderLobby();
       }, 30_000);
     } catch {
-      renderIdle('Invalid code or server unreachable.', true);
+      renderIdle(t('mpInvalidCode'), true);
     }
   }
 
@@ -248,7 +244,7 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
   function onClosed(): void {
     const wasActive = started || net !== null;
     teardown();
-    renderIdle('The session has ended.', true);
+    renderIdle(t('mpEnded'), true);
     if (wasActive) opts.onSessionEnd();
   }
 
@@ -270,18 +266,18 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
   function confirmLeave(): void {
     const overlay = new GameOverlay();
     overlay.show({
-      title: 'Leave the session?',
-      bodyHtml: '<div>You will return to a solo game.</div>',
+      title: t('mpLeaveConfirm'),
+      bodyHtml: `<div>${t('mpLeaveBody')}</div>`,
       buttons: [
         {
-          text: 'Quit',
+          text: t('quit'),
           primary: true,
           onClick: () => {
             overlay.hide();
             doLeave();
           },
         },
-        { text: 'Cancel', onClick: () => overlay.hide() },
+        { text: t('cancel'), onClick: () => overlay.hide() },
       ],
     });
   }

@@ -1,9 +1,14 @@
 import { BoardGame } from '../../shared/turn/BoardGame.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { TurnRules } from '../../shared/turn/turnGame.js';
 import { MatchMessage } from '../../shared/net/match.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { playSound } from '../../shared/fx/sound.js';
-import { setupSettingsPanel, SettingsPanelHandle } from '../../shared/ui/settingsPanel.js';
+import {
+  setupSettingsPanel,
+  SettingsPanelHandle,
+  difficultyField,
+} from '../../shared/ui/settingsPanel.js';
 import { createDice, DiceHandle, DiceCorner } from '../../shared/ui/dice.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { Difficulty } from '../../shared/bot/difficulty.js';
@@ -108,26 +113,20 @@ export class LudoGame extends BoardGame<LudoState, LudoMove> {
     this.fx = new ParticleSystem();
     this.boardEl = document.getElementById('board');
     this.playersEl = document.getElementById('ludoPlayers');
-    this.hud = setupHud([{ key: 'time', icon: 'clock', label: 'Time' }]);
+    this.hud = setupHud([{ key: 'time', icon: 'clock', label: t('hudTime') }]);
 
     this.buildBoard();
     this.buildPlayers();
     if (this.boardEl) this.dice = createDice(this.boardEl);
 
     this.settings = setupSettingsPanel([
-      {
-        id: 'difficulty',
-        label: 'Bots',
-        choices: [
-          { label: 'Easy', value: 'easy' },
-          { label: 'Medium', value: 'medium' },
-          { label: 'Hard', value: 'hard' },
-        ],
-        value: this.difficulty,
-        onChange: (value) => {
+      difficultyField(
+        this.difficulty,
+        (value) => {
           this.difficulty = value as Difficulty;
         },
-      },
+        t('bots')
+      ),
     ]);
     this.setupVersus(SEATS);
 
@@ -660,7 +659,7 @@ export class LudoGame extends BoardGame<LudoState, LudoMove> {
   }
 
   protected getGameOverTitle(): string {
-    return this.game.winner === this.mySeat ? 'You win! 🏆' : 'You lose…';
+    return this.game.winner === this.mySeat ? t('youWin') : t('youLose');
   }
 
   protected getGameOverContent(): string {

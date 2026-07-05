@@ -1,5 +1,6 @@
 import { GameEngine } from '../../shared/engine/GameEngine.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
@@ -44,9 +45,9 @@ export class SimonGame extends GameEngine {
     this.boardEl = document.getElementById('board');
     this.fx = new ParticleSystem();
     this.hud = setupHud([
-      { key: 'score', icon: 'star', label: 'Round' },
-      { key: 'high', icon: 'trophy', label: 'Best' },
-      { key: 'status', icon: 'eye', label: 'Status' },
+      { key: 'score', icon: 'star', label: t('hudRound') },
+      { key: 'high', icon: 'trophy', label: t('hudBest') },
+      { key: 'status', icon: 'eye', label: t('hudStatus') },
     ]);
 
     this.buildPads();

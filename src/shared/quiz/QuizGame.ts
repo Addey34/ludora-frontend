@@ -1,7 +1,7 @@
 import { GameEngine, GameConfig } from '../engine/GameEngine.js';
 import { setupHud } from '../ui/hud.js';
 import { dismissStartOverlay } from '../ui/startOverlay.js';
-import { setupSettingsPanel, SettingsField } from '../ui/settingsPanel.js';
+import { setupSettingsPanel, SettingsField, difficultyField } from '../ui/settingsPanel.js';
 import { CountdownTimer } from '../ui/countdownTimer.js';
 import { playSound } from '../fx/sound.js';
 import { t } from '../i18n/i18n.js';
@@ -117,12 +117,12 @@ export abstract class QuizGame extends GameEngine {
     this.boardEl = document.getElementById('board');
     this.buildScaffold();
     this.hud = setupHud([
-      { key: 'progress', icon: 'list-ol', label: 'Question' },
-      { key: 'time', icon: 'clock', label: 'Time' },
-      { key: 'lives', icon: 'heart', label: 'Lives' },
-      { key: 'score', icon: 'star', label: 'Score' },
-      { key: 'streak', icon: 'fire', label: 'Streak' },
-      { key: 'high', icon: 'trophy', label: 'Best' },
+      { key: 'progress', icon: 'list-ol', label: t('hudQuestion') },
+      { key: 'time', icon: 'clock', label: t('hudTime') },
+      { key: 'lives', icon: 'heart', label: t('hudLives') },
+      { key: 'score', icon: 'star', label: t('score') },
+      { key: 'streak', icon: 'fire', label: t('hudStreak') },
+      { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
     this.setupEventListeners();
     this.setupQuizSettings();
@@ -150,22 +150,12 @@ export abstract class QuizGame extends GameEngine {
   }
 
   private setupQuizSettings(): void {
-    const difficulty: SettingsField = {
-      id: 'difficulty',
-      label: t('difficulty'),
-      choices: [
-        { label: t('easy'), value: 'easy' },
-        { label: t('medium'), value: 'medium' },
-        { label: t('hard'), value: 'hard' },
-      ],
-      value: this.difficulty,
-      onChange: (v) => {
-        if (!DIFFICULTIES.includes(v as Difficulty)) return;
-        this.difficulty = v as Difficulty;
-        this.onDifficultyChanged();
-        this.restartRound();
-      },
-    };
+    const difficulty = difficultyField(this.difficulty, (v) => {
+      if (!DIFFICULTIES.includes(v as Difficulty)) return;
+      this.difficulty = v as Difficulty;
+      this.onDifficultyChanged();
+      this.restartRound();
+    });
     const mode: SettingsField = {
       id: 'mode',
       label: t('mode'),
@@ -421,16 +411,18 @@ export abstract class QuizGame extends GameEngine {
   // --- Game-over recap ------------------------------------------------------
 
   protected getGameOverTitle(): string {
-    return accuracy(this.stats) === 100 && answered(this.stats) > 0 ? 'Flawless! 🎉' : 'Round over';
+    return accuracy(this.stats) === 100 && answered(this.stats) > 0
+      ? t('flawless')
+      : t('roundOver');
   }
 
   protected getGameOverContent(): string {
     const total = answered(this.stats);
     return (
-      `<p><strong>${this.stats.correct}/${total}</strong> correct ` +
+      `<p><strong>${this.stats.correct}/${total}</strong> ${t('correct')} ` +
       `(${accuracy(this.stats)}%)</p>` +
-      `<p>Best streak: <strong>${this.stats.bestStreak}</strong> · ` +
-      `Score: <strong>${this.state.score}</strong></p>`
+      `<p>${t('bestStreak')}: <strong>${this.stats.bestStreak}</strong> · ` +
+      `${t('score')}: <strong>${this.state.score}</strong></p>`
     );
   }
 }

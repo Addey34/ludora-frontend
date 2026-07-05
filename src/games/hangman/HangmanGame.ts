@@ -1,7 +1,12 @@
 import { GameEngine } from '../../shared/engine/GameEngine.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
-import { setupSettingsPanel } from '../../shared/ui/settingsPanel.js';
+import {
+  setupSettingsPanel,
+  difficultyField,
+  languageField,
+} from '../../shared/ui/settingsPanel.js';
 import { playSound } from '../../shared/fx/sound.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
 import { Difficulty, difficultyMultiplier } from '../../shared/quiz/quiz.js';
@@ -75,10 +80,10 @@ export class HangmanGame extends GameEngine {
     this.figureEl = document.getElementById('figure');
     this.keyboardEl = document.getElementById('keyboard');
     this.hud = setupHud([
-      { key: 'solved', icon: 'check', label: 'Words solved' },
-      { key: 'lives', icon: 'heart', label: 'Guesses left' },
-      { key: 'score', icon: 'star', label: 'Score' },
-      { key: 'high', icon: 'trophy', label: 'Best' },
+      { key: 'solved', icon: 'check', label: t('hudWordsSolved') },
+      { key: 'lives', icon: 'heart', label: t('hudGuessesLeft') },
+      { key: 'score', icon: 'star', label: t('score') },
+      { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
 
     if (this.figureEl) this.figureEl.innerHTML = FIGURE_SVG;
@@ -89,33 +94,14 @@ export class HangmanGame extends GameEngine {
     this.setupEventListeners();
 
     setupSettingsPanel([
-      {
-        id: 'lang',
-        label: 'Language',
-        choices: [
-          { label: 'FR', value: 'fr' },
-          { label: 'EN', value: 'en' },
-        ],
-        value: this.lang,
-        onChange: (v) => {
-          this.lang = v === 'en' ? 'en' : 'fr';
-          this.restart();
-        },
-      },
-      {
-        id: 'difficulty',
-        label: 'Difficulty',
-        choices: [
-          { label: 'Easy', value: 'easy' },
-          { label: 'Medium', value: 'medium' },
-          { label: 'Hard', value: 'hard' },
-        ],
-        value: this.difficulty,
-        onChange: (v) => {
-          this.difficulty = (v as Difficulty) ?? 'easy';
-          this.restart();
-        },
-      },
+      languageField(this.lang, (v) => {
+        this.lang = v === 'en' ? 'en' : 'fr';
+        this.restart();
+      }),
+      difficultyField(this.difficulty, (v) => {
+        this.difficulty = (v as Difficulty) ?? 'easy';
+        this.restart();
+      }),
     ]);
 
     this.applyLeaderboardVariant();
@@ -303,14 +289,14 @@ export class HangmanGame extends GameEngine {
   render(): void {}
 
   protected getGameOverTitle(): string {
-    return 'Hanged! 💀';
+    return t('hanged');
   }
 
   protected getGameOverContent(): string {
     const w = this.solved;
     return (
-      `<p>You solved <strong>${w}</strong> word${w === 1 ? '' : 's'} in a row.</p>` +
-      `<p>The word was <strong>${this.target}</strong> — ${this.state.score} points.</p>`
+      t(w === 1 ? 'hangmanStreakOne' : 'hangmanStreakMany', { n: w }) +
+      t('hangmanWord', { target: this.target, score: this.state.score })
     );
   }
 }

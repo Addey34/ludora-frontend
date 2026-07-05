@@ -11,6 +11,8 @@
  * corner so the result stays visible without hiding the board.
  */
 
+import { t } from '../i18n/i18n.js';
+
 /** Pip positions (1..9 in a 3×3 grid, row-major) lit for each die value. */
 const PIPS: Record<number, number[]> = {
   1: [5],
@@ -61,7 +63,7 @@ export function createDice(host: HTMLElement, options: DiceOptions = {}): DiceHa
   const face = document.createElement('button');
   face.type = 'button';
   face.className = 'dice-face';
-  face.setAttribute('aria-label', 'Roll the die');
+  face.setAttribute('aria-label', t('rollDie'));
 
   const pips: HTMLElement[] = [];
   for (let i = 1; i <= 9; i++) {

@@ -13,13 +13,18 @@
  */
 
 import { BoardGame } from '../../shared/turn/BoardGame.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { TurnRules } from '../../shared/turn/turnGame.js';
 import { MatchMessage, NetMatch } from '../../shared/net/match.js';
 import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
 import { playSound } from '../../shared/fx/sound.js';
-import { setupSettingsPanel, SettingsPanelHandle } from '../../shared/ui/settingsPanel.js';
+import {
+  setupSettingsPanel,
+  SettingsPanelHandle,
+  difficultyField,
+} from '../../shared/ui/settingsPanel.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { Difficulty } from '../../shared/bot/difficulty.js';
 import {
@@ -101,29 +106,19 @@ export class BattleshipGame extends BoardGame<BattleshipState, BattleshipMove> {
     this.boardEl = document.getElementById('board');
 
     this.hud = setupHud([
-      { key: 'mine', icon: 'shield-halved', label: 'My ships' },
-      { key: 'enemy', icon: 'crosshairs', label: 'Enemy ships' },
-      { key: 'turn', icon: 'circle-dot', label: 'Turn' },
-      { key: 'time', icon: 'clock', label: 'Time' },
+      { key: 'mine', icon: 'shield-halved', label: t('bsMyShips') },
+      { key: 'enemy', icon: 'crosshairs', label: t('bsEnemyShips') },
+      { key: 'turn', icon: 'circle-dot', label: t('hudTurn') },
+      { key: 'time', icon: 'clock', label: t('hudTime') },
     ]);
 
     this.buildViews();
     this.setupEventListeners();
 
     this.settings = setupSettingsPanel([
-      {
-        id: 'difficulty',
-        label: 'Difficulty',
-        choices: [
-          { label: 'Easy', value: 'easy' },
-          { label: 'Medium', value: 'medium' },
-          { label: 'Hard', value: 'hard' },
-        ],
-        value: this.difficulty,
-        onChange: (v) => {
-          this.difficulty = v as Difficulty;
-        },
-      },
+      difficultyField(this.difficulty, (v) => {
+        this.difficulty = v as Difficulty;
+      }),
     ]);
 
     this.setupVersus(SEATS);
@@ -160,32 +155,32 @@ export class BattleshipGame extends BoardGame<BattleshipState, BattleshipMove> {
     const rotateBtn = document.createElement('button');
     rotateBtn.type = 'button';
     rotateBtn.className = 'btn btn--secondary';
-    rotateBtn.textContent = 'Rotate (R)';
+    rotateBtn.textContent = t('bsRotate');
     rotateBtn.addEventListener('click', () => this.toggleOrientation());
 
     const autoBtn = document.createElement('button');
     autoBtn.type = 'button';
     autoBtn.className = 'btn btn--secondary';
-    autoBtn.textContent = 'Auto-place';
+    autoBtn.textContent = t('bsAutoPlace');
     autoBtn.addEventListener('click', () => this.autoPlace());
 
     const resetBtn = document.createElement('button');
     resetBtn.type = 'button';
     resetBtn.className = 'btn btn--secondary';
-    resetBtn.textContent = 'Reset';
+    resetBtn.textContent = t('reset');
     resetBtn.addEventListener('click', () => this.resetPlacement());
 
     const readyBtn = document.createElement('button');
     readyBtn.type = 'button';
     readyBtn.className = 'btn btn--primary';
-    readyBtn.textContent = 'Ready';
+    readyBtn.textContent = t('ready');
     readyBtn.disabled = true;
     readyBtn.addEventListener('click', () => this.onLocalReady());
     this.readyBtnEl = readyBtn;
 
     const waiting = document.createElement('p');
     waiting.className = 'bs-waiting';
-    waiting.textContent = 'Waiting for the opponent to finish placing ships…';
+    waiting.textContent = t('bsWaitingPlace');
     waiting.hidden = true;
     this.waitingMsgEl = waiting;
 
@@ -224,7 +219,7 @@ export class BattleshipGame extends BoardGame<BattleshipState, BattleshipMove> {
     const fireHint = document.createElement('p');
     fireHint.className = 'bs-fire-hint';
     fireHint.setAttribute('aria-hidden', 'true');
-    fireHint.textContent = 'Click a cell to fire!';
+    fireHint.textContent = t('bsFireHint');
     enemySide.appendChild(fireHint);
 
     combat.append(mySide, enemySide);
@@ -490,7 +485,7 @@ export class BattleshipGame extends BoardGame<BattleshipState, BattleshipMove> {
 
       const label = document.createElement('span');
       label.className = 'bs-ship-label';
-      label.textContent = `${def.label} (${def.size})`;
+      label.textContent = `${t(`ship_${def.id}`)} (${def.size})`;
 
       const bar = document.createElement('div');
       bar.className = 'bs-ship-bar';
@@ -736,14 +731,12 @@ export class BattleshipGame extends BoardGame<BattleshipState, BattleshipMove> {
   }
 
   protected getGameOverTitle(): string {
-    if (this.phase !== 'combat') return 'Game over';
-    return this.game.winner === this.mySeat ? 'Victory! 🏆' : 'Defeat…';
+    if (this.phase !== 'combat') return t('gameOver');
+    return this.game.winner === this.mySeat ? t('victory') : t('defeat');
   }
 
   protected getGameOverContent(): string {
     if (this.phase !== 'combat') return '';
-    return this.game.winner === this.mySeat
-      ? '<p>All enemy ships are sunk. Well done!</p>'
-      : '<p>My entire fleet has been sunk.</p>';
+    return this.game.winner === this.mySeat ? t('battleshipWin') : t('battleshipLose');
   }
 }

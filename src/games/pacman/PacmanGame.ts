@@ -1,4 +1,5 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
+import { t } from '../../shared/i18n/i18n.js';
 import {
   Direction,
   Vec2 as Position,
@@ -132,7 +133,7 @@ export class PacmanGame extends GameEngine {
    */
   initialize(): void {
     this.mapElement = document.getElementById('map');
-    this.hud = setupHud([{ key: 'score', icon: 'star', label: 'Score' }]);
+    this.hud = setupHud([{ key: 'score', icon: 'star', label: t('score') }]);
 
     this.setupEventListeners();
     this.setupLevels();
@@ -383,7 +384,7 @@ export class PacmanGame extends GameEngine {
    * Modal title: "You won!" on a win, otherwise "Game Over!".
    */
   protected getGameOverTitle(): string {
-    return this.pendingWin ? 'You won!' : 'Game Over!';
+    return this.pendingWin ? t('youWon') : t('gameOver');
   }
 
   /**

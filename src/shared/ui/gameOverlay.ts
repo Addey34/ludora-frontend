@@ -8,6 +8,8 @@
  * chooses whether to record the score (and under which name).
  */
 
+import { t } from '../i18n/i18n.js';
+
 /** An action button rendered at the bottom of the overlay. */
 export interface GameOverlayButton {
   text: string;
@@ -61,7 +63,7 @@ export class GameOverlay {
     root.className = 'game-over';
     root.setAttribute('role', 'dialog');
     root.setAttribute('aria-modal', 'true');
-    root.setAttribute('aria-label', 'Game over');
+    root.setAttribute('aria-label', t('gameOverAria'));
 
     const card = document.createElement('div');
     card.className = 'game-over-card';
@@ -76,7 +78,7 @@ export class GameOverlay {
     if (options.bodyHtml !== undefined) {
       body.innerHTML = options.bodyHtml;
     } else if (options.score !== undefined) {
-      body.textContent = `Score: ${options.score}`;
+      body.textContent = t('scoreValue', { score: options.score });
     }
     card.appendChild(body);
 
@@ -159,7 +161,7 @@ export class GameOverlay {
       prompt.onSubmit(value);
       const done = document.createElement('p');
       done.className = 'game-over-name-done';
-      done.textContent = `Score saved as ${value}.`;
+      done.textContent = t('scoreSavedAs', { name: value });
       form.replaceWith(done);
     });
 

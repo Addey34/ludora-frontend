@@ -1,4 +1,5 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { Difficulty } from '../../shared/bot/difficulty.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
@@ -139,21 +140,21 @@ export class MemoryGame extends GameEngine {
     this.boardElement = document.getElementById('board');
     this.fx = new ParticleSystem();
     this.hud = setupHud([
-      { key: 'score', icon: 'user', label: 'Me' },
-      { key: 'status', icon: 'hourglass-half', label: 'Turn' },
-      { key: 'opp', icon: 'user', label: 'Opponent' },
+      { key: 'score', icon: 'user', label: t('me') },
+      { key: 'status', icon: 'hourglass-half', label: t('hudTurn') },
+      { key: 'opp', icon: 'user', label: t('opponent') },
     ]);
 
     this.setupEventListeners();
     this.settings = setupSettingsPanel([
       {
         id: 'difficulty',
-        label: 'Difficulty',
+        label: t('difficulty'),
         value: this.difficulty,
         choices: [
-          { label: 'Easy 4×4', value: 'easy' },
-          { label: 'Medium 6×6', value: 'medium' },
-          { label: 'Hard 8×8', value: 'hard' },
+          { label: `${t('easy')} 4×4`, value: 'easy' },
+          { label: `${t('medium')} 6×6`, value: 'medium' },
+          { label: `${t('hard')} 8×8`, value: 'hard' },
         ],
         onChange: (value) => {
           this.difficulty = value as Difficulty;
@@ -411,7 +412,7 @@ export class MemoryGame extends GameEngine {
     this.boardElement.innerHTML = this.cards
       .map(
         (card, index) => `
-          <button class="memory-card" data-index="${index}" type="button" aria-label="Card">
+          <button class="memory-card" data-index="${index}" type="button" aria-label="${t('card')}">
             <span class="memory-card-inner">
               <span class="memory-card-face memory-card-back">
                 <i class="fas fa-question" aria-hidden="true"></i>
@@ -499,15 +500,15 @@ export class MemoryGame extends GameEngine {
     const selfPairs = this.state.score;
     const otherPairs = this.opponentScore;
     const title =
-      selfPairs === otherPairs ? 'Draw!' : selfPairs > otherPairs ? 'You win! 🏆' : 'You lose…';
-    const oppLabel = this.role === 'solo' ? 'Bot' : 'You';
+      selfPairs === otherPairs ? t('draw') : selfPairs > otherPairs ? t('youWin') : t('youLose');
+    const oppLabel = this.role === 'solo' ? t('bot') : t('opponent');
 
     const buttons: GameOverlayButton[] = [];
     if (this.role === 'solo') {
-      buttons.push({ text: 'Play again', primary: true, onClick: () => this.restartSolo() });
+      buttons.push({ text: t('playAgain'), primary: true, onClick: () => this.restartSolo() });
     } else if (this.role === 'host') {
       buttons.push({
-        text: 'Rematch',
+        text: t('rematch'),
         primary: true,
         onClick: () => {
           this.overlay.hide();
@@ -516,7 +517,7 @@ export class MemoryGame extends GameEngine {
       });
     }
     buttons.push({
-      text: 'Quit',
+      text: t('quit'),
       primary: this.role === 'guest',
       onClick: () => {
         this.overlay.hide();
@@ -525,10 +526,10 @@ export class MemoryGame extends GameEngine {
     });
 
     const waiting =
-      this.role === 'guest' ? '<p class="mp-status">Waiting for a rematch from the host…</p>' : '';
+      this.role === 'guest' ? `<p class="mp-status">${t('waitingForRematch')}</p>` : '';
     this.overlay.show({
       title,
-      bodyHtml: `<div>Me: ${selfPairs} — ${oppLabel}: ${otherPairs}</div>${waiting}`,
+      bodyHtml: `<div>${t('me')}: ${selfPairs} — ${oppLabel}: ${otherPairs}</div>${waiting}`,
       buttons,
     });
   }

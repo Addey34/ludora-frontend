@@ -1,5 +1,6 @@
 import { LevelsConfig, LevelProgress, isLevelUnlocked } from './levels.js';
 import { setupPopover } from '../ui/popover.js';
+import { t } from '../i18n/i18n.js';
 
 /**
  * The collapsible "Levels" panel shown in the game shell header.
@@ -43,13 +44,13 @@ export function setupLevelPanel(opts: LevelPanelOptions): LevelPanelHandle | nul
   const updateLabel = (): void => {
     const current = toggle.querySelector('.game-pop-current');
     if (current) current.textContent = String(selected);
-    toggle.setAttribute('aria-label', `Level ${selected} — choose a level`);
+    toggle.setAttribute('aria-label', t('levelChoose', { n: selected }));
   };
 
   const render = (): void => {
     const title = document.createElement('p');
     title.className = 'game-pop-title';
-    title.textContent = 'Levels';
+    title.textContent = t('levels');
 
     const grid = document.createElement('div');
     grid.className = 'game-levels-grid';
@@ -63,7 +64,10 @@ export function setupLevelPanel(opts: LevelPanelOptions): LevelPanelHandle | nul
       button.classList.toggle('is-selected', level.id === selected);
       button.disabled = !unlocked;
       button.textContent = level.label ?? String(level.id);
-      button.setAttribute('aria-label', `Level ${level.id}${unlocked ? '' : ' (locked)'}`);
+      button.setAttribute(
+        'aria-label',
+        unlocked ? t('levelN', { n: level.id }) : t('levelLocked', { n: level.id })
+      );
 
       if (unlocked) {
         button.addEventListener('click', () => {

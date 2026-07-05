@@ -1,5 +1,6 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { keyboardDirection, setupSwipe } from '../../shared/engine/input.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
@@ -173,9 +174,9 @@ export class TetrisGame extends GameEngine {
     this.boardElement = document.getElementById('board');
     this.fx = new ParticleSystem();
     this.hud = setupHud([
-      { key: 'score', icon: 'star', label: 'Score' },
-      { key: 'lines', icon: 'grip-lines', label: 'Lines' },
-      { key: 'high', icon: 'trophy', label: 'Best' },
+      { key: 'score', icon: 'star', label: t('score') },
+      { key: 'lines', icon: 'grip-lines', label: t('hudLines') },
+      { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
 
     this.setupEventListeners();

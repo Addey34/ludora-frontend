@@ -1,10 +1,15 @@
 import { BoardGame } from '../../shared/turn/BoardGame.js';
+import { t } from '../../shared/i18n/i18n.js';
 import { TurnRules } from '../../shared/turn/turnGame.js';
 import { MatchMessage } from '../../shared/net/match.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
 import { playSound } from '../../shared/fx/sound.js';
-import { setupSettingsPanel, SettingsPanelHandle } from '../../shared/ui/settingsPanel.js';
+import {
+  setupSettingsPanel,
+  SettingsPanelHandle,
+  difficultyField,
+} from '../../shared/ui/settingsPanel.js';
 import { createDice, DiceHandle } from '../../shared/ui/dice.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { Difficulty } from '../../shared/bot/difficulty.js';
@@ -86,25 +91,19 @@ export class GooseGame extends BoardGame<GooseState, GooseMove> {
     this.boardEl = document.getElementById('board');
     this.playersEl = document.getElementById('goosePlayers');
     this.logEl = document.getElementById('gooseLog');
-    this.hud = setupHud([{ key: 'time', icon: 'clock', label: 'Time' }]);
+    this.hud = setupHud([{ key: 'time', icon: 'clock', label: t('hudTime') }]);
 
     this.buildBoard();
     this.buildPlayers();
 
     this.settings = setupSettingsPanel([
-      {
-        id: 'difficulty',
-        label: 'Bots',
-        choices: [
-          { label: 'Easy', value: 'easy' },
-          { label: 'Medium', value: 'medium' },
-          { label: 'Hard', value: 'hard' },
-        ],
-        value: this.difficulty,
-        onChange: (v) => {
+      difficultyField(
+        this.difficulty,
+        (v) => {
           this.difficulty = v as Difficulty;
         },
-      },
+        t('bots')
+      ),
     ]);
 
     this.setupVersus(SEATS);
@@ -215,7 +214,7 @@ export class GooseGame extends BoardGame<GooseState, GooseMove> {
       // fixed height and stays on a single line whatever the players' progress.
       const posEl = document.createElement('span');
       posEl.className = 'goose-player-pos';
-      posEl.textContent = 'Start';
+      posEl.textContent = t('startSquare');
 
       chip.append(dot, nameEl, posEl);
       this.playersEl.append(chip);
@@ -653,15 +652,13 @@ export class GooseGame extends BoardGame<GooseState, GooseMove> {
   }
 
   protected getGameOverTitle(): string {
-    return this.game.winner === this.mySeat ? 'Victory! 🏆' : 'Defeat…';
+    return this.game.winner === this.mySeat ? t('victory') : t('defeat');
   }
 
   protected getGameOverContent(): string {
     const w = this.game.winner ?? 0;
     const name = this.seatName(w);
-    return w === this.mySeat
-      ? '<p>You reached square 63 first!</p>'
-      : `<p>${name} reached the finish square first.</p>`;
+    return w === this.mySeat ? t('gooseWin') : t('gooseLose', { name });
   }
 
   /** The turn is shown by the active player badge (see {@link renderState}). */

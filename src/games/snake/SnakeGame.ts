@@ -1,5 +1,6 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { t } from '../../shared/i18n/i18n.js';
 import {
   Direction,
   DIRECTION_DELTAS,
@@ -300,8 +301,8 @@ export class SnakeGame extends GameEngine {
     this.playBoard = document.querySelector('.play-board');
     this.fx = new ParticleSystem();
     this.hud = setupHud([
-      { key: 'score', icon: 'star', label: 'Score' },
-      { key: 'high', icon: 'trophy', label: 'Best' },
+      { key: 'score', icon: 'star', label: t('score') },
+      { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
 
     if (this.playBoard) {

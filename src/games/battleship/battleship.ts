@@ -13,13 +13,16 @@ import { Seat, TurnRules, nextSeat } from '../../shared/turn/turnGame.js';
 export const GRID_SIZE = 10;
 export const SEATS = 2;
 
-/** Standard fleet, ordered largest to smallest (placement order). */
+/**
+ * Standard fleet, ordered largest to smallest (placement order). Display names
+ * live in the i18n catalog under `ship_<id>` (see BattleshipGame.renderShipList).
+ */
 export const SHIP_DEFS = [
-  { id: 'carrier', size: 5, label: 'Carrier' },
-  { id: 'battleship', size: 4, label: 'Battleship' },
-  { id: 'cruiser', size: 3, label: 'Cruiser' },
-  { id: 'submarine', size: 3, label: 'Submarine' },
-  { id: 'destroyer', size: 2, label: 'Destroyer' },
+  { id: 'carrier', size: 5 },
+  { id: 'battleship', size: 4 },
+  { id: 'cruiser', size: 3 },
+  { id: 'submarine', size: 3 },
+  { id: 'destroyer', size: 2 },
 ] as const;
 
 export type ShipId = (typeof SHIP_DEFS)[number]['id'];
