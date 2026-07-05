@@ -1,0 +1,3 @@
+# Normalize line endings: store everything as LF in the repo, so Prettier's
+# endOfLine:lf and CI (Linux) stay consistent regardless of the OS that commits.
+* text=auto eol=lf
