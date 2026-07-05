@@ -9,7 +9,7 @@
 #     unknown paths) back to the home page /.
 # IMPORTANT: Render NEVER applies a rule when a real file exists at that path
 # (it serves it directly). So /* does not break assets (/assets, /css, /icons,
-# /words.txt) — they are served as-is.
+# /data) — they are served as-is.
 #
 # NB: this file is NOT applied automatically (the service was created by hand).
 # Mirror these same routes in the dashboard (Settings > Redirects/Rewrites),
@@ -23,6 +23,9 @@ services:
     routes:
       # Clean URLs -> real file (the URL does not change in the address bar).
       # Games are built to dist/games/<key>/index.html; sidebar links use /<key>.
+      # KEEP IN SYNC with the `games` array in vite.config.ts (one line per key,
+      # same order). A missing line here makes that game fall through to the /*
+      # redirect (home) in production.
       - { type: rewrite, source: /typing, destination: /games/typing/index.html }
       - { type: rewrite, source: /snake, destination: /games/snake/index.html }
       - { type: rewrite, source: /pacman, destination: /games/pacman/index.html }
@@ -36,6 +39,8 @@ services:
       - { type: rewrite, source: /pong, destination: /games/pong/index.html }
       - { type: rewrite, source: /ludo, destination: /games/ludo/index.html }
       - { type: rewrite, source: /connect4, destination: /games/connect4/index.html }
+      - { type: rewrite, source: /checkers, destination: /games/checkers/index.html }
+      - { type: rewrite, source: /reversi, destination: /games/reversi/index.html }
       - { type: rewrite, source: /battleship, destination: /games/battleship/index.html }
       - { type: rewrite, source: /goose, destination: /games/goose/index.html }
       - { type: rewrite, source: /math, destination: /games/math/index.html }
@@ -44,6 +49,10 @@ services:
       - { type: rewrite, source: /conjugation, destination: /games/conjugation/index.html }
       - { type: rewrite, source: /anagram, destination: /games/anagram/index.html }
       - { type: rewrite, source: /hangman, destination: /games/hangman/index.html }
+      - { type: rewrite, source: /mastermind, destination: /games/mastermind/index.html }
+      - { type: rewrite, source: /sokoban, destination: /games/sokoban/index.html }
+      - { type: rewrite, source: /nonogram, destination: /games/nonogram/index.html }
+      - { type: rewrite, source: /wordsearch, destination: /games/wordsearch/index.html }
       - { type: rewrite, source: /sudoku, destination: /games/sudoku/index.html }
       - { type: rewrite, source: /privacy, destination: /privacy/index.html }
       - { type: rewrite, source: /legal, destination: /legal/index.html }
