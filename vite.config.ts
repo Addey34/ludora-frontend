@@ -396,6 +396,22 @@ const games = [
     ],
   },
   {
+    key: 'nonogram',
+    label: 'Nonogram',
+    color: '--color-nonogram',
+    mode: 'solo',
+    // Level-based picture logic puzzle (like Sokoban / Pac-Man): the shell's
+    // "Levels" panel drives progression; no leaderboard (clearing pictures).
+    levels: true,
+    controls: [
+      { keys: 'Drag', action: 'Paint a run of cells (the first cell sets the stroke)' },
+      { keys: 'Fill / Cross', action: 'Toggle the tool (or right-click to cross a cell out)' },
+      { keys: 'Clues', action: 'Numbers give the run-lengths in each row and column' },
+      { keys: '<kbd>X</kbd> / <kbd>R</kbd>', action: 'Switch tool / restart the level' },
+      { keys: 'Goal', action: 'Reveal the hidden picture the clues describe' },
+    ],
+  },
+  {
     key: 'wordsearch',
     label: 'Word Search',
     color: '--color-wordsearch',
@@ -443,7 +459,7 @@ const categoryDefs = [
     label: 'Puzzle',
     icon: 'fa-puzzle-piece',
     color: '--cat-puzzle',
-    keys: ['2048', 'minesweeper', 'sudoku', 'sokoban', 'mastermind', 'simon', 'memory'],
+    keys: ['2048', 'minesweeper', 'sudoku', 'nonogram', 'sokoban', 'mastermind', 'simon', 'memory'],
   },
   {
     id: 'words',

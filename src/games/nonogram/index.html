@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Nonogram" css="/css/games/nonogram.css" script="./nonogram-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Nonogram" key="nonogram"}}
+    <div class="game-details"></div>
+    <div class="nonogram-area game-board game-stack">
+      <div class="game-stack-main">
+        <div class="nonogram game-square" id="board">
+          <div class="nono-corner"></div>
+          <div class="nono-col-clues" id="colClues"></div>
+          <div class="nono-row-clues" id="rowClues"></div>
+          <div class="nono-cells" id="cells"></div>
+        </div>
+      </div>
+      <div class="nonogram-tools">
+        <button
+          id="modeBtn"
+          class="nono-btn nono-mode"
+          type="button"
+          aria-label="Fill tool"
+          data-i18n-aria="nonoToolFill"
+        >
+          ■
+        </button>
+        <button
+          id="restartBtn"
+          class="nono-btn"
+          type="button"
+          aria-label="Restart level"
+          data-i18n-aria="restartLevel"
+        >
+          ⟳
+        </button>
+      </div>
+    </div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

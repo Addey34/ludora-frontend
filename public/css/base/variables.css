@@ -83,6 +83,7 @@
   --color-wordsearch: #0284c7; /* sky blue — grid of letters */
   --color-sokoban: #a16207; /* crate brown — warehouse puzzle */
   --color-mastermind: #db2777; /* magenta — code-breaking pegs */
+  --color-nonogram: #7c3aed; /* violet — picture logic grid */
 
   /* Sidebar super-category accents (icon + flyout tint). Distinct hues, one per
      genre, in the site's vivid palette. */
@@ -263,6 +264,19 @@
   --sok-player-hi: #60a5fa;
   --sok-btn: #a16207;
   --sok-btn-hover: #854d0e;
+
+  /* --- Nonogram: clue grid, filled / crossed cells and the tool buttons --- */
+  --nono-frame: #ede9fe; /* soft violet card behind the clues */
+  --nono-clue-text: #4c1d95;
+  --nono-line: #c4b5fd; /* grid gap show-through */
+  --nono-line-strong: #7c3aed; /* border + 5-cell separators */
+  --nono-cell: #ffffff;
+  --nono-fill: #6d28d9; /* a painted cell */
+  --nono-cross: #a78bfa; /* the X on a known-empty cell */
+  --nono-btn: #7c3aed;
+  --nono-btn-hover: #6d28d9;
+  --nono-cross-btn: #64748b; /* Cross tool active */
+  --nono-cross-btn-hover: #475569;
 
   /* --- Word Search: letter grid, selection and found highlights --- */
   --ws-frame: #cbd5e1;
