@@ -1,0 +1,174 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Mastermind — stacked guess rows (colour slots + feedback pegs) inside the
+   shared square board, a secret row above (revealed at the end) and a colour
+   palette below. Colours, the active-row ring and the pegs are toggled by class
+   from MastermindGame.
+   ========================================================================== */
+
+/* The guess rows fill the central (flex-shrinking) area between the secret row
+   and the palette. The board hugs a sensible width (Mastermind is a naturally
+   narrow game) and is centred, so it fills its height without a big empty
+   expanse — instead of stretching across the whole square card. */
+.mastermind-board {
+  width: min(100%, 24rem);
+  height: 100%;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(2px, 1vh, 7px);
+  padding: 0.5rem clamp(0.5rem, 3vw, 1.25rem);
+  background: var(--mm-board);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+/* Rows share the board height (fill it): slots on the left, feedback pegs on
+   the right — the classic layout, now tidy since the board hugs its content. */
+.mm-row {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0 0.35rem;
+  border-radius: var(--border-radius-sm);
+}
+
+.mm-row.is-active {
+  background: var(--mm-active);
+}
+
+.mm-slots {
+  display: flex;
+  gap: clamp(0.2rem, 1vw, 0.5rem);
+}
+
+.mm-slot {
+  width: clamp(1.3rem, 7vmin, 2.6rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--mm-slot-empty);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+
+.mm-slot.is-filled {
+  box-shadow:
+    inset 0 -2px 3px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.mm-row.is-active .mm-slot {
+  box-shadow: inset 0 0 0 2px var(--mm-active-ring);
+}
+
+/* Feedback pegs: a compact 2-row grid to the right of each guess. */
+.mm-feedback {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 3px;
+  cursor: help; /* hover shows what the black / white pegs mean */
+}
+
+.mm-peg {
+  width: clamp(6px, 1.6vmin, 11px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--mm-peg-empty);
+}
+
+.mm-peg.is-black {
+  background: var(--mm-peg-black);
+}
+
+.mm-peg.is-white {
+  background: var(--mm-peg-white);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Secret row above the board, hidden until the game ends. */
+/* Hidden until game over; collapses to no height while empty so it doesn't
+   reserve a gap at the top of the board (it is filled only on reveal). */
+.mastermind-secret {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: clamp(0.2rem, 1vw, 0.5rem);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mastermind-secret.is-revealed {
+  opacity: 1;
+  margin-bottom: 0.25rem;
+}
+
+/* Colour palette + delete / submit actions (natural height, below the board). */
+.mastermind-palette {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.mm-color {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.mm-color:hover {
+  transform: scale(1.1);
+}
+
+.mm-action {
+  width: 2.2rem;
+  height: 2.2rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  background: var(--mm-action);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.mm-action.mm-submit {
+  background: var(--mm-submit);
+}
+
+.mm-action:active {
+  transform: scale(0.92);
+}
+
+/* The eight code colours (slots + palette share them). */
+.mm-c0 {
+  background: var(--mm-c0);
+}
+.mm-c1 {
+  background: var(--mm-c1);
+}
+.mm-c2 {
+  background: var(--mm-c2);
+}
+.mm-c3 {
+  background: var(--mm-c3);
+}
+.mm-c4 {
+  background: var(--mm-c4);
+}
+.mm-c5 {
+  background: var(--mm-c5);
+}
+.mm-c6 {
+  background: var(--mm-c6);
+}
+.mm-c7 {
+  background: var(--mm-c7);
+}

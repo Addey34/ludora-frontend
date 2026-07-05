@@ -1,0 +1,77 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Reversi — an 8×8 green-felt board, black vs white discs. The grid keeps the
+   square play-area footprint shared by the other games. Discs and the legal-move
+   hints are toggled by class from the JS (ReversiGame.renderState).
+   ========================================================================== */
+
+.reversi-board {
+  aspect-ratio: 1;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  touch-action: manipulation;
+}
+
+.reversi-grid {
+  width: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  gap: var(--reversi-line-width);
+  padding: var(--reversi-line-width);
+  background: var(--reversi-line);
+  border: 4px solid var(--reversi-frame);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.reversi-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: var(--reversi-felt);
+  cursor: pointer;
+}
+
+/* The disc: transparent until one is placed, then black or white. */
+.reversi-disc {
+  width: 80%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: transparent;
+  transition: transform 0.15s ease;
+}
+
+.reversi-cell.is-p0 .reversi-disc {
+  background: radial-gradient(circle at 35% 30%, var(--reversi-p0-hi), var(--reversi-p0));
+  box-shadow:
+    inset 0 -3px 4px rgba(0, 0, 0, 0.45),
+    0 2px 3px rgba(0, 0, 0, 0.4);
+  animation: reversiPlace 0.2s ease;
+}
+
+.reversi-cell.is-p1 .reversi-disc {
+  background: radial-gradient(circle at 35% 30%, var(--reversi-p1-hi), var(--reversi-p1));
+  box-shadow:
+    inset 0 -3px 4px rgba(0, 0, 0, 0.25),
+    0 2px 3px rgba(0, 0, 0, 0.3);
+  animation: reversiPlace 0.2s ease;
+}
+
+/* A legal placement for the side to move: a faint ghost ring on the empty cell. */
+.reversi-cell.is-hint::after {
+  content: '';
+  position: absolute;
+  width: 34%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--reversi-hint);
+  box-shadow: 0 0 6px var(--reversi-hint);
+}
+
+.reversi-cell.is-hint:hover {
+  background: var(--reversi-felt-hover);
+}

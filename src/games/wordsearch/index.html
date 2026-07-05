@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Word Search" css="/css/games/wordsearch.css" script="./wordsearch-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Word Search" key="wordsearch"}}
+    <div class="game-details"></div>
+    <div class="wordsearch-area game-board game-stack">
+      <div class="game-stack-main">
+        <div class="wordsearch-board game-square" id="board"></div>
+      </div>
+      <div class="wordsearch-words" id="wordList"></div>
+    </div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

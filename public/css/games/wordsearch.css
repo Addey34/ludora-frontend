@@ -1,0 +1,76 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Word Search — a square grid of letters plus a chip list of the words to find.
+   Cells highlight while the pointer drags a straight line; found words stay lit
+   and their chip is struck through. Class toggles come from WordSearchGame.
+   ========================================================================== */
+
+/* The letter grid: a square that shrinks (via .game-square) to leave room for
+   the word list below, so the whole game fits one screen. */
+.wordsearch-board {
+  display: grid;
+  grid-template-columns: repeat(var(--size, 8), 1fr);
+  grid-template-rows: repeat(var(--size, 8), 1fr);
+  gap: 2px;
+  padding: 4px;
+  background: var(--ws-frame);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  touch-action: none; /* pointer drag must not scroll the page */
+  user-select: none;
+}
+
+.ws-cell {
+  display: grid;
+  place-items: center;
+  background: var(--ws-cell-bg);
+  color: var(--ws-cell-text);
+  font-weight: 700;
+  font-size: clamp(0.6rem, calc(46vw / var(--size, 8)), 1.4rem);
+  text-transform: uppercase;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition:
+    background-color 0.1s ease,
+    color 0.1s ease;
+}
+
+.ws-cell.is-sel {
+  background: var(--ws-sel);
+  color: #fff;
+}
+
+.ws-cell.is-found {
+  background: var(--ws-found);
+  color: #fff;
+}
+
+/* The word list below the grid (its natural height; the grid gives up room). */
+.wordsearch-words {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.6rem;
+  justify-content: center;
+  max-height: 28%;
+  overflow-y: auto;
+}
+
+.ws-word {
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--ws-cell-text);
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--border-radius-pill);
+  background: var(--ws-cell-bg);
+  transition:
+    opacity 0.2s ease,
+    color 0.2s ease;
+}
+
+.ws-word.is-found {
+  color: var(--ws-found);
+  text-decoration: line-through;
+  opacity: 0.6;
+}

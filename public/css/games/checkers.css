@@ -1,0 +1,110 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Checkers — an 8×8 wooden board, red vs charcoal discs. The grid keeps the
+   square play-area footprint shared by the other games. Pieces, the selection
+   ring, the "movable" hint and the legal-target dots are all toggled by class
+   from the JS (CheckersGame.renderState).
+   ========================================================================== */
+
+.checkers-board {
+  aspect-ratio: 1;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  touch-action: manipulation;
+}
+
+.checkers-grid {
+  width: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  border: 4px solid var(--checkers-frame);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.checkers-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.checkers-cell.is-light {
+  background: var(--checkers-light);
+}
+
+.checkers-cell.is-dark {
+  background: var(--checkers-dark);
+  cursor: pointer;
+}
+
+/* The piece: transparent until a disc sits on the square, then coloured. */
+.checkers-piece {
+  position: relative;
+  width: 76%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: transparent;
+  transition: transform 0.12s ease;
+  z-index: 1;
+}
+
+.checkers-cell.is-p0 .checkers-piece {
+  background: radial-gradient(circle at 35% 30%, var(--checkers-p0), var(--checkers-p0-edge));
+  box-shadow:
+    inset 0 -3px 4px rgba(0, 0, 0, 0.35),
+    0 2px 3px rgba(0, 0, 0, 0.3);
+}
+
+.checkers-cell.is-p1 .checkers-piece {
+  background: radial-gradient(circle at 35% 30%, var(--checkers-p1), var(--checkers-p1-edge));
+  box-shadow:
+    inset 0 -3px 4px rgba(0, 0, 0, 0.4),
+    0 2px 3px rgba(0, 0, 0, 0.35);
+}
+
+/* A crowned piece wears a crown glyph. */
+.checkers-cell.is-king .checkers-piece::after {
+  content: '♛';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 52%;
+  color: var(--checkers-king);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.45);
+}
+
+/* Ring shared by the "you can pick this up" hint and the active selection. */
+.checkers-cell.is-movable .checkers-piece::before,
+.checkers-cell.is-selected .checkers-piece::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 3px solid var(--checkers-select);
+}
+
+.checkers-cell.is-movable .checkers-piece::before {
+  opacity: 0.4;
+}
+
+.checkers-cell.is-selected .checkers-piece {
+  transform: scale(1.06);
+}
+
+/* An empty destination the selected piece may move to. */
+.checkers-cell.is-target::after {
+  content: '';
+  position: absolute;
+  width: 34%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--checkers-target);
+  box-shadow: 0 0 6px var(--checkers-target);
+  z-index: 0;
+}

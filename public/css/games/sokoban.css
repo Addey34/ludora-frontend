@@ -1,0 +1,100 @@
+@import url('../global.css');
+
+/* =============================================================================
+   Sokoban — a grid of walls, floor, targets, crates and the player. The board
+   keeps the shared square footprint; cells are sized from the level's --rows /
+   --cols. All appearance is toggled by class from SokobanGame.renderState.
+   ========================================================================== */
+
+/* The warehouse grid: a square that shrinks (via .game-square) so the Undo /
+   Restart toolbar below always stays on-screen. */
+.sokoban-board {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 6), 1fr);
+  grid-template-rows: repeat(var(--rows, 6), 1fr);
+  gap: 1px;
+  background: var(--sok-grid);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  touch-action: none;
+  user-select: none;
+}
+
+.sok-cell {
+  position: relative;
+  background: var(--sok-floor);
+}
+
+.sok-cell.is-wall {
+  background: var(--sok-wall);
+}
+
+/* Target: a small ring in the middle of the floor. */
+.sok-cell.is-target::before {
+  content: '';
+  position: absolute;
+  inset: 34%;
+  border-radius: 50%;
+  background: var(--sok-target);
+  box-shadow: 0 0 4px var(--sok-target);
+}
+
+/* A crate: a rounded square filling most of the cell. */
+.sok-cell.is-box::after,
+.sok-cell.is-box-on::after {
+  content: '';
+  position: absolute;
+  inset: 12%;
+  border-radius: 18%;
+  background: var(--sok-box);
+  border: 2px solid var(--sok-box-edge);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
+/* A crate already on its target turns green (a satisfied goal). */
+.sok-cell.is-box-on::after {
+  background: var(--sok-box-on);
+  border-color: var(--sok-box-on-edge);
+}
+
+/* The player: a round token on top of whatever the cell is. */
+.sok-cell.is-player::after {
+  content: '';
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--sok-player-hi), var(--sok-player));
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+  z-index: 1;
+}
+
+/* Undo / Restart toolbar under the board (natural height). */
+.sokoban-tools {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.sokoban-btn {
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.4rem;
+  border: none;
+  border-radius: var(--border-radius-md);
+  background: var(--sok-btn);
+  color: #fff;
+  cursor: pointer;
+  transition:
+    transform 0.1s ease,
+    background-color 0.15s ease;
+}
+
+.sokoban-btn:hover {
+  background: var(--sok-btn-hover);
+}
+
+.sokoban-btn:active {
+  transform: scale(0.92);
+}

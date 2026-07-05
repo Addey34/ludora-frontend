@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Mastermind" css="/css/games/mastermind.css" script="./mastermind-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Mastermind" key="mastermind"}}
+    <div class="game-details"></div>
+    <div class="mastermind-area game-board game-stack">
+      <div class="mastermind-secret" id="secret"></div>
+      <div class="game-stack-main">
+        <div class="mastermind-board" id="board"></div>
+      </div>
+      <div class="mastermind-palette" id="palette"></div>
+    </div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

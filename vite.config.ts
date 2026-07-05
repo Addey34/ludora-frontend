@@ -220,6 +220,38 @@ const games = [
     ],
   },
   {
+    key: 'checkers',
+    label: 'Checkers',
+    color: '--color-checkers',
+    mode: 'duo',
+    // Turn-based 2-player: "Settings" popover (bot difficulty + first move) +
+    // "Multiplayer" panel (1-v-1 over the relay); both driven by the game.
+    settings: true,
+    multiplayer: true,
+    controls: [
+      { keys: 'Click / tap', action: 'Select a piece, then a highlighted square' },
+      { keys: 'Captures', action: 'Jumping is mandatory; chained multi-jumps continue' },
+      { keys: 'King', action: 'Reach the far row to crown a piece (moves both ways)' },
+      { keys: 'Goal', action: "Capture or block all the opponent's pieces" },
+    ],
+  },
+  {
+    key: 'reversi',
+    label: 'Reversi',
+    color: '--color-reversi',
+    mode: 'duo',
+    // Turn-based 2-player: "Settings" popover (bot difficulty + first move) +
+    // "Multiplayer" panel (1-v-1 over the relay); both driven by the game.
+    settings: true,
+    multiplayer: true,
+    controls: [
+      { keys: 'Click / tap', action: 'Place a disc on a highlighted square' },
+      { keys: 'Flip', action: 'Bracket a line of enemy discs to flip them all' },
+      { keys: 'Pass', action: 'No legal move? Your turn is skipped automatically' },
+      { keys: 'Goal', action: 'Own the most discs when the board fills up' },
+    ],
+  },
+  {
     key: 'battleship',
     label: 'Battleship',
     color: '--color-battleship',
@@ -334,6 +366,50 @@ const games = [
     ],
   },
   {
+    key: 'mastermind',
+    label: 'Mastermind',
+    color: '--color-mastermind',
+    mode: 'solo',
+    leaderboard: true,
+    settings: true,
+    controls: [
+      { keys: 'Palette / <kbd>1–8</kbd>', action: 'Add a colour to your guess' },
+      { keys: '<kbd>⌫</kbd> / <kbd>Enter</kbd>', action: 'Delete a peg / submit the guess' },
+      { keys: 'Feedback', action: 'Black peg = right colour & spot, white = right colour only' },
+      { keys: 'Settings', action: 'Difficulty scales code length, colours and duplicates' },
+      { keys: 'Goal', action: 'Crack the hidden code before you run out of guesses' },
+    ],
+  },
+  {
+    key: 'sokoban',
+    label: 'Sokoban',
+    color: '--color-sokoban',
+    mode: 'solo',
+    // Level-based puzzle (like Pac-Man): the shell's "Levels" panel drives
+    // progression; no leaderboard (clearing levels, not scoring).
+    levels: true,
+    controls: [
+      { keys: '<kbd>↑ ↓ ← →</kbd> or <kbd>W A S D</kbd>', action: 'Move / push a crate' },
+      { keys: 'Swipe (mobile)', action: 'Move with your finger' },
+      { keys: '<kbd>U</kbd> / <kbd>R</kbd>', action: 'Undo a move / restart the level' },
+      { keys: 'Goal', action: 'Push every crate onto a target' },
+    ],
+  },
+  {
+    key: 'wordsearch',
+    label: 'Word Search',
+    color: '--color-wordsearch',
+    mode: 'solo',
+    leaderboard: true,
+    settings: true,
+    controls: [
+      { keys: 'Drag', action: 'Trace a straight line of letters over a word' },
+      { keys: 'Directions', action: 'Words run any way — including diagonally and backwards' },
+      { keys: 'Settings', action: 'Language (FR/EN) and difficulty (grid + word count)' },
+      { keys: 'Goal', action: 'Find every word in the list before the clock climbs' },
+    ],
+  },
+  {
     key: 'sudoku',
     label: 'Sudoku',
     color: '--color-sudoku',
@@ -367,14 +443,14 @@ const categoryDefs = [
     label: 'Puzzle',
     icon: 'fa-puzzle-piece',
     color: '--cat-puzzle',
-    keys: ['2048', 'minesweeper', 'sudoku', 'simon', 'memory'],
+    keys: ['2048', 'minesweeper', 'sudoku', 'sokoban', 'mastermind', 'simon', 'memory'],
   },
   {
     id: 'words',
     label: 'Words',
     icon: 'fa-font',
     color: '--cat-words',
-    keys: ['typing', 'motus', 'anagram', 'hangman'],
+    keys: ['typing', 'motus', 'anagram', 'hangman', 'wordsearch'],
   },
   {
     id: 'quiz',
@@ -388,7 +464,7 @@ const categoryDefs = [
     label: 'Board',
     icon: 'fa-chess',
     color: '--cat-board',
-    keys: ['connect4', 'ludo', 'goose', 'battleship'],
+    keys: ['connect4', 'ludo', 'goose', 'battleship', 'checkers', 'reversi'],
   },
 ];
 

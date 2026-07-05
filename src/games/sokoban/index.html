@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Sokoban" css="/css/games/sokoban.css" script="./sokoban-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Sokoban" key="sokoban"}}
+    <div class="game-details"></div>
+    <div class="sokoban-area game-board game-stack">
+      <div class="game-stack-main">
+        <div class="sokoban-board game-square" id="board"></div>
+      </div>
+      <div class="sokoban-tools">
+        <button
+          id="undoBtn"
+          class="sokoban-btn"
+          type="button"
+          aria-label="Undo"
+          data-i18n-aria="undoMove"
+        >
+          ↩
+        </button>
+        <button
+          id="restartBtn"
+          class="sokoban-btn"
+          type="button"
+          aria-label="Restart level"
+          data-i18n-aria="restartLevel"
+        >
+          ⟳
+        </button>
+      </div>
+    </div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

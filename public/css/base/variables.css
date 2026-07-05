@@ -78,6 +78,11 @@
   --color-anagram: #ca8a04; /* gold — scrambled letters */
   --color-hangman: #0f766e; /* deep teal — hangman */
   --color-sudoku: #4338ca; /* indigo — logic grid */
+  --color-checkers: #92400e; /* warm brown — wooden draughts board */
+  --color-reversi: #047857; /* deep green — Othello felt */
+  --color-wordsearch: #0284c7; /* sky blue — grid of letters */
+  --color-sokoban: #a16207; /* crate brown — warehouse puzzle */
+  --color-mastermind: #db2777; /* magenta — code-breaking pegs */
 
   /* Sidebar super-category accents (icon + flyout tint). Distinct hues, one per
      genre, in the site's vivid palette. */
@@ -213,6 +218,70 @@
   --connect4-hole: #eff6ff;
   --connect4-disc-0: #ef4444; /* red */
   --connect4-disc-1: #facc15; /* yellow */
+
+  /* --- Checkers: wooden board and the two disc colours --- */
+  --checkers-light: #f0d9b5; /* light wood */
+  --checkers-dark: #b58863; /* dark wood */
+  --checkers-frame: #6f4a2f; /* board frame */
+  --checkers-p0: #ef4444; /* red */
+  --checkers-p0-edge: #991b1b;
+  --checkers-p1: #475569; /* charcoal */
+  --checkers-p1-edge: #1e293b;
+  --checkers-king: #fde047; /* gold crown */
+  --checkers-select: #22c55e; /* selection / movable ring */
+  --checkers-target: rgba(34, 197, 94, 0.85); /* legal-move dot */
+
+  /* --- Mastermind: board, slots, feedback pegs and the eight code colours --- */
+  --mm-board: #3f2a44;
+  --mm-active: rgba(255, 255, 255, 0.08);
+  --mm-active-ring: #fbcfe8;
+  --mm-slot-empty: #5b4463;
+  --mm-peg-empty: rgba(255, 255, 255, 0.15);
+  --mm-peg-black: #111827;
+  --mm-peg-white: #f8fafc;
+  --mm-action: #6d28d9;
+  --mm-submit: #16a34a;
+  --mm-c0: #ef4444; /* red */
+  --mm-c1: #f97316; /* orange */
+  --mm-c2: #eab308; /* yellow */
+  --mm-c3: #22c55e; /* green */
+  --mm-c4: #14b8a6; /* teal */
+  --mm-c5: #3b82f6; /* blue */
+  --mm-c6: #a855f7; /* purple */
+  --mm-c7: #ec4899; /* pink */
+
+  /* --- Sokoban: warehouse tiles, crates and the player token --- */
+  --sok-grid: #d6c8b0;
+  --sok-floor: #efe6d5;
+  --sok-wall: #7c6f5a;
+  --sok-target: #ef4444;
+  --sok-box: #b7791f; /* crate */
+  --sok-box-edge: #8a5a12;
+  --sok-box-on: #16a34a; /* crate on target */
+  --sok-box-on-edge: #0f7a37;
+  --sok-player: #2563eb;
+  --sok-player-hi: #60a5fa;
+  --sok-btn: #a16207;
+  --sok-btn-hover: #854d0e;
+
+  /* --- Word Search: letter grid, selection and found highlights --- */
+  --ws-frame: #cbd5e1;
+  --ws-cell-bg: #f1f5f9;
+  --ws-cell-text: #1e293b;
+  --ws-sel: #0284c7; /* live selection */
+  --ws-found: #16a34a; /* a found word */
+
+  /* --- Reversi: green felt, grid lines and the two disc colours --- */
+  --reversi-felt: #15803d; /* green felt */
+  --reversi-felt-hover: #16a34a;
+  --reversi-line: #0f5132; /* grid lines (grid gap show-through) */
+  --reversi-line-width: 2px;
+  --reversi-frame: #0b3d26; /* board frame */
+  --reversi-p0: #111827; /* black */
+  --reversi-p0-hi: #374151;
+  --reversi-p1: #f1f5f9; /* white */
+  --reversi-p1-hi: #ffffff;
+  --reversi-hint: rgba(250, 250, 250, 0.5); /* legal-move ghost */
 
   /* --- Battleship: water, ships and shot results --- */
   --battleship-water: #e0f2fe;

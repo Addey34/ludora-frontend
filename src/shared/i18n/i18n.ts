@@ -163,6 +163,11 @@ export const CATALOG: Record<Locale, Record<string, string>> = {
     game_anagram: 'Anagrams',
     game_hangman: 'Hangman',
     game_sudoku: 'Sudoku',
+    game_checkers: 'Checkers',
+    game_reversi: 'Reversi',
+    game_wordsearch: 'Word Search',
+    game_sokoban: 'Sokoban',
+    game_mastermind: 'Mastermind',
     // Levels panel (shared).
     levels: 'Levels',
     levelChoose: 'Level {n} — choose a level',
@@ -210,6 +215,24 @@ export const CATALOG: Record<Locale, Record<string, string>> = {
     hudTries: 'Tries',
     hudMinesLeft: 'Mines left',
     hudGuessesLeft: 'Guesses left',
+    hudDiscs: 'Discs',
+    hudFound: 'Found',
+    hudMoves: 'Moves',
+    hudPushes: 'Pushes',
+    // Reversi: shown when the opponent has no legal move and must skip a turn.
+    opponentPassed: 'Opponent had to pass',
+    // Word Search recap on the game-over overlay.
+    wordsearchRecap: 'You found all {count} words in {time}. Score: {score}.',
+    // Sokoban.
+    levelCleared: 'Level cleared!',
+    sokobanRecap: 'Solved in {moves} moves ({pushes} pushes).',
+    undoMove: 'Undo',
+    restartLevel: 'Restart level',
+    // Mastermind end-of-game recap.
+    mastermindWin: 'Code cracked in {guesses} guesses! Score: {score}.',
+    mastermindLose: 'Out of guesses — the code is revealed above.',
+    // Feedback-peg hover tooltip (● black = right spot, ○ white = right colour).
+    mastermindPegs: '● {black} right spot · ○ {white} right colour, wrong spot',
   },
   fr: {
     play: 'Jouer',
@@ -351,6 +374,11 @@ export const CATALOG: Record<Locale, Record<string, string>> = {
     game_anagram: 'Anagrammes',
     game_hangman: 'Le Pendu',
     game_sudoku: 'Sudoku',
+    game_checkers: 'Dames',
+    game_reversi: 'Reversi',
+    game_wordsearch: 'Mots mêlés',
+    game_sokoban: 'Sokoban',
+    game_mastermind: 'Mastermind',
     // Panneau des niveaux (partagé).
     levels: 'Niveaux',
     levelChoose: 'Niveau {n} — choisir un niveau',
@@ -398,6 +426,24 @@ export const CATALOG: Record<Locale, Record<string, string>> = {
     hudTries: 'Essais',
     hudMinesLeft: 'Mines restantes',
     hudGuessesLeft: 'Essais restants',
+    hudDiscs: 'Pions',
+    hudFound: 'Trouvés',
+    hudMoves: 'Coups',
+    hudPushes: 'Poussées',
+    // Reversi : affiché quand l'adversaire n'a aucun coup légal et saute son tour.
+    opponentPassed: 'Adversaire contraint de passer',
+    // Récapitulatif Mots mêlés sur l'écran de fin.
+    wordsearchRecap: 'Vous avez trouvé les {count} mots en {time}. Score : {score}.',
+    // Sokoban.
+    levelCleared: 'Niveau réussi !',
+    sokobanRecap: 'Résolu en {moves} coups ({pushes} poussées).',
+    undoMove: 'Annuler',
+    restartLevel: 'Recommencer le niveau',
+    // Récapitulatif de fin Mastermind.
+    mastermindWin: 'Code trouvé en {guesses} essais ! Score : {score}.',
+    mastermindLose: 'Plus d’essais — le code est révélé au-dessus.',
+    // Infobulle au survol des pions (● noir = bien placé, ○ blanc = mal placé).
+    mastermindPegs: '● {black} bien placés · ○ {white} bonne couleur, mal placés',
   },
 };
 

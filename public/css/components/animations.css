@@ -183,6 +183,19 @@
   }
 }
 
+/* Reversi — a disc popping onto the board (also plays when a disc is flipped). */
+@keyframes reversiPlace {
+  0% {
+    transform: scale(0.4);
+  }
+  60% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 /* Battleship — shot result reveals */
 
 /* Hit flash: cell brightens then settles to its hit color. */
