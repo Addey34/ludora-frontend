@@ -19,16 +19,21 @@ export const LOCALES: Locale[] = ['en', 'fr'];
 const STORAGE_KEY = 'gz-lang';
 
 /**
- * The translation catalog. Add a key to `en`, then its `fr` translation.
- * Exported for the parity test (every `en` key must have an `fr` counterpart).
+ * Base translation catalog. Add a key to `en`, then its `fr` translation.
+ * (The per-game "How to play" control lines are merged in below from
+ * {@link CONTROLS_FR}; the whole thing is exported as {@link CATALOG}.)
  */
-export const CATALOG: Record<Locale, Record<string, string>> = {
+const BASE_CATALOG: Record<Locale, Record<string, string>> = {
   en: {
     play: 'Play',
     playAgain: 'Play again',
     viewLeaderboard: 'View leaderboard',
     leaderboard: 'Leaderboard',
     howToPlay: 'How to play',
+    helpAria: 'Help: how to play',
+    immersiveMode: 'Immersive mode',
+    thPlayer: 'Player',
+    thSpeed: 'Speed',
     // Game-over overlay + save prompt (GameEngine, shared by every game).
     gameOver: 'Game Over!',
     gameOverAria: 'Game over',
@@ -168,6 +173,7 @@ export const CATALOG: Record<Locale, Record<string, string>> = {
     game_wordsearch: 'Word Search',
     game_sokoban: 'Sokoban',
     game_mastermind: 'Mastermind',
+    game_nonogram: 'Nonogram',
     // Levels panel (shared).
     levels: 'Levels',
     levelChoose: 'Level {n} — choose a level',
@@ -219,6 +225,7 @@ export const CATALOG: Record<Locale, Record<string, string>> = {
     hudFound: 'Found',
     hudMoves: 'Moves',
     hudPushes: 'Pushes',
+    hudFilled: 'Filled',
     // Reversi: shown when the opponent has no legal move and must skip a turn.
     opponentPassed: 'Opponent had to pass',
     // Word Search recap on the game-over overlay.
@@ -233,6 +240,10 @@ export const CATALOG: Record<Locale, Record<string, string>> = {
     mastermindLose: 'Out of guesses — the code is revealed above.',
     // Feedback-peg hover tooltip (● black = right spot, ○ white = right colour).
     mastermindPegs: '● {black} right spot · ○ {white} right colour, wrong spot',
+    // Nonogram tools + end-of-level recap.
+    nonoToolFill: 'Fill tool (paint cells)',
+    nonoToolCross: 'Cross tool (mark empty)',
+    nonogramRecap: 'Picture revealed in {time}.',
   },
   fr: {
     play: 'Jouer',
@@ -240,6 +251,10 @@ export const CATALOG: Record<Locale, Record<string, string>> = {
     viewLeaderboard: 'Voir le classement',
     leaderboard: 'Classement',
     howToPlay: 'Comment jouer',
+    helpAria: 'Aide : comment jouer',
+    immersiveMode: 'Mode immersif',
+    thPlayer: 'Joueur',
+    thSpeed: 'Vitesse',
     // Overlay de fin de partie + invite de sauvegarde (GameEngine, commun à tous les jeux).
     gameOver: 'Partie terminée !',
     gameOverAria: 'Partie terminée',
@@ -379,6 +394,7 @@ export const CATALOG: Record<Locale, Record<string, string>> = {
     game_wordsearch: 'Mots mêlés',
     game_sokoban: 'Sokoban',
     game_mastermind: 'Mastermind',
+    game_nonogram: 'Nonogramme',
     // Panneau des niveaux (partagé).
     levels: 'Niveaux',
     levelChoose: 'Niveau {n} — choisir un niveau',
@@ -430,6 +446,7 @@ export const CATALOG: Record<Locale, Record<string, string>> = {
     hudFound: 'Trouvés',
     hudMoves: 'Coups',
     hudPushes: 'Poussées',
+    hudFilled: 'Remplies',
     // Reversi : affiché quand l'adversaire n'a aucun coup légal et saute son tour.
     opponentPassed: 'Adversaire contraint de passer',
     // Récapitulatif Mots mêlés sur l'écran de fin.
@@ -444,7 +461,206 @@ export const CATALOG: Record<Locale, Record<string, string>> = {
     mastermindLose: 'Plus d’essais — le code est révélé au-dessus.',
     // Infobulle au survol des pions (● noir = bien placé, ○ blanc = mal placé).
     mastermindPegs: '● {black} bien placés · ○ {white} bonne couleur, mal placés',
+    // Outils Nonogramme + récapitulatif de fin de niveau.
+    nonoToolFill: 'Outil Remplir (peindre les cases)',
+    nonoToolCross: 'Outil Croix (marquer vide)',
+    nonogramRecap: 'Image révélée en {time}.',
   },
+};
+
+/**
+ * French translations for the per-game "How to play" control lines (the `keys`
+ * and `action` strings authored in `vite.config.ts`, rendered by shell-open.hbs
+ * with `data-i18n-html` / `data-i18n`). The **English text doubles as the lookup
+ * key**, so only the French side is stored here — the English side is generated
+ * below (identity), and any line without an entry falls back to its English text
+ * verbatim. This keeps `vite.config.ts` self-documenting (real English sentences)
+ * while giving every line a French rendering, with no duplicated English.
+ */
+const CONTROLS_FR: Record<string, string> = {
+  // --- keys column (shared across many games) ---
+  '<kbd>↑ ↓ ← →</kbd> or <kbd>W A S D</kbd>': '<kbd>↑ ↓ ← →</kbd> ou <kbd>W A S D</kbd>',
+  '<kbd>← →</kbd> or <kbd>A D</kbd>': '<kbd>← →</kbd> ou <kbd>A D</kbd>',
+  '<kbd>↑ ↓</kbd> or <kbd>W S</kbd>': '<kbd>↑ ↓</kbd> ou <kbd>W S</kbd>',
+  '<kbd>↑</kbd> or <kbd>W</kbd> (or tap)': '<kbd>↑</kbd> ou <kbd>W</kbd> (ou tap)',
+  '<kbd>↓</kbd> or <kbd>S</kbd>': '<kbd>↓</kbd> ou <kbd>S</kbd>',
+  Type: 'Tapez',
+  Settings: 'Réglages',
+  Timer: 'Chrono',
+  Goal: 'But',
+  'Swipe (mobile)': 'Glisser (mobile)',
+  'Click / tap': 'Clic / tap',
+  'Drag / mouse': 'Glisser / souris',
+  Drag: 'Glisser',
+  Watch: 'Observe',
+  Pair: 'Paire',
+  'Right-click': 'Clic droit',
+  '🚩 button': 'Bouton 🚩',
+  'Green / Yellow / Grey': 'Vert / Jaune / Gris',
+  Die: 'Dé',
+  Captures: 'Prises',
+  King: 'Dame',
+  Flip: 'Retournement',
+  Pass: 'Passe',
+  'Auto-place': 'Placement auto',
+  Feedback: 'Avis',
+  'Fill / Cross': 'Remplir / Croix',
+  Clues: 'Indices',
+  Directions: 'Directions',
+  'Palette / <kbd>1–8</kbd>': 'Palette / <kbd>1–8</kbd>',
+  '🦢 Goose': '🦢 Oie',
+  '🌉 Bridge (6→12)': '🌉 Pont (6→12)',
+  '⚓ Inn (19)': '⚓ Auberge (19)',
+  '🌀 Well (31) / Prison (52)': '🌀 Puits (31) / Prison (52)',
+  '💀 Death (58)': '💀 Mort (58)',
+  'Finish (63)': 'Arrivée (63)',
+  // --- action column ---
+  'Retype the displayed words': 'Retape les mots affichés',
+  'Language (EN/FR) and difficulty (harder = accents, longer words)':
+    'Langue (EN/FR) et difficulté (plus dur = accents, mots plus longs)',
+  'Starts on the first letter': 'Démarre à la première lettre',
+  'Steer the snake': 'Dirige le serpent',
+  'Steer the snake with your finger': 'Dirige le serpent avec ton doigt',
+  'Eat the mice, avoid your tail': 'Mange les souris, évite ta queue',
+  'Move Pac-Man': 'Déplace Pac-Man',
+  'Move Pac-Man with your finger': 'Déplace Pac-Man avec ton doigt',
+  'Eat all the pellets': 'Mange toutes les pastilles',
+  'Slide the tiles': 'Fais glisser les tuiles',
+  'Slide the tiles with your finger': 'Fais glisser les tuiles avec ton doigt',
+  'Merge tiles to reach 2048': 'Fusionne les tuiles pour atteindre 2048',
+  'Memorise the flashing colour sequence': 'Mémorise la séquence de couleurs clignotantes',
+  'Repeat the sequence in order': 'Répète la séquence dans l’ordre',
+  'Trigger the pads with the keyboard': 'Active les touches au clavier',
+  'Reproduce the longest sequence you can': 'Reproduis la plus longue séquence possible',
+  'Enter a 5-letter word, then Enter': 'Saisis un mot de 5 lettres, puis Entrée',
+  'Submit / delete a letter': 'Valider / supprimer une lettre',
+  'Right spot / wrong spot / not in word': 'Bien placé / mal placé / absent du mot',
+  'Find the hidden word in 6 tries': 'Trouve le mot caché en 6 essais',
+  'Move the piece': 'Déplace la pièce',
+  Rotate: 'Tourner',
+  'Soft drop': 'Descente lente',
+  'Hard drop': 'Descente rapide',
+  '← → to move, ↓ to drop': '← → pour déplacer, ↓ pour descendre',
+  'Flip two cards': 'Retourne deux cartes',
+  'Found → you play again (+1)': 'Trouvée → tu rejoues (+1)',
+  '15 s per turn, otherwise an auto move': '15 s par tour, sinon un coup auto',
+  'More pairs than your opponent': 'Plus de paires que ton adversaire',
+  'Reveal a cell (the first click is always safe)':
+    'Révèle une case (le premier clic est toujours sûr)',
+  'Flag a suspected mine': 'Marque une mine suspectée',
+  'Toggle flag mode (tap to flag on touch)':
+    'Bascule le mode drapeau (tap pour marquer au toucher)',
+  'Reveal every safe cell without hitting a mine':
+    'Révèle toutes les cases sûres sans toucher de mine',
+  'Move the paddle': 'Déplace la raquette',
+  'Destroy all the bricks': 'Détruis toutes les briques',
+  'Move your paddle': 'Déplace ta raquette',
+  'Score past the opponent paddle': 'Marque au-delà de la raquette adverse',
+  'Rolled automatically on your turn': 'Lancé automatiquement à ton tour',
+  'Choose which horse to move': 'Choisis quel cheval déplacer',
+  'Brings a horse out of the stable and rolls again': 'Sort un cheval de l’écurie et relance',
+  'Bring your 4 horses home to the center': 'Ramène tes 4 chevaux au centre',
+  'Drop a disc in a column': 'Lâche un jeton dans une colonne',
+  'Aim a column': 'Vise une colonne',
+  'Drop the disc': 'Lâche le jeton',
+  'Line up four of your discs in a row': 'Aligne quatre de tes jetons',
+  'Select a piece, then a highlighted square': 'Sélectionne un pion, puis une case surlignée',
+  'Jumping is mandatory; chained multi-jumps continue':
+    'La prise est obligatoire ; les rafles s’enchaînent',
+  'Reach the far row to crown a piece (moves both ways)':
+    'Atteins la dernière rangée pour damer un pion (va dans les deux sens)',
+  "Capture or block all the opponent's pieces": 'Capture ou bloque tous les pions adverses',
+  'Place a disc on a highlighted square': 'Pose un pion sur une case surlignée',
+  'Bracket a line of enemy discs to flip them all':
+    'Encadre une ligne de pions ennemis pour les retourner',
+  'No legal move? Your turn is skipped automatically':
+    'Aucun coup légal ? Ton tour est passé automatiquement',
+  'Own the most discs when the board fills up':
+    'Possède le plus de pions quand le plateau est plein',
+  'Place a ship or fire a shot': 'Place un navire ou tire un coup',
+  'Rotate the ship during placement': 'Pivote le navire pendant le placement',
+  'Place the remaining ships randomly': 'Place les navires restants au hasard',
+  'Sink all 5 enemy ships first': 'Coule les 5 navires ennemis en premier',
+  'Roll the dice': 'Lance les dés',
+  'Roll again, moving forward by the same number': 'Relance et avance du même nombre',
+  'Jump straight to square 12': 'Saute directement à la case 12',
+  'Skip 1 turn': 'Passe 1 tour',
+  'Skip 3 turns': 'Passe 3 tours',
+  'Back to square 1': 'Retour à la case 1',
+  'Exact count required — first to arrive wins': 'Compte exact requis — le premier arrivé gagne',
+  'Answer the sum and press Enter': 'Réponds au calcul et appuie sur Entrée',
+  'Pick a difficulty and Classic / Timed mode':
+    'Choisis une difficulté et le mode Classique / Chrono',
+  'Chain correct answers — a streak boosts the score':
+    'Enchaîne les bonnes réponses — une série booste le score',
+  'Pick the right answer': 'Choisis la bonne réponse',
+  'Choose an option with the keyboard': 'Choisis une option au clavier',
+  'Match countries and capitals; keep your streak alive':
+    'Associe pays et capitales ; garde ta série',
+  'Choose a category, difficulty and mode': 'Choisis une catégorie, une difficulté et un mode',
+  'Answer general-knowledge questions; build a streak':
+    'Réponds à des questions de culture générale ; enchaîne les séries',
+  'Write the conjugated form and press Enter': 'Écris la forme conjuguée et appuie sur Entrée',
+  'Difficulty unlocks more tenses; Classic / Timed':
+    'La difficulté débloque plus de temps ; Classique / Chrono',
+  'Conjugate French verbs; accents are forgiven':
+    'Conjugue des verbes français ; les accents sont tolérés',
+  'Unscramble the letters and press Enter': 'Remets les lettres dans l’ordre et appuie sur Entrée',
+  'Language (FR/EN), difficulty and mode': 'Langue (FR/EN), difficulté et mode',
+  'Find the hidden word from its shuffled letters':
+    'Trouve le mot caché à partir de ses lettres mélangées',
+  'Guess a letter on the keyboard': 'Devine une lettre au clavier',
+  'Guess a letter with the keyboard': 'Devine une lettre avec le clavier',
+  'Language (FR/EN) and difficulty (word length)': 'Langue (FR/EN) et difficulté (longueur du mot)',
+  'Find the word before the figure is complete (6 misses)':
+    'Trouve le mot avant que le dessin soit complet (6 erreurs)',
+  'Add a colour to your guess': 'Ajoute une couleur à ta proposition',
+  'Delete a peg / submit the guess': 'Supprime un pion / valide la proposition',
+  'Black peg = right colour & spot, white = right colour only':
+    'Pion noir = bonne couleur et place, blanc = bonne couleur seulement',
+  'Difficulty scales code length, colours and duplicates':
+    'La difficulté ajuste la longueur du code, les couleurs et les doublons',
+  'Crack the hidden code before you run out of guesses':
+    'Perce le code caché avant d’épuiser tes essais',
+  'Paint a run of cells (the first cell sets the stroke)':
+    'Peins une série de cases (la première case fixe le tracé)',
+  'Toggle the tool (or right-click to cross a cell out)':
+    'Bascule l’outil (ou clic droit pour croiser une case)',
+  'Numbers give the run-lengths in each row and column':
+    'Les chiffres donnent les longueurs de séries de chaque ligne et colonne',
+  'Switch tool / restart the level': 'Changer d’outil / recommencer le niveau',
+  'Reveal the hidden picture the clues describe': 'Révèle l’image cachée décrite par les indices',
+  'Trace a straight line of letters over a word': 'Trace une ligne droite de lettres sur un mot',
+  'Words run any way — including diagonally and backwards':
+    'Les mots vont dans tous les sens — dont en diagonale et à l’envers',
+  'Language (FR/EN) and difficulty (grid + word count)':
+    'Langue (FR/EN) et difficulté (grille + nombre de mots)',
+  'Find every word in the list before the clock climbs':
+    'Trouve tous les mots de la liste avant que le chrono monte',
+  'Select a cell': 'Sélectionne une case',
+  'Fill the selected cell (0 / Backspace clears)':
+    'Remplis la case sélectionnée (0 / Retour arrière efface)',
+  'Move the selection': 'Déplace la sélection',
+  'Fill every row, column and box with 1–9': 'Remplis chaque ligne, colonne et bloc avec 1–9',
+  'Move / push a crate': 'Déplace / pousse une caisse',
+  'Move with your finger': 'Déplace avec ton doigt',
+  'Undo a move / restart the level': 'Annule un coup / recommence le niveau',
+  'Push every crate onto a target': 'Pousse chaque caisse sur une cible',
+};
+
+/**
+ * The full catalog: the base strings plus the control lines. The English control
+ * entries are the keys themselves (identity), so the two locales keep exactly the
+ * same key set (asserted by the i18n parity test) with the English text living in
+ * a single place — the `vite.config.ts` control definitions.
+ */
+const controlsEn: Record<string, string> = {};
+for (const key of Object.keys(CONTROLS_FR)) controlsEn[key] = key;
+
+/** Exported for the parity test (every `en` key must have an `fr` counterpart). */
+export const CATALOG: Record<Locale, Record<string, string>> = {
+  en: { ...BASE_CATALOG.en, ...controlsEn },
+  fr: { ...BASE_CATALOG.fr, ...CONTROLS_FR },
 };
 
 /** The current interface locale (persisted; defaults to English). */
@@ -474,14 +690,20 @@ export function t(key: string, params?: Record<string, string | number>): string
 
 /**
  * Translates static markup under `root`: `data-i18n` → textContent,
- * `data-i18n-aria` → aria-label. Also sets `<html lang>`. Call once on load (the
- * sidebar does this on every page); dynamic strings use {@link t} at build time.
+ * `data-i18n-html` → innerHTML (for values that carry markup, e.g. the help
+ * panel's `<kbd>` keys), `data-i18n-aria` → aria-label. Also sets `<html lang>`.
+ * Call once on load (the sidebar does this on every page); dynamic strings use
+ * {@link t} at build time.
  */
 export function applyTranslations(root: ParentNode = document): void {
   document.documentElement.lang = getLocale();
   root.querySelectorAll<HTMLElement>('[data-i18n]').forEach((el) => {
     const key = el.dataset.i18n;
     if (key) el.textContent = t(key);
+  });
+  root.querySelectorAll<HTMLElement>('[data-i18n-html]').forEach((el) => {
+    const key = el.dataset.i18nHtml;
+    if (key) el.innerHTML = t(key);
   });
   root.querySelectorAll<HTMLElement>('[data-i18n-aria]').forEach((el) => {
     const key = el.dataset.i18nAria;

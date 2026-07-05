@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { CATALOG, LOCALES, t } from './i18n.js';
+import { describe, it, expect, afterEach } from 'vitest';
+import { CATALOG, LOCALES, t, applyTranslations } from './i18n.js';
 
 /**
  * Guards the interface-translation work: the two locales must stay in sync so no
@@ -42,5 +42,46 @@ describe('i18n catalog', () => {
 
   it('falls back to the key itself when it is unknown', () => {
     expect(t('__does_not_exist__')).toBe('__does_not_exist__');
+  });
+});
+
+/**
+ * The per-game "How to play" lines carry their English text as the data-i18n key
+ * (see CONTROLS_FR in i18n.ts). This guards that applyTranslations swaps them to
+ * French — including the `data-i18n-html` keys that carry <kbd> markup.
+ */
+describe('applyTranslations (control help lines)', () => {
+  afterEach(() => localStorage.removeItem('gz-lang'));
+
+  const infoPanel = (): { root: HTMLElement; keys: HTMLElement; action: HTMLElement } => {
+    const root = document.createElement('div');
+    const keys = document.createElement('span');
+    keys.dataset.i18nHtml = '<kbd>↑ ↓ ← →</kbd> or <kbd>W A S D</kbd>';
+    const action = document.createElement('span');
+    action.dataset.i18n = 'Steer the snake';
+    action.textContent = 'Steer the snake';
+    root.append(keys, action);
+    return { root, keys, action };
+  };
+
+  it('translates a control action to French (data-i18n)', () => {
+    localStorage.setItem('gz-lang', 'fr');
+    const { root, action } = infoPanel();
+    applyTranslations(root);
+    expect(action.textContent).toBe('Dirige le serpent');
+  });
+
+  it('translates a control key with <kbd> markup to French (data-i18n-html)', () => {
+    localStorage.setItem('gz-lang', 'fr');
+    const { root, keys } = infoPanel();
+    applyTranslations(root);
+    expect(keys.innerHTML).toContain('ou');
+    expect(keys.querySelectorAll('kbd').length).toBe(2);
+  });
+
+  it('leaves the English text in place under the English locale', () => {
+    const { root, action } = infoPanel();
+    applyTranslations(root);
+    expect(action.textContent).toBe('Steer the snake');
   });
 });

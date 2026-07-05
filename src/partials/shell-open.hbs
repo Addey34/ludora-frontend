@@ -24,6 +24,7 @@
           class="game-info-toggle"
           type="button"
           aria-label="Help: how to play"
+          data-i18n-aria="helpAria"
           aria-controls="gameInfoPanel"
         >
           <i class="fas fa-circle-info" aria-hidden="true"></i>
@@ -33,8 +34,8 @@
           <ul class="game-info-list">
             {{#each game.controls}}
             <li class="game-info-item">
-              <span class="game-info-keys">{{{this.keys}}}</span>
-              <span class="game-info-action">{{this.action}}</span>
+              <span class="game-info-keys" data-i18n-html="{{this.keys}}">{{{this.keys}}}</span>
+              <span class="game-info-action" data-i18n="{{this.action}}">{{this.action}}</span>
             </li>
             {{/each}}
           </ul>
@@ -52,6 +53,7 @@
           aria-expanded="false"
           aria-controls="settingsPanel"
           aria-label="Settings"
+          data-i18n-aria="settings"
         >
           <i class="fas fa-sliders" aria-hidden="true"></i>
         </button>
@@ -69,6 +71,7 @@
           aria-expanded="false"
           aria-controls="levelPanel"
           aria-label="Levels"
+          data-i18n-aria="levels"
         >
           <i class="fas fa-layer-group" aria-hidden="true"></i>
           <span class="game-pop-current" aria-hidden="true">1</span>
@@ -87,6 +90,7 @@
           aria-expanded="false"
           aria-controls="leaderboardPanel"
           aria-label="Leaderboard"
+          data-i18n-aria="leaderboard"
         >
           <i class="fas fa-trophy" aria-hidden="true"></i>
         </button>
@@ -101,9 +105,9 @@
           <table id="scoreTable" class="score-table">
             <thead>
               <tr>
-                <th>Player</th>
-                <th>Score</th>
-                {{#if game.speed}}<th>Speed</th>{{/if}}
+                <th data-i18n="thPlayer">Player</th>
+                <th data-i18n="score">Score</th>
+                {{#if game.speed}}<th data-i18n="thSpeed">Speed</th>{{/if}}
               </tr>
             </thead>
             <tbody></tbody>
@@ -122,6 +126,7 @@
           aria-expanded="false"
           aria-controls="multiplayerPanel"
           aria-label="Multiplayer"
+          data-i18n-aria="multiplayer"
         >
           <i class="fas fa-users" aria-hidden="true"></i>
         </button>
@@ -144,6 +149,7 @@
           aria-expanded="false"
           aria-controls="feedbackPanel"
           aria-label="Feedback"
+          data-i18n-aria="feedback"
         >
           <i class="fas fa-comment-dots" aria-hidden="true"></i>
         </button>
@@ -156,7 +162,7 @@
       </div>
     </div>
     <script type="module" src="/shared/ui/feedbackPanel.ts"></script>
-    <button class="game-fullscreen-toggle" type="button" aria-label="Immersive mode" aria-pressed="false">
+    <button class="game-fullscreen-toggle" type="button" aria-label="Immersive mode" data-i18n-aria="immersiveMode" aria-pressed="false">
       <i class="fas fa-expand" aria-hidden="true"></i>
     </button>
     <script type="module" src="/shared/ui/zenMode.ts"></script>

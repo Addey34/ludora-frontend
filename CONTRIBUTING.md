@@ -45,32 +45,62 @@ validated by continuous integration (CI) before being merged.
 
 The architecture is designed to make this simple. To add a game `pong`:
 
-1. **One line** in the `games` array of `vite.config.ts`:
+1. **One entry** in the `games` array of `vite.config.ts` (the single source of truth):
    ```ts
    { key: 'pong', label: 'Pong', color: '--color-pong', mode: 'duo', controls: [ /* ... */ ] }
    ```
-   - `key` = the folder name (also used as the icon name and the menu active state)
+   - `key` = the folder name (also used as the icon name and the sidebar active state)
    - `color` = a color token defined in `public/css/base/variables.css`
-   - `mode` = the player-count badge in the nav rail: `'solo'`, `'duo'` (1-v-1) or `'multi'` (3+)
-2. Create the page and the code in `src/pong/`:
-   - `src/pong/index.html` — the page (~15 lines, see an existing game)
-   - `src/pong/pong-main.ts` — the entry point (~3 lines)
-   - `src/pong/Pong.ts` — the logic, which **extends `GameEngine`** (`src/shared/engine/GameEngine.ts`)
+   - `mode` = the player-count badge in the sidebar: `'solo'`, `'duo'` (1-v-1) or `'multi'` (3+)
+   - `controls` = the "How to play" help lines (English text — see the i18n note below)
+2. Create the page and the code in `src/games/pong/`:
+   - `src/games/pong/index.html` — the page (~15 lines, see an existing game)
+   - `src/games/pong/pong-main.ts` — the entry point (~3 lines, calls `bootstrapGame`)
+   - `src/games/pong/PongGame.ts` — the controller, which **extends a shared base** (below)
 3. Create the icon `public/icons/pong.svg`.
 
-The game then appears **automatically** in the menu and on the home page (everything is
+The game then appears **automatically** in the sidebar and on the home page (everything is
 driven by the `games` array). Take inspiration from an existing game such as `snake`.
 
-### Turn-based board games and online play
+### Pick the right base class
 
-- A **turn-based** game (like Ludo or Connect 4) supplies its **pure rules** through the
-  `TurnRules` model in `src/shared/turn/turnGame.ts` (state + legal moves + a reducer — no DOM,
-  no time, so they are fully unit-testable) instead of the real-time loop. Start from
-  `src/connect4/` (the simplest reference) or `src/ludo/`.
-- To make a game playable **online**, add `settings: true` and `multiplayer: true` to its
-  `games` entry and reuse the shared lobby (`versus/multiplayerPanel.ts`). The networking
-  (`net/match.ts`) is relayed and **host-authoritative**, so no server change is needed — the
-  game stays fully playable solo against bots if the backend is unreachable.
+Every game extends one of three shared bases, so it only writes what is genuinely its own:
+
+- **`GameEngine`** (`src/shared/engine/GameEngine.ts`) — real-time games driven by a RAF loop
+  (Snake, Tetris, Breakout…). It owns the loop, scoring and the game-over overlay.
+- **`BoardGame`** (`src/shared/turn/BoardGame.ts`) — **turn-based** games (Connect 4, Ludo,
+  Checkers…). They supply their **pure rules** through the `TurnRules` model (state + legal
+  moves + a reducer — no DOM, no time, so they are fully unit-testable), plus rendering and a
+  bot; the base drives the turn sequence, the bot and all the networking. Start from
+  `src/games/connect4/` (the simplest reference).
+- **`QuizGame`** (`src/shared/quiz/QuizGame.ts`) — question/answer **educational** games
+  (Mental Math, Geo Quiz, Trivia…). They supply only `makeQuestion()`; the base owns the
+  round, scoring, difficulty/mode settings and the recap. Start from `src/games/geoquiz/`.
+
+Put the game's pure logic in its own `<key>.ts` file (no DOM, no randomness in the reducer)
+and unit-test it — that's how the board, quiz and puzzle games stay robust.
+
+### Online play
+
+To make a game playable **online**, add `settings: true` and `multiplayer: true` to its
+`games` entry and reuse the shared lobby (`versus/multiplayerPanel.ts`). The networking
+(`net/match.ts`) is relayed and **host-authoritative**, so no server change is needed — the
+game stays fully playable solo against bots if the backend is unreachable. Online
+**leaderboards** and **levels** need a `leaderboardId` / `levels` config on the game (see the
+architecture notes in `CLAUDE.md`).
+
+### Translations (EN / FR)
+
+The interface is bilingual. Any visible string must have an English and a French version:
+
+- **Static markup** → mark it `data-i18n="key"` (text), `data-i18n-html="key"` (markup) or
+  `data-i18n-aria="key"` (aria-label); `applyTranslations()` fills it on load.
+- **Strings built in TS** → wrap them in `t('key')`.
+- Add the `key` to both `en` and `fr` in the `CATALOG` of `src/shared/i18n/i18n.ts` (a parity
+  test enforces that the two locales stay in sync).
+- The **"How to play" control lines** are a special case: their English text (authored in
+  `vite.config.ts`) doubles as the translation key, so you only add the French side to the
+  `CONTROLS_FR` map in `i18n.ts` — the English side is generated automatically.
 
 ## Best practices
 
