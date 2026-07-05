@@ -39,6 +39,15 @@ const CATALOG: Record<Locale, Record<string, string>> = {
     muteSound: 'Mute sound',
     enableSound: 'Enable sound',
     tagline: 'Browser games — play instantly, no download',
+    // Feedback popover.
+    feedback: 'Feedback',
+    feedbackHint: 'Rate this game',
+    feedbackPlaceholder: 'Your comment (optional)…',
+    send: 'Send',
+    sending: 'Sending…',
+    feedbackThanks: 'Thanks for your feedback!',
+    feedbackError: 'Could not send — please try again later.',
+    feedbackNeedRating: 'Pick a rating first.',
     // Home categories (keys match the category id: cat_<id>).
     cat_action: 'Action',
     cat_puzzle: 'Puzzle',
@@ -88,6 +97,15 @@ const CATALOG: Record<Locale, Record<string, string>> = {
     muteSound: 'Couper le son',
     enableSound: 'Activer le son',
     tagline: 'Jeux en ligne — jouez tout de suite, sans téléchargement',
+    // Avis / feedback.
+    feedback: 'Votre avis',
+    feedbackHint: 'Notez ce jeu',
+    feedbackPlaceholder: 'Votre commentaire (optionnel)…',
+    send: 'Envoyer',
+    sending: 'Envoi…',
+    feedbackThanks: 'Merci pour votre retour !',
+    feedbackError: 'Envoi impossible — réessayez plus tard.',
+    feedbackNeedRating: "Choisissez d'abord une note.",
     // Catégories (clé = cat_<id>).
     cat_action: 'Action',
     cat_puzzle: 'Casse-tête',

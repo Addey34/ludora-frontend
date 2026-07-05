@@ -109,3 +109,89 @@
 .game-pop-panel .score-table tbody tr:hover {
   transform: none;
 }
+
+/* =============================================================================
+   Feedback panel: a 1-5 star rating + optional comment + send button.
+   ========================================================================== */
+.game-feedback-panel {
+  width: min(17rem, 82vw);
+}
+
+.feedback-stars {
+  display: flex;
+  gap: var(--spacing-xxs);
+  margin: 0 0 var(--spacing-sm);
+}
+
+.feedback-star {
+  padding: 0.15rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  color: var(--border-color-light);
+  transition:
+    color 0.12s ease,
+    transform 0.12s ease;
+}
+
+.feedback-star:hover {
+  transform: scale(1.15);
+}
+
+/* Filled up to the hovered / selected star (JS toggles .is-on). */
+.feedback-star.is-on {
+  color: var(--color-pacman, #eab308);
+}
+
+.feedback-star:focus-visible {
+  outline: 2px solid var(--title-color, var(--primary-color));
+  outline-offset: 2px;
+  border-radius: var(--border-radius-sm);
+}
+
+.feedback-text {
+  width: 100%;
+  resize: vertical;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 2px solid var(--border-color-light);
+  border-radius: var(--border-radius-md);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+}
+
+.feedback-text:focus-visible {
+  outline: none;
+  border-color: var(--title-color, var(--primary-color));
+}
+
+.feedback-send {
+  width: 100%;
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--title-color, var(--primary-color));
+  color: var(--white-color);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font: inherit;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition:
+    filter 0.12s ease,
+    transform 0.12s ease;
+}
+
+.feedback-send:hover {
+  filter: brightness(1.08);
+}
+
+.feedback-send:active {
+  transform: scale(0.97);
+}
+
+.feedback-send:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

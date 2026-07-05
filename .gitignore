@@ -4,3 +4,8 @@
 # Claude Code: local/personal settings (shared settings go in settings.json)
 .claude/settings.local.json
 CLAUDE.md
+
+# Local environment & private notes (never commit — personal machine only)
+.env
+.env.local
+.env.*.local

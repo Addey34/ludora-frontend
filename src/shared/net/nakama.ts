@@ -200,6 +200,18 @@ export async function listLeaderboardScores(
   return (result.records ?? []).map(recordToScoreEntry);
 }
 
+/**
+ * Sends a player's feedback on a game to the backend. Calls the server-side
+ * `submit_feedback` RPC (registered in the Nakama runtime module), which stores
+ * it in the private `feedback` collection for the developer to read in the
+ * Nakama console. Rejects if the backend is unreachable, so the caller can tell
+ * the user it did not go through (unlike scores, feedback should confirm).
+ */
+export async function submitFeedback(game: string, rating: number, text: string): Promise<void> {
+  const session = await getSession();
+  await getClient().rpc(session, 'submit_feedback', { game, rating, text });
+}
+
 /** Nakama Storage collection holding this player's per-game progress. */
 const PROGRESS_COLLECTION = 'progress';
 

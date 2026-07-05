@@ -133,7 +133,29 @@
         ></div>
       </div>
       {{/if}}
+      <!-- Feedback: rate the game (1-5) + optional comment, sent to the backend.
+           Shown on every game — no per-game flag; filled by feedbackPanel.ts. -->
+      <div class="game-pop" id="feedbackControl" data-game="{{game.key}}">
+        <button
+          class="game-pop-toggle"
+          type="button"
+          id="feedbackToggle"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="feedbackPanel"
+          aria-label="Feedback"
+        >
+          <i class="fas fa-comment-dots" aria-hidden="true"></i>
+        </button>
+        <div
+          class="game-pop-panel game-feedback-panel"
+          id="feedbackPanel"
+          role="dialog"
+          aria-label="Feedback"
+        ></div>
+      </div>
     </div>
+    <script type="module" src="/shared/ui/feedbackPanel.ts"></script>
     <button class="game-fullscreen-toggle" type="button" aria-label="Immersive mode" aria-pressed="false">
       <i class="fas fa-expand" aria-hidden="true"></i>
     </button>
