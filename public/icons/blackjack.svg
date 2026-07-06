@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <rect x="2" y="4" width="11" height="16" rx="1.5"/>
+  <rect x="11" y="4" width="11" height="16" rx="1.5" opacity="0.6"/>
+  <text x="3.5" y="14" font-size="7" font-family="serif">A</text>
+  <text x="12.5" y="14" font-size="7" font-family="serif">K</text>
+</svg>

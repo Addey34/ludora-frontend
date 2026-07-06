@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- Bubbles in triangle shape -->
+  <circle cx="5" cy="5" r="3"/>
+  <circle cx="12" cy="5" r="3"/>
+  <circle cx="19" cy="5" r="3"/>
+  <circle cx="8.5" cy="10.2" r="3"/>
+  <circle cx="15.5" cy="10.2" r="3"/>
+  <circle cx="12" cy="15.4" r="3"/>
+  <!-- Shooter triangle -->
+  <polygon points="12,22 9,19 15,19" opacity="0.7"/>
+</svg>

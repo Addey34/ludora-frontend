@@ -1,0 +1,96 @@
+@import '/css/global.css';
+
+.dotsboxes-board {
+  aspect-ratio: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+
+.db-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+}
+
+.db-score {
+  font-size: var(--font-size-lg);
+}
+
+.db-turn {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.db-grid {
+  display: grid;
+  gap: 0;
+  flex: 1;
+  user-select: none;
+}
+
+.db-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  align-self: center;
+  justify-self: center;
+}
+
+.db-h-edge {
+  height: 10px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: background 0.15s;
+  align-self: center;
+  margin: 0 2px;
+}
+
+.db-h-edge.is-drawn {
+  background: var(--text-muted);
+  cursor: default;
+}
+
+.db-h-edge.is-available:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.db-v-edge {
+  width: 10px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: background 0.15s;
+  justify-self: center;
+  margin: 2px 0;
+}
+
+.db-v-edge.is-drawn {
+  background: var(--text-muted);
+  cursor: default;
+}
+
+.db-v-edge.is-available:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.db-box {
+  border-radius: 3px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: rgba(255, 255, 255, 0.7);
+  margin: 2px;
+}
+
+.db-box.is-owned {
+  opacity: 0.7;
+}

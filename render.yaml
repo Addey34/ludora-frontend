@@ -54,6 +54,17 @@ services:
       - { type: rewrite, source: /nonogram, destination: /games/nonogram/index.html }
       - { type: rewrite, source: /wordsearch, destination: /games/wordsearch/index.html }
       - { type: rewrite, source: /sudoku, destination: /games/sudoku/index.html }
+      - { type: rewrite, source: /taquin, destination: /games/taquin/index.html }
+      - { type: rewrite, source: /flappy, destination: /games/flappy/index.html }
+      - { type: rewrite, source: /mancala, destination: /games/mancala/index.html }
+      - { type: rewrite, source: /solitaire, destination: /games/solitaire/index.html }
+      - { type: rewrite, source: /blackjack, destination: /games/blackjack/index.html }
+      - { type: rewrite, source: /invaders, destination: /games/invaders/index.html }
+      - { type: rewrite, source: /bubbles, destination: /games/bubbles/index.html }
+      - { type: rewrite, source: /dotsboxes, destination: /games/dotsboxes/index.html }
+      - { type: rewrite, source: /yahtzee, destination: /games/yahtzee/index.html }
+      - { type: rewrite, source: /binairo, destination: /games/binairo/index.html }
+      - { type: rewrite, source: /kakuro, destination: /games/kakuro/index.html }
       - { type: rewrite, source: /privacy, destination: /privacy/index.html }
       - { type: rewrite, source: /legal, destination: /legal/index.html }
       # Everything else (old .html URLs, unknown paths) -> home.

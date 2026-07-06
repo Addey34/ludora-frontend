@@ -1,0 +1,14 @@
+@import '/css/global.css';
+
+.bubbles-board {
+  background: #0f172a;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  aspect-ratio: 5/6;
+}
+
+.bubbles-board canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

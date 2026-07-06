@@ -1,0 +1,168 @@
+@import '/css/global.css';
+
+.yahtzee-board {
+  aspect-ratio: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  user-select: none;
+}
+
+.yh-dice-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.yh-dice {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.yh-die {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 2px solid #cbd5e1;
+  cursor: pointer;
+  position: relative;
+  display: grid;
+  grid-template-areas:
+    'tl . tr'
+    'ml c mr'
+    'bl . br';
+  padding: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.1s,
+    border-color 0.15s;
+}
+
+.yh-die:hover {
+  transform: translateY(-2px);
+}
+.yh-die.is-held {
+  border-color: #f59e0b;
+  background: #fef3c7;
+}
+
+.yh-die.is-fresh {
+  opacity: 0.6;
+}
+
+.pip {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1e293b;
+}
+
+.pip.tl {
+  grid-area: tl;
+}
+.pip.tr {
+  grid-area: tr;
+}
+.pip.ml {
+  grid-area: ml;
+}
+.pip.mr {
+  grid-area: mr;
+}
+.pip.bl {
+  grid-area: bl;
+}
+.pip.br {
+  grid-area: br;
+}
+.pip.c {
+  grid-area: c;
+  justify-self: center;
+  align-self: center;
+}
+
+.yh-roll-btn {
+  padding: 8px 28px;
+  border-radius: var(--border-radius-sm);
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.yh-roll-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+.yh-roll-btn:disabled,
+.yh-roll-btn.is-disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.yh-rolls-left {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.yh-score-section {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.yh-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.yh-table th {
+  text-align: left;
+  padding: 4px 6px;
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.yh-row td {
+  padding: 5px 6px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.yh-row.is-preview td {
+  color: #22c55e;
+  cursor: pointer;
+}
+.yh-row.is-preview:hover {
+  background: rgba(34, 197, 94, 0.08);
+}
+.yh-row.is-scored td {
+  color: var(--text-muted);
+}
+.yh-row.is-scored .yh-score-cell {
+  color: #60a5fa;
+  font-weight: bold;
+}
+
+.yh-score-cell {
+  text-align: right;
+  font-weight: 600;
+  min-width: 36px;
+}
+.yh-sep td {
+  padding: 2px 0;
+}
+
+.yh-table tfoot td {
+  padding: 4px 6px;
+  font-weight: var(--font-weight-bold);
+  border-top: 1px solid var(--border-color);
+}

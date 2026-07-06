@@ -1,0 +1,196 @@
+@import '/css/global.css';
+
+/* =============================================================================
+   Klondike Solitaire — casino green felt table, white cards, alternating
+   red/black suits.  The board is landscape so we override the shared square
+   aspect-ratio and let it size itself from its content (board grows as
+   columns deepen). Overflow on the shell is exposed so the overlay covers the
+   full grown height.
+   ============================================================================= */
+
+/* Allow the shell to grow vertically with the tableau. */
+.game-shell {
+  overflow: visible;
+}
+
+.solitaire-board {
+  aspect-ratio: auto;
+  background: var(--sol-felt);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: var(--border-radius-md);
+  user-select: none;
+  touch-action: manipulation;
+}
+
+/* ---- Top row: 7 equal-width slots ---- */
+.sol-top {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* ---- Tableau ---- */
+.sol-tableau {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  align-items: start;
+}
+
+/* ---- Slot (stock / waste / foundation) ---- */
+.sol-slot {
+  width: var(--sol-cw, 80px);
+  height: var(--sol-ch, 112px);
+  border-radius: var(--border-radius-sm);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sol-slot-bg);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  overflow: visible;
+  cursor: pointer;
+}
+
+/* ---- Column ---- */
+.sol-col {
+  display: flex;
+  flex-direction: column;
+  min-height: var(--sol-ch, 112px);
+  cursor: pointer;
+  /* Outline a droppable empty column */
+  border-radius: var(--border-radius-sm);
+  border: 1.5px solid transparent;
+}
+
+/* ---- Playing cards ---- */
+.sol-card {
+  flex-shrink: 0;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  transition: transform 0.1s ease;
+}
+
+/* Face-up card */
+.sol-card.is-face-up {
+  background: var(--sol-card-bg);
+}
+
+.sol-card.is-face-up.is-red {
+  color: var(--sol-card-red);
+}
+
+.sol-card.is-face-up.is-black {
+  color: var(--sol-card-black);
+}
+
+/* Face-down card (blue back pattern) */
+.sol-card.is-face-down {
+  background: var(--sol-card-back);
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.06) 0,
+    rgba(255, 255, 255, 0.06) 2px,
+    transparent 2px,
+    transparent 8px
+  );
+  cursor: default;
+}
+
+/* Selected card(s): gold outline */
+.sol-card.is-selected {
+  outline: 2.5px solid var(--sol-select);
+  outline-offset: 1px;
+  transform: translateY(-3px);
+  z-index: 5;
+}
+
+/* ---- Card layout: corner labels + center suit ---- */
+.sol-card-tl,
+.sol-card-br {
+  position: absolute;
+  font-size: clamp(0.6rem, 1.5cqw, 0.85rem);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.sol-card-tl {
+  top: 4px;
+  left: 5px;
+}
+
+.sol-card-br {
+  bottom: 4px;
+  right: 5px;
+  transform: rotate(180deg);
+}
+
+.sol-card-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1rem, 3.5cqw, 2rem);
+  line-height: 1;
+  opacity: 0.75;
+}
+
+/* ---- Foundation suit label (when empty) ---- */
+.sol-suit-label {
+  font-size: clamp(1rem, 3cqw, 1.6rem);
+  opacity: 0.45;
+  color: var(--white-color);
+  pointer-events: none;
+}
+
+/* ---- Stock count badge ---- */
+.sol-stock-count {
+  position: absolute;
+  bottom: 4px;
+  right: 5px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 999px;
+  padding: 1px 5px;
+  pointer-events: none;
+}
+
+/* ---- Recycle symbol (empty stock) ---- */
+.sol-recycle {
+  font-size: clamp(1.4rem, 4cqw, 2.2rem);
+  color: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+}
+
+/* ---- Hover effects ---- */
+.sol-stock:hover .sol-card.is-face-down {
+  transform: scale(1.03);
+}
+
+.sol-col .sol-card.is-face-up:not(.is-selected):hover {
+  transform: translateY(-2px);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+  .solitaire-board {
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .sol-top,
+  .sol-tableau {
+    gap: 3px;
+  }
+}

@@ -84,6 +84,17 @@
   --color-sokoban: #a16207; /* crate brown — warehouse puzzle */
   --color-mastermind: #db2777; /* magenta — code-breaking pegs */
   --color-nonogram: #7c3aed; /* violet — picture logic grid */
+  --color-taquin: #e11d48; /* rose — sliding number tiles */
+  --color-flappy: #fbbf24; /* amber — flying bird */
+  --color-mancala: #84cc16; /* lime — mancala seeds */
+  --color-solitaire: #166534; /* dark green — casino felt */
+  --color-blackjack: #0f4c2a; /* deep green — casino blackjack table */
+  --color-invaders: #0f172a; /* deep navy — space */
+  --color-bubbles: #0c4a6e; /* ocean — bubble shooter */
+  --color-dotsboxes: #1e40af; /* blue — dot grid */
+  --color-yahtzee: #7c2d12; /* burnt orange — dice */
+  --color-binairo: #1e3a5f; /* dark blue — binary logic */
+  --color-kakuro: #312e81; /* indigo — number puzzle */
 
   /* Sidebar super-category accents (icon + flyout tint). Distinct hues, one per
      genre, in the site's vivid palette. */
@@ -92,6 +103,7 @@
   --cat-words: #0ea5e9; /* sky — language */
   --cat-quiz: #10b981; /* emerald — knowledge */
   --cat-board: #f59e0b; /* amber — tabletop */
+  --cat-cards: #9d174d; /* deep rose — playing cards */
 
   /* --- Spacing --- */
   --spacing-xxs: 0.125rem;
@@ -308,6 +320,25 @@
   --battleship-preview: #86efac;
   --battleship-preview-invalid: #fca5a5;
   --battleship-target-hover: #38bdf8;
+
+  /* --- Solitaire: casino green felt, white card face, blue card back --- */
+  --sol-felt: #166534; /* casino table green */
+  --sol-slot-bg: rgba(0, 0, 0, 0.22); /* empty slot placeholder */
+  --sol-card-bg: #ffffff;
+  --sol-card-back: #1d4ed8; /* classic blue back */
+  --sol-card-red: #dc2626;
+  --sol-card-black: #1f2937;
+  --sol-select: #fbbf24; /* gold selection highlight */
+
+  /* --- Mancala: warm wood board, pit bowls and two seed colors --- */
+  --mn-board-bg: #c9a97a; /* warm tan wood */
+  --mn-store-bg: #7c5c32; /* deep wood store */
+  --mn-pit-bg: #8a6240; /* dark wood bowl */
+  --mn-pit-active: #9a7250; /* active side highlight */
+  --mn-pit-playable: #7c7a3a; /* playable pit — warm olive */
+  --mn-pit-playable-hover: #9a9840; /* hover */
+  --mn-seed-p0: #84cc16; /* lime — seat 0 seeds */
+  --mn-seed-p1: #f97316; /* orange — seat 1 seeds */
 
   /* --- Goose: board and special squares --- */
   --goose-board-bg: #fef9f0;

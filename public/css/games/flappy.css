@@ -1,0 +1,7 @@
+@import '/css/global.css';
+
+.flappy-board {
+  overflow: hidden;
+  border-radius: var(--border-radius-md);
+  background: #87ceeb;
+}

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Interface localisation — simple, modular, dependency-free.
  *
  * The pattern (reuse it everywhere, incl. future games):
@@ -174,6 +174,10 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     game_sokoban: 'Sokoban',
     game_mastermind: 'Mastermind',
     game_nonogram: 'Nonogram',
+    game_taquin: 'Sliding Puzzle',
+    game_flappy: 'Flappy Bird',
+    game_mancala: 'Mancala',
+    game_solitaire: 'Solitaire',
     // Levels panel (shared).
     levels: 'Levels',
     levelChoose: 'Level {n} — choose a level',
@@ -244,6 +248,65 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     nonoToolFill: 'Fill tool (paint cells)',
     nonoToolCross: 'Cross tool (mark empty)',
     nonogramRecap: 'Picture revealed in {time}.',
+    // Taquin (Sliding Puzzle) end-of-game recap.
+    taquinRecap: '<p>Solved in <strong>{moves}</strong> moves — {score} points.</p>',
+    flappyRecap: '<p>You passed <strong>{score}</strong> pipes.</p>',
+    // Mancala end-of-game recap (win / lose / draw).
+    mancalaWin: 'You won with {mine} seeds vs {theirs}.',
+    mancalaLose: 'You lost — {theirs} seeds vs your {mine}.',
+    mancalaDraw: "It's a draw — {mine} seeds each!",
+    // Solitaire win recap.
+    solitaireWin: 'Completed in {moves} moves and {time} — {score} points.',
+    // Card games category.
+    cat_cards: 'Cards',
+    // Blackjack.
+    game_blackjack: 'Blackjack',
+    bjChips: 'Chips',
+    bjBet: 'Bet',
+    bjDealer: 'Dealer',
+    bjYou: 'You',
+    bjPlaceBet: 'Place your bet and deal.',
+    bjYourTurn: 'Your turn — hit, stand or double?',
+    bjDealerTurn: 'Dealer plays…',
+    bjBlackjack: 'Blackjack! +150%',
+    bjWin: 'You win!',
+    bjPush: 'Push — bet returned.',
+    bjLose: 'Dealer wins.',
+    bjBust: 'Bust! Over 21.',
+    bjHit: 'Hit',
+    bjStand: 'Stand',
+    bjDouble: 'Double',
+    bjDeal: 'Deal',
+    bjBankrupt: 'Bankrupt!',
+    bjBankruptMsg: 'You are out of chips. Better luck next time!',
+    // Space Invaders.
+    game_invaders: 'Space Invaders',
+    // Bubble Shooter.
+    game_bubbles: 'Bubble Shooter',
+    // Dots and Boxes.
+    game_dotsboxes: 'Dots and Boxes',
+    // Yahtzee.
+    game_yahtzee: 'Yahtzee',
+    yhRoll: 'Roll dice',
+    yhRollsLeft: 'rolls left',
+    yhMustScore: 'Choose a category to score',
+    yhCategory: 'Category',
+    yhScore: 'Score',
+    yhUpperTotal: 'Upper total',
+    yhBonus: 'Bonus (+35 if ≥63)',
+    yhTotal: 'Grand total',
+    yhGameOver: 'Game Over!',
+    yhFinalScore: 'Final score: {score} points.',
+    // Binairo.
+    game_binairo: 'Binairo',
+    biErrors: 'Errors',
+    binairoRecap: 'Solved in {time} — {score} points.',
+    // Kakuro.
+    game_kakuro: 'Kakuro',
+    kakPuzzle: 'Puzzle',
+    kakRecap: 'Solved in {time} — {score} points.',
+    kakNextPuzzle: 'Next puzzle unlocked!',
+    kakAllDone: 'All puzzles completed!',
   },
   fr: {
     play: 'Jouer',
@@ -465,6 +528,68 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     nonoToolFill: 'Outil Remplir (peindre les cases)',
     nonoToolCross: 'Outil Croix (marquer vide)',
     nonogramRecap: 'Image révélée en {time}.',
+    // Taquin (Puzzle coulissant) récapitulatif de fin.
+    game_taquin: 'Puzzle coulissant',
+    game_flappy: 'Flappy Bird',
+    game_mancala: 'Mancala',
+    game_solitaire: 'Solitaire',
+    taquinRecap: '<p>Résolu en <strong>{moves}</strong> coups — {score} points.</p>',
+    flappyRecap: '<p>Vous avez passé <strong>{score}</strong> tuyaux.</p>',
+    // Mancala récapitulatif de fin.
+    mancalaWin: 'Vous gagnez avec {mine} graines contre {theirs}.',
+    mancalaLose: 'Vous perdez — {theirs} graines contre vos {mine}.',
+    mancalaDraw: 'Égalité — {mine} graines chacun !',
+    // Solitaire récapitulatif de fin.
+    solitaireWin: 'Terminé en {moves} coups et {time} — {score} points.',
+    // Blackjack.
+    game_blackjack: 'Blackjack',
+    bjChips: 'Jetons',
+    bjBet: 'Mise',
+    bjDealer: 'Croupier',
+    bjYou: 'Vous',
+    bjPlaceBet: 'Placez votre mise et donnez.',
+    bjYourTurn: 'Votre tour — tirer, rester ou doubler ?',
+    bjDealerTurn: 'Le croupier joue…',
+    bjBlackjack: 'Blackjack ! +150 %',
+    bjWin: 'Vous gagnez !',
+    bjPush: '$([char]0xC9)galité — mise rendue.',
+    bjLose: 'Le croupier gagne.',
+    bjBust: 'Dépassé ! Plus de 21.',
+    bjHit: 'Tirer',
+    bjStand: 'Rester',
+    bjDouble: 'Doubler',
+    bjDeal: 'Donner',
+    bjBankrupt: 'En faillite !',
+    bjBankruptMsg: 'Vous n’avez plus de jetons. Bonne chance la prochaine fois !',
+    // Space Invaders.
+    game_invaders: 'Space Invaders',
+    // Bubble Shooter.
+    game_bubbles: 'Bubble Shooter',
+    // Dots and Boxes.
+    game_dotsboxes: 'Pointillés',
+    // Yahtzee.
+    game_yahtzee: 'Yahtzee',
+    yhRoll: 'Lancer les dés',
+    yhRollsLeft: 'lancés restants',
+    yhMustScore: 'Choisissez une catégorie',
+    yhCategory: 'Catégorie',
+    yhScore: 'Score',
+    yhUpperTotal: 'Total section haute',
+    yhBonus: 'Bonus (+35 si ≥63)',
+    yhTotal: 'Total général',
+    yhGameOver: 'Partie terminée !',
+    yhFinalScore: 'Score final : {score} points.',
+    // Binairo.
+    game_binairo: 'Binairo',
+    biErrors: 'Erreurs',
+    binairoRecap: 'Résolu en {time} — {score} points.',
+    // Kakuro.
+    game_kakuro: 'Kakuro',
+    kakPuzzle: 'Puzzle',
+    kakRecap: 'Résolu en {time} — {score} points.',
+    kakNextPuzzle: 'Puzzle suivant déverrouillé !',
+    kakAllDone: 'Tous les puzzles complétés !', // Catégorie jeux de cartes.
+    cat_cards: 'Cartes',
   },
 };
 
@@ -514,6 +639,28 @@ const CONTROLS_FR: Record<string, string> = {
   '🌀 Well (31) / Prison (52)': '🌀 Puits (31) / Prison (52)',
   '💀 Death (58)': '💀 Mort (58)',
   'Finish (63)': 'Arrivée (63)',
+  'Move the blank tile': 'Déplacer la case vide',
+  'Slide a tile toward the blank': 'Glisser une tuile vers la case vide',
+  'Grid size (3×3 → 5×5)': 'Taille de grille (3×3 → 5×5)',
+  'Sort the tiles in numerical order': 'Classer les tuiles par ordre numérique',
+  '<kbd>Space</kbd> / click': '<kbd>Space</kbd> / clic',
+  'Jump (flap your wings)': 'Sauter (battre des ailes)',
+  'Fly through as many pipes as possible': 'Passer le plus de tuyaux possible',
+  'Land in own store': 'Atterrir dans son propre store',
+  'Land in empty own pit': 'Atterrir dans une fosse vide de son côté',
+  'Click a pit': 'Cliquer une fosse pour semer ses graines',
+  'Sow its seeds counter-clockwise': 'Semer dans le sens anti-horaire',
+  'Extra turn': 'Tour supplémentaire si la dernière graine tombe dans votre store',
+  'Capture seeds from opposite pit': 'Capturer les graines de la fosse opposée si vide',
+  'Most seeds in your store wins': 'Le plus de graines dans votre store gagne',
+  'Click a card': 'Cliquer sur une carte',
+  'Click stock': 'Cliquer sur la pioche',
+  'Click empty stock': 'Cliquer sur la pioche vide',
+  'Select it (and its sequence)': 'Sélectionner la carte (et sa séquence)',
+  'Draw one card to the waste': 'Piocher une carte vers la défausse',
+  'Recycle waste back to stock': 'Remettre la défausse dans la pioche',
+  'Move all 52 cards to the four foundations (A→K)':
+    'Placer les 52 cartes sur les fondations (A→R)',
   // --- action column ---
   'Retype the displayed words': 'Retape les mots affichés',
   'Language (EN/FR) and difficulty (harder = accents, longer words)':
@@ -643,6 +790,58 @@ const CONTROLS_FR: Record<string, string> = {
   'Move the selection': 'Déplace la sélection',
   'Fill every row, column and box with 1–9': 'Remplis chaque ligne, colonne et bloc avec 1–9',
   'Move / push a crate': 'Déplace / pousse une caisse',
+  // --- Blackjack ---
+  'Click Deal': 'Cliquer sur Donner',
+  'Deal a new hand with your current bet': 'Distribuer une nouvelle main avec votre mise actuelle',
+  Hit: 'Tirer',
+  'Draw another card': 'Piocher une carte supplémentaire',
+  Stand: 'Rester',
+  'End your turn, dealer plays': 'Terminer votre tour, le croupier joue',
+  Double: 'Doubler',
+  'Double bet, draw exactly one card, then stand':
+    'Doubler la mise, piocher exactement une carte, puis rester',
+  'Get closer to 21 than the dealer without going over':
+    'Approcher 21 de plus près que le croupier sans dépasser',
+  // --- Space Invaders ---
+  'Move your ship': 'Déplacer votre vaisseau',
+  Shoot: 'Tirer',
+  'Destroy all aliens before they reach you':
+    'Détruire tous les extraterrestres avant qu’ils vous atteignent',
+  // --- Bubble Shooter ---
+  'Move mouse / <kbd>← →</kbd>': 'Bouger la souris / <kbd>← →</kbd>',
+  'Aim the shooter': 'Viser le lanceur',
+  'Click / <kbd>Space</kbd>': 'Clic / <kbd>Space</kbd>',
+  'Shoot a bubble': 'Lancer une bulle',
+  'Match 3+ same-color bubbles to pop them': 'Aligner 3+ bulles de même couleur pour les éclater',
+  // --- Dots and Boxes ---
+  'Click an edge': 'Cliquer une arête',
+  'Draw a line between two adjacent dots': 'Tracer une ligne entre deux points adjacents',
+  'Complete a box': 'Compléter un carré',
+  'Score a point and take another turn': 'Marquer un point et rejouer',
+  'Claim more boxes than your opponent': 'Capturer plus de carrés que votre adversaire',
+  // --- Yahtzee ---
+  'Roll button': 'Bouton Lancer',
+  'Roll all non-held dice (up to 3 times per turn)':
+    'Lancer tous les dés non conservés (jusqu’à 3 fois par tour)',
+  'Click a die': 'Cliquer sur un dé',
+  'Hold it (keep between rolls)': 'Le conserver entre les lancers',
+  'Click a category': 'Cliquer une catégorie',
+  'Score the current dice in that category': 'Marquer les dés actuels dans cette catégorie',
+  'Maximise your total score across 13 categories': 'Maximiser votre score total sur 13 catégories',
+  // --- Binairo ---
+  'Click a cell': 'Cliquer une case',
+  'Cycle empty → 0 → 1 → empty': 'Alterner vide → 0 → 1 → vide',
+  'Fill the grid: no 3 consecutive same, equal 0s and 1s per line':
+    'Remplir la grille : pas 3 identiques consécutifs, autant de 0 que de 1 par ligne',
+  // --- Kakuro ---
+  'Click a white cell': 'Cliquer une case blanche',
+  'Select it, then type 1–9': 'La sélectionner, puis taper 1–9',
+  '<kbd>1–9</kbd>': '<kbd>1–9</kbd>',
+  'Enter a digit in the selected cell': 'Saisir un chiffre dans la case sélectionnée',
+  '<kbd>Delete</kbd>': '<kbd>Delete</kbd>',
+  'Clear the selected cell': 'Effacer la case sélectionnée',
+  'Fill each run with unique digits that sum to the clue':
+    'Remplir chaque série avec des chiffres uniques dont la somme correspond à l’indice',
   'Move with your finger': 'Déplace avec ton doigt',
   'Undo a move / restart the level': 'Annule un coup / recommence le niveau',
   'Push every crate onto a target': 'Pousse chaque caisse sur une cible',

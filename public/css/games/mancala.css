@@ -1,0 +1,194 @@
+@import '/css/global.css';
+
+/* =============================================================================
+   Mancala — a landscape board: two stores (left / right) flanking two rows of
+   six pits. The .game-board square is replaced by a wide rectangle that fills
+   the frame width and sizes its height from the content.
+   ============================================================================= */
+
+.mancala-board {
+  aspect-ratio: auto;
+  display: flex;
+  align-items: stretch;
+  background: var(--mn-board-bg);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  min-height: 0;
+}
+
+/* 3-column grid: left store | pits | right store */
+.mn-board {
+  display: grid;
+  grid-template-columns: minmax(52px, 9%) 1fr minmax(52px, 9%);
+  gap: var(--spacing-sm);
+  width: 100%;
+  align-items: stretch;
+}
+
+/* ---- Stores ---- */
+.mn-store {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-xs);
+  background: var(--mn-store-bg);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xs) var(--spacing-xs) var(--spacing-sm);
+  min-height: 120px;
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.35);
+  position: relative;
+}
+
+.mn-store-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: absolute;
+  top: var(--spacing-xs);
+}
+
+.mn-store.is-winning {
+  box-shadow:
+    inset 0 3px 8px rgba(0, 0, 0, 0.35),
+    0 0 0 2px var(--mn-seed-p0);
+}
+
+/* ---- Pit area ---- */
+.mn-pits {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.mn-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--spacing-sm);
+}
+
+/* ---- Individual pits ---- */
+.mn-pit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-xxs);
+  background: var(--mn-pit-bg);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-xxs) var(--spacing-xxs) var(--spacing-xs);
+  min-height: 60px;
+  cursor: default;
+  user-select: none;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35);
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease;
+  position: relative;
+}
+
+/* The row that currently owns the turn gets a subtle highlight */
+.mn-pit.is-active-side {
+  background: var(--mn-pit-active);
+}
+
+/* Pits the human can legally play */
+.mn-pit.is-playable {
+  cursor: pointer;
+  background: var(--mn-pit-playable);
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.25),
+    0 0 0 2px var(--mn-seed-p0);
+}
+
+.mn-pit.is-playable:hover {
+  transform: scale(1.06);
+  background: var(--mn-pit-playable-hover);
+}
+
+.mn-pit.is-playable:active {
+  transform: scale(0.96);
+}
+
+.mn-pit.is-empty {
+  opacity: 0.55;
+}
+
+/* ---- Seed dots ---- */
+.mn-seeds {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px;
+  min-height: 20px;
+  align-items: center;
+}
+
+.mn-seed {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mn-seed-p0 {
+  background: var(--mn-seed-p0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.mn-seed-p1 {
+  background: var(--mn-seed-p1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* ---- Seed count label ---- */
+.mn-count {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1;
+  min-width: 1.5ch;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Stores show a larger count */
+.mn-store .mn-count {
+  font-size: var(--font-size-xl);
+}
+
+.mn-store .mn-seeds {
+  flex: 1;
+  align-content: flex-start;
+  justify-content: center;
+  gap: 3px;
+  padding: 0 var(--spacing-xxs);
+}
+
+.mn-store .mn-seed {
+  width: 9px;
+  height: 9px;
+}
+
+/* ---- Responsive: very small screens ---- */
+@media (max-width: 480px) {
+  .mn-pit {
+    min-height: 44px;
+  }
+
+  .mn-seed {
+    width: 6px;
+    height: 6px;
+  }
+
+  .mn-store {
+    min-height: 88px;
+  }
+
+  .mancala-board {
+    padding: var(--spacing-sm);
+  }
+}

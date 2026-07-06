@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Yahtzee" css="/css/games/yahtzee.css" script="./yahtzee-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Yahtzee" key="yahtzee"}}
+    <div class="game-details"></div>
+    <div class="yahtzee-board game-board" id="board"></div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

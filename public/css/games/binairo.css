@@ -1,0 +1,58 @@
+@import '/css/global.css';
+
+.binairo-board {
+  display: grid;
+  grid-template-columns: repeat(var(--bi-size, 8), 1fr);
+  gap: 4px;
+  padding: 12px;
+  user-select: none;
+}
+
+.bi-cell {
+  aspect-ratio: 1;
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1rem, 3cqw, 1.6rem);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  transition:
+    background 0.1s,
+    transform 0.1s;
+  color: var(--text-primary);
+}
+
+.bi-cell:hover:not(.is-fixed) {
+  background: rgba(255, 255, 255, 0.14);
+  transform: scale(1.05);
+}
+
+.bi-cell.is-fixed {
+  background: rgba(255, 255, 255, 0.12);
+  cursor: default;
+}
+
+.bi-cell.is-zero {
+  color: #60a5fa;
+}
+.bi-cell.is-one {
+  color: #f97316;
+}
+
+.bi-cell.is-fixed.is-zero {
+  background: rgba(96, 165, 250, 0.15);
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+.bi-cell.is-fixed.is-one {
+  background: rgba(249, 115, 22, 0.15);
+  border-color: rgba(249, 115, 22, 0.3);
+}
+
+.bi-cell.is-conflict {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+}

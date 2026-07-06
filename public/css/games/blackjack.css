@@ -1,0 +1,162 @@
+@import '/css/global.css';
+
+.blackjack-board {
+  aspect-ratio: auto;
+  background: var(--sol-felt);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  user-select: none;
+}
+
+.bj-area {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bj-area-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bj-hand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 80px;
+}
+
+.bj-card {
+  width: 56px;
+  height: 80px;
+  border-radius: var(--border-radius-sm);
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.bj-card.is-red {
+  color: #dc2626;
+}
+.bj-card.is-black {
+  color: #1f2937;
+}
+
+.bj-card-back {
+  background: #1d4ed8;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.07) 0,
+    rgba(255, 255, 255, 0.07) 2px,
+    transparent 2px,
+    transparent 8px
+  );
+}
+
+.bj-card-tl {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.bj-card-br {
+  position: absolute;
+  bottom: 4px;
+  right: 5px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transform: rotate(180deg);
+}
+
+.bj-card-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  opacity: 0.65;
+}
+
+.bj-status {
+  text-align: center;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 4px 0;
+  min-height: 28px;
+}
+
+.bj-status--win {
+  color: #4ade80;
+}
+.bj-status--lose {
+  color: #f87171;
+}
+.bj-status--push {
+  color: #fbbf24;
+}
+
+.bj-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.bj-btn {
+  padding: 8px 18px;
+  border-radius: var(--border-radius-sm);
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.bj-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.28);
+}
+.bj-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.bj-btn-sm {
+  padding: 8px 14px;
+  font-size: 1.1rem;
+}
+
+.bj-bet-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.bj-bet-label {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--font-size-base);
+  min-width: 60px;
+  text-align: center;
+}
+
+.bj-btn-deal {
+  background: #16a34a;
+  padding: 8px 22px;
+}
+
+.bj-btn-deal:hover {
+  background: #15803d;
+}

@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Binairo" css="/css/games/binairo.css" script="./binairo-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Binairo" key="binairo"}}
+    <div class="game-details"></div>
+    <div class="binairo-board game-board" id="board"></div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

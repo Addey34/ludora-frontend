@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- Left store (tall oval) -->
+  <rect x="0.5" y="4" width="3" height="16" rx="1.5"/>
+  <!-- Right store (tall oval) -->
+  <rect x="20.5" y="4" width="3" height="16" rx="1.5"/>
+  <!-- Top row: 6 pits -->
+  <rect x="5"  y="4.5" width="2.5" height="4" rx="1.2"/>
+  <rect x="8"  y="4.5" width="2.5" height="4" rx="1.2"/>
+  <rect x="11" y="4.5" width="2.5" height="4" rx="1.2"/>
+  <rect x="14" y="4.5" width="2.5" height="4" rx="1.2"/>
+  <rect x="17" y="4.5" width="2.5" height="4" rx="1.2"/>
+  <!-- Bottom row: 6 pits -->
+  <rect x="5"  y="15.5" width="2.5" height="4" rx="1.2"/>
+  <rect x="8"  y="15.5" width="2.5" height="4" rx="1.2"/>
+  <rect x="11" y="15.5" width="2.5" height="4" rx="1.2"/>
+  <rect x="14" y="15.5" width="2.5" height="4" rx="1.2"/>
+  <rect x="17" y="15.5" width="2.5" height="4" rx="1.2"/>
+  <!-- Seeds in bottom row (small circles) -->
+  <circle cx="6.25" cy="6.5" r="0.8"/>
+  <circle cx="9.25" cy="6.5" r="0.8"/>
+  <circle cx="12.25" cy="6.5" r="0.8"/>
+</svg>
