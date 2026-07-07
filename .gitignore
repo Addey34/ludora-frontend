@@ -5,7 +5,10 @@
 .claude/settings.local.json
 CLAUDE.md
 
-# Local environment & private notes (never commit — personal machine only)
+# Local environment and private notes (never commit - personal machine only)
 .env
 .env.local
 .env.*.local
+
+# Private docs
+docs/private/
