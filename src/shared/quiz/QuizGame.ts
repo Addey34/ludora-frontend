@@ -18,6 +18,20 @@ import {
   recordAnswer,
   scoreForCorrect,
 } from './quiz.js';
+import { NetMatch, MatchMessage } from '../net/match.js';
+import { setupMultiplayerPanel } from '../versus/multiplayerPanel.js';
+import {
+  OP_QUESTION,
+  OP_ANSWER,
+  OP_RESULT,
+  OP_RESTART,
+  stripAnswer,
+  allAnswered,
+  scoreRound,
+  type RaceQuestion,
+  type RaceRound,
+  type RaceResult,
+} from './quizRace.js';
 
 /** Configuration shared by every quiz-style game. */
 export interface QuizGameConfig extends GameConfig {
@@ -38,12 +52,18 @@ export interface QuizGameConfig extends GameConfig {
  * its questions via {@link makeQuestion} (using {@link difficulty}), plus optional
  * async data via {@link loadData} and a numeric keyboard via {@link inputMode}.
  *
+ * Multiplayer race mode: call {@link setupVersus} from `initialize()` (and set
+ * `multiplayer: true` in the games array). Both players receive the same question
+ * from the host, answer independently, and the host broadcasts the scored result.
+ * Solo mode is completely unchanged.
+ *
  * Event-driven (clicks/keys), so it doesn't use the engine's rAF loop. A
  * generation counter guards the between-questions delay so a reset can't let a
  * stale timeout advance a fresh round.
  */
-/** Lives in Survival mode: a wrong answer costs one, the run ends at zero. */
 const SURVIVAL_LIVES = 3;
+/** Seconds before the host auto-advances a round (no answer received). */
+const ANSWER_SECONDS = 20;
 
 export abstract class QuizGame extends GameEngine {
   protected boardEl: HTMLElement | null = null;
@@ -68,7 +88,26 @@ export abstract class QuizGame extends GameEngine {
   /** Bumped on every start/reset so a pending "next question" timeout bails. */
   private gen = 0;
   /** True between answering and the next question (blocks double answers). */
-  private locked = false;
+  protected locked = false;
+
+  // --- Net race state (inactive / irrelevant in solo mode) ------------------
+
+  /** 'net' while a relayed session is active; 'solo' otherwise. */
+  protected netMode: 'solo' | 'net' = 'solo';
+  protected net: NetMatch | null = null;
+  /** This client's seat (0 = host). */
+  protected mySeat = 0;
+  private netPlayers = 2;
+  /** Cumulative scores per seat (authoritative on host, mirrored on guest). */
+  private raceScores: number[] = [];
+  /** Current streak per seat (host-authoritative for combo scoring). */
+  private raceStreaks: number[] = [];
+  /** Host-only: active round state while waiting for all answers. */
+  private currentRound: RaceRound | null = null;
+  /** Answer timeout handle (host only). */
+  private answerTimer: ReturnType<typeof setTimeout> | null = null;
+  /** The last answer this client submitted (used to mark the UI on OP_RESULT). */
+  private myLastAnswer = '';
 
   constructor(config: QuizGameConfig) {
     super(config);
@@ -95,8 +134,7 @@ export abstract class QuizGame extends GameEngine {
 
   /**
    * Extra settings fields a concrete game adds to the shared Difficulty/Mode
-   * controls (e.g. a category or language picker). Each field owns its `onChange`,
-   * which typically updates game state then calls {@link restartRound}.
+   * controls (e.g. a category or language picker).
    */
   protected extraSettings(): SettingsField[] {
     return [];
@@ -104,8 +142,7 @@ export abstract class QuizGame extends GameEngine {
 
   /**
    * Optional per-variant leaderboard: return a `{ key, label }` to give this
-   * difficulty/mode/… combination its own board (so incomparable runs don't
-   * share a table), or `null` (default) to use the game's single board.
+   * difficulty/mode/… combination its own board, or `null` to use the single board.
    */
   protected leaderboardVariant(): { key: string; label: string } | null {
     return null;
@@ -123,6 +160,7 @@ export abstract class QuizGame extends GameEngine {
       { key: 'score', icon: 'star', label: t('score') },
       { key: 'streak', icon: 'fire', label: t('hudStreak') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
+      { key: 'opponent', icon: 'user', label: t('hudOpponent') },
     ]);
     this.setupEventListeners();
     this.setupQuizSettings();
@@ -193,12 +231,18 @@ export abstract class QuizGame extends GameEngine {
     this.lives = SURVIVAL_LIVES;
     this.locked = false;
 
-    // Only the relevant readout is shown; the others are hidden per mode.
+    if (this.netMode === 'net') {
+      this.raceScores = new Array(this.netPlayers).fill(0);
+      this.raceStreaks = new Array(this.netPlayers).fill(0);
+      this.myLastAnswer = '';
+    }
+
     this.hud?.set('time', null);
     this.hud?.set('progress', null);
     this.hud?.set('lives', null);
+    this.hud?.set('opponent', null);
 
-    if (this.mode === 'timed') {
+    if (this.mode === 'timed' && this.netMode === 'solo') {
       const gen = this.gen;
       this.timer.start({
         seconds: this.timedSeconds,
@@ -219,11 +263,14 @@ export abstract class QuizGame extends GameEngine {
   reset(): void {
     this.gen += 1;
     this.timer.stop();
+    this.clearAnswerTimer();
     this.resetState();
     this.stats = emptyStats();
     this.roundIndex = 0;
     this.current = null;
     this.locked = false;
+    this.currentRound = null;
+    this.myLastAnswer = '';
     if (this.promptEl) this.promptEl.textContent = '';
     if (this.answerEl) this.answerEl.replaceChildren();
     if (this.feedbackEl) this.feedbackEl.textContent = '';
@@ -233,17 +280,123 @@ export abstract class QuizGame extends GameEngine {
   stop(): void {
     super.stop();
     this.timer.stop();
+    this.clearAnswerTimer();
   }
 
   protected restartAfterGameOver(): void {
     this.overlay.hide();
+    if (this.netMode === 'net' && this.net?.role === 'host') {
+      this.net.send(OP_RESTART, null);
+    }
     this.reset();
     this.start();
+  }
+
+  // --- Multiplayer setup ----------------------------------------------------
+
+  /**
+   * Wires the shared multiplayer panel for a quiz-race session. Call from
+   * `initialize()` in any quiz game that declares `multiplayer: true`. Safe
+   * no-op when the panel elements are absent from the DOM.
+   */
+  protected setupVersus(capacity = 2): void {
+    setupMultiplayerPanel({
+      capacity,
+      onSessionStart: (net) => {
+        this.net = net;
+        this.netMode = 'net';
+        this.mySeat = net.seat;
+        this.netPlayers = net.players;
+        net.onMessage((msg) => this.handleNetMessage(msg));
+        net.onPeerLeave(() => this.returnToSolo());
+        net.onClose(() => this.returnToSolo());
+        this.restartRound();
+      },
+      onSessionEnd: () => this.returnToSolo(),
+    });
+  }
+
+  private returnToSolo(): void {
+    this.net = null;
+    this.netMode = 'solo';
+    this.mySeat = 0;
+    this.netPlayers = 2;
+    this.restartRound();
+  }
+
+  private handleNetMessage(msg: MatchMessage): void {
+    const { opCode, data } = msg;
+
+    if (opCode === OP_QUESTION) {
+      // Guest receives a new question from the host.
+      const q = data as RaceQuestion | null;
+      if (!q) return;
+      this.locked = false;
+      this.roundIndex = q.roundIndex;
+      // Build a stub Question (answer intentionally blank until OP_RESULT).
+      this.current = { prompt: q.prompt, answer: '', choices: q.choices };
+      this.renderQuestion();
+      this.updateHud();
+      return;
+    }
+
+    if (opCode === OP_ANSWER) {
+      // Host receives a guest's answer.
+      if (!this.currentRound) return;
+      const m = data as { roundIndex?: number; answer?: string; seat?: number } | null;
+      if (m?.roundIndex !== this.currentRound.roundIndex) return; // stale
+      const seat = m?.seat;
+      if (typeof seat !== 'number' || seat < 0 || seat >= this.netPlayers) return;
+      if (this.currentRound.answers[seat] !== undefined) return; // already recorded
+      this.currentRound.answers[seat] = m?.answer ?? null;
+      if (allAnswered(this.currentRound, this.netPlayers)) {
+        this.clearAnswerTimer();
+        this.broadcastResult(this.gen);
+      }
+      return;
+    }
+
+    if (opCode === OP_RESULT) {
+      // Both host and guest apply the authoritative result.
+      const result = data as RaceResult | null;
+      if (result) this.applyRaceResult(result);
+      return;
+    }
+
+    if (opCode === OP_RESTART) {
+      // Host restarted — guest follows.
+      if (this.net?.role === 'guest') {
+        this.overlay.hide();
+        this.reset();
+        this.start();
+      }
+    }
   }
 
   // --- Round flow -----------------------------------------------------------
 
   private nextQuestion(): void {
+    if (this.netMode === 'net') {
+      // Host generates and broadcasts; guest waits for OP_QUESTION.
+      if (this.net?.role !== 'host') return;
+      this.locked = false;
+      this.current = this.makeQuestion();
+      this.roundIndex += 1;
+      const final = this.roundIndex >= this.rounds;
+      this.currentRound = {
+        roundIndex: this.roundIndex,
+        question: this.current,
+        answers: new Array(this.netPlayers).fill(undefined),
+        final,
+      };
+      this.net.send(OP_QUESTION, stripAnswer(this.current, this.roundIndex));
+      this.startAnswerTimer(this.gen);
+      this.renderQuestion();
+      this.updateHud();
+      return;
+    }
+
+    // Solo mode (unchanged).
     if (this.mode === 'classic' && this.roundIndex >= this.rounds) {
       this.finish();
       return;
@@ -255,7 +408,7 @@ export abstract class QuizGame extends GameEngine {
     this.updateHud();
   }
 
-  private renderQuestion(): void {
+  protected renderQuestion(): void {
     const question = this.current;
     if (!question || !this.promptEl || !this.answerEl || !this.feedbackEl) return;
 
@@ -280,7 +433,6 @@ export abstract class QuizGame extends GameEngine {
       btn.type = 'button';
       btn.className = 'quiz-choice';
       btn.dataset.value = choice;
-      // Small ordinal so keyboard players (keys 1-9) know the mapping.
       btn.innerHTML = `<span class="quiz-choice-key">${index + 1}</span>${this.escapeHtml(choice)}`;
       btn.addEventListener('click', () => this.answer(choice));
       grid.appendChild(btn);
@@ -320,7 +472,30 @@ export abstract class QuizGame extends GameEngine {
     const question = this.current;
     if (this.locked || !question || !this.state.isRunning) return;
     this.locked = true;
+    this.myLastAnswer = given;
 
+    // Net mode — host records answer and waits; guest sends to host and waits.
+    if (this.netMode === 'net') {
+      this.disableAnswerControls();
+      if (this.net?.role === 'host') {
+        if (this.currentRound) {
+          this.currentRound.answers[0] = given;
+          if (allAnswered(this.currentRound, this.netPlayers)) {
+            this.clearAnswerTimer();
+            this.broadcastResult(this.gen);
+          }
+        }
+      } else {
+        this.net?.send(OP_ANSWER, {
+          roundIndex: this.roundIndex,
+          answer: given,
+          seat: this.mySeat,
+        });
+      }
+      return;
+    }
+
+    // Solo mode (unchanged).
     const correct = isCorrect(given, question.answer);
     recordAnswer(this.stats, correct);
 
@@ -331,7 +506,6 @@ export abstract class QuizGame extends GameEngine {
       playSound('mismatch');
     }
 
-    // Survival: a wrong answer costs a life; the run ends when they run out.
     const ended = !correct && this.mode === 'survival' && (this.lives -= 1) <= 0;
 
     this.markAnswer(given, correct);
@@ -346,6 +520,17 @@ export abstract class QuizGame extends GameEngine {
       },
       correct ? 550 : 1150
     );
+  }
+
+  /** Disables all answer controls while waiting for a net result. */
+  private disableAnswerControls(): void {
+    this.answerEl
+      ?.querySelectorAll<HTMLButtonElement>('.quiz-choice')
+      .forEach((btn) => (btn.disabled = true));
+    const input = this.answerEl?.querySelector<HTMLInputElement>('.quiz-input');
+    const submit = this.answerEl?.querySelector<HTMLButtonElement>('.quiz-submit');
+    if (input) input.disabled = true;
+    if (submit) submit.disabled = true;
   }
 
   /** Paints the outcome: highlights choices, or annotates the typed field. */
@@ -377,16 +562,155 @@ export abstract class QuizGame extends GameEngine {
 
   private finish(): void {
     this.timer.stop();
+    this.clearAnswerTimer();
     this.gen += 1;
-    playSound(this.stats.correct >= this.stats.wrong ? 'win' : 'die');
+    if (this.netMode === 'net') {
+      const myScore = this.raceScores[this.mySeat] ?? 0;
+      const oppSeat = this.mySeat === 0 ? 1 : 0;
+      const oppScore = this.raceScores[oppSeat] ?? 0;
+      playSound(myScore >= oppScore ? 'win' : 'die');
+    } else {
+      playSound(this.stats.correct >= this.stats.wrong ? 'win' : 'die');
+    }
     this.gameOver();
   }
+
+  // --- Net race helpers (host) ----------------------------------------------
+
+  private broadcastResult(gen: number): void {
+    if (gen !== this.gen || !this.currentRound || !this.net) return;
+    const { result } = scoreRound(
+      this.currentRound,
+      this.netPlayers,
+      this.basePoints,
+      this.difficulty,
+      this.raceScores,
+      this.raceStreaks
+    );
+    this.net.send(OP_RESULT, result);
+    this.applyRaceResult(result);
+  }
+
+  private startAnswerTimer(gen: number): void {
+    this.clearAnswerTimer();
+    this.answerTimer = setTimeout(() => {
+      if (gen !== this.gen || !this.currentRound) return;
+      // Fill any remaining undefined slots with null (timed out).
+      for (let i = 0; i < this.netPlayers; i++) {
+        if (this.currentRound.answers[i] === undefined) this.currentRound.answers[i] = null;
+      }
+      this.broadcastResult(gen);
+    }, ANSWER_SECONDS * 1000);
+  }
+
+  private clearAnswerTimer(): void {
+    if (this.answerTimer !== null) {
+      clearTimeout(this.answerTimer);
+      this.answerTimer = null;
+    }
+  }
+
+  /** Applied by both host and guest when OP_RESULT is received. */
+  private applyRaceResult(result: RaceResult): void {
+    const gen = this.gen;
+    const myCorrect = result.correct[this.mySeat] ?? false;
+    this.locked = true;
+
+    // Update cumulative scores and streaks (both host and guest mirror the
+    // authoritative result — host uses these for the next scoreRound call).
+    const prevMyScore = this.raceScores[this.mySeat] ?? 0;
+    this.raceScores = [...result.scores];
+    for (let i = 0; i < this.netPlayers; i++) {
+      const ok = result.correct[i] ?? false;
+      this.raceStreaks[i] = ok ? this.raceStreaks[i] + 1 : 0;
+    }
+
+    // Add earned points to state.score so the HUD reflects it.
+    const earned = result.scores[this.mySeat] - prevMyScore;
+    if (earned > 0) this.addScore(earned);
+
+    // Reveal the correct answer on this.current so markAnswer can highlight it.
+    if (this.current) this.current = { ...this.current, answer: result.correctAnswer };
+
+    this.markAnswer(this.myLastAnswer, myCorrect);
+    this.updateHud();
+
+    const delay = myCorrect ? 550 : 1150;
+    window.setTimeout(() => {
+      if (gen !== this.gen) return;
+      if (result.final) {
+        this.finish();
+      } else if (this.net?.role === 'host') {
+        this.nextQuestion();
+      }
+      // Guest: wait for the next OP_QUESTION from the host.
+    }, delay);
+  }
+
+  // --- Game-over (net mode) -------------------------------------------------
+
+  protected onGameOver(): void {
+    if (this.netMode === 'net') {
+      this.showNetGameOver();
+      return;
+    }
+    super.onGameOver();
+  }
+
+  private showNetGameOver(): void {
+    const myScore = this.raceScores[this.mySeat] ?? 0;
+    const oppSeat = this.mySeat === 0 ? 1 : 0;
+    const oppScore = this.raceScores[oppSeat] ?? 0;
+
+    const resultText =
+      myScore > oppScore ? t('youWin') : myScore < oppScore ? t('youLose') : t('draw');
+
+    const bodyHtml =
+      `<p>${resultText}</p>` +
+      `<p>${t('score')}: <strong>${myScore}</strong> — ` +
+      `${t('hudOpponent')}: <strong>${oppScore}</strong></p>`;
+
+    const isHost = this.net?.role === 'host';
+    const buttons = isHost
+      ? [
+          {
+            text: t('rematch'),
+            primary: true,
+            onClick: () => this.restartAfterGameOver(),
+          },
+          { text: t('quit'), primary: false, onClick: () => this.leaveNet() },
+        ]
+      : [
+          {
+            text: t('mpWaitingHost'),
+            primary: false,
+            onClick: () => {},
+          },
+          { text: t('quit'), primary: false, onClick: () => this.leaveNet() },
+        ];
+
+    this.overlay.show({ title: t('matchOver'), bodyHtml, buttons });
+  }
+
+  private leaveNet(): void {
+    this.overlay.hide();
+    this.net?.leave();
+    this.returnToSolo();
+  }
+
+  // --- HUD ------------------------------------------------------------------
 
   private updateHud(): void {
     this.hud?.set('score', this.state.score);
     this.hud?.set('streak', this.stats.streak);
     this.hud?.set('high', this.scoreManager.getHighScore());
-    if (this.mode === 'classic') {
+
+    if (this.netMode === 'net') {
+      const oppSeat = this.mySeat === 0 ? 1 : 0;
+      this.hud?.set('opponent', this.raceScores[oppSeat] ?? 0);
+    }
+
+    if (this.netMode === 'net' || this.mode === 'classic') {
       this.hud?.set('progress', `${Math.min(this.roundIndex, this.rounds)}/${this.rounds}`);
     } else if (this.mode === 'survival') {
       this.hud?.set('lives', Math.max(this.lives, 0));
@@ -408,15 +732,28 @@ export abstract class QuizGame extends GameEngine {
   update(): void {}
   render(): void {}
 
-  // --- Game-over recap ------------------------------------------------------
+  // --- Game-over recap (solo) -----------------------------------------------
 
   protected getGameOverTitle(): string {
+    if (this.netMode === 'net') return t('matchOver');
     return accuracy(this.stats) === 100 && answered(this.stats) > 0
       ? t('flawless')
       : t('roundOver');
   }
 
   protected getGameOverContent(): string {
+    if (this.netMode === 'net') {
+      const myScore = this.raceScores[this.mySeat] ?? 0;
+      const oppSeat = this.mySeat === 0 ? 1 : 0;
+      const oppScore = this.raceScores[oppSeat] ?? 0;
+      const resultText =
+        myScore > oppScore ? t('youWin') : myScore < oppScore ? t('youLose') : t('draw');
+      return (
+        `<p>${resultText}</p>` +
+        `<p>${t('score')}: <strong>${myScore}</strong> — ` +
+        `${t('hudOpponent')}: <strong>${oppScore}</strong></p>`
+      );
+    }
     const total = answered(this.stats);
     return (
       `<p><strong>${this.stats.correct}/${total}</strong> ${t('correct')} ` +

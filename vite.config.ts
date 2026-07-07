@@ -328,9 +328,10 @@ const games = [
     key: 'trivia',
     label: 'Trivia',
     color: '--color-trivia',
-    mode: 'solo',
+    mode: 'duo',
     leaderboard: true,
     settings: true,
+    multiplayer: true,
     controls: [
       { keys: 'Click / tap', action: 'Pick the right answer' },
       { keys: '<kbd>1 2 3 4</kbd>', action: 'Choose an option with the keyboard' },

@@ -80,6 +80,18 @@ Every game extends one of three shared bases, so it only writes what is genuinel
 Put the game's pure logic in its own `<key>.ts` file (no DOM, no randomness in the reducer)
 and unit-test it — that's how the board, quiz and puzzle games stay robust.
 
+### New game checklist
+
+Before opening a PR for a new game, make sure it has:
+
+- one `vite.config.ts` entry with accurate capabilities (`settings`, `leaderboard`, `multiplayer`, `levels` when applicable);
+- a game page, main entry and game controller under `src/games/<key>/`;
+- visible strings wired through i18n;
+- controls documented in the "How to play" panel;
+- shared HUD stats instead of per-game score markup;
+- pure logic covered by co-located tests when the game has rules, scoring or generators;
+- `npm run verify` passing locally.
+
 ### Online play
 
 To make a game playable **online**, add `settings: true` and `multiplayer: true` to its

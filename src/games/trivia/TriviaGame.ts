@@ -47,6 +47,11 @@ export class TriviaGame extends QuizGame {
     });
   }
 
+  async initialize(): Promise<void> {
+    await super.initialize();
+    this.setupVersus();
+  }
+
   protected async loadData(): Promise<void> {
     // Content follows the interface language (English until other languages are
     // curated — there is no free multilingual trivia source).
