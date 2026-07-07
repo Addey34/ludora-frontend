@@ -128,3 +128,31 @@ export class ParticleSystem {
     this.canvas.remove();
   }
 }
+
+/** A festive multi-colour palette shared by every victory burst. */
+export const CELEBRATION_COLORS = ['#e11d48', '#fbbf24', '#ffffff', '#34d399', '#4361ee'];
+
+/**
+ * Fires a celebratory confetti burst centred on `element` — the shared "you
+ * won" flourish so games don't each hand-roll the same emit() call. No-op if the
+ * element isn't laid out yet (e.g. hidden), so it's safe to call unconditionally.
+ */
+export function celebrate(
+  fx: ParticleSystem | null,
+  element: HTMLElement | null,
+  options: ParticleOptions = {}
+): void {
+  if (!fx || !element) return;
+  const rect = element.getBoundingClientRect();
+  if (rect.width === 0) return;
+  fx.emit(rect.left + rect.width / 2, rect.top + rect.height / 2, {
+    count: 28,
+    speed: 5,
+    spread: Math.PI * 2,
+    colors: CELEBRATION_COLORS,
+    size: 6,
+    duration: 1100,
+    gravity: 0.06,
+    ...options,
+  });
+}

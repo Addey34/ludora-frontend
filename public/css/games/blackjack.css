@@ -49,6 +49,10 @@
   color: #1f2937;
 }
 
+.bj-card.is-dealt {
+  animation: cardDeal 0.22s ease-out;
+}
+
 .bj-card-back {
   background: #1d4ed8;
   background-image: repeating-linear-gradient(

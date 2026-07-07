@@ -1,5 +1,7 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
+import { Difficulty } from '../../shared/bot/difficulty.js';
 import { t } from '../../shared/i18n/i18n.js';
 import {
   Direction,
@@ -219,6 +221,13 @@ export class Food {
   }
 }
 
+/** Per-difficulty move intervals (ms): base pace and the acceleration floor. */
+const TUNING: Record<Difficulty, { base: number; min: number }> = {
+  easy: { base: 175, min: 95 },
+  medium: { base: 140, min: 70 },
+  hard: { base: 105, min: 55 },
+};
+
 /**
  * Snake game.
  *
@@ -251,10 +260,11 @@ export class SnakeGame extends GameEngine {
   /** Number of consecutive eats within COMBO_WINDOW. */
   private comboCount: number = 0;
 
-  /** Base interval between two moves (ms). */
-  private readonly baseInterval: number;
+  /** Base interval between two moves (ms). Lowered by a harder difficulty. */
+  private baseInterval: number;
   /** Minimum interval reachable when accelerating (ms). */
-  private readonly minInterval: number;
+  private minInterval: number;
+  private difficulty: Difficulty = 'medium';
   /** Interval reduction factor on each food (<1 = speeds up). */
   private readonly speedFactor: number;
   /** Current move interval (ms). */
@@ -304,6 +314,17 @@ export class SnakeGame extends GameEngine {
       { key: 'score', icon: 'star', label: t('score') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
+
+    setupSettingsPanel([
+      difficultyField(this.difficulty, (v) => {
+        this.difficulty = v as Difficulty;
+        this.baseInterval = TUNING[this.difficulty].base;
+        this.minInterval = TUNING[this.difficulty].min;
+        this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
+        this.reset(); // restart at the new pace right away
+      }),
+    ]);
+    this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
 
     if (this.playBoard) {
       this.playBoard.style.setProperty('--cell-size', `${100 / this.gridSize}%`);

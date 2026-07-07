@@ -76,14 +76,14 @@ function popCard(deck: Card[]): [Card[], Card] {
   return [d, c];
 }
 
-export function initialState(): BJState {
+export function initialState(chips: number = STARTING_CHIPS): BJState {
   return {
     deck: shuffleDeck(freshDeck()),
     playerHand: [],
     dealerHand: [],
     phase: 'bet',
     bet: 10,
-    chips: STARTING_CHIPS,
+    chips,
     result: null,
     doubled: false,
   };

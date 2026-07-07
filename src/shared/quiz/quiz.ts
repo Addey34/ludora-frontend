@@ -6,9 +6,10 @@
  * board games' rules. The {@link QuizGame} base wires this to the shared chrome.
  */
 
-/** Standard difficulty presets, reusable by any game (not just quizzes). */
-export type Difficulty = 'easy' | 'medium' | 'hard';
-export const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
+// Difficulty is a cross-game primitive; re-exported here so quiz games keep a
+// single import surface while `bot/difficulty.ts` stays its one definition.
+export { type Difficulty, DIFFICULTIES } from '../bot/difficulty.js';
+import type { Difficulty } from '../bot/difficulty.js';
 
 /** How difficulty scales the base points of a correct answer. */
 export function difficultyMultiplier(difficulty: Difficulty): number {

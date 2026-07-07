@@ -2,7 +2,7 @@ import { DBState, DBMove, Seat } from './dotsboxes.js';
 import { DotsBoxesRules } from './dotsboxes.js';
 
 function countBoxesCompleted(state: DBState, move: DBMove): number {
-  const rules = new DotsBoxesRules(state.n);
+  const rules = new DotsBoxesRules(state.n, state.players);
   const next = rules.applyMove(state, move);
   const gained = next.scores[state.seat] - state.scores[state.seat];
   return gained;

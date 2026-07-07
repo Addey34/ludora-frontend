@@ -1,5 +1,7 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
+import { Difficulty } from '../../shared/bot/difficulty.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { keyboardDirection, setupSwipe } from '../../shared/engine/input.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
@@ -144,6 +146,7 @@ export class TetrisGame extends GameEngine {
 
   private lines: number = 0;
   private level: number = 1;
+  private difficulty: Difficulty = 'easy';
 
   private boardElement: HTMLElement | null = null;
   private fx: ParticleSystem | null = null;
@@ -178,6 +181,15 @@ export class TetrisGame extends GameEngine {
       { key: 'lines', icon: 'grip-lines', label: t('hudLines') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
+
+    setupSettingsPanel([
+      difficultyField(this.difficulty, (v) => {
+        this.difficulty = v as Difficulty;
+        this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
+        this.reset();
+      }),
+    ]);
+    this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
 
     this.setupEventListeners();
 
@@ -542,7 +554,7 @@ export class TetrisGame extends GameEngine {
    * accordingly, without going below `minDropInterval`.
    */
   private updateLevel(): void {
-    this.level = Math.floor(this.lines / 10) + 1;
+    this.level = Math.floor(this.lines / 10) + this.startLevel;
     this.dropInterval = Math.max(
       this.minDropInterval,
       this.baseDropInterval - (this.level - 1) * 65
@@ -580,11 +592,19 @@ export class TetrisGame extends GameEngine {
   /**
    * Resets grid, score, lines, level, rate and state, then performs the render.
    */
+  /** The level a fresh game starts at, from the chosen difficulty. */
+  private get startLevel(): number {
+    return this.difficulty === 'hard' ? 10 : this.difficulty === 'medium' ? 5 : 1;
+  }
+
   reset(): void {
     this.resetState();
     this.lines = 0;
-    this.level = 1;
-    this.dropInterval = this.baseDropInterval;
+    this.level = this.startLevel;
+    this.dropInterval = Math.max(
+      this.minDropInterval,
+      this.baseDropInterval - (this.level - 1) * 65
+    );
     this.dropAccumulator = 0;
     this.clearingRows = [];
     this.pendingLineClears = [];

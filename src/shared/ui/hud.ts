@@ -39,9 +39,13 @@ export function setupHud(defs: StatDef[], host?: HTMLElement | null): HudHandle 
   const bar = host ?? document.querySelector<HTMLElement>('.game-details');
   const chips = new Map<string, HTMLElement>();
   const values = new Map<string, HTMLElement>();
+  const visibilityClass = (key: string): string => `has-${key}-stat`;
 
   if (bar) {
     bar.querySelectorAll('.game-stat').forEach((el) => el.remove());
+    Array.from(bar.classList)
+      .filter((className) => /^has-.+-stat$/.test(className))
+      .forEach((className) => bar.classList.remove(className));
 
     for (const def of defs) {
       const chip = document.createElement('span');
@@ -72,6 +76,7 @@ export function setupHud(defs: StatDef[], host?: HTMLElement | null): HudHandle 
       const empty = value === null || value === '';
       chip.hidden = empty;
       valueEl.textContent = empty ? '' : String(value);
+      bar?.classList.toggle(visibilityClass(key), !empty);
     },
     toggle(key, className, on): void {
       chips.get(key)?.classList.toggle(className, on);

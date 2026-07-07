@@ -324,6 +324,121 @@
   }
 }
 
+/* A value settling into a cell — shared by the pencil-and-paper puzzles
+   (Binairo, Kakuro) and the sliding tile that just moved (Taquin). */
+@keyframes cellPop {
+  0% {
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* A card sliding onto the table as it's dealt (Blackjack, Solitaire). */
+@keyframes cardDeal {
+  0% {
+    transform: translateY(-18px) rotate(-4deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+}
+
+/* Pong: the ball ablaze once it passes the fire-speed threshold (flicker + glow). */
+@keyframes pongFire {
+  0%,
+  100% {
+    box-shadow:
+      0 0 10px 3px rgba(251, 146, 60, 0.9),
+      0 0 20px 6px rgba(239, 68, 68, 0.6);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 0 16px 5px rgba(251, 191, 36, 1),
+      0 0 28px 10px rgba(239, 68, 68, 0.75);
+    transform: scale(1.12);
+  }
+}
+
+/* Mancala: a seed dropping into a pit, a pit gaining seeds, a pit being scooped. */
+@keyframes mnSeedDrop {
+  0% {
+    transform: translateY(-16px) scale(0.2);
+    opacity: 0;
+  }
+  70% {
+    transform: translateY(2px) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes mnGain {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.07);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes mnScoop {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(0.9) rotate(-2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+/* Dots & Boxes: an edge stroke being drawn, and a box getting captured. */
+@keyframes dbStrokeH {
+  from {
+    transform: scaleX(0.15);
+    opacity: 0.3;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+@keyframes dbStrokeV {
+  from {
+    transform: scaleY(0.15);
+    opacity: 0.3;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+@keyframes dbCapture {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* --- Reduced motion --------------------------------------------------------
    Respect the OS "reduce motion" setting: neutralise decorative + looping
    animations and long transitions site-wide. Kept last so it wins the cascade.

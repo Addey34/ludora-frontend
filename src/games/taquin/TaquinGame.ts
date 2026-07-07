@@ -5,8 +5,8 @@ import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
 import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
 import { Stopwatch, formatClock } from '../../shared/ui/stopwatch.js';
 import { playSound } from '../../shared/fx/sound.js';
-import { ParticleSystem } from '../../shared/fx/particles.js';
-import { Difficulty } from '../../shared/quiz/quiz.js';
+import { ParticleSystem, celebrate } from '../../shared/fx/particles.js';
+import { Difficulty } from '../../shared/bot/difficulty.js';
 import {
   TaquinState,
   Dir,
@@ -154,11 +154,19 @@ export class TaquinGame extends GameEngine {
   }
 
   private applyMove(next: TaquinState): void {
+    // The tile that slid now sits where the blank used to be — pop it.
+    const slidInto = this.puzzle.blank;
     this.puzzle = next;
     this.moves++;
     this.hud?.set('moves', this.moves);
     playSound('move');
     this.renderBoard();
+    const el = this.tileEls[slidInto];
+    if (el) {
+      el.classList.remove('tq-pop');
+      void el.offsetWidth; // restart the pop animation
+      el.classList.add('tq-pop');
+    }
     if (isSolved(this.puzzle)) this.onSolved();
   }
 
@@ -168,23 +176,8 @@ export class TaquinGame extends GameEngine {
     const score = Math.max(0, base - this.moves * movePenalty);
     this.addScore(score);
     playSound('win');
-    this.emitBurst();
+    celebrate(this.fx, this.boardEl);
     this.gameOver();
-  }
-
-  private emitBurst(): void {
-    if (!this.fx || !this.boardEl) return;
-    const rect = this.boardEl.getBoundingClientRect();
-    if (rect.width === 0) return;
-    this.fx.emit(rect.left + rect.width / 2, rect.top + rect.height / 2, {
-      count: 30,
-      speed: 5,
-      spread: Math.PI * 2,
-      colors: ['#e11d48', '#fbbf24', '#ffffff', '#34d399'],
-      size: 6,
-      duration: 1100,
-      gravity: 0.06,
-    });
   }
 
   handleInput(event: KeyboardEvent): void {

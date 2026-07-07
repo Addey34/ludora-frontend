@@ -81,6 +81,7 @@ export class MinesweeperGame extends GameEngine {
     setupSettingsPanel([
       difficultyField(this.difficulty, (v) => this.changeDifficulty(v as Difficulty)),
     ]);
+    this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
 
     this.renderScoreTable();
     this.prepare();
@@ -147,6 +148,7 @@ export class MinesweeperGame extends GameEngine {
 
   private changeDifficulty(d: Difficulty): void {
     this.difficulty = d;
+    this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
     this.overlay.hide();
     this.stop();
     this.start();

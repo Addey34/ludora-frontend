@@ -1,22 +1,42 @@
 import { BoardGame } from '../../shared/turn/BoardGame.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import {
+  setupSettingsPanel,
+  SettingsPanelHandle,
+  SettingsField,
+} from '../../shared/ui/settingsPanel.js';
 import { playSound } from '../../shared/fx/sound.js';
+import { ParticleSystem, celebrate } from '../../shared/fx/particles.js';
 import { DBState, DBMove, DotsBoxesRules } from './dotsboxes.js';
 import { decideBotMove } from './dotsboxesBot.js';
 
 const GRID_N = 4;
-const SEAT_COLORS = ['#3b82f6', '#ef4444'];
-const SEAT_LABELS = ['P1', 'P2'];
-const DB_RULES = new DotsBoxesRules(GRID_N);
+const MAX_PLAYERS = 4;
+/** Distinct colour + label per seat, indexed 0..3. */
+const SEAT_COLORS = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b'];
+const SEAT_LABELS = ['P1', 'P2', 'P3', 'P4'];
 
 export class DotsBoxesGame extends BoardGame<DBState, DBMove> {
   private boardEl: HTMLElement | null = null;
-  private scoreEls: [HTMLElement | null, HTMLElement | null] = [null, null];
-  private turnEl: HTMLElement | null = null;
+  private fx: ParticleSystem | null = null;
+  private settings: SettingsPanelHandle | null = null;
 
-  protected get rules() {
-    return DB_RULES;
+  /** Player count for offline play (online uses the number who join). */
+  private offlinePlayers = 2;
+  private rulesCache: DotsBoxesRules | null = null;
+
+  /** Seats in play: the lobby size online, else the offline setting. */
+  private effectivePlayers(): number {
+    return this.mode === 'net' && this.net ? this.net.players : this.offlinePlayers;
+  }
+
+  protected get rules(): DotsBoxesRules {
+    const players = this.effectivePlayers();
+    if (!this.rulesCache || this.rulesCache.seats !== players) {
+      this.rulesCache = new DotsBoxesRules(GRID_N, players);
+    }
+    return this.rulesCache;
   }
 
   constructor() {
@@ -25,12 +45,49 @@ export class DotsBoxesGame extends BoardGame<DBState, DBMove> {
 
   initialize(): void {
     this.boardEl = document.getElementById('board');
+    this.fx = new ParticleSystem();
     this.hud = setupHud([
+      { key: 'turn', icon: 'circle-dot', label: t('hudTurn') },
       { key: 'p1', icon: 'circle', label: 'P1' },
       { key: 'p2', icon: 'circle', label: 'P2' },
+      { key: 'p3', icon: 'circle', label: 'P3' },
+      { key: 'p4', icon: 'circle', label: 'P4' },
     ]);
     this.buildDOM();
-    this.setupVersus(2);
+
+    const playersField: SettingsField = {
+      id: 'players',
+      label: t('players'),
+      value: String(this.offlinePlayers),
+      choices: [
+        { label: '2', value: '2' },
+        { label: '3', value: '3' },
+        { label: '4', value: '4' },
+      ],
+      onChange: (v) => {
+        this.offlinePlayers = Number(v);
+        this.reset(); // rebuild the board for the new player count
+      },
+    };
+    this.settings = setupSettingsPanel([playersField]);
+
+    this.setupVersus(MAX_PLAYERS);
+    this.game = this.freshGame();
+    this.updateTurnDisplay();
+    this.renderState();
+  }
+
+  protected onNetActiveChanged(active: boolean): void {
+    this.settings?.setDisabled(active);
+  }
+
+  protected onGameOver(): void {
+    const winner = this.rules.winner(this.game);
+    if (winner !== null && this.humanSeats.has(winner)) {
+      playSound('win');
+      celebrate(this.fx, this.boardEl);
+    }
+    super.onGameOver();
   }
 
   moveEquals(a: DBMove, b: DBMove): boolean {
@@ -38,7 +95,7 @@ export class DotsBoxesGame extends BoardGame<DBState, DBMove> {
   }
 
   decideBotMove(legalMoves: DBMove[]): DBMove {
-    return decideBotMove(this.game, legalMoves, this.rules.currentSeat(this.game) as 0 | 1);
+    return decideBotMove(this.game, legalMoves, this.rules.currentSeat(this.game));
   }
 
   protected renderState(): void {
@@ -47,11 +104,9 @@ export class DotsBoxesGame extends BoardGame<DBState, DBMove> {
   }
 
   protected updateTurnDisplay(): void {
-    if (!this.turnEl) return;
     const seat = this.rules.currentSeat(this.game);
     const label = this.humanSeats.has(seat) ? t('you') : t('bot');
-    this.turnEl.textContent = `${SEAT_LABELS[seat]} (${label})`;
-    this.turnEl.style.color = SEAT_COLORS[seat];
+    this.hud?.set('turn', `${SEAT_LABELS[seat]} (${label})`);
   }
 
   protected onMoveCommitted(_move: DBMove | null): void {
@@ -72,7 +127,8 @@ export class DotsBoxesGame extends BoardGame<DBState, DBMove> {
 
   protected getGameOverContent(): string {
     const s = this.game.scores;
-    return `<p>${SEAT_LABELS[0]}: ${s[0]} — ${SEAT_LABELS[1]}: ${s[1]}</p>`;
+    const line = s.map((score, i) => `${SEAT_LABELS[i]}: ${score}`).join(' — ');
+    return `<p>${line}</p>`;
   }
 
   // ---------------------------------------------------------------------------
@@ -82,15 +138,7 @@ export class DotsBoxesGame extends BoardGame<DBState, DBMove> {
   private buildDOM(): void {
     if (!this.boardEl) return;
     this.boardEl.innerHTML = `
-      <div class="db-header">
-        <div class="db-score" id="db-score-0" style="color:${SEAT_COLORS[0]}">P1: 0</div>
-        <div class="db-turn" id="db-turn"></div>
-        <div class="db-score" id="db-score-1" style="color:${SEAT_COLORS[1]}">P2: 0</div>
-      </div>
       <div class="db-grid" id="db-grid"></div>`;
-    this.scoreEls[0] = document.getElementById('db-score-0');
-    this.scoreEls[1] = document.getElementById('db-score-1');
-    this.turnEl = document.getElementById('db-turn');
     this.buildGrid();
   }
 
@@ -100,7 +148,14 @@ export class DotsBoxesGame extends BoardGame<DBState, DBMove> {
     const n = GRID_N;
     const size = 2 * n + 1;
     grid.innerHTML = '';
-    grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+    // Alternating tracks: dots sit on small fixed tracks, edges/boxes stretch to
+    // fill the 1fr tracks between them. Both axes need this — without explicit
+    // rows the edge/box rows collapse to zero height and nothing shows.
+    const template = Array.from({ length: size }, (_, i) =>
+      i % 2 === 0 ? 'var(--db-dot)' : '1fr'
+    ).join(' ');
+    grid.style.gridTemplateColumns = template;
+    grid.style.gridTemplateRows = template;
 
     for (let r = 0; r < size; r++) {
       for (let c = 0; c < size; c++) {
@@ -144,64 +199,56 @@ export class DotsBoxesGame extends BoardGame<DBState, DBMove> {
   }
 
   private renderBoard(): void {
-    const { hEdges, vEdges, boxes, n } = this.game;
+    const { hEdges, vEdges, boxes } = this.game;
     const grid = document.getElementById('db-grid');
     if (!grid) return;
-    const cells = grid.querySelectorAll<HTMLElement>('.db-h-edge, .db-v-edge, .db-box');
-    for (const el of cells) {
-      const dir = el.dataset.dir;
-      if (dir === 'h') {
-        const r = Number(el.dataset.row);
-        const c = Number(el.dataset.col);
-        el.classList.toggle('is-drawn', hEdges[r][c]);
-        el.classList.toggle('is-available', this.awaitingHuman && !hEdges[r][c]);
-      } else if (dir === 'v') {
-        const r = Number(el.dataset.row);
-        const c = Number(el.dataset.col);
-        el.classList.toggle('is-drawn', vEdges[r][c]);
-        el.classList.toggle('is-available', this.awaitingHuman && !vEdges[r][c]);
-      } else if (el.classList.contains('db-box')) {
-        const br = Number(el.dataset.br);
-        const bc = Number(el.dataset.bc);
-        const owner = boxes[br][bc];
-        el.style.background = owner !== null ? SEAT_COLORS[owner] : '';
-        el.classList.toggle('is-owned', owner !== null);
-      }
-    }
-    // Re-render grid structure if first time
-    for (let r = 0; r <= n; r++) {
-      for (let c = 0; c < n; c++) {
-        const el = grid.querySelector<HTMLElement>(
-          `[data-dir="h"][data-row="${r}"][data-col="${c}"]`
-        );
-        if (el) el.classList.toggle('is-drawn', hEdges[r][c]);
-      }
-    }
-    for (let r = 0; r < n; r++) {
-      for (let c = 0; c <= n; c++) {
-        const el = grid.querySelector<HTMLElement>(
-          `[data-dir="v"][data-row="${r}"][data-col="${c}"]`
-        );
-        if (el) el.classList.toggle('is-drawn', vEdges[r][c]);
-      }
-    }
-    for (let br = 0; br < n; br++) {
-      for (let bc = 0; bc < n; bc++) {
-        const el = grid.querySelector<HTMLElement>(`[data-br="${br}"][data-bc="${bc}"]`);
-        if (el) {
-          const owner = boxes[br][bc];
-          el.style.background = owner !== null ? `${SEAT_COLORS[owner]}66` : '';
-          el.textContent = owner !== null ? SEAT_LABELS[owner] : '';
+
+    grid.querySelectorAll<HTMLElement>('.db-h-edge').forEach((el) => {
+      const drawn = hEdges[Number(el.dataset.row)][Number(el.dataset.col)];
+      this.paintEdge(el, drawn);
+    });
+    grid.querySelectorAll<HTMLElement>('.db-v-edge').forEach((el) => {
+      const drawn = vEdges[Number(el.dataset.row)][Number(el.dataset.col)];
+      this.paintEdge(el, drawn);
+    });
+    grid.querySelectorAll<HTMLElement>('.db-box').forEach((el) => {
+      const owner = boxes[Number(el.dataset.br)][Number(el.dataset.bc)];
+      const wasOwned = el.classList.contains('is-owned');
+      if (owner !== null) {
+        el.style.setProperty('--db-owner', SEAT_COLORS[owner]);
+        el.textContent = SEAT_LABELS[owner];
+        el.classList.add('is-owned');
+        if (!wasOwned) {
+          el.classList.remove('db-capture');
+          void el.offsetWidth; // restart the capture flash
+          el.classList.add('db-capture');
         }
+      } else {
+        el.style.removeProperty('--db-owner');
+        el.textContent = '';
+        el.classList.remove('is-owned', 'db-capture');
       }
+    });
+  }
+
+  /** Marks an edge drawn/available and animates the stroke as it appears. */
+  private paintEdge(el: HTMLElement, drawn: boolean): void {
+    const wasDrawn = el.classList.contains('is-drawn');
+    el.classList.toggle('is-drawn', drawn);
+    el.classList.toggle('is-available', this.awaitingHuman && !drawn);
+    if (drawn && !wasDrawn) {
+      el.classList.remove('db-stroke');
+      void el.offsetWidth; // restart the draw animation
+      el.classList.add('db-stroke');
     }
   }
 
   private renderScores(): void {
-    const { scores } = this.game;
-    if (this.scoreEls[0]) this.scoreEls[0].textContent = `P1: ${scores[0]}`;
-    if (this.scoreEls[1]) this.scoreEls[1].textContent = `P2: ${scores[1]}`;
-    this.hud?.set('p1', scores[0]);
-    this.hud?.set('p2', scores[1]);
+    const { scores, players } = this.game;
+    for (let s = 0; s < SEAT_LABELS.length; s++) {
+      const key = `p${s + 1}`;
+      this.hud?.set(key, s < players ? `${SEAT_LABELS[s]}: ${scores[s]}` : null);
+      this.hud?.toggle(key, 'is-active', s === this.game.seat && !this.state.isGameOver);
+    }
   }
 }

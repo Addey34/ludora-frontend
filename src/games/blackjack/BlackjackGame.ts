@@ -3,6 +3,8 @@ import { t } from '../../shared/i18n/i18n.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
 import { playSound } from '../../shared/fx/sound.js';
+import { ParticleSystem, celebrate } from '../../shared/fx/particles.js';
+import { setupSettingsPanel } from '../../shared/ui/settingsPanel.js';
 import { isRed, RANK_LABEL, SUIT_SYMBOL } from '../../shared/cards/cards.js';
 import type { Card } from '../../shared/cards/cards.js';
 import {
@@ -19,9 +21,11 @@ import {
   MIN_BET,
   MAX_BET,
   BET_STEP,
+  STARTING_CHIPS,
 } from './blackjack.js';
 
 export class BlackjackGame extends GameEngine {
+  private startChips = STARTING_CHIPS;
   private bj: BJState = initialState();
   private boardEl: HTMLElement | null = null;
   private dealerEl: HTMLElement | null = null;
@@ -30,6 +34,7 @@ export class BlackjackGame extends GameEngine {
   private actionsEl: HTMLElement | null = null;
   private betRowEl: HTMLElement | null = null;
   private betValEl: HTMLElement | null = null;
+  private fx: ParticleSystem | null = null;
 
   constructor() {
     super({ storageKey: 'blackjack', leaderboardId: 'blackjack' });
@@ -37,6 +42,7 @@ export class BlackjackGame extends GameEngine {
 
   initialize(): void {
     this.boardEl = document.getElementById('board');
+    this.fx = new ParticleSystem();
     this.buildDOM();
     this.hud = setupHud([
       { key: 'chips', icon: 'coins', label: t('bjChips') },
@@ -44,13 +50,31 @@ export class BlackjackGame extends GameEngine {
       { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
     this.hud.set('high', this.scoreManager.getHighScore());
+    setupSettingsPanel([
+      {
+        id: 'chips',
+        label: t('bjStartChips'),
+        value: String(this.startChips),
+        choices: [
+          { label: '100', value: '100' },
+          { label: '200', value: '200' },
+          { label: '500', value: '500' },
+        ],
+        onChange: (v) => {
+          this.startChips = Number(v);
+          this.setLeaderboardVariant(String(this.startChips), String(this.startChips));
+          this.reset();
+        },
+      },
+    ]);
+    this.setLeaderboardVariant(String(this.startChips), String(this.startChips));
     this.renderState();
   }
 
   start(): void {
     if (this.state.isRunning) return;
     dismissStartOverlay();
-    this.bj = initialState();
+    this.bj = initialState(this.startChips);
     this.resetState();
     this.state.isRunning = true;
     this.state.isGameOver = false;
@@ -61,7 +85,7 @@ export class BlackjackGame extends GameEngine {
   }
 
   reset(): void {
-    this.bj = initialState();
+    this.bj = initialState(this.startChips);
     this.resetState();
     this.renderState();
   }
@@ -141,7 +165,11 @@ export class BlackjackGame extends GameEngine {
       label.textContent = dealerHand.length > 0 ? `${t('bjDealer')} ${val}` : t('bjDealer');
     }
     this.dealerEl.innerHTML = dealerHand
-      .map((c, i) => (i === 1 && showHidden ? this.makeBackCardHTML() : this.makeCardHTML(c)))
+      .map((c, i) =>
+        i === 1 && showHidden
+          ? this.makeBackCardHTML()
+          : this.makeCardHTML(c, i === dealerHand.length - 1)
+      )
       .join('');
   }
 
@@ -153,7 +181,9 @@ export class BlackjackGame extends GameEngine {
       const val = playerHand.length > 0 ? String(handValue(playerHand)) : '';
       label.textContent = playerHand.length > 0 ? `${t('bjYou')} ${val}` : t('bjYou');
     }
-    this.playerEl.innerHTML = playerHand.map((c) => this.makeCardHTML(c)).join('');
+    this.playerEl.innerHTML = playerHand
+      .map((c, i) => this.makeCardHTML(c, i === playerHand.length - 1))
+      .join('');
   }
 
   private renderStatus(): void {
@@ -208,10 +238,10 @@ export class BlackjackGame extends GameEngine {
     this.hud?.set('bet', bet);
   }
 
-  private makeCardHTML(card: Card): string {
+  private makeCardHTML(card: Card, isNew = false): string {
     const red = isRed(card.suit);
     const label = RANK_LABEL[card.rank] + SUIT_SYMBOL[card.suit];
-    return `<div class="bj-card ${red ? 'is-red' : 'is-black'}">
+    return `<div class="bj-card ${red ? 'is-red' : 'is-black'}${isNew ? ' is-dealt' : ''}">
       <div class="bj-card-tl">${label}</div>
       <div class="bj-card-center">${SUIT_SYMBOL[card.suit]}</div>
       <div class="bj-card-br">${label}</div>
@@ -278,8 +308,10 @@ export class BlackjackGame extends GameEngine {
     const result = this.bj.result;
     if (!result) return;
 
-    if (result === 'blackjack' || result === 'win') playSound('win');
-    else if (result === 'bust' || result === 'lose') playSound('die');
+    if (result === 'blackjack' || result === 'win') {
+      playSound('win');
+      celebrate(this.fx, this.playerEl ?? this.boardEl, { count: 20 });
+    } else if (result === 'bust' || result === 'lose') playSound('die');
     else playSound('bounce');
 
     if (this.bj.chips > this.state.score) {

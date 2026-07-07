@@ -97,3 +97,7 @@
   border-color: rgba(239, 68, 68, 0.5);
   color: #fca5a5;
 }
+
+.kak-fill.kak-pop {
+  animation: cellPop 0.18s ease-out;
+}

@@ -1,6 +1,8 @@
 import { GameEngine } from '../../shared/engine/GameEngine.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
+import { Difficulty } from '../../shared/bot/difficulty.js';
 import { playSound } from '../../shared/fx/sound.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 
@@ -14,6 +16,9 @@ const SHOOTER_X = W / 2;
 const SHOOTER_Y = H - 30;
 const COLORS = ['#ef4444', '#22c55e', '#3b82f6', '#f59e0b', '#a855f7', '#ec4899'];
 const SPEED = 0.55;
+
+/** More distinct colours = harder to clear a group of three. */
+const COLOR_COUNT: Record<Difficulty, number> = { easy: 4, medium: 5, hard: 6 };
 
 type Color = 0 | 1 | 2 | 3 | 4 | 5;
 type Grid = (Color | null)[][];
@@ -42,6 +47,7 @@ export class BubblesGame extends GameEngine {
 
   private grid: Grid = [];
   private numColors = 4;
+  private difficulty: Difficulty = 'medium';
 
   private shooter = { color: 0 as Color, nextColor: 1 as Color };
   private flying: { x: number; y: number; vx: number; vy: number; color: Color } | null = null;
@@ -69,6 +75,13 @@ export class BubblesGame extends GameEngine {
       { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
     this.hud.set('high', this.scoreManager.getHighScore());
+    setupSettingsPanel([
+      difficultyField(this.difficulty, (v) => {
+        this.difficulty = v as Difficulty;
+        this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
+      }),
+    ]);
+    this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
     this.canvas.addEventListener('mousemove', (e) => this.onMouseMove(e));
     this.canvas.addEventListener('click', () => this.shoot());
     this.canvas.addEventListener('touchend', (e) => {
@@ -82,14 +95,14 @@ export class BubblesGame extends GameEngine {
 
   start(): void {
     if (this.state.isRunning) return;
-    this.numColors = 4;
+    this.numColors = COLOR_COUNT[this.difficulty];
     this.resetState();
     this.buildGrid();
     super.start();
   }
 
   reset(): void {
-    this.numColors = 4;
+    this.numColors = COLOR_COUNT[this.difficulty];
     this.flying = null;
     this.resetState();
     this.buildGrid();
@@ -145,29 +158,33 @@ export class BubblesGame extends GameEngine {
   update(dt: number): void {
     if (!this.state.isRunning || this.state.isGameOver || !this.flying) return;
     const b = this.flying;
-    b.x += b.vx * dt;
-    b.y += b.vy * dt;
+    // Advance in small sub-steps so the bubble can never tunnel through a row on
+    // a laggy frame (dt is capped at 100ms → up to ~55px, wider than a bubble).
+    let remaining = SPEED * dt; // pixels to travel this frame
+    const stepLen = R * 0.5;
+    while (remaining > 0) {
+      const step = Math.min(stepLen, remaining);
+      remaining -= step;
+      const inv = step / SPEED;
+      b.x += b.vx * inv;
+      b.y += b.vy * inv;
 
-    // Wall bounce
-    if (b.x - R < 0) {
-      b.x = R;
-      b.vx = Math.abs(b.vx);
+      // Wall bounce
+      if (b.x - R < 0) {
+        b.x = R;
+        b.vx = Math.abs(b.vx);
+      } else if (b.x + R > W) {
+        b.x = W - R;
+        b.vx = -Math.abs(b.vx);
+      }
+      // Reached the ceiling — settle on the top row.
+      if (b.y - R < 0) {
+        this.snapBubble(b.x, b.y, b.color);
+        return;
+      }
+      // Touched a grid bubble — settle next to it.
+      if (this.checkGridCollision(b.x, b.y, b.color)) return;
     }
-    if (b.x + R > W) {
-      b.x = W - R;
-      b.vx = -Math.abs(b.vx);
-    }
-    // Top
-    if (b.y - R < 0) {
-      this.snapBubble(b.x, b.y, b.color);
-      return;
-    }
-
-    // Check collision with grid
-    if (this.checkGridCollision(b.x, b.y, b.color)) return;
-
-    // Off screen bottom (shouldn't happen)
-    if (b.y > H + R) this.flying = null;
   }
 
   private checkGridCollision(bx: number, by: number, color: Color): boolean {
@@ -189,16 +206,20 @@ export class BubblesGame extends GameEngine {
 
   private snapBubble(bx: number, by: number, color: Color): void {
     this.flying = null;
-    // Find nearest empty grid cell
+    // Snap next to the contact point, not to the globally-nearest empty cell:
+    // derive the row the bubble reached, then pick the closest free cell within
+    // one row of it. This keeps the placement visually where the bubble landed.
+    const approxRow = Math.max(0, Math.round((by - R) / ROW_H));
     let bestR = -1,
       bestC = -1,
       bestDist = Infinity;
-    const maxRow = Math.min(this.grid.length, Math.ceil((by + R) / ROW_H) + 1);
-    for (let r = 0; r <= maxRow; r++) {
+    for (let r = Math.max(0, approxRow - 1); r <= approxRow + 1; r++) {
+      while (this.grid.length <= r) {
+        this.grid.push(new Array(colsForRow(this.grid.length)).fill(null) as (Color | null)[]);
+      }
       const numC = colsForRow(r);
       for (let c = 0; c < numC; c++) {
-        const occupied = r < this.grid.length && this.grid[r][c] !== null;
-        if (occupied) continue;
+        if (this.grid[r][c] !== null) continue;
         const cx = bubbleX(r, c);
         const cy = bubbleY(r);
         const d = (bx - cx) * (bx - cx) + (by - cy) * (by - cy);
