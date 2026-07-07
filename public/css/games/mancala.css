@@ -144,6 +144,21 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
+/* Seeds dropping into a pit/store as they're sown (staggered via inline delay).
+   `backwards` keeps a delayed seed hidden until its turn to fall. */
+.mn-seed.mn-seed-drop {
+  animation: mnSeedDrop 0.32s ease-out backwards;
+}
+
+/* A pit/store that just gained seeds pulses; a pit that was scooped rocks. */
+.mn-pit.mn-gain,
+.mn-store.mn-gain {
+  animation: mnGain 0.3s ease-out;
+}
+.mn-pit.mn-scoop {
+  animation: mnScoop 0.3s ease-out;
+}
+
 /* ---- Seed count label ---- */
 .mn-count {
   font-size: var(--font-size-sm);

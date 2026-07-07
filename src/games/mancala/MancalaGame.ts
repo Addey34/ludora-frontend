@@ -44,6 +44,8 @@ export class MancalaGame extends BoardGame<MancalaState, MancalaMove> {
   /** Store elements, indexed by seat (0 = right, 1 = left). */
   private storeEls: (HTMLElement | null)[] = [null, null];
   private fx: ParticleSystem | null = null;
+  /** Seed counts from the previous render, to animate only what changed. */
+  private prevCounts = new Map<number, number>();
 
   constructor() {
     super({ storageKey: 'mancala' });
@@ -63,6 +65,11 @@ export class MancalaGame extends BoardGame<MancalaState, MancalaMove> {
 
   protected isRoundOver(): boolean {
     return this.game.gameOver;
+  }
+
+  protected onRoundReset(): void {
+    // Forget last round's counts so the fresh board doesn't animate a huge diff.
+    this.prevCounts.clear();
   }
 
   initialize(): void {
@@ -178,23 +185,41 @@ export class MancalaGame extends BoardGame<MancalaState, MancalaMove> {
     const seedsEl = el.querySelector<HTMLElement>('.mn-seeds');
     if (!seedsEl) return;
     const shown = Math.min(count, MAX_SEED_DOTS);
-    if (Number(seedsEl.dataset.shown ?? -1) !== shown) {
-      seedsEl.dataset.shown = String(shown);
-      seedsEl.innerHTML = '';
-      for (let i = 0; i < shown; i++) {
-        const dot = document.createElement('span');
-        dot.className = `mn-seed mn-seed-p${seat}`;
-        seedsEl.appendChild(dot);
+    const prevShown = Number(seedsEl.dataset.shown ?? -1);
+    if (prevShown === shown) return;
+    seedsEl.dataset.shown = String(shown);
+    seedsEl.innerHTML = '';
+    const from = Math.max(0, prevShown);
+    for (let i = 0; i < shown; i++) {
+      const dot = document.createElement('span');
+      dot.className = `mn-seed mn-seed-p${seat}`;
+      // Seeds added since the last render drop in one after another.
+      if (shown > prevShown && i >= from) {
+        dot.classList.add('mn-seed-drop');
+        dot.style.animationDelay = `${(i - from) * 55}ms`;
       }
+      seedsEl.appendChild(dot);
     }
+  }
+
+  /** Restarts a one-shot animation class on an element. */
+  private flash(el: HTMLElement, cls: string): void {
+    el.classList.remove(cls);
+    void el.offsetWidth;
+    el.classList.add(cls);
   }
 
   protected renderState(): void {
     for (const [idx, el] of this.pitEls) {
       const count = this.game.pits[idx];
       const seat = idx < 7 ? 0 : 1;
+      const prev = this.prevCounts.get(idx);
       el.querySelector('.mn-count')!.textContent = String(count);
       this.refreshSeeds(el, count, seat);
+
+      if (prev !== undefined && count > prev) this.flash(el, 'mn-gain');
+      else if (prev !== undefined && count === 0 && prev > 0) this.flash(el, 'mn-scoop');
+      this.prevCounts.set(idx, count);
 
       const myPits = pitsOf(this.mySeat) as number[];
       const canPlay =
@@ -210,9 +235,13 @@ export class MancalaGame extends BoardGame<MancalaState, MancalaMove> {
     for (const s of [0, 1]) {
       const el = this.storeEls[s];
       if (!el) continue;
-      const count = this.game.pits[storeOf(s)];
+      const storeIdx = storeOf(s);
+      const count = this.game.pits[storeIdx];
+      const prev = this.prevCounts.get(storeIdx);
       el.querySelector('.mn-count')!.textContent = String(count);
       this.refreshSeeds(el, count, s);
+      if (prev !== undefined && count > prev) this.flash(el, 'mn-gain');
+      this.prevCounts.set(storeIdx, count);
       el.classList.toggle(
         'is-winning',
         this.game.gameOver && count > this.game.pits[storeOf(s === 0 ? 1 : 0)]

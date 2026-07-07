@@ -11,6 +11,9 @@
 /** Difficulty tiers, from harmless to relentless. */
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
+/** The tiers in order — the single source of truth reused by every game family. */
+export const DIFFICULTIES: Difficulty[] = ['easy', 'medium', 'hard'];
+
 /**
  * Probability that a bot plays its "smart" move rather than a random one.
  *

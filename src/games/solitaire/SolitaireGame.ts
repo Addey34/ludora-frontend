@@ -2,9 +2,10 @@ import { GameEngine } from '../../shared/engine/GameEngine.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
+import { setupSettingsPanel } from '../../shared/ui/settingsPanel.js';
 import { Stopwatch, formatClock } from '../../shared/ui/stopwatch.js';
 import { playSound } from '../../shared/fx/sound.js';
-import { ParticleSystem } from '../../shared/fx/particles.js';
+import { ParticleSystem, celebrate } from '../../shared/fx/particles.js';
 import { isRed, RANK_LABEL, SUIT_SYMBOL, SUITS } from '../../shared/cards/cards.js';
 import type { Suit } from '../../shared/cards/cards.js';
 import {
@@ -40,6 +41,8 @@ export class SolitaireGame extends GameEngine {
   private game: SolitaireState = deal();
   private selected: Selection | null = null;
   private moveCount = 0;
+  /** How many cards the stock deals per click (1 = easy, 3 = classic hard). */
+  private drawCount = 1;
   private cardW = 80;
   private cardH = 112;
 
@@ -64,11 +67,34 @@ export class SolitaireGame extends GameEngine {
       { key: 'time', icon: 'clock', label: t('hudTime') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
+    setupSettingsPanel([
+      {
+        id: 'draw',
+        label: t('solDrawLabel'),
+        value: String(this.drawCount),
+        choices: [
+          { label: t('solDraw1'), value: '1' },
+          { label: t('solDraw3'), value: '3' },
+        ],
+        onChange: (v) => {
+          this.drawCount = Number(v);
+          this.applyLeaderboardVariant();
+          this.reset();
+        },
+      },
+    ]);
+    this.applyLeaderboardVariant();
+
     this.buildDOM();
     this.boardEl?.addEventListener('click', (e) => {
       if (!this.state.isRunning || this.state.isGameOver) return;
       this.handleClick(e.target as HTMLElement);
     });
+  }
+
+  private applyLeaderboardVariant(): void {
+    const label = this.drawCount === 3 ? t('solDraw3') : t('solDraw1');
+    this.setLeaderboardVariant(String(this.drawCount), label);
   }
 
   start(): void {
@@ -358,7 +384,7 @@ export class SolitaireGame extends GameEngine {
 
   private onStockClick(): void {
     this.selected = null;
-    this.game = drawFromStock(this.game);
+    this.game = drawFromStock(this.game, this.drawCount);
     playSound('move');
     this.renderState();
   }
@@ -466,18 +492,9 @@ export class SolitaireGame extends GameEngine {
   // ---------------------------------------------------------------------------
 
   private spawnWinParticles(): void {
-    if (!this.fx) return;
+    // A burst from each foundation pile rather than one central pop.
     for (const el of this.foundEls) {
-      const rect = el.getBoundingClientRect();
-      this.fx.emit(rect.left + rect.width / 2, rect.top + rect.height / 2, {
-        count: 18,
-        speed: 5,
-        spread: Math.PI * 2,
-        gravity: 0.2,
-        duration: 900,
-        size: 7,
-        colors: ['#ef4444', '#1d4ed8', '#fbbf24', '#22c55e', '#ffffff'],
-      });
+      celebrate(this.fx, el, { count: 18, gravity: 0.2, duration: 900, size: 7 });
     }
   }
 

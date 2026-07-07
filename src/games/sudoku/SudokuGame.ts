@@ -55,11 +55,13 @@ export class SudokuGame extends GameEngine {
     setupSettingsPanel([
       difficultyField(this.difficulty, (v) => {
         this.difficulty = (v as Difficulty) ?? 'easy';
+        this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
         this.overlay.hide();
         this.stop();
         this.start();
       }),
     ]);
+    this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
 
     this.renderScoreTable();
     this.newGame();

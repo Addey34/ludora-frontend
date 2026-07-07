@@ -1,5 +1,6 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { setupSettingsPanel } from '../../shared/ui/settingsPanel.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { Direction, keyboardDirection, setupSwipe } from '../../shared/engine/input.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
@@ -64,7 +65,7 @@ const SLIDE_MS = 125;
  * render is triggered after each move.
  */
 export class Game2048 extends GameEngine {
-  private readonly gridSize: number;
+  private gridSize: number;
   /** Grid of values; 0 = empty cell, otherwise a power of two. */
   private board: number[][] = [];
 
@@ -100,6 +101,26 @@ export class Game2048 extends GameEngine {
       { key: 'score', icon: 'star', label: t('score') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
+
+    setupSettingsPanel([
+      {
+        id: 'size',
+        label: t('size'),
+        value: String(this.gridSize),
+        choices: [
+          { label: '3×3', value: '3' },
+          { label: '4×4', value: '4' },
+          { label: '5×5', value: '5' },
+        ],
+        onChange: (v) => {
+          this.gridSize = Number(v);
+          this.setLeaderboardVariant(String(this.gridSize), `${this.gridSize}×${this.gridSize}`);
+          this.buildScaffold();
+          this.reset();
+        },
+      },
+    ]);
+    this.setLeaderboardVariant(String(this.gridSize), `${this.gridSize}×${this.gridSize}`);
 
     this.buildScaffold();
     this.setupEventListeners();

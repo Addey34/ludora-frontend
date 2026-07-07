@@ -1,19 +1,18 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { t } from '../../shared/i18n/i18n.js';
+import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
+import { Difficulty } from '../../shared/bot/difficulty.js';
 import { setupPaddlePointer } from '../../shared/engine/pointerControl.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
 import { playSound } from '../../shared/fx/sound.js';
+import { generateLevel, worldOf } from './breakoutLevels.js';
 
 /**
  * Configuration specific to Breakout.
  */
 interface BreakoutConfig extends GameConfig {
-  /** Number of brick rows (default: 5). */
-  brickRows?: number;
-  /** Number of brick columns (default: 9). */
-  brickCols?: number;
   /** Number of lives at the start (default: 3). */
   lives?: number;
 }
@@ -31,6 +30,7 @@ interface Ball {
 
 /**
  * A brick: its logical position/size, its state and its row (color/points).
+ * Reinforced bricks start with `hp > 1` and take several hits to break.
  */
 interface Brick {
   x: number;
@@ -39,6 +39,8 @@ interface Brick {
   h: number;
   alive: boolean;
   row: number;
+  hp: number;
+  maxHp: number;
 }
 
 const BOARD = 100;
@@ -54,6 +56,13 @@ const BRICK_H = 3.5;
 /** Base ball speed (units/ms) and acceleration per level. */
 const BASE_SPEED = 0.055;
 const SPEED_PER_LEVEL = 1.06;
+
+/** Per-difficulty tuning: starting lives and a ball-speed multiplier. */
+const TUNING: Record<Difficulty, { lives: number; speedMul: number }> = {
+  easy: { lives: 5, speedMul: 0.85 },
+  medium: { lives: 3, speedMul: 1.0 },
+  hard: { lives: 2, speedMul: 1.2 },
+};
 /** Paddle movement speed with the keyboard (units/ms). */
 const PADDLE_SPEED = 0.12;
 /** Maximum bounce angle on the paddle edges (radians). */
@@ -73,9 +82,10 @@ const MAX_BOUNCE_ANGLE = (60 * Math.PI) / 180;
  * brick at high speed), independently of the render's 60 fps.
  */
 export class BreakoutGame extends GameEngine {
-  private readonly brickRows: number;
-  private readonly brickCols: number;
-  private readonly maxLives: number;
+  private maxLives: number;
+  private difficulty: Difficulty = 'medium';
+  /** Ball-speed multiplier from the chosen difficulty (frozen per round). */
+  private speedMul = 1;
 
   private ball: Ball = { x: 50, y: 80, vx: 0, vy: 0 };
   /** Position of the paddle's center on the x axis. */
@@ -100,8 +110,6 @@ export class BreakoutGame extends GameEngine {
    */
   constructor(config: BreakoutConfig = {}) {
     super({ ...config, storageKey: 'breakout-high-scores' });
-    this.brickRows = config.brickRows || 5;
-    this.brickCols = config.brickCols || 9;
     this.maxLives = config.lives || 3;
     this.lives = this.maxLives;
   }
@@ -114,9 +122,18 @@ export class BreakoutGame extends GameEngine {
     this.boardElement = document.getElementById('board');
     this.fx = new ParticleSystem();
     this.hud = setupHud([
-      { key: 'score', icon: 'star', label: t('score') },
+      { key: 'level', icon: 'layer-group', label: t('hudLevel') },
       { key: 'lives', icon: 'heart', label: t('hudLives') },
+      { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
+
+    setupSettingsPanel([
+      difficultyField(this.difficulty, (v) => {
+        this.difficulty = v as Difficulty;
+        this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
+      }),
+    ]);
+    this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
 
     this.buildBoard();
     this.setupEventListeners();
@@ -291,23 +308,27 @@ export class BreakoutGame extends GameEngine {
       }
 
       playSound('bounce');
-      this.destroyBrick(i);
+      this.hitBrick(i);
       return;
     }
   }
 
   /**
-   * Marks a brick destroyed, hides it, credits the score (top rows are worth
-   * more) and triggers the next level if the board is cleared.
+   * Damages a brick. Reinforced bricks (`hp > 1`) only crack and survive; a brick
+   * at 0 hp breaks, spawns particles and may trigger the next level.
    */
-  private destroyBrick(index: number): void {
+  private hitBrick(index: number): void {
     const brick = this.bricks[index];
-    brick.alive = false;
     const brickEl = this.brickElements[index];
+    brick.hp--;
+    if (brick.hp > 0) {
+      brickEl?.setAttribute('data-hp', String(brick.hp));
+      return; // still standing
+    }
+    brick.alive = false;
 
     const rect = brickEl?.getBoundingClientRect();
     brickEl?.classList.add('is-broken');
-    this.addScore((this.brickRows - brick.row) * 10);
 
     if (this.fx && rect && rect.width > 0) {
       const cx = rect.left + rect.width / 2;
@@ -341,9 +362,13 @@ export class BreakoutGame extends GameEngine {
    */
   private nextLevel(): void {
     this.level++;
+    // The leaderboard tracks the level reached: bump the score by one per level.
+    this.addScore(1);
     this.speed *= SPEED_PER_LEVEL;
+    playSound('score');
     this.buildBricks();
     this.resetBall();
+    this.updateScoreDisplay();
   }
 
   /**
@@ -412,32 +437,35 @@ export class BreakoutGame extends GameEngine {
    * centered at the top of the board.
    */
   private buildBricks(): void {
-    const usableWidth = BOARD - 2 * SIDE_MARGIN - (this.brickCols - 1) * BRICK_GAP;
-    const brickW = usableWidth / this.brickCols;
+    const spec = generateLevel(this.level);
+    const cols = spec.cols;
+    const usableWidth = BOARD - 2 * SIDE_MARGIN - (cols - 1) * BRICK_GAP;
+    const brickW = usableWidth / cols;
 
-    this.bricks = [];
-    for (let row = 0; row < this.brickRows; row++) {
-      for (let col = 0; col < this.brickCols; col++) {
-        this.bricks.push({
-          x: SIDE_MARGIN + col * (brickW + BRICK_GAP),
-          y: TOP_MARGIN + row * (BRICK_H + BRICK_GAP),
-          w: brickW,
-          h: BRICK_H,
-          alive: true,
-          row,
-        });
-      }
-    }
+    this.bricks = spec.bricks.map((b) => ({
+      x: SIDE_MARGIN + b.col * (brickW + BRICK_GAP),
+      y: TOP_MARGIN + b.row * (BRICK_H + BRICK_GAP),
+      w: brickW,
+      h: BRICK_H,
+      alive: true,
+      row: b.row,
+      hp: b.hp,
+      maxHp: b.hp,
+    }));
 
     if (this.brickLayer) {
-      this.brickLayer.innerHTML = this.bricks
-        .map(
-          (brick) =>
-            `<div class="brick brick--${brick.row + 1}" style="left:${brick.x}%;top:${brick.y}%;width:${brick.w}%;height:${brick.h}%"></div>`
-        )
-        .join('');
+      this.brickLayer.innerHTML = this.bricks.map((brick) => this.brickMarkup(brick)).join('');
       this.brickElements = Array.from(this.brickLayer.querySelectorAll<HTMLElement>('.brick'));
     }
+  }
+
+  /** A brick's DOM: colour by row, a data-hp for the reinforced (multi-hit) look. */
+  private brickMarkup(brick: Brick): string {
+    const colorRow = (brick.row % 5) + 1;
+    return (
+      `<div class="brick brick--${colorRow}" data-hp="${brick.hp}"` +
+      ` style="left:${brick.x}%;top:${brick.y}%;width:${brick.w}%;height:${brick.h}%"></div>`
+    );
   }
 
   /**
@@ -458,11 +486,26 @@ export class BreakoutGame extends GameEngine {
    * Resets bricks, ball, paddle, lives, level, speed and state, then performs
    * the render.
    */
+  /** Applies the chosen difficulty (lives + speed) before a round begins. */
+  start(): void {
+    this.applyDifficulty();
+    super.start();
+  }
+
+  private applyDifficulty(): void {
+    const tune = TUNING[this.difficulty];
+    this.maxLives = tune.lives;
+    this.speedMul = tune.speedMul;
+    this.lives = this.maxLives;
+    this.speed = BASE_SPEED * this.speedMul;
+    this.updateScoreDisplay();
+  }
+
   reset(): void {
     this.resetState();
-    this.lives = this.maxLives;
+    this.applyDifficulty();
     this.level = 1;
-    this.speed = BASE_SPEED;
+    this.addScore(1); // score mirrors the level reached (starts at 1)
     this.paddleX = BOARD / 2;
     this.buildBricks();
     this.resetBall();
@@ -471,17 +514,18 @@ export class BreakoutGame extends GameEngine {
   }
 
   /**
-   * Shows score, remaining lives and high score in the game header.
+   * Shows the current level, remaining lives and best level in the game header.
    */
   protected updateScoreDisplay(): void {
-    super.updateScoreDisplay();
+    this.hud?.set('level', this.level);
     this.hud?.set('lives', this.lives);
+    this.hud?.set('high', this.scoreManager.getHighScore());
   }
 
   /**
-   * Details shown in the game-over modal: score and level reached.
+   * Details shown in the game-over modal: the level and world reached.
    */
   protected getGameOverContent(): string {
-    return `<div>Score: ${this.state.score}</div><div>Level: ${this.level}</div>`;
+    return `<div>${t('hudLevel')}: ${this.level}</div><div>${t('bkWorld')}: ${worldOf(this.level) + 1}</div>`;
   }
 }

@@ -37,7 +37,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     // Game-over overlay + save prompt (GameEngine, shared by every game).
     gameOver: 'Game Over!',
     gameOverAria: 'Game over',
-    youWin: 'You win! 🏆',
+    youWin: 'You win! 🎉',
     youLose: 'You lose…',
     youWon: 'You won!',
     draw: 'Draw!',
@@ -78,16 +78,16 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     mpLeaveConfirm: 'Leave the session?',
     mpLeaveBody: 'You will return to a solo game.',
     // Quiz recap (QuizGame).
-    flawless: 'Flawless! 🎉',
+    flawless: 'Flawless! ✨',
     roundOver: 'Round over',
     correct: 'correct',
     bestStreak: 'Best streak',
     // Per-game game-over titles + recaps.
-    victory: 'Victory! 🏆',
+    victory: 'Victory! 🎉',
     defeat: 'Defeat…',
-    hanged: 'Hanged! 💀',
-    cleared: 'Cleared! 🎉',
-    solved: 'Solved! 🎉',
+    hanged: 'Hanged!',
+    cleared: 'Cleared! ✨',
+    solved: 'Solved! ✨',
     hangmanStreakOne: '<p>You solved <strong>{n}</strong> word in a row.</p>',
     hangmanStreakMany: '<p>You solved <strong>{n}</strong> words in a row.</p>',
     hangmanWord: '<p>The word was <strong>{target}</strong> — {score} points.</p>',
@@ -116,6 +116,12 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     gooseLose: '<p>{name} reached the finish square first.</p>',
     settings: 'Settings',
     difficulty: 'Difficulty',
+    size: 'Size',
+    players: 'Players',
+    solDrawLabel: 'Draw',
+    solDraw1: 'Draw 1',
+    solDraw3: 'Draw 3',
+    bjStartChips: 'Chips',
     bots: 'Bots',
     firstMove: 'First move',
     firstTo: 'First to',
@@ -216,6 +222,8 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     hudBest: 'Best',
     hudTurn: 'Turn',
     hudLives: 'Lives',
+    hudLevel: 'Level',
+    bkWorld: 'World',
     hudStreak: 'Streak',
     hudStatus: 'Status',
     hudRound: 'Round',
@@ -242,8 +250,8 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     // Mastermind end-of-game recap.
     mastermindWin: 'Code cracked in {guesses} guesses! Score: {score}.',
     mastermindLose: 'Out of guesses — the code is revealed above.',
-    // Feedback-peg hover tooltip (● black = right spot, ○ white = right colour).
-    mastermindPegs: '● {black} right spot · ○ {white} right colour, wrong spot',
+    // Feedback-peg hover tooltip (⚫ black = right spot, ⚪ white = right colour).
+    mastermindPegs: '⚫ {black} right spot · ⚪ {white} right colour, wrong spot',
     // Nonogram tools + end-of-level recap.
     nonoToolFill: 'Fill tool (paint cells)',
     nonoToolCross: 'Cross tool (mark empty)',
@@ -287,16 +295,13 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     game_dotsboxes: 'Dots and Boxes',
     // Yahtzee.
     game_yahtzee: 'Yahtzee',
-    yhRoll: 'Roll dice',
     yhRollsLeft: 'rolls left',
     yhMustScore: 'Choose a category to score',
     yhCategory: 'Category',
     yhScore: 'Score',
     yhUpperTotal: 'Upper total',
-    yhBonus: 'Bonus (+35 if ≥63)',
+    yhBonus: 'Bonus (+35 if =63)',
     yhTotal: 'Grand total',
-    yhGameOver: 'Game Over!',
-    yhFinalScore: 'Final score: {score} points.',
     // Binairo.
     game_binairo: 'Binairo',
     biErrors: 'Errors',
@@ -321,7 +326,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     // Overlay de fin de partie + invite de sauvegarde (GameEngine, commun à tous les jeux).
     gameOver: 'Partie terminée !',
     gameOverAria: 'Partie terminée',
-    youWin: 'Gagné ! 🏆',
+    youWin: 'Gagné ! 🎉',
     youLose: 'Perdu…',
     youWon: 'Gagné !',
     draw: 'Égalité !',
@@ -362,16 +367,16 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     mpLeaveConfirm: 'Quitter la session ?',
     mpLeaveBody: 'Vous reviendrez à une partie solo.',
     // Récap quiz (QuizGame).
-    flawless: 'Sans faute ! 🎉',
+    flawless: 'Sans faute ! ✨',
     roundOver: 'Manche terminée',
     correct: 'correct',
     bestStreak: 'Meilleure série',
     // Titres + récaps de fin de partie par jeu.
-    victory: 'Victoire ! 🏆',
+    victory: 'Victoire ! 🎉',
     defeat: 'Défaite…',
-    hanged: 'Pendu ! 💀',
-    cleared: 'Terminé ! 🎉',
-    solved: 'Résolu ! 🎉',
+    hanged: 'Pendu !',
+    cleared: 'Terminé ! ✨',
+    solved: 'Résolu ! ✨',
     hangmanStreakOne: "<p>Vous avez trouvé <strong>{n}</strong> mot d'affilée.</p>",
     hangmanStreakMany: "<p>Vous avez trouvé <strong>{n}</strong> mots d'affilée.</p>",
     hangmanWord: '<p>Le mot était <strong>{target}</strong> — {score} points.</p>',
@@ -400,6 +405,12 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     gooseLose: '<p>{name} a atteint la case finale en premier.</p>',
     settings: 'Paramètres',
     difficulty: 'Difficulté',
+    size: 'Taille',
+    players: 'Joueurs',
+    solDrawLabel: 'Pioche',
+    solDraw1: 'Pioche 1',
+    solDraw3: 'Pioche 3',
+    bjStartChips: 'Jetons',
     bots: 'Bots',
     firstMove: 'Premier coup',
     firstTo: 'Premier à',
@@ -496,6 +507,8 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     hudBest: 'Meilleur',
     hudTurn: 'Tour',
     hudLives: 'Vies',
+    hudLevel: 'Niveau',
+    bkWorld: 'Monde',
     hudStreak: 'Série',
     hudStatus: 'État',
     hudRound: 'Manche',
@@ -522,8 +535,8 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     // Récapitulatif de fin Mastermind.
     mastermindWin: 'Code trouvé en {guesses} essais ! Score : {score}.',
     mastermindLose: 'Plus d’essais — le code est révélé au-dessus.',
-    // Infobulle au survol des pions (● noir = bien placé, ○ blanc = mal placé).
-    mastermindPegs: '● {black} bien placés · ○ {white} bonne couleur, mal placés',
+    // Infobulle au survol des pions (⚫ noir = bien placé, ⚪ blanc = mal placé).
+    mastermindPegs: '⚫ {black} bien placés · ⚪ {white} bonne couleur, mal placés',
     // Outils Nonogramme + récapitulatif de fin de niveau.
     nonoToolFill: 'Outil Remplir (peindre les cases)',
     nonoToolCross: 'Outil Croix (marquer vide)',
@@ -569,16 +582,13 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     game_dotsboxes: 'Pointillés',
     // Yahtzee.
     game_yahtzee: 'Yahtzee',
-    yhRoll: 'Lancer les dés',
     yhRollsLeft: 'lancés restants',
     yhMustScore: 'Choisissez une catégorie',
     yhCategory: 'Catégorie',
     yhScore: 'Score',
     yhUpperTotal: 'Total section haute',
-    yhBonus: 'Bonus (+35 si ≥63)',
+    yhBonus: 'Bonus (+35 si =63)',
     yhTotal: 'Total général',
-    yhGameOver: 'Partie terminée !',
-    yhFinalScore: 'Score final : {score} points.',
     // Binairo.
     game_binairo: 'Binairo',
     biErrors: 'Erreurs',
@@ -606,6 +616,9 @@ const CONTROLS_FR: Record<string, string> = {
   // --- keys column (shared across many games) ---
   '<kbd>↑ ↓ ← →</kbd> or <kbd>W A S D</kbd>': '<kbd>↑ ↓ ← →</kbd> ou <kbd>W A S D</kbd>',
   '<kbd>← →</kbd> or <kbd>A D</kbd>': '<kbd>← →</kbd> ou <kbd>A D</kbd>',
+  '<kbd>← →</kbd> or <kbd>A/Q D</kbd>': '<kbd>← →</kbd> ou <kbd>A/Q D</kbd>',
+  '<kbd>Space</kbd> / <kbd>↑</kbd> / <kbd>W/Z</kbd> / click':
+    '<kbd>Space</kbd> / <kbd>↑</kbd> / <kbd>W/Z</kbd> / clic',
   '<kbd>↑ ↓</kbd> or <kbd>W S</kbd>': '<kbd>↑ ↓</kbd> ou <kbd>W S</kbd>',
   '<kbd>↑</kbd> or <kbd>W</kbd> (or tap)': '<kbd>↑</kbd> ou <kbd>W</kbd> (ou tap)',
   '<kbd>↓</kbd> or <kbd>S</kbd>': '<kbd>↓</kbd> ou <kbd>S</kbd>',
@@ -700,7 +713,6 @@ const CONTROLS_FR: Record<string, string> = {
   'Reveal every safe cell without hitting a mine':
     'Révèle toutes les cases sûres sans toucher de mine',
   'Move the paddle': 'Déplace la raquette',
-  'Destroy all the bricks': 'Détruis toutes les briques',
   'Move your paddle': 'Déplace ta raquette',
   'Score past the opponent paddle': 'Marque au-delà de la raquette adverse',
   'Rolled automatically on your turn': 'Lancé automatiquement à ton tour',
@@ -818,16 +830,18 @@ const CONTROLS_FR: Record<string, string> = {
   'Draw a line between two adjacent dots': 'Tracer une ligne entre deux points adjacents',
   'Complete a box': 'Compléter un carré',
   'Score a point and take another turn': 'Marquer un point et rejouer',
-  'Claim more boxes than your opponent': 'Capturer plus de carrés que votre adversaire',
+  'Claim more boxes than your opponents': 'Capturer plus de carrés que vos adversaires',
+  'Players (2–4 offline; empty seats are bots)':
+    'Joueurs (2–4 hors-ligne ; les sièges vides sont des bots)',
+  'Beat your opponents over 13 categories': 'Battez vos adversaires sur 13 catégories',
   // --- Yahtzee ---
-  'Roll button': 'Bouton Lancer',
+  'Click the dice area': 'Cliquer la zone des dés',
   'Roll all non-held dice (up to 3 times per turn)':
     'Lancer tous les dés non conservés (jusqu’à 3 fois par tour)',
   'Click a die': 'Cliquer sur un dé',
   'Hold it (keep between rolls)': 'Le conserver entre les lancers',
   'Click a category': 'Cliquer une catégorie',
   'Score the current dice in that category': 'Marquer les dés actuels dans cette catégorie',
-  'Maximise your total score across 13 categories': 'Maximiser votre score total sur 13 catégories',
   // --- Binairo ---
   'Click a cell': 'Cliquer une case',
   'Cycle empty → 0 → 1 → empty': 'Alterner vide → 0 → 1 → vide',
@@ -845,6 +859,25 @@ const CONTROLS_FR: Record<string, string> = {
   'Move with your finger': 'Déplace avec ton doigt',
   'Undo a move / restart the level': 'Annule un coup / recommence le niveau',
   'Push every crate onto a target': 'Pousse chaque caisse sur une cible',
+  'Difficulty (gap width, pipe speed)': 'Difficulté (largeur du trou, vitesse des tuyaux)',
+  'Difficulty (starting lives, bomb rate)': 'Difficulté (vies de départ, fréquence des bombes)',
+  'Difficulty (number of bubble colours)': 'Difficulté (nombre de couleurs de bulles)',
+  'Difficulty (starting lives, ball speed)': 'Difficulté (vies de départ, vitesse de la balle)',
+  'Grid size (6×6 or 8×8)': 'Taille de la grille (6×6 ou 8×8)',
+  'Difficulty (snake speed)': 'Difficulté (vitesse du serpent)',
+  'Difficulty (playback speed)': 'Difficulté (vitesse de lecture)',
+  'Difficulty (puzzle set)': 'Difficulté (jeu de grilles)',
+  'Grid size (3×3, 4×4 or 5×5)': 'Taille de la grille (3×3, 4×4 ou 5×5)',
+  'Difficulty (starting level / speed)': 'Difficulté (niveau de départ / vitesse)',
+  'Draw mode (1 card, or 3 for a harder game)':
+    'Mode pioche (1 carte, ou 3 pour un jeu plus difficile)',
+  'Starting chips (100 / 200 / 500)': 'Jetons de départ (100 / 200 / 500)',
+  'Clear a level': 'Vide un niveau',
+  'Advance to the next — endless procedural worlds':
+    'Passe au suivant — mondes procéduraux sans fin',
+  'Reinforced bricks': 'Briques renforcées',
+  'Take several hits before they break': 'Encaissent plusieurs coups avant de casser',
+  'Reach the highest level you can': 'Atteins le niveau le plus haut possible',
 };
 
 /**

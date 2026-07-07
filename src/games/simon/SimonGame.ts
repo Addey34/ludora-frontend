@@ -1,5 +1,7 @@
 import { GameEngine } from '../../shared/engine/GameEngine.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
+import { Difficulty } from '../../shared/bot/difficulty.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
@@ -36,6 +38,7 @@ export class SimonGame extends GameEngine {
   private gen = 0;
   /** Pending playback/echo timers, cleared on reset. */
   private timers: ReturnType<typeof setTimeout>[] = [];
+  private difficulty: Difficulty = 'medium';
 
   constructor() {
     super({ storageKey: 'simon-scores', leaderboardId: 'simon' });
@@ -50,10 +53,23 @@ export class SimonGame extends GameEngine {
       { key: 'status', icon: 'eye', label: t('hudStatus') },
     ]);
 
+    setupSettingsPanel([
+      difficultyField(this.difficulty, (v) => {
+        this.difficulty = v as Difficulty;
+        this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
+      }),
+    ]);
+    this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
+
     this.buildPads();
     this.setupEventListeners();
     this.renderScoreTable();
     this.updateScoreDisplay();
+  }
+
+  /** Playback speed multiplier: easy is slower, hard is snappier. */
+  private get speedMul(): number {
+    return this.difficulty === 'easy' ? 1.3 : this.difficulty === 'hard' ? 0.72 : 1;
   }
 
   private buildPads(): void {
@@ -109,7 +125,7 @@ export class SimonGame extends GameEngine {
 
   private playbackSequence(): void {
     const gen = this.gen;
-    const interval = flashInterval(this.sequence.length);
+    const interval = flashInterval(this.sequence.length) * this.speedMul;
     this.sequence.forEach((pad, i) => {
       this.schedule(
         () => {

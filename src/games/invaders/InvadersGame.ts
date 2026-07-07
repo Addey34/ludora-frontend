@@ -1,6 +1,9 @@
 import { GameEngine } from '../../shared/engine/GameEngine.js';
+import { keyboardDirection } from '../../shared/engine/input.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
+import { Difficulty } from '../../shared/bot/difficulty.js';
 import { playSound } from '../../shared/fx/sound.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
@@ -30,6 +33,14 @@ const MOVE_STEP_X = 10;
 const MOVE_STEP_Y = 18;
 const ALIEN_POINTS = [40, 30, 20, 10];
 const BARRIER_COUNT = 3;
+
+/** Per-difficulty tuning: starting lives and how often aliens drop bombs
+ *  (`bombScale` > 1 = rarer, < 1 = more frequent). */
+const TUNING: Record<Difficulty, { lives: number; bombScale: number }> = {
+  easy: { lives: 4, bombScale: 1.4 },
+  medium: { lives: 3, bombScale: 1.0 },
+  hard: { lives: 2, bombScale: 0.65 },
+};
 
 interface Alien {
   x: number;
@@ -61,6 +72,7 @@ export class InvadersGame extends GameEngine {
   private barriers: Barrier[] = [];
   private lives = 3;
   private level = 1;
+  private difficulty: Difficulty = 'medium';
 
   private alienDir: 1 | -1 = 1;
   private moveInterval = MOVE_INTERVAL_START;
@@ -92,6 +104,13 @@ export class InvadersGame extends GameEngine {
       { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
     this.hud.set('high', this.scoreManager.getHighScore());
+    setupSettingsPanel([
+      difficultyField(this.difficulty, (v) => {
+        this.difficulty = v as Difficulty;
+        this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
+      }),
+    ]);
+    this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
     this.setupEventListeners();
     this.canvas.addEventListener('click', () => this.shoot());
     this.buildLevel();
@@ -100,7 +119,7 @@ export class InvadersGame extends GameEngine {
 
   start(): void {
     if (this.state.isRunning) return;
-    this.lives = 3;
+    this.lives = TUNING[this.difficulty].lives;
     this.level = 1;
     this.playerX = W / 2;
     this.resetState();
@@ -109,7 +128,7 @@ export class InvadersGame extends GameEngine {
   }
 
   reset(): void {
-    this.lives = 3;
+    this.lives = TUNING[this.difficulty].lives;
     this.level = 1;
     this.playerX = W / 2;
     this.resetState();
@@ -118,9 +137,12 @@ export class InvadersGame extends GameEngine {
 
   handleInput(e: KeyboardEvent): void {
     const down = e.type === 'keydown';
-    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') this.keys.left = down;
-    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') this.keys.right = down;
-    if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+    const direction = keyboardDirection(e);
+    if (direction === 'left') this.keys.left = down;
+    if (direction === 'right') this.keys.right = down;
+
+    const key = e.key.toLowerCase();
+    if (e.key === ' ' || direction === 'up' || key === 'w' || key === 'z') {
       if (down && this.canShoot) this.shoot();
     }
   }
@@ -188,7 +210,8 @@ export class InvadersGame extends GameEngine {
     if (now - this.lastBombTime > this.nextBombInterval) {
       this.lastBombTime = now;
       this.nextBombInterval =
-        BOMB_INTERVAL_MIN + Math.random() * (BOMB_INTERVAL_MAX - BOMB_INTERVAL_MIN);
+        (BOMB_INTERVAL_MIN + Math.random() * (BOMB_INTERVAL_MAX - BOMB_INTERVAL_MIN)) *
+        TUNING[this.difficulty].bombScale;
       const alive = this.aliens.filter((a) => a.alive);
       if (alive.length > 0) {
         const shooter = alive[Math.floor(Math.random() * alive.length)];

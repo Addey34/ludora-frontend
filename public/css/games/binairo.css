@@ -42,6 +42,10 @@
   color: #f97316;
 }
 
+.bi-cell.bi-pop {
+  animation: cellPop 0.18s ease-out;
+}
+
 .bi-cell.is-fixed.is-zero {
   background: rgba(96, 165, 250, 0.15);
   border-color: rgba(96, 165, 250, 0.3);

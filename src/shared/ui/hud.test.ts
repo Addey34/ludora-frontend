@@ -44,6 +44,29 @@ describe('setupHud', () => {
     expect(() => hud.set('nope', 5)).not.toThrow();
   });
 
+  it('marks the bar with visible stat classes', () => {
+    const hud = setupHud([
+      { key: 'score', icon: 'star', label: 'Score' },
+      { key: 'high', icon: 'trophy', label: 'Best' },
+    ]);
+    hud.set('score', 42);
+    hud.set('high', 99);
+    expect(bar.classList.contains('has-score-stat')).toBe(true);
+    expect(bar.classList.contains('has-high-stat')).toBe(true);
+    hud.set('score', null);
+    expect(bar.classList.contains('has-score-stat')).toBe(false);
+    expect(bar.classList.contains('has-high-stat')).toBe(true);
+  });
+
+  it('clears stale visible stat classes when rebuilt with different stats', () => {
+    const hud = setupHud([{ key: 'score', icon: 'star', label: 'Score' }]);
+    hud.set('score', 10);
+    expect(bar.classList.contains('has-score-stat')).toBe(true);
+
+    setupHud([{ key: 'time', icon: 'clock', label: 'Time' }]);
+    expect(bar.classList.contains('has-score-stat')).toBe(false);
+  });
+
   it('toggle() flips a modifier class on the chip', () => {
     const hud = setupHud([{ key: 'time', icon: 'clock', label: 'Time' }]);
     const chip = bar.querySelector<HTMLElement>('[data-stat="time"]')!;

@@ -67,6 +67,7 @@ export class MotusGame extends GameEngine {
     this.setupEventListeners();
 
     setupSettingsPanel([languageField(this.lang, (v) => void this.changeLang(v as Lang))]);
+    this.setLeaderboardVariant(this.lang, this.lang.toUpperCase());
 
     this.renderScoreTable();
     await this.loadWords();
@@ -136,6 +137,7 @@ export class MotusGame extends GameEngine {
 
   private async changeLang(lang: Lang): Promise<void> {
     this.lang = lang;
+    this.setLeaderboardVariant(this.lang, this.lang.toUpperCase());
     this.buildKeyboard();
     await this.loadWords();
     this.stop();

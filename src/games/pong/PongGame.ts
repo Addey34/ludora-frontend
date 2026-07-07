@@ -42,7 +42,9 @@ const OPPONENT_X = BOARD - 4;
  * up fast so rallies actually end (no endless, unwinnable exchange). */
 const BASE_SPEED = 0.05;
 const SPEED_PER_HIT = 1.08;
-const MAX_SPEED = 0.18;
+/** Speed at which the ball catches fire (visual cue). There is no speed cap —
+ *  the ball keeps accelerating on every hit, so the rally can become unwinnable. */
+const FIRE_SPEED = 0.18;
 /** Paddle travel speed for the player and the bot (units/ms). Both are kept below
  * the ball's max vertical speed so a fast, steep shot can beat either of them —
  * the game stays winnable AND losable even against a perfect bot. */
@@ -365,7 +367,7 @@ export class PongGame extends GameEngine {
   private bounceOffPaddle(paddleY: number, dirX: number): void {
     const offset = (this.ball.y - paddleY) / (PADDLE_H / 2);
     const angle = Math.max(-1, Math.min(1, offset)) * MAX_BOUNCE_ANGLE;
-    this.speed = Math.min(MAX_SPEED, this.speed * SPEED_PER_HIT);
+    this.speed *= SPEED_PER_HIT; // no cap — the ball just keeps getting faster
     this.ball.vx = dirX * this.speed * Math.cos(angle);
     this.ball.vy = this.speed * Math.sin(angle);
 
@@ -469,6 +471,9 @@ export class PongGame extends GameEngine {
     if (this.ballElement) {
       this.ballElement.style.left = `${this.ball.x - BALL_R}%`;
       this.ballElement.style.top = `${this.ball.y - BALL_R}%`;
+      // Past the fire threshold the ball ignites — a stylised cue that the rally
+      // has entered "no mercy" territory.
+      this.ballElement.classList.toggle('is-onfire', this.speed >= FIRE_SPEED);
     }
     if (this.playerPaddleEl) this.playerPaddleEl.style.top = `${this.playerY - PADDLE_H / 2}%`;
     if (this.opponentPaddleEl) {

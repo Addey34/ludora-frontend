@@ -2,16 +2,21 @@ import { GameEngine } from '../../shared/engine/GameEngine.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
+import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
+import { Difficulty } from '../../shared/bot/difficulty.js';
 import { Stopwatch, formatClock } from '../../shared/ui/stopwatch.js';
 import { playSound } from '../../shared/fx/sound.js';
+import { ParticleSystem, celebrate } from '../../shared/fx/particles.js';
 import { PUZZLES, KakuroPuzzle, checkSolution } from './kakuro.js';
 
 export class KakuroGame extends GameEngine {
+  private difficulty: Difficulty = 'easy';
   private puzzle: KakuroPuzzle = PUZZLES[0];
   private puzzleIdx = 0;
   private values: (number | null)[][] = [];
   private selected: [number, number] | null = null;
   private boardEl: HTMLElement | null = null;
+  private fx: ParticleSystem | null = null;
   private readonly clock = new Stopwatch((s) => this.hud?.set('time', formatClock(s)));
 
   constructor() {
@@ -20,14 +25,30 @@ export class KakuroGame extends GameEngine {
 
   initialize(): void {
     this.boardEl = document.getElementById('board');
+    this.fx = new ParticleSystem();
     this.hud = setupHud([
       { key: 'puzzle', icon: 'grid', label: t('kakPuzzle') },
       { key: 'time', icon: 'clock', label: t('hudTime') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
     this.hud.set('high', this.scoreManager.getHighScore());
+    setupSettingsPanel([
+      difficultyField(this.difficulty, (v) => {
+        this.difficulty = v as Difficulty;
+        this.puzzleIdx = 0;
+        this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
+        this.reset();
+      }),
+    ]);
+    this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
     this.loadPuzzle(0);
     this.setupEventListeners();
+  }
+
+  /** Puzzles matching the chosen difficulty (falls back to all if none). */
+  private pool(): KakuroPuzzle[] {
+    const list = PUZZLES.filter((p) => p.difficulty === this.difficulty);
+    return list.length > 0 ? list : PUZZLES;
   }
 
   start(): void {
@@ -53,7 +74,7 @@ export class KakuroGame extends GameEngine {
 
   protected restartAfterGameOver(): void {
     this.overlay.hide();
-    this.puzzleIdx = (this.puzzleIdx + 1) % PUZZLES.length;
+    this.puzzleIdx = (this.puzzleIdx + 1) % this.pool().length;
     this.loadPuzzle(this.puzzleIdx);
     this.resetState();
     this.state.isRunning = true;
@@ -86,7 +107,8 @@ export class KakuroGame extends GameEngine {
   }
 
   private loadPuzzle(idx: number): void {
-    this.puzzle = PUZZLES[idx];
+    const pool = this.pool();
+    this.puzzle = pool[idx] ?? pool[0];
     this.values = this.puzzle.grid.map((row) =>
       row.map((cell) => (cell.kind === 'fill' ? null : null))
     );
@@ -154,7 +176,14 @@ export class KakuroGame extends GameEngine {
   private setValue(r: number, c: number, val: number | null): void {
     this.values[r][c] = val;
     const el = this.boardEl?.querySelector<HTMLElement>(`[data-r="${r}"][data-c="${c}"]`);
-    if (el) el.textContent = val !== null ? String(val) : '';
+    if (el) {
+      el.textContent = val !== null ? String(val) : '';
+      if (val !== null) {
+        el.classList.remove('kak-pop');
+        void el.offsetWidth; // restart the pop animation
+        el.classList.add('kak-pop');
+      }
+    }
     playSound('move');
     this.checkErrors();
     this.checkWin();
@@ -195,6 +224,7 @@ export class KakuroGame extends GameEngine {
     const bonus = Math.max(0, 2000 - this.clock.seconds * 3);
     this.addScore(1000 + bonus + this.puzzleIdx * 200);
     playSound('win');
+    celebrate(this.fx, this.boardEl);
     this.gameOver();
   }
 

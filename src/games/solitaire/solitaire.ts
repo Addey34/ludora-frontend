@@ -66,10 +66,12 @@ export function deal(rng = Math.random): SolitaireState {
   };
 }
 
-export function drawFromStock(state: SolitaireState): SolitaireState {
+export function drawFromStock(state: SolitaireState, count = 1): SolitaireState {
   const s = cloneState(state);
   if (s.stock.length > 0) {
-    s.waste.push({ ...s.stock.pop()!, faceUp: true });
+    for (let i = 0; i < count && s.stock.length > 0; i++) {
+      s.waste.push({ ...s.stock.pop()!, faceUp: true });
+    }
   } else {
     s.stock = [...s.waste].reverse().map((c) => ({ ...c, faceUp: false }));
     s.waste = [];

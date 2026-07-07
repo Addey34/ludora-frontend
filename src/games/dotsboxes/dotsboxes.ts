@@ -1,16 +1,20 @@
 import { TurnRules } from '../../shared/turn/turnGame.js';
 
-export type Seat = 0 | 1;
+/** A player index (0-based). 2 to 4 players are supported. */
+export type Seat = number;
 
 export interface DBState {
   n: number;
+  /** Number of players in this game (2–4). */
+  players: number;
   /** hEdges[r][c]: horizontal edge between dot(r,c) and dot(r,c+1). r in 0..n, c in 0..n-1 */
   hEdges: boolean[][];
   /** vEdges[r][c]: vertical edge between dot(r,c) and dot(r+1,c). r in 0..n-1, c in 0..n */
   vEdges: boolean[][];
-  /** boxes[r][c]: owner of box at (r,c). r,c in 0..n-1 */
+  /** boxes[r][c]: owner seat of box at (r,c), or null. r,c in 0..n-1 */
   boxes: (Seat | null)[][];
-  scores: [number, number];
+  /** Boxes claimed per seat (length = players). */
+  scores: number[];
   seat: Seat;
   totalEdges: number;
   filledEdges: number;
@@ -27,9 +31,14 @@ function isBoxComplete(state: DBState, r: number, c: number): boolean {
 }
 
 export class DotsBoxesRules implements TurnRules<DBState, DBMove> {
-  readonly seats = 2;
+  readonly seats: number;
 
-  constructor(private readonly n: number = 4) {}
+  constructor(
+    private readonly n: number = 4,
+    players = 2
+  ) {
+    this.seats = players;
+  }
 
   initialState(): DBState {
     const n = this.n;
@@ -38,10 +47,11 @@ export class DotsBoxesRules implements TurnRules<DBState, DBMove> {
     const boxes = Array.from({ length: n }, () => new Array(n).fill(null) as (Seat | null)[]);
     return {
       n,
+      players: this.seats,
       hEdges,
       vEdges,
       boxes,
-      scores: [0, 0],
+      scores: new Array(this.seats).fill(0) as number[],
       seat: 0,
       totalEdges: 2 * n * (n + 1),
       filledEdges: 0,
@@ -67,7 +77,7 @@ export class DotsBoxesRules implements TurnRules<DBState, DBMove> {
     const hEdges = state.hEdges.map((r) => [...r]);
     const vEdges = state.vEdges.map((r) => [...r]);
     const boxes = state.boxes.map((r) => [...r]);
-    const scores: [number, number] = [...state.scores];
+    const scores = [...state.scores];
 
     if (move.dir === 'h') hEdges[move.row][move.col] = true;
     else vEdges[move.row][move.col] = true;
@@ -92,19 +102,21 @@ export class DotsBoxesRules implements TurnRules<DBState, DBMove> {
       }
     }
 
-    // Extra turn if a box was claimed; otherwise switch seat
-    next.seat = boxesClaimed > 0 ? state.seat : (((state.seat + 1) % 2) as Seat);
+    // Claiming a box grants another turn; otherwise the turn moves to the next
+    // seat (wrapping around all players).
+    next.seat = boxesClaimed > 0 ? state.seat : (state.seat + 1) % state.players;
     return next;
   }
 
   winner(state: DBState): Seat | null {
     if (state.filledEdges < state.totalEdges) return null;
-    if (state.scores[0] > state.scores[1]) return 0;
-    if (state.scores[1] > state.scores[0]) return 1;
-    return null; // draw
+    const best = Math.max(...state.scores);
+    const leaders = state.scores.filter((s) => s === best).length;
+    if (leaders > 1) return null; // tie
+    return state.scores.indexOf(best);
   }
 }
 
-export function dotsBoxesRulesFor(n: number): DotsBoxesRules {
-  return new DotsBoxesRules(n);
+export function dotsBoxesRulesFor(n: number, players = 2): DotsBoxesRules {
+  return new DotsBoxesRules(n, players);
 }

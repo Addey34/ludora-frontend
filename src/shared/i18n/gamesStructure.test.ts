@@ -29,4 +29,13 @@ describe('game pages structure', () => {
     expect(existsSync(resolve(iconsDir, `${key}.svg`)), `icons/${key}.svg`).toBe(true);
     expect(CATALOG.en[`game_${key}`], `game_${key} i18n key`).toBeTruthy();
   });
+
+  it('has no orphan game icons (every icon maps to a game)', () => {
+    const games = new Set(gameKeys);
+    const orphans = readdirSync(iconsDir)
+      .filter((f) => f.endsWith('.svg'))
+      .map((f) => f.replace(/\.svg$/, ''))
+      .filter((name) => !games.has(name));
+    expect(orphans, `unused icons in public/icons: ${orphans.join(', ')}`).toEqual([]);
+  });
 });

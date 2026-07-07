@@ -12,16 +12,7 @@
  */
 
 import { t } from '../i18n/i18n.js';
-
-/** Pip positions (1..9 in a 3×3 grid, row-major) lit for each die value. */
-const PIPS: Record<number, number[]> = {
-  1: [5],
-  2: [1, 9],
-  3: [1, 5, 9],
-  4: [1, 3, 7, 9],
-  5: [1, 3, 5, 7, 9],
-  6: [1, 3, 4, 6, 7, 9],
-};
+import { DIE_PIPS } from './dicePips.js';
 
 export interface DiceOptions {
   /** Tumble duration before the result settles (ms). */
@@ -79,7 +70,7 @@ export function createDice(host: HTMLElement, options: DiceOptions = {}): DiceHa
   let cycle: ReturnType<typeof setInterval> | null = null;
 
   const setFace = (value: number): void => {
-    const on = PIPS[value] ?? [];
+    const on = DIE_PIPS[value] ?? [];
     pips.forEach((pip, i) => pip.classList.toggle('is-on', on.includes(i + 1)));
   };
 

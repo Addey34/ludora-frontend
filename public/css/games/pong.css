@@ -52,3 +52,15 @@
     0 0 8px 2px rgba(255, 255, 255, 0.4);
   animation: pongBallGlow 1.2s ease-in-out infinite;
 }
+
+/* Past the fire threshold: a blazing orange ball with a flickering glow. */
+.pong-ball.is-onfire {
+  background: radial-gradient(
+    circle at 50% 40%,
+    #fff3c4 0%,
+    #fbbf24 35%,
+    #f97316 65%,
+    #ef4444 100%
+  );
+  animation: pongFire 0.28s ease-in-out infinite;
+}

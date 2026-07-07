@@ -26,6 +26,20 @@
   display: none;
 }
 
+/* Reinforced (multi-hit) bricks wear a dark "armour" ring that thins as they
+   crack (hp counts down 3 → 2 → 1), then break like a normal brick. */
+.brick[data-hp='2'] {
+  box-shadow:
+    inset 0 0 0 2px rgba(0, 0, 0, 0.4),
+    var(--shadow-xs);
+}
+.brick[data-hp='3'] {
+  box-shadow:
+    inset 0 0 0 3px rgba(0, 0, 0, 0.55),
+    var(--shadow-xs);
+  filter: brightness(0.82) contrast(1.1);
+}
+
 .brick--1 {
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, transparent 55%), var(--breakout-brick-1);

@@ -5,164 +5,213 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 14px;
+  padding: clamp(10px, 1.8vw, 16px);
   user-select: none;
 }
 
+/* --- Dice tray: a felt panel so the white dice pop and read as a real game -- */
 .yh-dice-area {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  padding: clamp(14px, 2.2vw, 22px);
+  border-radius: var(--border-radius-md);
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.18), transparent 28%),
+    linear-gradient(160deg, #4b1d0d, var(--color-yahtzee));
+  box-shadow:
+    inset 0 2px 12px rgba(0, 0, 0, 0.42),
+    var(--shadow-sm);
+  cursor: pointer;
+}
+.yh-dice-area:hover .yh-die:not(.is-held) {
+  transform: translateY(-2px);
 }
 
 .yh-dice {
   display: flex;
-  gap: 8px;
+  gap: clamp(8px, 1.6vw, 16px);
   justify-content: center;
 }
 
+/* Die face reuses the shared 3×3 pip grid + `.dice-pip` styling (dice.css) so a
+   Yahtzee die and a Ludo die render identically. */
 .yh-die {
-  width: 52px;
-  height: 52px;
-  border-radius: 8px;
-  background: #f8fafc;
-  border: 2px solid #cbd5e1;
+  width: clamp(56px, 9vw, 82px);
+  height: clamp(56px, 9vw, 82px);
+  box-sizing: border-box;
+  border-radius: 16%;
+  background: var(--dice-bg);
+  border: none;
   cursor: pointer;
   position: relative;
   display: grid;
-  grid-template-areas:
-    'tl . tr'
-    'ml c mr'
-    'bl . br';
-  padding: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0.15rem;
+  padding: clamp(7px, 1.1vw, 11px);
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.35),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.12);
   transition:
-    transform 0.1s,
-    border-color 0.15s;
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
 }
 
 .yh-die:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
 }
+
+/* A held die lifts and gets a golden ring + a check badge so it's obvious. */
 .yh-die.is-held {
-  border-color: #f59e0b;
-  background: #fef3c7;
+  transform: translateY(-6px);
+  box-shadow:
+    0 0 0 3px var(--color-goose),
+    0 8px 10px rgba(0, 0, 0, 0.4);
 }
 
+.yh-die.is-held::after {
+  content: '📌';
+  position: absolute;
+  top: -10px;
+  right: -8px;
+  font-size: 14px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+}
+
+/* Before the first roll the dice are placeholders, not yet interactive-looking. */
 .yh-die.is-fresh {
-  opacity: 0.6;
+  opacity: 0.72;
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.42),
+    0 8px 16px rgba(0, 0, 0, 0.36);
 }
 
-.pip {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #1e293b;
+.yh-die.is-rolling {
+  animation: diceTumble 0.6s ease-in-out;
 }
 
-.pip.tl {
-  grid-area: tl;
-}
-.pip.tr {
-  grid-area: tr;
-}
-.pip.ml {
-  grid-area: ml;
-}
-.pip.mr {
-  grid-area: mr;
-}
-.pip.bl {
-  grid-area: bl;
-}
-.pip.br {
-  grid-area: br;
-}
-.pip.c {
-  grid-area: c;
-  justify-self: center;
-  align-self: center;
-}
-
-.yh-roll-btn {
-  padding: 8px 28px;
-  border-radius: var(--border-radius-sm);
-  border: none;
-  background: #2563eb;
-  color: #fff;
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.yh-roll-btn:hover:not(:disabled) {
-  background: #1d4ed8;
-}
-.yh-roll-btn:disabled,
-.yh-roll-btn.is-disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
-.yh-rolls-left {
-  font-size: var(--font-size-sm);
-  color: var(--text-muted);
-}
-
+/* --- Scorecard ------------------------------------------------------------- */
 .yh-score-section {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  border: 1px solid color-mix(in srgb, var(--color-yahtzee) 30%, var(--border-color));
+  border-radius: var(--border-radius-md);
+  background: #fffaf3;
+  box-shadow: inset 0 0 0 3px rgba(124, 45, 18, 0.04);
 }
-
 .yh-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   font-size: var(--font-size-sm);
 }
 
 .yh-table th {
   text-align: left;
-  padding: 4px 6px;
+  padding: 8px 10px;
   color: var(--text-muted);
   font-size: var(--font-size-xs);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-bottom: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--color-yahtzee) 12%, #fffaf3);
+  border-bottom: 2px solid color-mix(in srgb, var(--color-yahtzee) 28%, var(--border-color));
+}
+.yh-table th:last-child {
+  text-align: right;
 }
 
 .yh-row td {
-  padding: 5px 6px;
-  border-bottom: 1px solid var(--border-subtle);
+  padding: 7px 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-yahtzee) 14%, var(--border-color-light));
+}
+.yh-row .yh-cat {
+  cursor: default;
 }
 
-.yh-row.is-preview td {
-  color: #22c55e;
+/* An unscored category the current dice could fill: green, clickable, with the
+   projected points shown as a chip. */
+.yh-row.is-preview .yh-cat {
+  cursor: pointer;
+}
+.yh-row.is-preview .yh-row.is-preview .yh-score-cell::before {
+  content: '';
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-right: 0.35rem;
+  border-radius: 50%;
+  background: #16a34a;
+  vertical-align: middle;
+}
+
+.yh-score-cell {
+  color: #16a34a;
   cursor: pointer;
 }
 .yh-row.is-preview:hover {
-  background: rgba(34, 197, 94, 0.08);
+  background: rgba(34, 197, 94, 0.12);
 }
 .yh-row.is-scored td {
   color: var(--text-muted);
 }
-.yh-row.is-scored .yh-score-cell {
-  color: #60a5fa;
-  font-weight: bold;
+.yh-row.is-scored .yh-row.is-preview .yh-score-cell::before {
+  content: '';
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-right: 0.35rem;
+  border-radius: 50%;
+  background: #16a34a;
+  vertical-align: middle;
+}
+
+.yh-score-cell {
+  color: var(--primary-color);
+  font-weight: var(--font-weight-bold);
+}
+
+.yh-row.is-preview .yh-score-cell::before {
+  content: '';
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-right: 0.35rem;
+  border-radius: 50%;
+  background: #16a34a;
+  vertical-align: middle;
 }
 
 .yh-score-cell {
   text-align: right;
   font-weight: 600;
-  min-width: 36px;
+  min-width: 40px;
+  font-variant-numeric: tabular-nums;
 }
+
 .yh-sep td {
-  padding: 2px 0;
+  padding: 3px 0;
+}
+.yh-sep td::after {
+  content: '';
+  display: block;
+  height: 2px;
+  background: var(--border-color);
+  border-radius: 2px;
 }
 
 .yh-table tfoot td {
-  padding: 4px 6px;
+  padding: 7px 10px;
   font-weight: var(--font-weight-bold);
-  border-top: 1px solid var(--border-color);
+  border-top: 2px solid color-mix(in srgb, var(--color-yahtzee) 28%, var(--border-color));
+}
+.yh-table tfoot td:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+/* The grand total is the headline number. */
+.yh-table tfoot tr:last-child td {
+  font-size: var(--font-size-base);
+  color: var(--color-yahtzee);
 }

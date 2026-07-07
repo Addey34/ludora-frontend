@@ -1,6 +1,8 @@
 import { GameEngine } from '../../shared/engine/GameEngine.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
+import { Difficulty } from '../../shared/bot/difficulty.js';
 import { playSound } from '../../shared/fx/sound.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
 
@@ -17,11 +19,20 @@ const GRAVITY = 0.42; // px per frame at 60fps
 const JUMP_VY = -8.0; // px per frame at 60fps (negative = up)
 
 const PIPE_W = 52;
-const PIPE_GAP = 135; // vertical gap between top and bottom pipe
-const PIPE_SPEED = 2.4; // px per frame at 60fps
-const PIPE_INTERVAL = 95; // frames between consecutive pipes (at 60fps)
 const GAP_CENTER_MIN = 115; // minimum y-center of the gap
 const GAP_CENTER_MAX = 275; // maximum y-center of the gap
+
+/** Per-difficulty tuning: a tighter gap and faster, more frequent pipes. */
+interface FlappyTuning {
+  gap: number; // vertical gap between top and bottom pipe
+  speed: number; // px per frame at 60fps
+  interval: number; // frames between consecutive pipes (at 60fps)
+}
+const TUNING: Record<Difficulty, FlappyTuning> = {
+  easy: { gap: 165, speed: 2.1, interval: 108 },
+  medium: { gap: 135, speed: 2.4, interval: 95 },
+  hard: { gap: 112, speed: 2.9, interval: 82 },
+};
 
 interface Pipe {
   x: number;
@@ -44,6 +55,9 @@ export class FlappyBirdGame extends GameEngine {
   private birdAngle = 0; // visual tilt in radians
   private pipes: Pipe[] = [];
   private frameAccum = 0; // accumulated frame-equivalent ticks for pipe spawning
+  private difficulty: Difficulty = 'medium';
+  /** Active tuning for the current round (frozen at start). */
+  private tuning: FlappyTuning = TUNING.medium;
 
   constructor() {
     super({ storageKey: 'flappy-scores', leaderboardId: 'flappy' });
@@ -65,6 +79,14 @@ export class FlappyBirdGame extends GameEngine {
       { key: 'score', icon: 'star', label: t('score') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
+
+    setupSettingsPanel([
+      difficultyField(this.difficulty, (v) => {
+        this.difficulty = v as Difficulty;
+        this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
+      }),
+    ]);
+    this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
 
     this.setupEventListeners();
     this.resetGame();
@@ -92,6 +114,7 @@ export class FlappyBirdGame extends GameEngine {
     this.birdAngle = 0;
     this.pipes = [];
     this.frameAccum = 0;
+    this.tuning = TUNING[this.difficulty]; // freeze difficulty for the round
     this.hud?.set('score', 0);
     this.hud?.set('high', this.scoreManager.getHighScore());
   }
@@ -126,8 +149,8 @@ export class FlappyBirdGame extends GameEngine {
 
     // Pipe spawning
     this.frameAccum += scale;
-    if (this.frameAccum >= PIPE_INTERVAL) {
-      this.frameAccum -= PIPE_INTERVAL;
+    if (this.frameAccum >= this.tuning.interval) {
+      this.frameAccum -= this.tuning.interval;
       this.pipes.push({
         x: W + 10,
         gapCenter: GAP_CENTER_MIN + Math.random() * (GAP_CENTER_MAX - GAP_CENTER_MIN),
@@ -137,7 +160,7 @@ export class FlappyBirdGame extends GameEngine {
 
     // Move pipes & score
     for (const pipe of this.pipes) {
-      pipe.x -= PIPE_SPEED * scale;
+      pipe.x -= this.tuning.speed * scale;
       if (!pipe.scored && pipe.x + PIPE_W < BIRD_X - BIRD_R) {
         pipe.scored = true;
         this.addScore(1);
@@ -153,7 +176,7 @@ export class FlappyBirdGame extends GameEngine {
     }
     for (const pipe of this.pipes) {
       if (BIRD_X + BIRD_R > pipe.x && BIRD_X - BIRD_R < pipe.x + PIPE_W) {
-        const half = PIPE_GAP / 2;
+        const half = this.tuning.gap / 2;
         if (
           this.birdY - BIRD_R < pipe.gapCenter - half ||
           this.birdY + BIRD_R > pipe.gapCenter + half
@@ -236,7 +259,7 @@ export class FlappyBirdGame extends GameEngine {
   }
 
   private drawPipe(ctx: CanvasRenderingContext2D, pipe: Pipe): void {
-    const half = PIPE_GAP / 2;
+    const half = this.tuning.gap / 2;
     const topH = pipe.gapCenter - half;
     const botY = pipe.gapCenter + half;
     const botH = GROUND_Y - botY;

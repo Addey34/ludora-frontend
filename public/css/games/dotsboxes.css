@@ -1,96 +1,111 @@
 @import '/css/global.css';
 
 .dotsboxes-board {
-  aspect-ratio: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 12px;
+  display: grid;
+  place-items: center;
+  padding: clamp(10px, 2vw, 18px);
+  background:
+    linear-gradient(90deg, rgba(30, 64, 175, 0.04) 1px, transparent 1px),
+    linear-gradient(rgba(30, 64, 175, 0.04) 1px, transparent 1px), #f8fafc;
+  background-size: 24px 24px;
+  --db-dot: clamp(10px, 2.1vw, 16px);
+  --db-edge-thickness: clamp(7px, 1.25vw, 10px);
+  --db-edge-empty: rgba(30, 64, 175, 0.13);
+  --db-edge-drawn: #1e3a8a;
 }
-
-.db-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-bold);
-}
-
-.db-score {
-  font-size: var(--font-size-lg);
-}
-
-.db-turn {
-  font-size: var(--font-size-sm);
-  color: var(--text-muted);
-}
-
+/* Square play area, centred, so boxes stay square whatever the card width. */
 .db-grid {
   display: grid;
   gap: 0;
-  flex: 1;
+  width: min(100%, 64vh);
+  aspect-ratio: 1;
+  margin: 0 auto;
   user-select: none;
+  border-radius: var(--border-radius-md);
+  padding: clamp(8px, 1.5vw, 14px);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(30, 64, 175, 0.11);
 }
-
 .db-dot {
-  width: 10px;
-  height: 10px;
+  width: var(--db-dot);
+  height: var(--db-dot);
   border-radius: 50%;
   background: var(--text-primary);
   align-self: center;
   justify-self: center;
 }
 
+/* --- Edges: clearly visible tracks on the light card, tinted on hover ------ */
 .db-h-edge {
-  height: 10px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.08);
-  cursor: pointer;
-  transition: background 0.15s;
+  height: var(--db-edge-thickness);
   align-self: center;
-  margin: 0 2px;
+  justify-self: stretch;
+  margin: 0 3px;
+  border-radius: 4px;
+  background: var(--db-edge-empty);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    transform 0.15s;
 }
 
-.db-h-edge.is-drawn {
-  background: var(--text-muted);
+.db-v-edge {
+  width: var(--db-edge-thickness);
+  justify-self: center;
+  align-self: stretch;
+  margin: 3px 0;
+  border-radius: 4px;
+  background: var(--db-edge-empty);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    transform 0.15s;
+}
+
+.db-h-edge.is-drawn,
+.db-v-edge.is-drawn {
+  background: var(--db-edge-drawn);
   cursor: default;
 }
 
 .db-h-edge.is-available:hover {
-  background: rgba(255, 255, 255, 0.35);
+  background: var(--primary-color);
+  transform: scaleY(1.35);
 }
-
-.db-v-edge {
-  width: 10px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.08);
-  cursor: pointer;
-  transition: background 0.15s;
-  justify-self: center;
-  margin: 2px 0;
-}
-
-.db-v-edge.is-drawn {
-  background: var(--text-muted);
-  cursor: default;
-}
-
 .db-v-edge.is-available:hover {
-  background: rgba(255, 255, 255, 0.35);
+  background: var(--primary-color);
+  transform: scaleX(1.35);
 }
 
+.db-h-edge.db-stroke {
+  animation: dbStrokeH 0.2s ease-out;
+}
+.db-v-edge.db-stroke {
+  animation: dbStrokeV 0.2s ease-out;
+}
+
+/* --- Boxes: filled with the owner's colour when captured ------------------- */
 .db-box {
-  border-radius: 3px;
-  transition: background 0.2s;
+  margin: 2px;
+  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--font-size-xs);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
-  color: rgba(255, 255, 255, 0.7);
-  margin: 2px;
+  color: #fff;
+  background: rgba(30, 64, 175, 0.045);
+  box-shadow: inset 0 0 0 1px rgba(30, 64, 175, 0.08);
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
 }
 
 .db-box.is-owned {
-  opacity: 0.7;
+  background: color-mix(in srgb, var(--db-owner) 72%, transparent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--db-owner) 80%, #ffffff);
+}
+
+.db-box.db-capture {
+  animation: dbCapture 0.35s ease-out;
 }

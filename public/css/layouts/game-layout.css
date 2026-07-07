@@ -106,10 +106,11 @@
 .game-details {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
+  flex-wrap: wrap;
   background: var(--gradient);
   color: var(--white-color);
   font-size: var(--font-size-md);
@@ -130,11 +131,25 @@
   display: none;
 }
 
+.game-details.has-score-stat.has-high-stat .game-stat[data-stat='score'] {
+  margin-right: auto;
+}
+
+.game-details.has-score-stat.has-high-stat .game-stat[data-stat='high'] {
+  margin-left: auto;
+}
+
 .game-stat-value {
   font-variant-numeric: tabular-nums;
 }
 
-/* Warning (low time, end of turn…): the chip turns red. */
+.game-stat.is-active {
+  padding: 2px 8px;
+  border-radius: var(--border-radius-pill);
+  background: color-mix(in srgb, currentColor 16%, transparent);
+}
+
+/* Warning (low time, end of turn...): the chip turns red. */
 .game-stat.is-low {
   color: var(--error-color);
 }

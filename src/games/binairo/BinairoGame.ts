@@ -2,13 +2,17 @@ import { GameEngine } from '../../shared/engine/GameEngine.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
+import { setupSettingsPanel } from '../../shared/ui/settingsPanel.js';
 import { Stopwatch, formatClock } from '../../shared/ui/stopwatch.js';
 import { playSound } from '../../shared/fx/sound.js';
+import { ParticleSystem, celebrate } from '../../shared/fx/particles.js';
 import { Cell, BinairoState, generatePuzzle, isConflict, isSolved } from './binairo.js';
 
 export class BinairoGame extends GameEngine {
+  private size: 6 | 8 = 8;
   private puzzle: BinairoState = generatePuzzle(8);
   private boardEl: HTMLElement | null = null;
+  private fx: ParticleSystem | null = null;
   private readonly clock = new Stopwatch((s) => this.hud?.set('time', formatClock(s)));
 
   constructor() {
@@ -17,12 +21,29 @@ export class BinairoGame extends GameEngine {
 
   initialize(): void {
     this.boardEl = document.getElementById('board');
+    this.fx = new ParticleSystem();
     this.hud = setupHud([
       { key: 'time', icon: 'clock', label: t('hudTime') },
       { key: 'errors', icon: 'triangle-exclamation', label: t('biErrors') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
     this.hud.set('high', this.scoreManager.getHighScore());
+    setupSettingsPanel([
+      {
+        id: 'size',
+        label: t('size'),
+        value: String(this.size),
+        choices: [
+          { label: '6×6', value: '6' },
+          { label: '8×8', value: '8' },
+        ],
+        onChange: (v) => {
+          this.size = Number(v) as 6 | 8;
+          this.setLeaderboardVariant(String(this.size), `${this.size}×${this.size}`);
+        },
+      },
+    ]);
+    this.setLeaderboardVariant(String(this.size), `${this.size}×${this.size}`);
     this.buildDOM();
     this.boardEl?.addEventListener('click', (e) => this.handleClick(e));
   }
@@ -30,7 +51,7 @@ export class BinairoGame extends GameEngine {
   start(): void {
     if (this.state.isRunning) return;
     dismissStartOverlay();
-    this.puzzle = generatePuzzle(8);
+    this.puzzle = generatePuzzle(this.size);
     this.clock.reset();
     this.clock.start();
     this.resetState();
@@ -43,7 +64,7 @@ export class BinairoGame extends GameEngine {
 
   reset(): void {
     this.clock.reset();
-    this.puzzle = generatePuzzle(8);
+    this.puzzle = generatePuzzle(this.size);
     this.resetState();
     this.buildDOM();
   }
@@ -107,6 +128,7 @@ export class BinairoGame extends GameEngine {
       const bonus = Math.max(0, 1000 - this.clock.seconds * 2);
       this.addScore(500 + bonus);
       playSound('win');
+      celebrate(this.fx, this.boardEl);
       this.gameOver();
     }
   }
@@ -118,6 +140,11 @@ export class BinairoGame extends GameEngine {
     el.textContent = v !== null ? String(v) : '';
     el.classList.toggle('is-zero', v === 0);
     el.classList.toggle('is-one', v === 1);
+    if (v !== null) {
+      el.classList.remove('bi-pop');
+      void el.offsetWidth; // restart the pop animation
+      el.classList.add('bi-pop');
+    }
   }
 
   private updateConflicts(): void {
