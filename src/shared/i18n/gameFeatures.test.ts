@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+import { SCORE_GAMES } from '../score/scoreGames.js';
+
 /**
  * Feature-wiring integrity: every capability a game *declares* in the
  * `vite.config.ts` games array must actually be wired in its source. These are
@@ -117,6 +119,17 @@ describe('game feature wiring', () => {
       `${g.key} declares levels but no setupLevels`
     ).toBe(true);
   });
+
+  it.each(games.filter((g) => g.leaderboard))(
+    '$key with a leaderboard is in the cross-game score registry',
+    (g) => {
+      const registryKeys = new Set(SCORE_GAMES.map((s) => s.key));
+      expect(
+        registryKeys.has(g.key),
+        `${g.key} declares a leaderboard but is missing from SCORE_GAMES (scoreGames.ts)`
+      ).toBe(true);
+    }
+  );
 
   // The leaderboard-per-setting rule: a plain (GameEngine) game that has BOTH a
   // settings knob and a leaderboard must scope the board per setting, otherwise

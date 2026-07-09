@@ -155,6 +155,13 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     muteSound: 'Mute sound',
     enableSound: 'Enable sound',
     tagline: 'Browser games — play instantly, no download',
+    // Cross-game profile ("My Scores").
+    home: 'Home',
+    profileTitle: 'My Scores',
+    profileSubtitle: 'Your best score in every game, on this device.',
+    profileSummary: "You've played {played} of {total} games.",
+    profileBest: 'Best: <strong>{score}</strong>',
+    profileNotPlayed: 'Not played yet',
     // Feedback popover.
     feedback: 'Feedback',
     feedbackHint: 'Rate this game',
@@ -466,6 +473,12 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     muteSound: 'Couper le son',
     enableSound: 'Activer le son',
     tagline: 'Jeux en ligne — jouez tout de suite, sans téléchargement',
+    home: 'Accueil',
+    profileTitle: 'Mes scores',
+    profileSubtitle: 'Ton meilleur score sur chaque jeu, sur cet appareil.',
+    profileSummary: 'Tu as joué à {played} jeux sur {total}.',
+    profileBest: 'Record : <strong>{score}</strong>',
+    profileNotPlayed: 'Pas encore joué',
     // Avis / feedback.
     feedback: 'Votre avis',
     feedbackHint: 'Notez ce jeu',
