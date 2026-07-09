@@ -6,6 +6,7 @@ import {
   SettingsField,
   SettingsPanelHandle,
   difficultyField,
+  numberField,
 } from '../ui/settingsPanel.js';
 import { runCountdown } from '../ui/countdown.js';
 import { CountdownTimer } from '../ui/countdownTimer.js';
@@ -49,6 +50,20 @@ export interface QuizGameConfig extends GameConfig {
   timedSeconds?: number;
   /** Seconds to answer each multiplayer race question (default 20). */
   answerSeconds?: number;
+  /** Starting lives in survival mode (default 3). */
+  survivalLives?: number;
+
+  // --- Optional player-facing settings (each opt-in: pass a few values to add a
+  // segmented control to the shared settings panel; omit to keep the fixed value).
+
+  /** Selectable question counts (classic + race length). Include {@link rounds}. */
+  roundChoices?: number[];
+  /** Selectable timed-mode durations in seconds. Include {@link timedSeconds}. */
+  timeChoices?: number[];
+  /** Selectable per-question race timeouts in seconds. Include {@link answerSeconds}. */
+  answerChoices?: number[];
+  /** Selectable survival lives. Include {@link survivalLives}. */
+  livesChoices?: number[];
 }
 
 /**
@@ -81,15 +96,21 @@ export abstract class QuizGame extends GameEngine {
   protected mode: QuizMode = 'classic';
   /** Remaining lives in Survival mode. */
   private lives = 0;
+  /** Starting lives in survival mode (settings-adjustable). */
+  private survivalLives: number;
 
   protected stats: QuizStats = emptyStats();
   protected current: Question | null = null;
   private roundIndex = 0;
 
   private readonly basePoints: number;
-  private readonly rounds: number;
-  private readonly timedSeconds: number;
-  private readonly answerSeconds: number;
+  private rounds: number;
+  private timedSeconds: number;
+  private answerSeconds: number;
+  private readonly roundChoices?: number[];
+  private readonly timeChoices?: number[];
+  private readonly answerChoices?: number[];
+  private readonly livesChoices?: number[];
 
   private readonly timer = new CountdownTimer();
   private readonly answerTimer = new CountdownTimer();
@@ -120,9 +141,14 @@ export abstract class QuizGame extends GameEngine {
   constructor(config: QuizGameConfig) {
     super(config);
     this.basePoints = config.basePoints ?? 100;
-    this.rounds = config.rounds ?? 10;
-    this.timedSeconds = config.timedSeconds ?? 60;
-    this.answerSeconds = config.answerSeconds ?? 20;
+    this.rounds = config.rounds ?? config.roundChoices?.[0] ?? 10;
+    this.timedSeconds = config.timedSeconds ?? config.timeChoices?.[0] ?? 60;
+    this.answerSeconds = config.answerSeconds ?? config.answerChoices?.[0] ?? 20;
+    this.survivalLives = config.survivalLives ?? config.livesChoices?.[0] ?? SURVIVAL_LIVES;
+    this.roundChoices = config.roundChoices;
+    this.timeChoices = config.timeChoices;
+    this.answerChoices = config.answerChoices;
+    this.livesChoices = config.livesChoices;
   }
 
   // --- Hooks a concrete game implements / overrides -------------------------
@@ -217,7 +243,55 @@ export abstract class QuizGame extends GameEngine {
         this.restartRound();
       },
     };
-    this.settingsPanel = setupSettingsPanel([difficulty, ...this.extraSettings(), mode]);
+    const secs = (n: number): string => `${n}s`;
+    const fields: SettingsField[] = [difficulty, ...this.extraSettings(), mode];
+    if (this.roundChoices) {
+      fields.push(
+        numberField('rounds', t('roundsSetting'), this.rounds, this.roundChoices, (n) => {
+          this.rounds = n;
+          this.restartRound();
+        })
+      );
+    }
+    if (this.timeChoices) {
+      fields.push(
+        numberField(
+          'time',
+          t('timeSetting'),
+          this.timedSeconds,
+          this.timeChoices,
+          (n) => {
+            this.timedSeconds = n;
+            this.restartRound();
+          },
+          secs
+        )
+      );
+    }
+    if (this.answerChoices) {
+      fields.push(
+        numberField(
+          'answerTime',
+          t('answerTimeSetting'),
+          this.answerSeconds,
+          this.answerChoices,
+          (n) => {
+            this.answerSeconds = n;
+            this.restartRound();
+          },
+          secs
+        )
+      );
+    }
+    if (this.livesChoices) {
+      fields.push(
+        numberField('lives', t('livesSetting'), this.survivalLives, this.livesChoices, (n) => {
+          this.survivalLives = n;
+          this.restartRound();
+        })
+      );
+    }
+    this.settingsPanel = setupSettingsPanel(fields);
   }
 
   /** Stops the current round and optionally starts a fresh one. */
@@ -241,7 +315,7 @@ export abstract class QuizGame extends GameEngine {
     if (variant) this.setLeaderboardVariant(variant.key, variant.label);
     this.stats = emptyStats();
     this.roundIndex = 0;
-    this.lives = SURVIVAL_LIVES;
+    this.lives = this.survivalLives;
     this.locked = false;
 
     if (this.netMode === 'net') {

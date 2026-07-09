@@ -64,6 +64,10 @@ export class ConjugationGame extends QuizGame {
       rounds: 10,
       timedSeconds: 75,
       answerSeconds: 30,
+      roundChoices: [5, 10, 20],
+      timeChoices: [45, 75, 120],
+      answerChoices: [15, 30, 45],
+      livesChoices: [1, 3, 5],
     });
   }
 

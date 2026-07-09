@@ -43,6 +43,11 @@ export class GeoGame extends QuizGame {
       basePoints: 100,
       rounds: 10,
       timedSeconds: 60,
+      answerSeconds: 20,
+      roundChoices: [5, 10, 20],
+      timeChoices: [30, 60, 120],
+      answerChoices: [10, 20, 30],
+      livesChoices: [1, 3, 5],
     });
   }
 

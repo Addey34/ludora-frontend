@@ -71,6 +71,30 @@ export function languageField(value: string, onChange: (value: string) => void):
   };
 }
 
+/**
+ * Ready-made **numeric-choice** field: a segmented control over a small set of
+ * numbers (question count, timer seconds, lives…). Reusable by any game that lets
+ * the player pick among a few numeric values. `format` renders each choice's label
+ * (e.g. `(n) => `${n}s``); `onChange` receives the picked value already parsed back
+ * to a number.
+ */
+export function numberField(
+  id: string,
+  label: string,
+  value: number,
+  choices: number[],
+  onChange: (value: number) => void,
+  format: (n: number) => string = String
+): SettingsField {
+  return {
+    id,
+    label,
+    value: String(value),
+    choices: choices.map((n) => ({ label: format(n), value: String(n) })),
+    onChange: (v) => onChange(Number(v)),
+  };
+}
+
 /** Handle returned by {@link setupSettingsPanel}. */
 export interface SettingsPanelHandle {
   /** Greys out and blocks the whole panel (e.g. while in a multiplayer session). */

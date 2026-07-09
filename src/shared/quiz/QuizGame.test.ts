@@ -103,6 +103,73 @@ class ToyQuizGame extends QuizGame {
   }
 }
 
+class ConfigToyQuizGame extends QuizGame {
+  constructor(config: Record<string, unknown>) {
+    super({ storageKey: 'config-toy-quiz-test', ...config });
+  }
+
+  protected makeQuestion(): Question {
+    return { prompt: 'Q', answer: 'A', choices: ['A', 'B'] };
+  }
+
+  setModeForTest(mode: 'classic' | 'timed' | 'survival'): void {
+    this.mode = mode;
+  }
+
+  readNumber(key: 'rounds' | 'timedSeconds' | 'answerSeconds' | 'survivalLives' | 'lives'): number {
+    return (this as unknown as Record<string, number>)[key];
+  }
+}
+
+describe('QuizGame configurable settings', () => {
+  beforeEach(() => {
+    document.body.innerHTML = '<div class="game-details"></div><div id="board"></div>';
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+    localStorage.clear();
+  });
+
+  it('defaults each value to the first choice when no explicit value is given', async () => {
+    const game = new ConfigToyQuizGame({
+      roundChoices: [7, 10, 20],
+      timeChoices: [45, 60],
+      answerChoices: [15, 30],
+      livesChoices: [2, 4],
+    });
+    await game.initialize();
+
+    expect(game.readNumber('rounds')).toBe(7);
+    expect(game.readNumber('timedSeconds')).toBe(45);
+    expect(game.readNumber('answerSeconds')).toBe(15);
+    expect(game.readNumber('survivalLives')).toBe(2);
+  });
+
+  it('keeps an explicit value even when choices are provided', async () => {
+    const game = new ConfigToyQuizGame({ rounds: 10, roundChoices: [5, 10, 20] });
+    await game.initialize();
+    expect(game.readNumber('rounds')).toBe(10);
+  });
+
+  it('falls back to the fixed defaults when no choices are provided (backward compatible)', async () => {
+    const game = new ConfigToyQuizGame({});
+    await game.initialize();
+    expect(game.readNumber('rounds')).toBe(10);
+    expect(game.readNumber('timedSeconds')).toBe(60);
+    expect(game.readNumber('answerSeconds')).toBe(20);
+    expect(game.readNumber('survivalLives')).toBe(3);
+  });
+
+  it('starts survival mode with the configured number of lives', async () => {
+    const game = new ConfigToyQuizGame({ livesChoices: [5, 3, 1] });
+    await game.initialize();
+    game.setModeForTest('survival');
+    game.start();
+    expect(game.readNumber('lives')).toBe(5);
+  });
+});
+
 describe('QuizGame lifecycle', () => {
   beforeEach(() => {
     vi.useFakeTimers();

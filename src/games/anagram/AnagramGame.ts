@@ -22,6 +22,10 @@ export class AnagramGame extends QuizGame {
       rounds: 10,
       timedSeconds: 75,
       answerSeconds: 25,
+      roundChoices: [5, 10, 20],
+      timeChoices: [45, 75, 120],
+      answerChoices: [15, 25, 40],
+      livesChoices: [1, 3, 5],
     });
   }
 
