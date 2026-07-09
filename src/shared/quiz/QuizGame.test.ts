@@ -1,4 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+vi.mock('../fx/sound.js', () => ({ playSound: vi.fn() }));
 import { QuizGame } from './QuizGame.js';
 import {
   OP_ANSWER,
@@ -42,11 +44,27 @@ class FakeNet implements NetMatch {
   }
 }
 
-class ToyQuizGame extends QuizGame {
+class TypedToyQuizGame extends QuizGame {
   private next = 0;
 
   constructor() {
-    super({ storageKey: 'toy-quiz-test', rounds: 2, basePoints: 100 });
+    super({ storageKey: 'typed-toy-quiz-test', rounds: 2, basePoints: 100 });
+  }
+
+  protected makeQuestion(): Question {
+    this.next += 1;
+    return {
+      prompt: 'Typed question ' + this.next,
+      answer: '42',
+    };
+  }
+}
+
+class ToyQuizGame extends QuizGame {
+  private next = 0;
+
+  constructor(answerSeconds = 20) {
+    super({ storageKey: 'toy-quiz-test', rounds: 2, basePoints: 100, answerSeconds });
   }
 
   protected makeQuestion(): Question {
@@ -79,7 +97,59 @@ class ToyQuizGame extends QuizGame {
   isLockedForTest(): boolean {
     return this.locked;
   }
+
+  restartRoundForTest(forceStart = false): void {
+    this.restartRound(forceStart);
+  }
 }
+
+describe('QuizGame lifecycle', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    document.body.innerHTML = '<div class="game-details"></div><div id="board"></div>';
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    document.body.innerHTML = '';
+    localStorage.clear();
+  });
+
+  it('keeps the quiz idle after initialization until Play starts it', async () => {
+    const game = new ToyQuizGame();
+    await game.initialize();
+
+    expect(game.getState().isRunning).toBe(false);
+    expect(document.querySelector('[data-stat="score"]')?.hasAttribute('hidden')).toBe(true);
+    expect(document.querySelector('[data-stat="progress"]')?.hasAttribute('hidden')).toBe(true);
+  });
+
+  it('does not start the quiz when settings restart before Play', async () => {
+    const game = new ToyQuizGame();
+    await game.initialize();
+
+    game.restartRoundForTest();
+
+    expect(game.getState().isRunning).toBe(false);
+    expect(game.currentQuestionForTest()).toBeNull();
+  });
+
+  it('clears typed answer result classes before rendering the next question', async () => {
+    const game = new TypedToyQuizGame();
+    await game.initialize();
+
+    game.start();
+    (game as unknown as { answer(given: string): void }).answer('wrong');
+
+    const answer = document.querySelector('.quiz-answer');
+    expect(answer?.classList.contains('is-wrong')).toBe(true);
+
+    vi.advanceTimersByTime(1_150);
+
+    expect(answer?.classList.contains('is-wrong')).toBe(false);
+    expect(answer?.classList.contains('is-correct')).toBe(false);
+  });
+});
 
 describe('QuizGame multiplayer race', () => {
   beforeEach(() => {
@@ -119,6 +189,52 @@ describe('QuizGame multiplayer race', () => {
     expect(results[1]?.final).toBe(true);
   });
 
+  it('uses the configured multiplayer answer timeout', async () => {
+    const game = new ToyQuizGame(5);
+    await game.initialize();
+    const net = new FakeNet('host');
+    game.beginNetForTest(net);
+
+    game.start();
+    vi.advanceTimersByTime(4_999);
+    expect(net.sent.some((m) => m.op === OP_RESULT)).toBe(false);
+
+    vi.advanceTimersByTime(1);
+    const result = net.sent.find((m) => m.op === OP_RESULT)?.data as RaceResult;
+    expect(result.correct).toEqual([false, false]);
+  });
+
+  it('shows the multiplayer answer countdown for the host', async () => {
+    const game = new ToyQuizGame(5);
+    await game.initialize();
+    const net = new FakeNet('host');
+    game.beginNetForTest(net);
+
+    game.start();
+
+    const time = document.querySelector('[data-stat="time"] .game-stat-value');
+    expect(time?.textContent).toBe('5s');
+
+    vi.advanceTimersByTime(1000);
+    expect(time?.textContent).toBe('4s');
+  });
+
+  it('shows the multiplayer answer countdown for the guest', async () => {
+    const game = new ToyQuizGame(5);
+    await game.initialize();
+    const net = new FakeNet('guest');
+    net.seat = 1;
+    game.beginNetForTest(net);
+    game.start();
+
+    net.deliver(OP_QUESTION, { roundIndex: 1, prompt: 'Remote question', choices: ['A', 'B'] });
+
+    const time = document.querySelector('[data-stat="time"] .game-stat-value');
+    expect(time?.textContent).toBe('5s');
+
+    vi.advanceTimersByTime(1000);
+    expect(time?.textContent).toBe('4s');
+  });
   it('locks answers after an authoritative result arrives', async () => {
     const game = new ToyQuizGame();
     await game.initialize();

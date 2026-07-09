@@ -65,6 +65,10 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     mpCodeAria: 'Session code to join',
     mpCopyCode: 'Copy code',
     mpStart: 'Start',
+    mpWaitingPlayer: 'Waiting for another player to join.',
+    mpInProgress: 'Game in progress',
+    mpRoleHost: 'You are the host.',
+    mpRoleGuest: 'You are the guest.',
     mpWaitingHost: 'Waiting for the host to start…',
     mpStillWaiting:
       'Still waiting — the host may have already started or stepped away. Leave and try again.',
@@ -356,6 +360,10 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     mpCodeAria: 'Code de session à rejoindre',
     mpCopyCode: 'Copier le code',
     mpStart: 'Démarrer',
+    mpWaitingPlayer: "En attente d'un autre joueur.",
+    mpInProgress: 'Partie en cours',
+    mpRoleHost: "Vous êtes l'hôte.",
+    mpRoleGuest: "Vous êtes l'invité.",
     mpWaitingHost: "En attente du lancement par l'hôte…",
     mpStillWaiting:
       "Toujours en attente — l'hôte a peut-être déjà lancé ou quitté. Quittez et réessayez.",

@@ -1,7 +1,13 @@
 import { GameEngine, GameConfig } from '../engine/GameEngine.js';
 import { setupHud } from '../ui/hud.js';
 import { dismissStartOverlay } from '../ui/startOverlay.js';
-import { setupSettingsPanel, SettingsField, difficultyField } from '../ui/settingsPanel.js';
+import {
+  setupSettingsPanel,
+  SettingsField,
+  SettingsPanelHandle,
+  difficultyField,
+} from '../ui/settingsPanel.js';
+import { runCountdown } from '../ui/countdown.js';
 import { CountdownTimer } from '../ui/countdownTimer.js';
 import { playSound } from '../fx/sound.js';
 import { t } from '../i18n/i18n.js';
@@ -41,6 +47,8 @@ export interface QuizGameConfig extends GameConfig {
   rounds?: number;
   /** Seconds per round in timed mode (default 60). */
   timedSeconds?: number;
+  /** Seconds to answer each multiplayer race question (default 20). */
+  answerSeconds?: number;
 }
 
 /**
@@ -62,14 +70,12 @@ export interface QuizGameConfig extends GameConfig {
  * stale timeout advance a fresh round.
  */
 const SURVIVAL_LIVES = 3;
-/** Seconds before the host auto-advances a round (no answer received). */
-const ANSWER_SECONDS = 20;
-
 export abstract class QuizGame extends GameEngine {
   protected boardEl: HTMLElement | null = null;
   private promptEl: HTMLElement | null = null;
   private answerEl: HTMLElement | null = null;
   private feedbackEl: HTMLElement | null = null;
+  private settingsPanel: SettingsPanelHandle | null = null;
 
   protected difficulty: Difficulty = 'easy';
   protected mode: QuizMode = 'classic';
@@ -83,8 +89,10 @@ export abstract class QuizGame extends GameEngine {
   private readonly basePoints: number;
   private readonly rounds: number;
   private readonly timedSeconds: number;
+  private readonly answerSeconds: number;
 
   private readonly timer = new CountdownTimer();
+  private readonly answerTimer = new CountdownTimer();
   /** Bumped on every start/reset so a pending "next question" timeout bails. */
   private gen = 0;
   /** True between answering and the next question (blocks double answers). */
@@ -104,8 +112,8 @@ export abstract class QuizGame extends GameEngine {
   private raceStreaks: number[] = [];
   /** Host-only: active round state while waiting for all answers. */
   private currentRound: RaceRound | null = null;
-  /** Answer timeout handle (host only). */
-  private answerTimer: ReturnType<typeof setTimeout> | null = null;
+  /** Invalidates a pending multiplayer start countdown when a remote question arrives. */
+  private netStartToken = 0;
   /** The last answer this client submitted (used to mark the UI on OP_RESULT). */
   private myLastAnswer = '';
 
@@ -114,6 +122,7 @@ export abstract class QuizGame extends GameEngine {
     this.basePoints = config.basePoints ?? 100;
     this.rounds = config.rounds ?? 10;
     this.timedSeconds = config.timedSeconds ?? 60;
+    this.answerSeconds = config.answerSeconds ?? 20;
   }
 
   // --- Hooks a concrete game implements / overrides -------------------------
@@ -166,7 +175,7 @@ export abstract class QuizGame extends GameEngine {
     this.setupQuizSettings();
     this.renderScoreTable();
     await this.loadData();
-    this.updateHud();
+    this.clearHud();
   }
 
   private buildScaffold(): void {
@@ -208,14 +217,18 @@ export abstract class QuizGame extends GameEngine {
         this.restartRound();
       },
     };
-    setupSettingsPanel([difficulty, ...this.extraSettings(), mode]);
+    this.settingsPanel = setupSettingsPanel([difficulty, ...this.extraSettings(), mode]);
   }
 
-  /** Stops any running round and starts a fresh one (used by settings changes). */
-  protected restartRound(): void {
+  /** Stops the current round and optionally starts a fresh one. */
+  protected restartRound(forceStart = false): void {
+    const wasRunning = this.state.isRunning;
     this.overlay.hide();
     this.stop();
-    this.start();
+    this.reset();
+    if (forceStart || wasRunning) {
+      this.start();
+    }
   }
 
   start(): void {
@@ -274,7 +287,7 @@ export abstract class QuizGame extends GameEngine {
     if (this.promptEl) this.promptEl.textContent = '';
     if (this.answerEl) this.answerEl.replaceChildren();
     if (this.feedbackEl) this.feedbackEl.textContent = '';
-    this.updateHud();
+    this.clearHud();
   }
 
   stop(): void {
@@ -287,6 +300,8 @@ export abstract class QuizGame extends GameEngine {
     this.overlay.hide();
     if (this.netMode === 'net' && this.net?.role === 'host') {
       this.net.send(OP_RESTART, null);
+      this.startNetRoundWithCountdown(this.net);
+      return;
     }
     this.reset();
     this.start();
@@ -307,21 +322,24 @@ export abstract class QuizGame extends GameEngine {
         this.netMode = 'net';
         this.mySeat = net.seat;
         this.netPlayers = net.players;
+        this.settingsPanel?.setDisabled(true);
         net.onMessage((msg) => this.handleNetMessage(msg));
         net.onPeerLeave(() => this.returnToSolo());
         net.onClose(() => this.returnToSolo());
-        this.restartRound();
+        this.startNetRoundWithCountdown(net);
       },
       onSessionEnd: () => this.returnToSolo(),
     });
   }
 
   private returnToSolo(): void {
+    this.netStartToken += 1;
     this.net = null;
     this.netMode = 'solo';
     this.mySeat = 0;
     this.netPlayers = 2;
-    this.restartRound();
+    this.settingsPanel?.setDisabled(false);
+    this.restartRound(true);
   }
 
   private handleNetMessage(msg: MatchMessage): void {
@@ -331,12 +349,18 @@ export abstract class QuizGame extends GameEngine {
       // Guest receives a new question from the host.
       const q = data as RaceQuestion | null;
       if (!q) return;
+      this.netStartToken += 1;
+      if (!this.state.isRunning) {
+        dismissStartOverlay();
+        this.state.isRunning = true;
+      }
       this.locked = false;
       this.roundIndex = q.roundIndex;
       // Build a stub Question (answer intentionally blank until OP_RESULT).
       this.current = { prompt: q.prompt, answer: '', choices: q.choices };
       this.renderQuestion();
       this.updateHud();
+      this.startPassiveAnswerTimer(this.gen);
       return;
     }
 
@@ -365,12 +389,21 @@ export abstract class QuizGame extends GameEngine {
 
     if (opCode === OP_RESTART) {
       // Host restarted — guest follows.
-      if (this.net?.role === 'guest') {
-        this.overlay.hide();
-        this.reset();
-        this.start();
+      if (this.net?.role === 'guest' && this.net) {
+        this.startNetRoundWithCountdown(this.net);
       }
     }
+  }
+
+  private startNetRoundWithCountdown(net: NetMatch): void {
+    this.overlay.hide();
+    this.stop();
+    this.reset();
+    const token = (this.netStartToken += 1);
+    void runCountdown(3).then(() => {
+      if (this.netStartToken !== token || this.net !== net || this.netMode !== 'net') return;
+      this.start();
+    });
   }
 
   // --- Round flow -----------------------------------------------------------
@@ -413,6 +446,7 @@ export abstract class QuizGame extends GameEngine {
     if (!question || !this.promptEl || !this.answerEl || !this.feedbackEl) return;
 
     this.promptEl.innerHTML = question.prompt;
+    this.answerEl.classList.remove('is-correct', 'is-wrong');
     this.feedbackEl.textContent = '';
     this.feedbackEl.className = 'quiz-feedback';
 
@@ -593,25 +627,44 @@ export abstract class QuizGame extends GameEngine {
 
   private startAnswerTimer(gen: number): void {
     this.clearAnswerTimer();
-    this.answerTimer = setTimeout(() => {
-      if (gen !== this.gen || !this.currentRound) return;
+    this.startAnswerClock(gen, () => {
+      if (!this.currentRound) return;
       // Fill any remaining undefined slots with null (timed out).
       for (let i = 0; i < this.netPlayers; i++) {
         if (this.currentRound.answers[i] === undefined) this.currentRound.answers[i] = null;
       }
       this.broadcastResult(gen);
-    }, ANSWER_SECONDS * 1000);
+    });
+  }
+
+  private startPassiveAnswerTimer(gen: number): void {
+    this.clearAnswerTimer();
+    this.startAnswerClock(gen, () => this.disableAnswerControls());
+  }
+
+  private startAnswerClock(gen: number, onExpire: () => void): void {
+    this.answerTimer.start({
+      seconds: this.answerSeconds,
+      onTick: (remaining) => {
+        if (gen !== this.gen) return;
+        this.hud?.set('time', `${remaining}s`);
+        this.hud?.toggle('time', 'is-low', remaining <= 5);
+      },
+      onExpire: () => {
+        if (gen === this.gen) onExpire();
+      },
+    });
   }
 
   private clearAnswerTimer(): void {
-    if (this.answerTimer !== null) {
-      clearTimeout(this.answerTimer);
-      this.answerTimer = null;
-    }
+    this.answerTimer.stop();
+    this.hud?.set('time', null);
+    this.hud?.toggle('time', 'is-low', false);
   }
 
   /** Applied by both host and guest when OP_RESULT is received. */
   private applyRaceResult(result: RaceResult): void {
+    this.clearAnswerTimer();
     const gen = this.gen;
     const myCorrect = result.correct[this.mySeat] ?? false;
     this.locked = true;
@@ -699,6 +752,22 @@ export abstract class QuizGame extends GameEngine {
   }
 
   // --- HUD ------------------------------------------------------------------
+
+  private clearHud(): void {
+    this.hud?.set('time', null);
+    this.hud?.set('progress', null);
+    this.hud?.set('lives', null);
+    this.hud?.set('score', null);
+    this.hud?.set('streak', null);
+    this.hud?.set('high', null);
+    this.hud?.set('opponent', null);
+  }
+
+  protected onScoreSaved(): void {
+    super.onScoreSaved();
+    this.overlay.hide();
+    this.restartAfterGameOver();
+  }
 
   private updateHud(): void {
     this.hud?.set('score', this.state.score);

@@ -32,6 +32,7 @@ const USE_SSL = true;
 /** Code alphabet without look-alikes (no 0/O, 1/I/L). */
 const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const CODE_LENGTH = 4;
+const DEFAULT_SCOPE = 'gameszone';
 
 /**
  * Op codes at or above this are **reserved** for the lobby/seat protocol and are
@@ -63,6 +64,19 @@ export interface LobbySnapshot {
 }
 
 /** A live relayed match the game drives. */
+export interface MatchPresenceLike {
+  session_id?: string;
+}
+
+export function hasRemotePresence(
+  presences: readonly MatchPresenceLike[] | undefined,
+  selfId: string
+): boolean {
+  return (presences ?? []).some(
+    (presence) => presence.session_id !== undefined && presence.session_id !== selfId
+  );
+}
+
 export interface NetMatch {
   role: MatchRole;
   matchId: string;
@@ -97,14 +111,38 @@ export interface NetMatch {
 
 let socket: Socket | null = null;
 
+function dropSocket(s: Socket): void {
+  if (socket !== s) return;
+  socket = null;
+}
+
 /** Lazily opens and connects the singleton socket with the app's session. */
 async function getSocket(): Promise<Socket> {
+  if (socket) return socket;
+
   const session = await getSession();
-  if (!socket) {
-    socket = getClient().createSocket(USE_SSL, false);
-    await socket.connect(session, true);
+  const nextSocket = getClient().createSocket(USE_SSL, false);
+  nextSocket.ondisconnect = () => dropSocket(nextSocket);
+  try {
+    await nextSocket.connect(session, true);
+  } catch (err) {
+    try {
+      nextSocket.disconnect(false);
+    } catch {} // eslint-disable-line no-empty
+    throw err;
   }
-  return socket;
+  socket = nextSocket;
+  return nextSocket;
+}
+
+async function createNamedMatch(name: string): Promise<{ socket: Socket; match: Match }> {
+  const s = await getSocket();
+  try {
+    return { socket: s, match: await s.createMatch(name) };
+  } catch (err) {
+    dropSocket(s);
+    throw err;
+  }
 }
 
 /** Generates a short, human-friendly session code. */
@@ -114,6 +152,14 @@ function generateCode(): string {
     code += CODE_ALPHABET[Math.floor(Math.random() * CODE_ALPHABET.length)];
   }
   return code;
+}
+
+export function scopedMatchName(scope: string | undefined, code: string): string {
+  const safeScope = (scope ?? DEFAULT_SCOPE)
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]+/g, '-');
+  return `${safeScope || DEFAULT_SCOPE}:${code}`;
 }
 
 /** Wraps a joined Nakama match into a {@link NetMatch}. */
@@ -302,11 +348,11 @@ async function buildNetMatch(
  * host-side {@link NetMatch}. Rejects if the backend is unreachable.
  *
  * @param capacity Maximum human seats (default 2 for 1-v-1 games).
+ * @param scope Internal game/session namespace. The visible code stays short.
  */
-export async function createSession(capacity = 2): Promise<NetMatch> {
-  const s = await getSocket();
+export async function createSession(capacity = 2, scope?: string): Promise<NetMatch> {
   const code = generateCode();
-  const match = await s.createMatch(code);
+  const { match } = await createNamedMatch(scopedMatchName(scope, code));
   return buildNetMatch(match, code, 'host', capacity);
 }
 
@@ -315,10 +361,19 @@ export async function createSession(capacity = 2): Promise<NetMatch> {
  * {@link NetMatch}. Rejects if the backend is unreachable.
  *
  * @param capacity Maximum human seats (must match the host's).
+ * @param scope Internal game/session namespace. Must match the host's scope.
  */
-export async function joinSession(code: string, capacity = 2): Promise<NetMatch> {
-  const s = await getSocket();
+export async function joinSession(code: string, capacity = 2, scope?: string): Promise<NetMatch> {
   const normalized = code.trim().toUpperCase();
-  const match = await s.createMatch(normalized);
+  const { socket: s, match } = await createNamedMatch(scopedMatchName(scope, normalized));
+  const selfId = match.self?.session_id ?? '';
+
+  if (!hasRemotePresence(match.presences, selfId)) {
+    try {
+      await s.leaveMatch(match.match_id);
+    } catch {} // eslint-disable-line no-empty
+    throw new Error('Session not found');
+  }
+
   return buildNetMatch(match, normalized, 'guest', capacity);
 }

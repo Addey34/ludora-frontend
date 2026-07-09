@@ -25,8 +25,10 @@ export interface MultiplayerHandle {
 
 /** Callbacks the game wires into the panel. */
 export interface MultiplayerOptions {
+  /** Internal session namespace. Defaults to the current game key from the URL. */
   /** Maximum human seats (default 2 for 1-v-1; e.g. 4 for Ludo). */
   capacity?: number;
+  scope?: string;
   /** The host has started: begin the match with this (host/guest) match + seat. */
   onSessionStart(net: NetMatch): void;
   /** The session ended (left, or torn down): return to solo/bot play. */
@@ -37,6 +39,12 @@ export interface MultiplayerOptions {
  * Wires the multiplayer panel. Returns null when the shell markup is absent (a
  * game without `multiplayer: true`), so callers can safely ignore the result.
  */
+function currentGameScope(): string {
+  const segments = location.pathname.split('/').filter(Boolean);
+  const gameKey = segments[0] === 'games' ? segments[1] : segments[0];
+  return gameKey ?? 'gameszone';
+}
+
 export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHandle | null {
   const pop = setupPopover({
     control: 'multiplayerControl',
@@ -47,6 +55,7 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
   const { panel, open, close } = pop;
 
   const capacity = opts.capacity ?? 2;
+  const scope = opts.scope ?? currentGameScope();
   let net: NetMatch | null = null;
   let started = false;
   /** Guest-side: fires if the host hasn't started a while after joining. */
@@ -122,6 +131,10 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
    */
   function renderLobby(): void {
     if (!net) return;
+    if (started) {
+      renderStarted();
+      return;
+    }
     const snap = net.lobby();
     const section = document.createElement('div');
     section.className = 'mp-section';
@@ -144,7 +157,7 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
     section.appendChild(roster(snap));
 
     if (net.role === 'host') {
-      const min = capacity === 2 ? 2 : 1;
+      const min = minPlayersToStart();
       const start = document.createElement('button');
       start.type = 'button';
       start.className = 'btn btn--primary';
@@ -152,6 +165,9 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
       start.disabled = snap.count < min;
       start.addEventListener('click', () => net?.startMatch());
       section.appendChild(start);
+      if (start.disabled) {
+        section.appendChild(statusLine(t('mpWaitingPlayer')));
+      }
     } else {
       section.appendChild(statusLine(t('mpWaitingHost')));
       if (joinStale) {
@@ -169,6 +185,27 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
     panel.replaceChildren(title(), section);
   }
 
+  function minPlayersToStart(): number {
+    return capacity === 2 ? 2 : 1;
+  }
+
+  function renderStarted(): void {
+    if (!net) return;
+    const section = document.createElement('div');
+    section.className = 'mp-section';
+    section.appendChild(statusLine(t('mpInProgress')));
+    section.appendChild(roster(net.lobby()));
+    section.appendChild(statusLine(net.role === 'host' ? t('mpRoleHost') : t('mpRoleGuest')));
+
+    const leaveBtn = document.createElement('button');
+    leaveBtn.type = 'button';
+    leaveBtn.className = 'btn btn--secondary';
+    leaveBtn.textContent = t('mpLeave');
+    leaveBtn.addEventListener('click', confirmLeave);
+    section.appendChild(leaveBtn);
+
+    panel.replaceChildren(title(), section);
+  }
   /** Roster line: how many players are in, and a note about bot-filled seats. */
   function roster(snap: LobbySnapshot): HTMLElement {
     const wrap = document.createElement('div');
@@ -177,7 +214,7 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
     count.className = 'mp-roster-count';
     count.innerHTML = `<i class="fas fa-users" aria-hidden="true"></i> ${snap.count}/${snap.capacity}`;
     wrap.appendChild(count);
-    if (snap.capacity > snap.count) {
+    if (!snap.started && snap.capacity > snap.count && minPlayersToStart() === 1) {
       const note = document.createElement('span');
       note.className = 'mp-roster-note';
       note.textContent = t('mpBotsNote');
@@ -197,7 +234,7 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
     open();
     renderConnecting(t('mpCreating'));
     try {
-      net = await createSession(capacity);
+      net = await createSession(capacity, scope);
       wireNet();
       renderLobby();
     } catch {
@@ -211,7 +248,7 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
     open();
     renderConnecting(t('mpConnecting'));
     try {
-      net = await joinSession(code, capacity);
+      net = await joinSession(code, capacity, scope);
       wireNet();
       renderLobby();
       joinTimer = setTimeout(() => {
@@ -236,6 +273,7 @@ export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHand
   function onStarted(): void {
     if (started || !net) return;
     started = true;
+    renderStarted();
     close();
     opts.onSessionStart(net);
   }

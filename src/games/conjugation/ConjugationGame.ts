@@ -63,7 +63,13 @@ export class ConjugationGame extends QuizGame {
       basePoints: 120,
       rounds: 10,
       timedSeconds: 75,
+      answerSeconds: 30,
     });
+  }
+
+  async initialize(): Promise<void> {
+    await super.initialize();
+    this.setupVersus();
   }
 
   protected async loadData(): Promise<void> {

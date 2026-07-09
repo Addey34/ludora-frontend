@@ -46,6 +46,11 @@ export class GeoGame extends QuizGame {
     });
   }
 
+  async initialize(): Promise<void> {
+    await super.initialize();
+    this.setupVersus();
+  }
+
   protected async loadData(): Promise<void> {
     // Content follows the interface language (the flag toggle reloads the page).
     for (const file of [`countries-${getLocale()}.json`, 'countries-en.json']) {

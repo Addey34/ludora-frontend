@@ -16,7 +16,13 @@ export class MathGame extends QuizGame {
       basePoints: 100,
       rounds: 10,
       timedSeconds: 60,
+      answerSeconds: 20,
     });
+  }
+
+  async initialize(): Promise<void> {
+    await super.initialize();
+    this.setupVersus();
   }
 
   protected makeQuestion(): Question {
