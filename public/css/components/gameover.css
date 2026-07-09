@@ -47,6 +47,12 @@
   margin: var(--spacing-xs) 0;
 }
 
+/* Status line (e.g. "waiting for a rematch") is a flex row: center it in the
+   overlay body like the surrounding text-aligned content. */
+.game-over-body .mp-status {
+  justify-content: center;
+}
+
 .game-over-actions {
   display: flex;
   flex-wrap: wrap;

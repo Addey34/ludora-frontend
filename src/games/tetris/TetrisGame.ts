@@ -1,6 +1,7 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
 import type { IRenderer } from '../../shared/engine/IRenderer.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { setupScoreRace, type ScoreRaceHandle } from '../../shared/versus/scoreRaceController.js';
 import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
 import { Difficulty } from '../../shared/bot/difficulty.js';
 import { t } from '../../shared/i18n/i18n.js';
@@ -44,6 +45,7 @@ export class TetrisGame extends GameEngine {
   private boardElement: HTMLElement | null = null;
   private fx: ParticleSystem | null = null;
   private renderer: IRenderer<TetrisGameState> | null = null;
+  private race: ScoreRaceHandle | null = null;
 
   /** Accumulates time since the last drop step (ms). */
   private dropAccumulator: number = 0;
@@ -80,7 +82,25 @@ export class TetrisGame extends GameEngine {
       { key: 'score', icon: 'star', label: t('score') },
       { key: 'lines', icon: 'grip-lines', label: t('hudLines') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
+      { key: 'opponent', icon: 'users', label: t('scoreRaceOpponent') },
     ]);
+
+    this.race = setupScoreRace(this, {
+      finish: { kind: 'toDeath' },
+      getScore: () => this.state.score,
+      isAlive: () => !this.state.isGameOver,
+      finishLocalRace: () => this.gameOver(),
+      restartLocalRace: () => {
+        this.overlay.hide();
+        this.reset();
+        this.start();
+      },
+      onOpponentProgress: (score) => this.hud?.set('opponent', score),
+      onSessionEnd: () => {
+        this.reset();
+        this.start();
+      },
+    });
 
     setupSettingsPanel([
       difficultyField(this.difficulty, (v) => {
@@ -186,8 +206,19 @@ export class TetrisGame extends GameEngine {
       this.minDropInterval,
       this.startLevel
     );
+    this.race?.reset();
     this.updateScoreDisplay();
     this.render();
+  }
+
+  protected onScoreChange(newScore: number): void {
+    super.onScoreChange(newScore);
+    this.race?.reportProgress(newScore, !this.state.isGameOver);
+  }
+
+  protected onGameOver(): void {
+    if (this.race?.reportFinished(this.state.score)) return;
+    super.onGameOver();
   }
 
   protected getGameOverContent(): string {

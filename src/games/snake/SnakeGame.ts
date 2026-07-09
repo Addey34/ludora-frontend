@@ -12,6 +12,7 @@ import { ParticleSystem } from '../../shared/fx/particles.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
 import { playSound } from '../../shared/fx/sound.js';
 import { showToast } from '../../shared/ui/toast.js';
+import { setupScoreRace, type ScoreRaceHandle } from '../../shared/versus/scoreRaceController.js';
 import {
   buildSnakeRenderState,
   createSnakeGameState,
@@ -146,6 +147,7 @@ export class SnakeGame extends GameEngine {
   private renderer: IRenderer<SnakeRenderState> | null = null;
   private visualMode: SnakeVisualMode = readInitialVisualMode();
   private rendererRequestId = 0;
+  private race: ScoreRaceHandle | null = null;
 
   /** Points earned per mouse eaten (base, before combo multiplier). */
   private static readonly FOOD_POINTS = 10;
@@ -202,7 +204,24 @@ export class SnakeGame extends GameEngine {
     this.hud = setupHud([
       { key: 'score', icon: 'star', label: t('score') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
+      { key: 'opponent', icon: 'users', label: t('scoreRaceOpponent') },
     ]);
+    this.race = setupScoreRace(this, {
+      finish: { kind: 'toDeath' },
+      getScore: () => this.state.score,
+      isAlive: () => !this.state.isGameOver,
+      finishLocalRace: () => this.gameOver(),
+      restartLocalRace: () => {
+        this.overlay.hide();
+        this.reset();
+        this.start();
+      },
+      onOpponentProgress: (score) => this.hud?.set('opponent', score),
+      onSessionEnd: () => {
+        this.reset();
+        this.start();
+      },
+    });
 
     setupSettingsPanel([
       difficultyField(this.difficulty, (v) => {
@@ -308,6 +327,16 @@ export class SnakeGame extends GameEngine {
     this.renderer?.render(this.renderState());
   }
 
+  protected onScoreChange(newScore: number): void {
+    super.onScoreChange(newScore);
+    this.race?.reportProgress(newScore, !this.state.isGameOver);
+  }
+
+  protected onGameOver(): void {
+    if (this.race?.reportFinished(this.state.score)) return;
+    super.onGameOver();
+  }
+
   /**
    * Spawns a floating "+N" on the given cell, in the effects layer. The element
    * removes itself at the end of its CSS animation.
@@ -390,6 +419,7 @@ export class SnakeGame extends GameEngine {
     this.renderer?.reset?.();
     this.playBoard?.style.setProperty('--move-ms', `${this.baseInterval}ms`);
     if (this.fxLayer) this.fxLayer.innerHTML = '';
+    this.race?.reset();
     this.updateScoreDisplay();
     this.render();
   }

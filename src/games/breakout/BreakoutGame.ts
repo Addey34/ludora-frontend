@@ -1,6 +1,7 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
 import type { IRenderer } from '../../shared/engine/IRenderer.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { setupScoreRace, type ScoreRaceHandle } from '../../shared/versus/scoreRaceController.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
 import { Difficulty } from '../../shared/bot/difficulty.js';
@@ -45,6 +46,7 @@ export class BreakoutGame extends GameEngine {
   private boardElement: HTMLElement | null = null;
   private fx: ParticleSystem | null = null;
   private renderer: IRenderer<BreakoutGameState> | null = null;
+  private race: ScoreRaceHandle | null = null;
 
   constructor(config: BreakoutConfig = {}) {
     super({ ...config, storageKey: 'breakout-high-scores' });
@@ -61,7 +63,25 @@ export class BreakoutGame extends GameEngine {
       { key: 'level', icon: 'layer-group', label: t('hudLevel') },
       { key: 'lives', icon: 'heart', label: t('hudLives') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
+      { key: 'opponent', icon: 'users', label: t('scoreRaceOpponent') },
     ]);
+
+    this.race = setupScoreRace(this, {
+      finish: { kind: 'toDeath' },
+      getScore: () => this.state.score,
+      isAlive: () => !this.state.isGameOver,
+      finishLocalRace: () => this.gameOver(),
+      restartLocalRace: () => {
+        this.overlay.hide();
+        this.reset();
+        this.start();
+      },
+      onOpponentProgress: (score) => this.hud?.set('opponent', score),
+      onSessionEnd: () => {
+        this.reset();
+        this.start();
+      },
+    });
 
     setupSettingsPanel([
       difficultyField(this.difficulty, (v) => {
@@ -132,9 +152,20 @@ export class BreakoutGame extends GameEngine {
       this.renderer = new BreakoutDOMRenderer(this.boardElement);
     }
     this.breakoutState = createBreakoutState(1, this.maxLives, BASE_SPEED * this.speedMul);
+    this.race?.reset();
     this.addScore(1); // score mirrors the level reached, starts at 1
     this.updateScoreDisplay();
     this.render();
+  }
+
+  protected onScoreChange(newScore: number): void {
+    super.onScoreChange(newScore);
+    this.race?.reportProgress(newScore, !this.state.isGameOver);
+  }
+
+  protected onGameOver(): void {
+    if (this.race?.reportFinished(this.state.score)) return;
+    super.onGameOver();
   }
 
   protected updateScoreDisplay(): void {
