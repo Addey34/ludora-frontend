@@ -467,9 +467,10 @@ const games = [
     key: 'taquin',
     label: 'Sliding Puzzle',
     color: '--color-taquin',
-    mode: 'solo',
+    mode: 'duo',
     leaderboard: true,
     settings: true,
+    multiplayer: true,
     controls: [
       { keys: '<kbd>↑ ↓ ← →</kbd>', action: 'Move the blank tile' },
       { keys: 'Click / tap', action: 'Slide a tile toward the blank' },

@@ -58,6 +58,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     scoreRaceWaitingTitle: 'Run finished',
     scoreRaceWaitingBody: 'Waiting for your opponent to finish.',
     scoreRaceResult: 'Score: <strong>{score}</strong> — Opponent: <strong>{opponent}</strong>',
+    completionRaceResult: 'You: <strong>{you}</strong> — Opponent: <strong>{opponent}</strong>',
     you: 'You',
     me: 'Me',
     opponent: 'Opponent',
@@ -367,6 +368,8 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     scoreRaceWaitingTitle: 'Course terminee',
     scoreRaceWaitingBody: "En attente de la fin de course de l'adversaire.",
     scoreRaceResult: 'Score : <strong>{score}</strong> — Adversaire : <strong>{opponent}</strong>',
+    completionRaceResult:
+      'Vous : <strong>{you}</strong> — Adversaire : <strong>{opponent}</strong>',
     you: 'Vous',
     me: 'Moi',
     opponent: 'Adversaire',

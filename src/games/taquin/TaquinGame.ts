@@ -8,6 +8,10 @@ import { playSound } from '../../shared/fx/sound.js';
 import { ParticleSystem, celebrate } from '../../shared/fx/particles.js';
 import { Difficulty } from '../../shared/bot/difficulty.js';
 import {
+  setupCompletionRace,
+  type CompletionRaceHandle,
+} from '../../shared/versus/completionRaceController.js';
+import {
   TaquinState,
   Dir,
   initial,
@@ -45,6 +49,7 @@ export class TaquinGame extends GameEngine {
   private difficulty: Difficulty = 'easy';
   private puzzle: TaquinState = initial(3);
   private moves = 0;
+  private race: CompletionRaceHandle | null = null;
 
   private readonly clock = new Stopwatch((s) => this.hud?.set('time', formatClock(s)));
 
@@ -63,7 +68,16 @@ export class TaquinGame extends GameEngine {
       { key: 'moves', icon: 'arrows-up-down-left-right', label: t('hudMoves') },
       { key: 'time', icon: 'clock', label: t('hudTime') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
+      { key: 'opponent', icon: 'users', label: t('scoreRaceOpponent') },
     ]);
+    this.race = setupCompletionRace<TaquinState>(this, {
+      finish: { kind: 'bestTime' },
+      generateChallenge: () => shuffle(initial(this.def.size), this.def.shuffleMoves),
+      applyChallenge: (seed) => this.applyChallenge(seed),
+      getElapsedMs: () => this.clock.seconds * 1000,
+      onOpponentStatus: (timeMs) =>
+        this.hud?.set('opponent', timeMs === null ? '—' : formatClock(Math.round(timeMs / 1000))),
+    });
     this.setupEventListeners();
     setupSettingsPanel([
       difficultyField(this.difficulty, (v) => {
@@ -117,10 +131,25 @@ export class TaquinGame extends GameEngine {
     this.hud?.set('high', this.scoreManager.getHighScore());
   }
 
+  /** Builds and starts the identical shared round from a host-sent challenge. */
+  private applyChallenge(seed: TaquinState): void {
+    this.overlay.hide();
+    this.resetState();
+    this.puzzle = seed;
+    this.moves = 0;
+    this.clock.reset();
+    this.clock.start();
+    this.buildBoard();
+    this.hud?.set('moves', 0);
+    this.hud?.set('time', formatClock(0));
+    this.hud?.set('high', this.scoreManager.getHighScore());
+    this.state.isRunning = true;
+  }
+
   private buildBoard(): void {
     const board = this.boardEl;
     if (!board) return;
-    const { size } = this.def;
+    const size = this.puzzle.size;
     board.style.setProperty('--size', String(size));
     board.innerHTML = '';
     this.tileEls = [];
@@ -197,6 +226,11 @@ export class TaquinGame extends GameEngine {
 
   update(_dt: number): void {}
   render(): void {}
+
+  protected onGameOver(): void {
+    if (this.race?.reportSolved(this.clock.seconds * 1000)) return;
+    super.onGameOver();
+  }
 
   protected getGameOverTitle(): string {
     return t('solved');

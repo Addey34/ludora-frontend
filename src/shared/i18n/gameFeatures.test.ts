@@ -104,7 +104,10 @@ describe('game feature wiring', () => {
   it.each(games.filter((g) => g.multiplayer))('$key with multiplayer wires versus', (g) => {
     const src = gameSource(g.key);
     const wired =
-      /setupVersus/.test(src) || /setupMultiplayerPanel/.test(src) || /setupScoreRace/.test(src);
+      /setupVersus/.test(src) ||
+      /setupMultiplayerPanel/.test(src) ||
+      /setupScoreRace/.test(src) ||
+      /setupCompletionRace/.test(src);
     expect(wired, `${g.key} declares multiplayer but never wires it`).toBe(true);
   });
 
