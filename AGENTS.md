@@ -52,10 +52,33 @@ test checks it (`gameFeatures.test.ts`):
 - `multiplayer: true` → `setupVersus` / `setupMultiplayerPanel`.
 - `levels: true` → `setupLevels`.
 
+## Scope discipline (avoid the infinite refactor)
+
+The framework is mature. The main risk now is not missing abstraction — it's endless
+churn. These rules keep a task from growing into a rewrite:
+
+1. **One concern per working tree / commit.** Never mix work from different roadmap
+   phases in one uncommitted change. An architecture migration, a new multiplayer
+   contract, a game template and a premium (3D) renderer are **four commits, not one**.
+   If `git status` spans more than one concern, split it before continuing.
+2. **A pattern is proven on a reference, not propagated on sight.** Migrating the
+   remaining N games to a new pattern (State/Logic/Renderer split, Three.js, …) is
+   **not a task**. One or two reference games are enough. Migrate one more game **only
+   when you're already reopening it for another reason** — never for consistency alone.
+   (Same logic as the "don't split big game files" decision.)
+3. **Respect phase order.** Don't pull Phase 3/5 work (template, 3D, premium) forward
+   while the current phase isn't **committed and browser-validated**. 3D is a Phase 5
+   bet, gated by traffic proven in Phase 4 — not a Phase 1/2 activity.
+4. **"Finished" is measurable.** A working tree is finished when every changed file
+   belongs to the **same concern** and both `verify` **and** that concern's manual
+   validation pass. Don't commit a bundle you can't describe in one sentence.
+
 ## What NOT to do
 
 - Don't restructure the repo into "packages" for the aesthetics of it — the `shared/`
   layout already separates the framework from the games. Churn without payoff is a cost.
 - Don't add contract flags/tests for features that don't exist yet (stats, achievements,
   analytics…). Add the flag **when** you build the feature, not before.
+- Don't migrate a game to State/Logic/Renderer or add a Three.js view "to be consistent."
+  See Scope discipline #2.
 - Don't commit unless asked. Don't skip hooks or bypass `verify`.
