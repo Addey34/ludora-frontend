@@ -131,6 +131,12 @@ describe('game feature wiring', () => {
     }
   );
 
+  it('the sitemap lists every game route', () => {
+    const sitemap = readFileSync(resolve(root, 'public/sitemap.xml'), 'utf8');
+    const missing = games.filter((g) => !sitemap.includes(`/${g.key}</loc>`)).map((g) => g.key);
+    expect(missing, `missing from public/sitemap.xml: ${missing.join(', ')}`).toEqual([]);
+  });
+
   // The leaderboard-per-setting rule: a plain (GameEngine) game that has BOTH a
   // settings knob and a leaderboard must scope the board per setting, otherwise
   // incomparable runs (e.g. Easy vs Hard) share one table. QuizGame handles this

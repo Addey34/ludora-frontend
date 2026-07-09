@@ -6,6 +6,24 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <meta name="theme-color" content="#4361ee" />
   <title>{{title}}</title>
+  <meta
+    name="description"
+    content="{{#if game}}Play {{game.label}} free in your browser — no download, no sign-up. {{/if}}Games Zone: browser games you can play instantly."
+  />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Games Zone" />
+  <meta property="og:title" content="{{title}}" />
+  <meta
+    property="og:description"
+    content="{{#if game}}Play {{game.label}} free in your browser — no download.{{else}}Browser games you can play instantly — no download.{{/if}}"
+  />
+  <meta property="og:image" content="https://games-zone.onrender.com/favicon.svg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="{{title}}" />
+  <meta
+    name="twitter:description"
+    content="{{#if game}}Play {{game.label}} free in your browser.{{else}}Browser games you can play instantly.{{/if}}"
+  />
   <link rel="stylesheet" href="{{css}}" />
   <link
     rel="stylesheet"
