@@ -19,6 +19,7 @@ import {
   pickWord,
 } from '../../shared/words/words.js';
 import { loadWords } from '../../shared/words/wordBank.js';
+import { setupScoreRace, type ScoreRaceHandle } from '../../shared/versus/scoreRaceController.js';
 
 /** Letters that complete the hanging figure — the number of allowed wrong guesses. */
 const MAX_WRONG = 6;
@@ -70,6 +71,7 @@ export class HangmanGame extends GameEngine {
   /** Bumped on start/reset/stop so a pending between-words timeout bails. */
   private gen = 0;
   private timer: ReturnType<typeof setTimeout> | null = null;
+  private race: ScoreRaceHandle | null = null;
 
   constructor() {
     super({ storageKey: 'hangman-scores', leaderboardId: 'hangman' });
@@ -84,7 +86,25 @@ export class HangmanGame extends GameEngine {
       { key: 'lives', icon: 'heart', label: t('hudGuessesLeft') },
       { key: 'score', icon: 'star', label: t('score') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
+      { key: 'opponent', icon: 'users', label: t('scoreRaceOpponent') },
     ]);
+
+    this.race = setupScoreRace(this, {
+      finish: { kind: 'toDeath' },
+      getScore: () => this.state.score,
+      isAlive: () => !this.state.isGameOver,
+      finishLocalRace: () => this.gameOver(),
+      restartLocalRace: () => {
+        this.overlay.hide();
+        this.reset();
+        this.start();
+      },
+      onOpponentProgress: (score) => this.hud?.set('opponent', score),
+      onSessionEnd: () => {
+        this.reset();
+        this.start();
+      },
+    });
 
     if (this.figureEl) this.figureEl.innerHTML = FIGURE_SVG;
     this.parts = this.figureEl
@@ -165,6 +185,17 @@ export class HangmanGame extends GameEngine {
     this.resetState();
     this.solved = 0;
     this.newWord();
+    this.race?.reset();
+  }
+
+  protected onScoreChange(newScore: number): void {
+    super.onScoreChange(newScore);
+    this.race?.reportProgress(newScore, !this.state.isGameOver);
+  }
+
+  protected onGameOver(): void {
+    if (this.race?.reportFinished(this.state.score)) return;
+    super.onGameOver();
   }
 
   stop(): void {

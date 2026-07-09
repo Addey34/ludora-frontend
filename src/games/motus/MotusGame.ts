@@ -5,6 +5,11 @@ import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
 import { setupSettingsPanel, languageField } from '../../shared/ui/settingsPanel.js';
 import { showToast } from '../../shared/ui/toast.js';
 import { playSound } from '../../shared/fx/sound.js';
+import { Stopwatch } from '../../shared/ui/stopwatch.js';
+import {
+  setupCompletionRace,
+  type CompletionRaceHandle,
+} from '../../shared/versus/completionRaceController.js';
 import { MAX_TRIES, WORD_LEN, Verdict, normalizeWord, scoreGuess } from './motus.js';
 
 type Lang = 'fr' | 'en';
@@ -49,6 +54,9 @@ export class MotusGame extends GameEngine {
   private row = 0;
   private guess = '';
   private finished = true;
+  private race: CompletionRaceHandle | null = null;
+  /** Solve time is the duel metric; not shown in the solo HUD. */
+  private readonly clock = new Stopwatch(() => {});
 
   constructor() {
     super({ storageKey: 'motus-scores', leaderboardId: 'motus' });
@@ -60,7 +68,18 @@ export class MotusGame extends GameEngine {
     this.hud = setupHud([
       { key: 'tries', icon: 'list-ol', label: t('hudTries') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
+      { key: 'opponent', icon: 'users', label: t('scoreRaceOpponent') },
     ]);
+
+    this.race = setupCompletionRace<string>(this, {
+      finish: { kind: 'bestTime' },
+      generateChallenge: () =>
+        this.words[Math.floor(Math.random() * this.words.length)] ?? FALLBACK[this.lang][0],
+      applyChallenge: (word) => this.applyChallenge(word),
+      getElapsedMs: () => this.clock.seconds * 1000,
+      onOpponentStatus: (timeMs) =>
+        this.hud?.set('opponent', timeMs === null ? '—' : `${Math.round(timeMs / 1000)}s`),
+    });
 
     this.buildGrid();
     this.buildKeyboard();
@@ -163,8 +182,22 @@ export class MotusGame extends GameEngine {
   }
 
   private newRound(): void {
-    this.target =
-      this.words[Math.floor(Math.random() * this.words.length)] ?? FALLBACK[this.lang][0];
+    this.applyWord(
+      this.words[Math.floor(Math.random() * this.words.length)] ?? FALLBACK[this.lang][0]
+    );
+  }
+
+  /** Builds and starts the identical shared word from a host-sent challenge. */
+  private applyChallenge(word: string): void {
+    this.overlay.hide();
+    this.resetState();
+    this.applyWord(word);
+    this.state.isRunning = true;
+  }
+
+  /** Lays out a fresh round for `word` and (re)starts the solve clock. */
+  private applyWord(word: string): void {
+    this.target = word;
     this.row = 0;
     this.guess = '';
     this.finished = false;
@@ -174,6 +207,8 @@ export class MotusGame extends GameEngine {
     }
     this.hud?.set('tries', `0/${MAX_TRIES}`);
     this.hud?.set('high', this.scoreManager.getHighScore());
+    this.clock.reset();
+    this.clock.start();
   }
 
   /** Central input entry point (both the physical and on-screen keyboards). */
@@ -249,6 +284,7 @@ export class MotusGame extends GameEngine {
 
   private win(): void {
     this.finished = true;
+    this.clock.stop();
     const points = (MAX_TRIES - this.row + 1) * 200;
     this.addScore(points);
     playSound('win');
@@ -257,9 +293,12 @@ export class MotusGame extends GameEngine {
 
   private lose(): void {
     this.finished = true;
+    this.clock.stop();
     this.state.isGameOver = true;
     this.state.isRunning = false;
     playSound('die');
+    // In a duel, running out of tries ends this seat's run — the race decides.
+    if (this.race?.reportFailed()) return;
     this.overlay.show({
       title: t('motusOutOfTries'),
       bodyHtml: t('motusWordWas', { target: this.target }),
@@ -287,6 +326,11 @@ export class MotusGame extends GameEngine {
 
   update(): void {}
   render(): void {}
+
+  protected onGameOver(): void {
+    if (this.race?.reportSolved(this.clock.seconds * 1000)) return;
+    super.onGameOver();
+  }
 
   protected getGameOverTitle(): string {
     return t('solved');
