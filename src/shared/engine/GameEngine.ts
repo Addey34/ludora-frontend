@@ -550,8 +550,20 @@ export abstract class GameEngine {
   private recordScore(username: string): void {
     const entry = this.buildScoreEntry(username);
     this.scoreManager.saveScore(entry);
+    // Online-board games don't write localStorage, so the cross-game /profile
+    // (which reads localStorage) would miss them — mirror the entry to a local
+    // board under the same key so it shows up there too.
+    if (this.config.leaderboardId) {
+      new ScoreManager(
+        this.scoreManager.getStorageKey(),
+        this.config.maxScores ?? 10,
+        false
+      ).saveScore(entry);
+    }
     this.submitOnlineScore(entry);
-    submitGlobalScore(gzPoints(this.state.score)).catch(() => {});
+    submitGlobalScore(gzPoints(this.state.score)).catch((err) =>
+      console.warn('[nakama] global score submission failed:', err)
+    );
     this.onScoreSaved();
   }
 
