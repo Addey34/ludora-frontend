@@ -14,6 +14,13 @@ import {
 import { setupLevelPanel, LevelPanelHandle } from '../levels/levelPanel.js';
 import { setupLeaderboardPanel, LeaderboardPanelHandle } from '../score/leaderboardPanel.js';
 import { HudHandle } from '../ui/hud.js';
+import { showToast } from '../ui/toast.js';
+import {
+  Challenge,
+  buildChallengeUrl,
+  challengeBeaten,
+  parseChallenge,
+} from '../versus/challengeLink.js';
 import { t } from '../i18n/i18n.js';
 
 /**
@@ -112,6 +119,11 @@ export abstract class GameEngine {
   /** Handle to refresh the level panel after progress changes. */
   private levelPanel: LevelPanelHandle | null = null;
 
+  /** Incoming friend challenge (`?challenge=<score>&by=<name>`), if any. */
+  private incomingChallenge: Challenge | null = null;
+  /** True once the incoming challenge has been beaten (toast shown once). */
+  private challengeWon = false;
+
   /**
    * @param config Game configuration (default values applied).
    */
@@ -136,6 +148,23 @@ export abstract class GameEngine {
       !!this.config.leaderboardId
     );
     this.overlay = new GameOverlay();
+
+    if (typeof location !== 'undefined') {
+      this.incomingChallenge = parseChallenge(location.search);
+      const challenge = this.incomingChallenge;
+      if (challenge) {
+        // Announce shortly after load, once the page chrome has settled.
+        setTimeout(() => {
+          showToast(
+            challenge.by
+              ? t('challengeReceived', { name: challenge.by, score: challenge.score })
+              : t('challengeReceivedAnon', { score: challenge.score }),
+            'info',
+            6000
+          );
+        }, 600);
+      }
+    }
   }
 
   /**
@@ -377,8 +406,41 @@ export abstract class GameEngine {
   /**
    * Hook called on every score change; refreshes the display by default.
    */
-  protected onScoreChange(_newScore: number): void {
+  protected onScoreChange(newScore: number): void {
     this.updateScoreDisplay();
+    if (
+      this.incomingChallenge &&
+      !this.challengeWon &&
+      challengeBeaten(newScore, this.incomingChallenge.score)
+    ) {
+      this.challengeWon = true;
+      showToast(t('challengeWon', { score: this.incomingChallenge.score }), 'success', 5000);
+    }
+  }
+
+  /**
+   * Shares a "beat my score" challenge link for the current score: uses the
+   * native share sheet when available (mobile), else copies the link. Wired into
+   * the game-over overlay for score-based games.
+   */
+  protected shareChallenge(): void {
+    if (typeof location === 'undefined') return;
+    const url = buildChallengeUrl(location.href, this.state.score, getPlayerName());
+    const shareData = {
+      title: 'Games Zone',
+      text: t('challengeShareText', { score: this.state.score }),
+      url,
+    };
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      navigator.share(shareData).catch(() => {});
+    } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard
+        .writeText(url)
+        .then(() => showToast(t('challengeCopied'), 'success'))
+        .catch(() => showToast(url, 'info'));
+    } else {
+      showToast(url, 'info');
+    }
   }
 
   /**
@@ -450,6 +512,14 @@ export abstract class GameEngine {
           this.overlay.hide();
           this.leaderboardPanel?.open();
         },
+      });
+    }
+    // Score-based games only (board games leave the score at 0): dare a friend.
+    if (this.state.score > 0) {
+      buttons.push({
+        text: t('challengeButton'),
+        primary: false,
+        onClick: () => this.shareChallenge(),
       });
     }
 

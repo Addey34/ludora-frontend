@@ -162,6 +162,13 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     profileSummary: "You've played {played} of {total} games.",
     profileBest: 'Best: <strong>{score}</strong>',
     profileNotPlayed: 'Not played yet',
+    // Friend challenges (share-a-score links).
+    challengeReceived: '{name} dares you to beat {score}!',
+    challengeReceivedAnon: 'Beat {score} to win the challenge!',
+    challengeWon: 'Challenge beaten — you passed {score}! 🎉',
+    challengeButton: 'Challenge a friend',
+    challengeShareText: 'Can you beat my score of {score}?',
+    challengeCopied: 'Challenge link copied!',
     // Feedback popover.
     feedback: 'Feedback',
     feedbackHint: 'Rate this game',
@@ -479,6 +486,12 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     profileSummary: 'Tu as joué à {played} jeux sur {total}.',
     profileBest: 'Record : <strong>{score}</strong>',
     profileNotPlayed: 'Pas encore joué',
+    challengeReceived: '{name} te défie de battre {score} !',
+    challengeReceivedAnon: 'Bats {score} pour gagner le défi !',
+    challengeWon: 'Défi relevé — tu as dépassé {score} ! 🎉',
+    challengeButton: 'Défier un ami',
+    challengeShareText: 'Peux-tu battre mon score de {score} ?',
+    challengeCopied: 'Lien du défi copié !',
     // Avis / feedback.
     feedback: 'Votre avis',
     feedbackHint: 'Notez ce jeu',
