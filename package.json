@@ -32,6 +32,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.9.1",
+    "@types/three": "^0.185.0",
     "an-array-of-english-words": "^2.0.0",
     "an-array-of-french-words": "^2.0.0",
     "eslint": "^10.5.0",
@@ -48,6 +49,7 @@
     "vitest": "^4.1.9"
   },
   "dependencies": {
-    "@heroiclabs/nakama-js": "^2.8.0"
+    "@heroiclabs/nakama-js": "^2.8.0",
+    "three": "^0.185.1"
   }
 }

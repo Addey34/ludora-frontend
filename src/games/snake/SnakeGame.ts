@@ -1,19 +1,30 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
 import { setupHud } from '../../shared/ui/hud.js';
-import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
+import {
+  setupSettingsPanel,
+  difficultyField,
+  type SettingsField,
+} from '../../shared/ui/settingsPanel.js';
 import { Difficulty } from '../../shared/bot/difficulty.js';
 import { t } from '../../shared/i18n/i18n.js';
-import {
-  Direction,
-  DIRECTION_DELTAS,
-  OPPOSITE_DIRECTION,
-  keyboardDirection,
-  setupSwipe,
-} from '../../shared/engine/input.js';
+import { keyboardDirection, setupSwipe, type Direction } from '../../shared/engine/input.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
 import { playSound } from '../../shared/fx/sound.js';
 import { showToast } from '../../shared/ui/toast.js';
+import {
+  buildSnakeRenderState,
+  createSnakeGameState,
+  hasSnakeCollision,
+  increaseSnakeSpeed,
+  queueSnakeDirection,
+  recordSnakeEat,
+  respawnFood,
+  stepSnake,
+} from './snakeLogic.js';
+import type { IRenderer } from '../../shared/engine/IRenderer.js';
+import type { Position, SnakeGameState, SnakeRenderState } from './snakeState.js';
+import { SnakeDOMRenderer } from './SnakeDOMRenderer.js';
 
 /**
  * Configuration specific to the Snake game.
@@ -29,198 +40,6 @@ interface SnakeConfig extends GameConfig {
   speedFactor?: number;
 }
 
-/**
- * Coordinates of a cell on the grid (1-indexed).
- */
-interface Position {
-  x: number;
-  y: number;
-}
-
-/**
- * The snake: its queue of segments, its direction and its movement logic.
- *
- * The body "wraps" at the grid edges (crossing a wall = reappearing on the
- * opposite side).
- */
-export class Snake {
-  private body: Position[];
-  /** Direction actually travelled on the last move (the "committed" one). */
-  private direction: Direction;
-  /**
-   * Pending turns, applied one per move. A short queue (max 2) is what makes the
-   * controls feel responsive: pressing two turns in quick succession (e.g. ↑ then
-   * ← to round a corner) registers BOTH — on successive moves — instead of the
-   * first being overwritten and lost. Each entry is validated against the
-   * projected heading on enqueue, so a 180° reversal can never sneak in.
-   */
-  private directionQueue: Direction[] = [];
-  /** Becomes true on the first input: the snake stays still until then. */
-  private started: boolean = false;
-  private gridSize: number;
-
-  /** Max pending turns: enough to round a corner, small enough to feel direct. */
-  private static readonly MAX_QUEUED = 2;
-
-  /**
-   * Creates a one-segment snake at a random position, facing right.
-   * @param gridSize Grid size (number of cells per side).
-   */
-  constructor(gridSize: number) {
-    this.gridSize = gridSize;
-    this.body = [
-      {
-        x: Math.floor(Math.random() * gridSize) + 1,
-        y: Math.floor(Math.random() * gridSize) + 1,
-      },
-    ];
-    this.direction = 'right';
-  }
-
-  /**
-   * Moves the snake forward by one cell. Grows the body if the food is eaten,
-   * otherwise removes the last segment (constant length).
-   * @returns `true` if the food was eaten on this move.
-   */
-  move(food: Position): boolean {
-    if (this.started && this.directionQueue.length > 0) {
-      this.direction = this.directionQueue.shift() as Direction;
-    }
-
-    const step = this.started ? DIRECTION_DELTAS[this.direction] : { x: 0, y: 0 };
-    const head = this.body[0];
-    const newHead: Position = {
-      x: this.wrapPosition(head.x + step.x),
-      y: this.wrapPosition(head.y + step.y),
-    };
-
-    this.body.unshift(newHead);
-    const hasEaten = this.checkFoodCollision(food);
-    if (!hasEaten) {
-      this.body.pop();
-    }
-    return hasEaten;
-  }
-
-  /**
-   * Folds an off-grid coordinate back onto the opposite edge ("wrap" effect).
-   */
-  private wrapPosition(pos: number): number {
-    if (pos <= 0) return this.gridSize;
-    if (pos > this.gridSize) return 1;
-    return pos;
-  }
-
-  /**
-   * Detects a collision of the head with the body. The first four segments
-   * (indices 0 to 3) are ignored: since the U-turn is forbidden, it takes at
-   * least a 2×2-cell loop (4 moves) for the head to reach a body cell — segment
-   * at index 4 is therefore the first one that can coincide.
-   */
-  checkCollision(): boolean {
-    const head = this.body[0];
-    for (let i = 4; i < this.body.length; i++) {
-      const segment = this.body[i];
-      if (head.x === segment.x && head.y === segment.y) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Tells whether the head is on the food cell.
-   */
-  private checkFoodCollision(food: Position): boolean {
-    const head = this.body[0];
-    return head.x === food.x && head.y === food.y;
-  }
-
-  /**
-   * Changes the snake's direction. The U-turn is ignored: the snake cannot turn
-   * back on itself.
-   */
-  setDirection(newDirection: Direction): void {
-    this.started = true;
-    const reference =
-      this.directionQueue.length > 0
-        ? this.directionQueue[this.directionQueue.length - 1]
-        : this.direction;
-    if (newDirection === reference || OPPOSITE_DIRECTION[newDirection] === reference) return;
-    if (this.directionQueue.length >= Snake.MAX_QUEUED) return;
-    this.directionQueue.push(newDirection);
-  }
-
-  /** Returns the body segments (head at the front of the list). */
-  getBody(): Position[] {
-    return this.body;
-  }
-
-  /** Returns the current direction. */
-  getDirection(): Direction {
-    return this.direction;
-  }
-}
-
-/**
- * The food: a cell that never overlaps the snake.
- */
-export class Food {
-  /** Available mouse variants (match the CSS classes .food--*). */
-  private static readonly VARIANTS = ['gray', 'brown', 'white'] as const;
-
-  private position: Position;
-  private snake: Snake;
-  private gridSize: number;
-  /** Current mouse variant, drawn at random on each respawn. */
-  private variant: string = Food.VARIANTS[0];
-
-  /**
-   * @param snake Snake to avoid when placing.
-   * @param gridSize Grid size.
-   */
-  constructor(snake: Snake, gridSize: number) {
-    this.snake = snake;
-    this.gridSize = gridSize;
-    this.position = { x: 0, y: 0 };
-    this.randomize();
-  }
-
-  /**
-   * Moves the food to a random free cell (outside the snake body) and draws a
-   * new mouse variant.
-   */
-  randomize(): void {
-    do {
-      this.position = {
-        x: Math.floor(Math.random() * this.gridSize) + 1,
-        y: Math.floor(Math.random() * this.gridSize) + 1,
-      };
-    } while (this.isOnSnake());
-
-    this.variant = Food.VARIANTS[Math.floor(Math.random() * Food.VARIANTS.length)];
-  }
-
-  /**
-   * Tells whether the current position overlaps a snake segment.
-   */
-  private isOnSnake(): boolean {
-    return this.snake
-      .getBody()
-      .some((segment) => segment.x === this.position.x && segment.y === this.position.y);
-  }
-
-  /** Returns the food position. */
-  getPosition(): Position {
-    return this.position;
-  }
-
-  /** Returns the current mouse variant (CSS class suffix .food--*). */
-  getVariant(): string {
-    return this.variant;
-  }
-}
-
 /** Per-difficulty move intervals (ms): base pace and the acceleration floor. */
 const TUNING: Record<Difficulty, { base: number; min: number }> = {
   easy: { base: 175, min: 95 },
@@ -228,6 +47,87 @@ const TUNING: Record<Difficulty, { base: number; min: number }> = {
   hard: { base: 105, min: 55 },
 };
 
+type SnakeVisualMode = '2d' | 'three';
+
+const RELATIVE_TURNS: Record<Direction, { left: Direction; right: Direction }> = {
+  up: { left: 'left', right: 'right' },
+  down: { left: 'right', right: 'left' },
+  left: { left: 'down', right: 'up' },
+  right: { left: 'up', right: 'down' },
+};
+
+function currentHeading(state: SnakeGameState): Direction {
+  return state.snake.directionQueue[state.snake.directionQueue.length - 1] ?? state.snake.direction;
+}
+
+function relativeDirection(state: SnakeGameState, turn: 'left' | 'right' | 'forward'): Direction {
+  const heading = currentHeading(state);
+  return turn === 'forward' ? heading : RELATIVE_TURNS[heading][turn];
+}
+
+function keyboardRelativeTurn(event: KeyboardEvent): 'left' | 'right' | 'forward' | null {
+  switch (event.key) {
+    case 'ArrowLeft':
+    case 'a':
+    case 'A':
+    case 'q':
+    case 'Q':
+      return 'left';
+    case 'ArrowRight':
+    case 'd':
+    case 'D':
+      return 'right';
+    case 'ArrowUp':
+    case 'w':
+    case 'W':
+    case 'z':
+    case 'Z':
+      return 'forward';
+    default:
+      return null;
+  }
+}
+
+function swipeRelativeTurn(direction: Direction): 'left' | 'right' | 'forward' | null {
+  if (direction === 'left' || direction === 'right') return direction;
+  if (direction === 'up') return 'forward';
+  return null;
+}
+const VISUAL_MODE_STORAGE_KEY = 'snake-visual-mode';
+
+function readInitialVisualMode(): SnakeVisualMode {
+  const renderer = new URLSearchParams(window.location.search).get('renderer');
+  if (renderer === 'three' || renderer === '3d') return 'three';
+  if (renderer === '2d' || renderer === 'dom') return '2d';
+  return localStorage.getItem(VISUAL_MODE_STORAGE_KEY) === 'three' ? 'three' : '2d';
+}
+
+function visualModeField(
+  value: SnakeVisualMode,
+  onChange: (value: SnakeVisualMode) => void
+): SettingsField {
+  return {
+    id: 'visualMode',
+    label: t('visualMode'),
+    value,
+    choices: [
+      { label: t('visualMode2d'), value: '2d' },
+      { label: t('visualMode3d'), value: 'three' },
+    ],
+    onChange: (next) => onChange(next === 'three' ? 'three' : '2d'),
+  };
+}
+
+async function createSnakeRenderer(
+  playBoard: HTMLElement,
+  visualMode: SnakeVisualMode
+): Promise<IRenderer<SnakeRenderState>> {
+  if (visualMode === 'three') {
+    const { SnakeThreeRenderer } = await import('./SnakeThreeRenderer.js');
+    return new SnakeThreeRenderer(playBoard);
+  }
+  return new SnakeDOMRenderer(playBoard);
+}
 /**
  * Snake game.
  *
@@ -236,17 +136,16 @@ const TUNING: Record<Difficulty, { base: number; min: number }> = {
  * speed floor.
  */
 export class SnakeGame extends GameEngine {
-  private snake: Snake;
-  private food: Food;
+  private snakeState: SnakeGameState;
+  private previousSnakeState: SnakeGameState;
   private gridSize: number;
   private playBoard: HTMLElement | null = null;
   /** Effects layer overlaid on the board (not cleared every frame). */
   private fxLayer: HTMLElement | null = null;
   private fx: ParticleSystem | null = null;
-  /** Persistent snake segment nodes, reused across moves so they can glide. */
-  private segmentEls: HTMLElement[] = [];
-  /** Persistent mouse node (its sub-divs are built once, then repositioned). */
-  private foodEl: HTMLElement | null = null;
+  private renderer: IRenderer<SnakeRenderState> | null = null;
+  private visualMode: SnakeVisualMode = readInitialVisualMode();
+  private rendererRequestId = 0;
 
   /** Points earned per mouse eaten (base, before combo multiplier). */
   private static readonly FOOD_POINTS = 10;
@@ -254,12 +153,6 @@ export class SnakeGame extends GameEngine {
   private static readonly COMBO_WINDOW = 2500;
   /** Max multiplier cap. */
   private static readonly COMBO_MAX = 5;
-
-  /** Timestamp of the last food eaten (for combo tracking). */
-  private lastEatTime: number = 0;
-  /** Number of consecutive eats within COMBO_WINDOW. */
-  private comboCount: number = 0;
-
   /** Base interval between two moves (ms). Lowered by a harder difficulty. */
   private baseInterval: number;
   /** Minimum interval reachable when accelerating (ms). */
@@ -267,8 +160,6 @@ export class SnakeGame extends GameEngine {
   private difficulty: Difficulty = 'medium';
   /** Interval reduction factor on each food (<1 = speeds up). */
   private readonly speedFactor: number;
-  /** Current move interval (ms). */
-  private moveInterval: number;
   /** Time accumulated since the last move (ms). */
   private moveAccumulator: number = 0;
   /**
@@ -288,10 +179,8 @@ export class SnakeGame extends GameEngine {
     this.baseInterval = config.baseSpeed || 140;
     this.minInterval = config.minSpeed || 70;
     this.speedFactor = config.speedFactor || 0.93;
-    this.moveInterval = this.baseInterval;
-
-    this.snake = new Snake(this.gridSize);
-    this.food = new Food(this.snake, this.gridSize);
+    this.snakeState = createSnakeGameState(this.gridSize, this.baseInterval);
+    this.previousSnakeState = this.snakeState;
   }
 
   /**
@@ -307,7 +196,7 @@ export class SnakeGame extends GameEngine {
    * Binds the DOM elements, sizes the CSS grid from the game's logical size,
    * wires up the keyboard and performs the first render.
    */
-  initialize(): void {
+  async initialize(): Promise<void> {
     this.playBoard = document.querySelector('.play-board');
     this.fx = new ParticleSystem();
     this.hud = setupHud([
@@ -323,6 +212,11 @@ export class SnakeGame extends GameEngine {
         this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
         this.reset(); // restart at the new pace right away
       }),
+      visualModeField(this.visualMode, (value) => {
+        this.visualMode = value;
+        localStorage.setItem(VISUAL_MODE_STORAGE_KEY, value);
+        void this.recreateRenderer();
+      }),
     ]);
     this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
 
@@ -332,10 +226,21 @@ export class SnakeGame extends GameEngine {
       this.fxLayer = document.createElement('div');
       this.fxLayer.className = 'snake-fx';
       this.playBoard.appendChild(this.fxLayer);
+      this.renderer = await createSnakeRenderer(this.playBoard, this.visualMode);
 
       setupSwipe(this.playBoard, {
         onSwipe: (direction) => {
-          if (!this.state.isGameOver) this.snake.setDirection(direction);
+          if (this.state.isGameOver) return;
+          if (this.visualMode === 'three') {
+            const turn = swipeRelativeTurn(direction);
+            if (!turn) return;
+            this.snakeState = queueSnakeDirection(
+              this.snakeState,
+              relativeDirection(this.snakeState, turn)
+            );
+            return;
+          }
+          this.snakeState = queueSnakeDirection(this.snakeState, direction);
         },
       });
     }
@@ -354,28 +259,32 @@ export class SnakeGame extends GameEngine {
     if (this.state.isPaused || this.state.isGameOver) return;
 
     this.moveAccumulator += deltaTime;
-    if (this.moveAccumulator < this.moveInterval) return;
+    if (this.moveAccumulator < this.snakeState.moveInterval) return;
     this.moveAccumulator = 0;
 
     this.dirty = true;
-    const hasEaten = this.snake.move(this.food.getPosition());
+    this.previousSnakeState = this.snakeState;
+    const move = stepSnake(this.snakeState);
+    this.snakeState = move.state;
 
-    if (hasEaten) {
-      const now = performance.now();
-      const elapsed = now - this.lastEatTime;
-      if (this.lastEatTime > 0 && elapsed <= SnakeGame.COMBO_WINDOW) {
-        this.comboCount = Math.min(this.comboCount + 1, SnakeGame.COMBO_MAX);
-      } else {
-        this.comboCount = 1;
-      }
-      this.lastEatTime = now;
+    if (move.ateFood) {
+      const foodPosition = this.snakeState.food.position;
+      this.snakeState = recordSnakeEat(
+        this.snakeState,
+        performance.now(),
+        SnakeGame.COMBO_WINDOW,
+        SnakeGame.COMBO_MAX
+      );
 
-      const multiplier = this.comboCount;
+      const multiplier = this.snakeState.comboCount;
       const points = SnakeGame.FOOD_POINTS * multiplier;
       this.addScore(points);
-      this.spawnScoreFloat(this.food.getPosition(), points);
-      this.food.randomize();
-      this.increaseSpeed();
+      this.spawnScoreFloat(foodPosition, points);
+      this.snakeState = increaseSnakeSpeed(
+        respawnFood(this.snakeState),
+        this.minInterval,
+        this.speedFactor
+      );
 
       if (multiplier >= 2) {
         playSound('combo');
@@ -385,7 +294,7 @@ export class SnakeGame extends GameEngine {
       }
     }
 
-    if (this.snake.checkCollision()) {
+    if (hasSnakeCollision(this.snakeState.snake)) {
       this.spawnDeathParticles();
       screenShake(8, 320);
       playSound('die');
@@ -393,98 +302,10 @@ export class SnakeGame extends GameEngine {
     }
   }
 
-  /**
-   * Reduces the move interval (progressive difficulty), without going below
-   * `minInterval` to stay playable.
-   */
-  private increaseSpeed(): void {
-    this.moveInterval = Math.max(this.minInterval, this.moveInterval * this.speedFactor);
-  }
-
-  /**
-   * Rebuilds the board: snake segments (head vs body) then the food, positioned
-   * via the CSS grid.
-   */
   render(): void {
-    if (!this.playBoard) return;
-    if (!this.dirty) return;
+    if (!this.dirty && !this.renderer?.continuousRender) return;
     this.dirty = false;
-
-    this.playBoard.style.setProperty('--move-ms', `${this.moveInterval}ms`);
-
-    this.renderSnake();
-    this.renderFood();
-  }
-
-  /**
-   * Positions the snake by reusing persistent nodes and moving each with a CSS
-   * `transform`, so the body glides one cell forward per move. A node whose
-   * target is more than one cell away — a wall wrap, or a freshly created node —
-   * is snapped without animation so it doesn't slide across the whole board.
-   */
-  private renderSnake(): void {
-    const body = this.snake.getBody();
-    const direction = this.snake.getDirection();
-
-    body.forEach((segment, index) => {
-      let el = this.segmentEls[index];
-      const isNew = el === undefined;
-      if (isNew) {
-        el = document.createElement('div');
-        this.playBoard!.appendChild(el);
-        this.segmentEls[index] = el;
-      }
-      el.className = index === 0 ? `snake-head ${direction}` : 'snake-body';
-
-      const snap =
-        isNew ||
-        Math.abs(segment.x - Number(el.dataset.x)) > 1 ||
-        Math.abs(segment.y - Number(el.dataset.y)) > 1;
-      this.placeCell(el, segment.x, segment.y, snap);
-    });
-
-    while (this.segmentEls.length > body.length) {
-      this.segmentEls.pop()?.remove();
-    }
-  }
-
-  /** Creates the mouse once (its sub-divs), then repositions it (no glide). */
-  private renderFood(): void {
-    if (!this.foodEl) {
-      this.foodEl = document.createElement('div');
-      this.foodEl.innerHTML = `
-        <div class="food-ear left"></div>
-        <div class="food-ear right"></div>
-        <div class="food-body"></div>
-        <div class="food-eye left"></div>
-        <div class="food-eye right"></div>
-        <div class="food-nose"></div>
-        <div class="food-tail"></div>
-      `;
-      this.playBoard!.appendChild(this.foodEl);
-    }
-    const pos = this.food.getPosition();
-    this.foodEl.className = `food food--${this.food.getVariant()}`;
-    this.placeCell(this.foodEl, pos.x, pos.y, true);
-  }
-
-  /**
-   * Places an element on cell (x, y) via `transform` (one cell = 100% of its own
-   * size). When `snap`, the transition is briefly disabled so the element jumps
-   * instead of sliding (used for wraps and the first placement).
-   */
-  private placeCell(el: HTMLElement, x: number, y: number, snap: boolean): void {
-    const transform = `translate(${(x - 1) * 100}%, ${(y - 1) * 100}%)`;
-    if (snap) {
-      el.style.transition = 'none';
-      el.style.transform = transform;
-      void el.offsetWidth;
-      el.style.transition = '';
-    } else {
-      el.style.transform = transform;
-    }
-    el.dataset.x = String(x);
-    el.dataset.y = String(y);
+    this.renderer?.render(this.renderState());
   }
 
   /**
@@ -515,7 +336,7 @@ export class SnakeGame extends GameEngine {
     const cellPx = board.width / this.gridSize;
     const colors = ['#16a34a', '#22c55e', '#4ade80', '#86efac', '#bbf7d0'];
 
-    this.snake.getBody().forEach((seg) => {
+    this.snakeState.snake.body.forEach((seg) => {
       const cx = board.left + (seg.x - 0.5) * cellPx;
       const cy = board.top + (seg.y - 0.5) * cellPx;
       this.fx!.emit(cx, cy, {
@@ -537,10 +358,21 @@ export class SnakeGame extends GameEngine {
   handleInput(event: KeyboardEvent): void {
     if (this.state.isGameOver) return;
 
+    if (this.visualMode === 'three') {
+      const turn = keyboardRelativeTurn(event);
+      if (!turn) return;
+      event.preventDefault();
+      this.snakeState = queueSnakeDirection(
+        this.snakeState,
+        relativeDirection(this.snakeState, turn)
+      );
+      return;
+    }
+
     const direction = keyboardDirection(event);
     if (direction) {
       event.preventDefault();
-      this.snake.setDirection(direction);
+      this.snakeState = queueSnakeDirection(this.snakeState, direction);
     }
   }
 
@@ -548,21 +380,37 @@ export class SnakeGame extends GameEngine {
    * Recreates the snake and the food and resets score, speed and state to zero.
    */
   reset(): void {
-    this.snake = new Snake(this.gridSize);
-    this.food = new Food(this.snake, this.gridSize);
+    this.snakeState = createSnakeGameState(this.gridSize, this.baseInterval);
+    this.previousSnakeState = this.snakeState;
+    this.previousSnakeState = this.snakeState;
+    this.previousSnakeState = this.snakeState;
     this.resetState();
-    this.moveInterval = this.baseInterval;
     this.moveAccumulator = 0;
     this.dirty = true;
-    this.lastEatTime = 0;
-    this.comboCount = 0;
-    this.segmentEls.forEach((el) => el.remove());
-    this.segmentEls = [];
-    this.foodEl?.remove();
-    this.foodEl = null;
+    this.renderer?.reset?.();
     this.playBoard?.style.setProperty('--move-ms', `${this.baseInterval}ms`);
     if (this.fxLayer) this.fxLayer.innerHTML = '';
     this.updateScoreDisplay();
+    this.render();
+  }
+  private renderState(): SnakeRenderState {
+    const progress = this.snakeState.snake.started
+      ? this.moveAccumulator / this.snakeState.moveInterval
+      : 1;
+    return buildSnakeRenderState(this.previousSnakeState, this.snakeState, progress);
+  }
+  private async recreateRenderer(): Promise<void> {
+    if (!this.playBoard) return;
+    const requestId = ++this.rendererRequestId;
+    this.renderer?.dispose?.();
+    this.renderer = null;
+    const renderer = await createSnakeRenderer(this.playBoard, this.visualMode);
+    if (requestId !== this.rendererRequestId) {
+      renderer.dispose?.();
+      return;
+    }
+    this.renderer = renderer;
+    this.dirty = true;
     this.render();
   }
 }

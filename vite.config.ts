@@ -62,9 +62,12 @@ const games = [
     leaderboard: true,
     settings: true,
     controls: [
-      { keys: '<kbd>↑ ↓ ← →</kbd> or <kbd>W A S D</kbd>', action: 'Steer the snake' },
-      { keys: 'Swipe (mobile)', action: 'Steer the snake with your finger' },
-      { keys: 'Settings', action: 'Difficulty (snake speed)' },
+      {
+        keys: '<kbd>↑ ↓ ← →</kbd> or <kbd>W A S D</kbd>',
+        action: '2D: steer on the board. 3D: left/right turn relative to the snake',
+      },
+      { keys: 'Swipe (mobile)', action: '2D: swipe a direction. 3D: swipe left/right to turn' },
+      { keys: 'Settings', action: 'Difficulty and 2D / 3D visual mode' },
       { keys: 'Goal', action: 'Eat the mice, avoid your tail' },
     ],
   },

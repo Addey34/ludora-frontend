@@ -58,8 +58,8 @@ describe('applyTranslations (control help lines)', () => {
     const keys = document.createElement('span');
     keys.dataset.i18nHtml = '<kbd>↑ ↓ ← →</kbd> or <kbd>W A S D</kbd>';
     const action = document.createElement('span');
-    action.dataset.i18n = 'Steer the snake';
-    action.textContent = 'Steer the snake';
+    action.dataset.i18n = '2D: steer on the board. 3D: left/right turn relative to the snake';
+    action.textContent = '2D: steer on the board. 3D: left/right turn relative to the snake';
     root.append(keys, action);
     return { root, keys, action };
   };
@@ -68,7 +68,9 @@ describe('applyTranslations (control help lines)', () => {
     localStorage.setItem('gz-lang', 'fr');
     const { root, action } = infoPanel();
     applyTranslations(root);
-    expect(action.textContent).toBe('Dirige le serpent');
+    expect(action.textContent).toBe(
+      '2D : dirige sur le plateau. 3D : gauche/droite tourne par rapport au serpent'
+    );
   });
 
   it('translates a control key with <kbd> markup to French (data-i18n-html)', () => {
@@ -82,6 +84,8 @@ describe('applyTranslations (control help lines)', () => {
   it('leaves the English text in place under the English locale', () => {
     const { root, action } = infoPanel();
     applyTranslations(root);
-    expect(action.textContent).toBe('Steer the snake');
+    expect(action.textContent).toBe(
+      '2D: steer on the board. 3D: left/right turn relative to the snake'
+    );
   });
 });

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Interface localisation — simple, modular, dependency-free.
  *
  * The pattern (reuse it everywhere, incl. future games):
@@ -120,6 +120,9 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     gooseLose: '<p>{name} reached the finish square first.</p>',
     settings: 'Settings',
     difficulty: 'Difficulty',
+    visualMode: 'Visual mode',
+    visualMode2d: 'Classic 2D',
+    visualMode3d: 'Immersive 3D',
     size: 'Size',
     players: 'Players',
     solDrawLabel: 'Draw',
@@ -415,6 +418,9 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     gooseLose: '<p>{name} a atteint la case finale en premier.</p>',
     settings: 'Paramètres',
     difficulty: 'Difficulté',
+    visualMode: 'Mode visuel',
+    visualMode2d: '2D classique',
+    visualMode3d: '3D immersive',
     size: 'Taille',
     players: 'Joueurs',
     solDrawLabel: 'Pioche',
@@ -691,8 +697,10 @@ const CONTROLS_FR: Record<string, string> = {
   'Language (EN/FR) and difficulty (harder = accents, longer words)':
     'Langue (EN/FR) et difficulté (plus dur = accents, mots plus longs)',
   'Starts on the first letter': 'Démarre à la première lettre',
-  'Steer the snake': 'Dirige le serpent',
-  'Steer the snake with your finger': 'Dirige le serpent avec ton doigt',
+  '2D: steer on the board. 3D: left/right turn relative to the snake':
+    '2D : dirige sur le plateau. 3D : gauche/droite tourne par rapport au serpent',
+  '2D: swipe a direction. 3D: swipe left/right to turn':
+    '2D : glisse dans une direction. 3D : glisse gauche/droite pour tourner',
   'Eat the mice, avoid your tail': 'Mange les souris, évite ta queue',
   'Move Pac-Man': 'Déplace Pac-Man',
   'Move Pac-Man with your finger': 'Déplace Pac-Man avec ton doigt',
@@ -876,7 +884,7 @@ const CONTROLS_FR: Record<string, string> = {
   'Difficulty (number of bubble colours)': 'Difficulté (nombre de couleurs de bulles)',
   'Difficulty (starting lives, ball speed)': 'Difficulté (vies de départ, vitesse de la balle)',
   'Grid size (6×6 or 8×8)': 'Taille de la grille (6×6 ou 8×8)',
-  'Difficulty (snake speed)': 'Difficulté (vitesse du serpent)',
+  'Difficulty and 2D / 3D visual mode': 'Difficulté et mode visuel 2D / 3D',
   'Difficulty (playback speed)': 'Difficulté (vitesse de lecture)',
   'Difficulty (puzzle set)': 'Difficulté (jeu de grilles)',
   'Grid size (3×3, 4×4 or 5×5)': 'Taille de la grille (3×3, 4×4 ou 5×5)',
