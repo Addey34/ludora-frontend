@@ -2,7 +2,8 @@ import { ScoreManager, ScoreEntry } from '../score/ScoreManager.js';
 import { GameOverlay } from '../ui/gameOverlay.js';
 import { showStartOverlay, dismissStartOverlay } from '../ui/startOverlay.js';
 import { getPlayerName, setPlayerName } from '../net/playerName.js';
-import { submitLeaderboardScore, listLeaderboardScores } from '../net/nakama.js';
+import { submitLeaderboardScore, listLeaderboardScores, submitGlobalScore } from '../net/nakama.js';
+import { gzPoints } from '../score/gzPoints.js';
 import {
   LevelsConfig,
   LevelProgress,
@@ -479,7 +480,18 @@ export abstract class GameEngine {
    * disabling an input).
    */
   protected onGameOver(): void {
+    this.submitGlobalPoints();
     this.showGameOverOverlay();
+  }
+
+  /**
+   * Best-effort: adds this run's GamesZone Points to the global cross-game
+   * ranking. Score-based games only (board games leave the score at 0). Silent
+   * on failure (offline, or the 'global' board not created on the server yet).
+   */
+  private submitGlobalPoints(): void {
+    if (this.state.score <= 0) return;
+    submitGlobalScore(gzPoints(this.state.score)).catch(() => {});
   }
 
   /**

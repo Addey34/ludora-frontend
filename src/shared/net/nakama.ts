@@ -1,5 +1,6 @@
 import { Client, Session } from '@heroiclabs/nakama-js';
 import { ScoreEntry } from '../score/ScoreManager.js';
+import { getPlayerName } from './playerName.js';
 
 /**
  * Thin wrapper around the Nakama client used for the online leaderboards.
@@ -198,6 +199,92 @@ export async function listLeaderboardScores(
   const session = await getSession();
   const result = await getClient().listLeaderboardRecords(session, leaderboardId, undefined, limit);
   return (result.records ?? []).map(recordToScoreEntry);
+}
+
+/** Id of the cross-game "GamesZone Points" leaderboard (incremental, desc). */
+export const GLOBAL_LEADERBOARD = 'global';
+
+/** An entry of the global cross-game ranking. */
+export interface GlobalRankEntry {
+  username: string;
+  score: number;
+  rank: number;
+  /** True for the current player's own row. */
+  isMe: boolean;
+}
+
+/** Shape of the global leaderboard records we read back (superset of the base). */
+interface RawGlobalRecord {
+  score?: number;
+  username?: string;
+  metadata?: object;
+  rank?: number | string;
+  owner_id?: string;
+}
+
+function toGlobalEntry(
+  record: RawGlobalRecord,
+  myId: string,
+  fallbackRank: number
+): GlobalRankEntry {
+  const meta = (record.metadata ?? {}) as Record<string, unknown>;
+  const name = typeof meta.username === 'string' ? meta.username : record.username || 'Player';
+  return {
+    username: name,
+    score: record.score ?? 0,
+    rank: Number(record.rank) || fallbackRank,
+    isMe: record.owner_id === myId,
+  };
+}
+
+/**
+ * Adds GamesZone Points to the player's global total (incremental leaderboard).
+ * Rejects if the backend is unreachable or the 'global' board isn't created yet,
+ * so callers should swallow errors (best-effort, like the per-game submit).
+ */
+export async function submitGlobalScore(points: number): Promise<void> {
+  if (points <= 0) return;
+  const session = await getSession();
+  const name = getPlayerName();
+  await getClient().writeLeaderboardRecord(session, GLOBAL_LEADERBOARD, {
+    score: String(points),
+    metadata: name ? { username: name } : {},
+  });
+}
+
+/** Top `limit` of the global ranking. Returns [] on any error/backend issue. */
+export async function listGlobalRanking(limit = 20): Promise<GlobalRankEntry[]> {
+  try {
+    const session = await getSession();
+    const result = await getClient().listLeaderboardRecords(
+      session,
+      GLOBAL_LEADERBOARD,
+      undefined,
+      limit
+    );
+    const myId = session.user_id ?? '';
+    return (result.records ?? []).map((r, i) => toGlobalEntry(r, myId, i + 1));
+  } catch {
+    return [];
+  }
+}
+
+/** The current player's own global rank, or null if unranked/unavailable. */
+export async function getMyGlobalRank(): Promise<GlobalRankEntry | null> {
+  try {
+    const session = await getSession();
+    const myId = session.user_id ?? '';
+    const result = await getClient().listLeaderboardRecordsAroundOwner(
+      session,
+      GLOBAL_LEADERBOARD,
+      myId,
+      1
+    );
+    const mine = (result.records ?? []).find((r) => r.owner_id === myId);
+    return mine ? toGlobalEntry(mine, myId, 0) : null;
+  } catch {
+    return null;
+  }
 }
 
 /**

@@ -169,6 +169,11 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     challengeButton: 'Challenge a friend',
     challengeShareText: 'Can you beat my score of {score}?',
     challengeCopied: 'Challenge link copied!',
+    // Global cross-game ranking (GamesZone Points).
+    globalRankingTitle: 'Global ranking',
+    globalMyRank: 'You are #{rank} with {score} GZP.',
+    globalUnranked: 'Play a game to enter the global ranking.',
+    globalPoints: '{score} GZP',
     // Feedback popover.
     feedback: 'Feedback',
     feedbackHint: 'Rate this game',
@@ -492,6 +497,10 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     challengeButton: 'Défier un ami',
     challengeShareText: 'Peux-tu battre mon score de {score} ?',
     challengeCopied: 'Lien du défi copié !',
+    globalRankingTitle: 'Classement mondial',
+    globalMyRank: 'Tu es #{rank} avec {score} GZP.',
+    globalUnranked: 'Joue une partie pour entrer au classement mondial.',
+    globalPoints: '{score} GZP',
     // Avis / feedback.
     feedback: 'Votre avis',
     feedbackHint: 'Notez ce jeu',

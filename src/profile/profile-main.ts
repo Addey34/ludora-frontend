@@ -6,6 +6,7 @@
  */
 import { applyTranslations, t } from '../shared/i18n/i18n.js';
 import { SCORE_GAMES, readBestScore } from '../shared/score/scoreGames.js';
+import { getMyGlobalRank, listGlobalRanking, type GlobalRankEntry } from '../shared/net/nakama.js';
 
 interface Row {
   key: string;
@@ -65,5 +66,45 @@ function render(): void {
   }
 }
 
+function rankRow(entry: GlobalRankEntry): HTMLLIElement {
+  const li = document.createElement('li');
+  li.className = `global-row${entry.isMe ? ' is-me' : ''}`;
+
+  const rank = document.createElement('span');
+  rank.className = 'global-rank';
+  rank.textContent = `#${entry.rank}`;
+
+  const name = document.createElement('span');
+  name.className = 'global-name';
+  name.textContent = entry.username;
+
+  const pts = document.createElement('span');
+  pts.className = 'global-pts';
+  pts.textContent = t('globalPoints', { score: entry.score });
+
+  li.append(rank, name, pts);
+  return li;
+}
+
+/** Best-effort: reveal the global ranking only when the backend answers. */
+async function renderGlobal(): Promise<void> {
+  const section = document.getElementById('profileGlobal');
+  const list = document.getElementById('globalList');
+  if (!section || !list) return;
+
+  const [top, mine] = await Promise.all([listGlobalRanking(20), getMyGlobalRank()]);
+  if (top.length === 0) return; // no server yet / empty board → stay hidden
+
+  list.replaceChildren(...top.map(rankRow));
+  const myEl = document.getElementById('profileMyRank');
+  if (myEl) {
+    myEl.textContent = mine
+      ? t('globalMyRank', { rank: mine.rank, score: mine.score })
+      : t('globalUnranked');
+  }
+  section.hidden = false;
+}
+
 applyTranslations();
 render();
+void renderGlobal();
