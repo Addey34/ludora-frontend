@@ -8,8 +8,11 @@ import { ParticleSystem } from '../../shared/fx/particles.js';
 
 const W = 400;
 const H = 480;
-const R = 22;
 const COLS = 8;
+// A full even row of COLS bubbles must span the canvas exactly, so the columns
+// stay aligned with the walls and there is no dead strip on the right where a
+// shot bubble would snap far away from where it landed.
+const R = W / (COLS * 2);
 const ROW_H = R * Math.sqrt(3);
 const INIT_ROWS = 6;
 const SHOOTER_X = W / 2;
@@ -82,8 +85,17 @@ export class BubblesGame extends GameEngine {
       }),
     ]);
     this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
-    this.canvas.addEventListener('mousemove', (e) => this.onMouseMove(e));
+    this.canvas.addEventListener('mousemove', (e) => this.updateAim(e.clientX, e.clientY));
     this.canvas.addEventListener('click', () => this.shoot());
+    this.canvas.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      if (touch) this.updateAim(touch.clientX, touch.clientY);
+    });
+    this.canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      if (touch) this.updateAim(touch.clientX, touch.clientY);
+    });
     this.canvas.addEventListener('touchend', (e) => {
       e.preventDefault();
       this.shoot();
@@ -127,13 +139,13 @@ export class BubblesGame extends GameEngine {
     this.shooter.nextColor = randomColor(this.numColors);
   }
 
-  private onMouseMove(e: MouseEvent): void {
+  private updateAim(clientX: number, clientY: number): void {
     if (!this.canvas) return;
     const rect = this.canvas.getBoundingClientRect();
     const scaleX = W / rect.width;
     const scaleY = H / rect.height;
-    this.mouseX = (e.clientX - rect.left) * scaleX;
-    this.mouseY = (e.clientY - rect.top) * scaleY;
+    this.mouseX = (clientX - rect.left) * scaleX;
+    this.mouseY = (clientY - rect.top) * scaleY;
     const dx = this.mouseX - SHOOTER_X;
     const dy = this.mouseY - SHOOTER_Y;
     this.aimAngle = Math.atan2(dy, dx);
@@ -210,16 +222,22 @@ export class BubblesGame extends GameEngine {
     // derive the row the bubble reached, then pick the closest free cell within
     // one row of it. This keeps the placement visually where the bubble landed.
     const approxRow = Math.max(0, Math.round((by - R) / ROW_H));
+    // Search the empty cells around the contact point (allowing one brand-new
+    // row below the grid, index === grid.length) and pick the closest one that
+    // actually touches an existing bubble or the ceiling. Falling back to the
+    // globally-closest empty cell only if nothing adjacent exists keeps a bubble
+    // from ever snapping into a floating, disconnected slot.
     let bestR = -1,
       bestC = -1,
       bestDist = Infinity;
-    for (let r = Math.max(0, approxRow - 1); r <= approxRow + 1; r++) {
-      while (this.grid.length <= r) {
-        this.grid.push(new Array(colsForRow(this.grid.length)).fill(null) as (Color | null)[]);
-      }
+    let adjR = -1,
+      adjC = -1,
+      adjDist = Infinity;
+    const lastRow = Math.min(approxRow + 1, this.grid.length);
+    for (let r = Math.max(0, approxRow - 1); r <= lastRow; r++) {
       const numC = colsForRow(r);
       for (let c = 0; c < numC; c++) {
-        if (this.grid[r][c] !== null) continue;
+        if (this.cellFilled(r, c)) continue;
         const cx = bubbleX(r, c);
         const cy = bubbleY(r);
         const d = (bx - cx) * (bx - cx) + (by - cy) * (by - cy);
@@ -228,7 +246,16 @@ export class BubblesGame extends GameEngine {
           bestR = r;
           bestC = c;
         }
+        if (d < adjDist && this.cellHasSupport(r, c)) {
+          adjDist = d;
+          adjR = r;
+          adjC = c;
+        }
       }
+    }
+    if (adjR >= 0) {
+      bestR = adjR;
+      bestC = adjC;
     }
     if (bestR < 0) {
       bestR = 0;
@@ -261,11 +288,39 @@ export class BubblesGame extends GameEngine {
       }
     }
 
-    // Check lose condition: any bubble in last rows close to bottom
-    const maxY = bubbleY(this.grid.length - 1) + R;
-    if (maxY > SHOOTER_Y - R * 3) {
+    // Drop the trailing all-empty rows the search may have materialised, so the
+    // lose test below measures the lowest *real* bubble, not a phantom row.
+    this.trimGrid();
+
+    // Check lose condition: the lowest bubble reaches the danger line.
+    const lowestRow = this.lowestFilledRow();
+    if (lowestRow >= 0 && bubbleY(lowestRow) + R > SHOOTER_Y - R * 3) {
       this.gameOver();
     }
+  }
+
+  /** True when (r, c) is inside the grid and holds a bubble. */
+  private cellFilled(r: number, c: number): boolean {
+    return r >= 0 && r < this.grid.length && this.grid[r]?.[c] != null;
+  }
+
+  /** A cell can hold a snapped bubble if it hangs from the ceiling or a neighbour. */
+  private cellHasSupport(r: number, c: number): boolean {
+    if (r === 0) return true;
+    return this.getNeighbors(r, c).some(([nr, nc]) => this.cellFilled(nr, nc));
+  }
+
+  private trimGrid(): void {
+    while (this.grid.length > 0 && this.grid[this.grid.length - 1].every((c) => c === null)) {
+      this.grid.pop();
+    }
+  }
+
+  private lowestFilledRow(): number {
+    for (let r = this.grid.length - 1; r >= 0; r--) {
+      if (this.grid[r].some((c) => c !== null)) return r;
+    }
+    return -1;
   }
 
   private floodFill(startR: number, startC: number, color: Color): [number, number][] {
