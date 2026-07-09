@@ -1,5 +1,7 @@
 import { GOOGLE_CLIENT_ID, loginWithGoogleToken, getCurrentUser, logout } from './nakama.js';
 import { clearLocalProgress } from '../levels/levels.js';
+import { flushPendingScore } from '../score/pendingScore.js';
+import { showToast } from '../ui/toast.js';
 import { t } from '../i18n/i18n.js';
 
 /**
@@ -116,6 +118,16 @@ async function init(): Promise<void> {
       },
     });
     await renderAuthArea(area);
+    // A guest who signed in to save a run: record it now, under their new name.
+    if (await flushPendingScore()) showToast(t('scoreSaved'), 'success');
+    // Let any "Sign in to save" button (game-over overlay) open the Google prompt.
+    window.addEventListener('gz-request-login', () => {
+      try {
+        google.accounts.id.prompt();
+      } catch {
+        // GIS not ready — ignore
+      }
+    });
   } catch (err) {
     console.warn('[login] indisponible:', err);
   }

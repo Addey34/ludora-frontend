@@ -44,9 +44,8 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     score: 'Score',
     scoreValue: 'Score: {score}',
     scoreSavedAs: 'Score saved as {name}.',
-    saveScorePrompt: 'Save your score to the leaderboard',
-    nickname: 'Nickname',
-    save: 'Save',
+    signInToSave: 'Sign in to save',
+    scoreSaved: 'Score saved!',
     // Versus result overlay (BoardGame).
     rematch: 'Rematch',
     quit: 'Quit',
@@ -375,9 +374,8 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     score: 'Score',
     scoreValue: 'Score : {score}',
     scoreSavedAs: 'Score enregistré au nom de {name}.',
-    saveScorePrompt: 'Enregistrez votre score au classement',
-    nickname: 'Pseudo',
-    save: 'Enregistrer',
+    signInToSave: 'Se connecter pour enregistrer',
+    scoreSaved: 'Score enregistré !',
     // Overlay de résultat versus (BoardGame).
     rematch: 'Revanche',
     quit: 'Quitter',

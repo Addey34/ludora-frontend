@@ -1,9 +1,15 @@
 import { ScoreManager, ScoreEntry } from '../score/ScoreManager.js';
 import { GameOverlay } from '../ui/gameOverlay.js';
 import { showStartOverlay, dismissStartOverlay } from '../ui/startOverlay.js';
-import { getPlayerName, setPlayerName } from '../net/playerName.js';
-import { submitLeaderboardScore, listLeaderboardScores, submitGlobalScore } from '../net/nakama.js';
+import { getPlayerName } from '../net/playerName.js';
+import {
+  submitLeaderboardScore,
+  listLeaderboardScores,
+  submitGlobalScore,
+  getCachedUser,
+} from '../net/nakama.js';
 import { gzPoints } from '../score/gzPoints.js';
+import { storePendingScore } from '../score/pendingScore.js';
 import {
   LevelsConfig,
   LevelProgress,
@@ -480,18 +486,7 @@ export abstract class GameEngine {
    * disabling an input).
    */
   protected onGameOver(): void {
-    this.submitGlobalPoints();
     this.showGameOverOverlay();
-  }
-
-  /**
-   * Best-effort: adds this run's GamesZone Points to the global cross-game
-   * ranking. Score-based games only (board games leave the score at 0). Silent
-   * on failure (offline, or the 'global' board not created on the server yet).
-   */
-  private submitGlobalPoints(): void {
-    if (this.state.score <= 0) return;
-    submitGlobalScore(gzPoints(this.state.score)).catch(() => {});
   }
 
   /**
@@ -502,11 +497,12 @@ export abstract class GameEngine {
    * "Play again" (+ "View leaderboard" when the game has a leaderboard panel).
    */
   protected showGameOverOverlay(): void {
-    const savable =
-      this.leaderboardPanel !== null && this.scoreManager.isHighScore(this.state.score);
-
     const content = this.getGameOverContent();
-    const buttons = [
+    const scoreable = this.state.score > 0;
+    const user = getCachedUser();
+    const loggedIn = user?.loggedIn === true;
+
+    const buttons: { text: string; primary?: boolean; onClick: () => void }[] = [
       {
         text: t('playAgain'),
         primary: true,
@@ -526,8 +522,12 @@ export abstract class GameEngine {
         },
       });
     }
+    // Recording a score needs a Google account: guests get a sign-in prompt.
+    if (scoreable && !loggedIn) {
+      buttons.push({ text: t('signInToSave'), primary: false, onClick: () => this.signInToSave() });
+    }
     // Score-based games only (board games leave the score at 0): dare a friend.
-    if (this.state.score > 0) {
+    if (scoreable) {
       buttons.push({
         text: t('challengeButton'),
         primary: false,
@@ -535,32 +535,37 @@ export abstract class GameEngine {
       });
     }
 
+    // Signed in: record the run automatically under the Google name.
+    if (scoreable && loggedIn) this.recordScore(user.displayName);
+
     this.overlay.show({
       title: this.getGameOverTitle(),
       bodyHtml: content,
       score: content === undefined ? this.state.score : undefined,
-      prompt: savable
-        ? {
-            label: t('saveScorePrompt'),
-            placeholder: t('nickname'),
-            value: getPlayerName() ?? '',
-            submitLabel: t('save'),
-            onSubmit: (value) => {
-              setPlayerName(value);
-              this.saveScore(value);
-            },
-          }
-        : undefined,
       buttons,
     });
   }
 
-  /** Saves a score entry locally and (best-effort) online, then refreshes. */
-  private saveScore(username: string): void {
+  /** Records a run under `username`: local board, online leaderboard, global GZP. */
+  private recordScore(username: string): void {
     const entry = this.buildScoreEntry(username);
     this.scoreManager.saveScore(entry);
     this.submitOnlineScore(entry);
+    submitGlobalScore(gzPoints(this.state.score)).catch(() => {});
     this.onScoreSaved();
+  }
+
+  /** Guest chose to save: stash the run and trigger Google sign-in. */
+  private signInToSave(): void {
+    storePendingScore({
+      storageKey: this.scoreManager.getStorageKey(),
+      maxScores: this.config.maxScores ?? 10,
+      leaderboardId: this.config.leaderboardId,
+      score: this.state.score,
+      extra: this.buildScoreEntry('').additionalData,
+      gzp: gzPoints(this.state.score),
+    });
+    window.dispatchEvent(new CustomEvent('gz-request-login'));
   }
 
   /**

@@ -377,15 +377,29 @@ export async function loginWithGoogleToken(idToken: string): Promise<boolean> {
   return switched;
 }
 
+/** Last resolved player, cached so the game-over overlay can read it synchronously. */
+let cachedUser: CurrentUser | null = null;
+
+/** The last-known player, or null if not fetched yet this page. Synchronous. */
+export function getCachedUser(): CurrentUser | null {
+  return cachedUser;
+}
+
+/** Whether the last-known player is signed in with Google. Synchronous. */
+export function isLoggedInCached(): boolean {
+  return cachedUser?.loggedIn === true;
+}
+
 /** Returns the current player (display name + whether Google is linked). */
 export async function getCurrentUser(): Promise<CurrentUser | null> {
   try {
     const session = await getSession();
     const account = await getClient().getAccount(session);
-    return {
+    cachedUser = {
       displayName: account.user?.display_name || account.user?.username || 'Player',
       loggedIn: Boolean(account.user?.google_id),
     };
+    return cachedUser;
   } catch {
     return null;
   }

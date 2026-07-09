@@ -46,6 +46,11 @@ export class ScoreManager {
     this.sessionHighScore = 0;
   }
 
+  /** The active localStorage board key (base or per-variant). */
+  getStorageKey(): string {
+    return this.storageKey;
+  }
+
   saveScore(entry: ScoreEntry): void {
     if (this.online) {
       this.sessionHighScore = Math.max(this.sessionHighScore, entry.score);
