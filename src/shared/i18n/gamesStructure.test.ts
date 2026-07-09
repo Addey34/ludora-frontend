@@ -13,8 +13,8 @@ const root = process.cwd();
 const gamesDir = resolve(root, 'src/games');
 const iconsDir = resolve(root, 'public/icons');
 
-const gameKeys = readdirSync(gamesDir).filter((name) =>
-  statSync(resolve(gamesDir, name)).isDirectory()
+const gameKeys = readdirSync(gamesDir).filter(
+  (name) => !name.startsWith('_') && statSync(resolve(gamesDir, name)).isDirectory()
 );
 
 describe('game pages structure', () => {
