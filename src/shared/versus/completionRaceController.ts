@@ -1,6 +1,7 @@
 import type { GameEngine } from '../engine/GameEngine.js';
 import type { NetMatch, MatchMessage } from '../net/match.js';
 import { t } from '../i18n/i18n.js';
+import { dismissStartOverlay } from '../ui/startOverlay.js';
 import { formatClock } from '../ui/stopwatch.js';
 import { GameOverlay, type GameOverlayButton } from '../ui/gameOverlay.js';
 import { setupMultiplayerPanel, type MultiplayerHandle } from './multiplayerPanel.js';
@@ -77,7 +78,7 @@ export function setupCompletionRace<Seed>(
     if (nextNet.role === 'host') {
       const seed = opts.generateChallenge();
       send(OP_CHALLENGE, { seed });
-      opts.applyChallenge(seed);
+      startLocalRound(seed);
     }
   }
 
@@ -126,6 +127,7 @@ export function setupCompletionRace<Seed>(
   function startLocalRound(seed: Seed): void {
     localFinished = false;
     raceSettled = false;
+    dismissStartOverlay();
     overlay.hide();
     opts.onOpponentStatus?.(null);
     opts.applyChallenge(seed);
