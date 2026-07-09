@@ -14,6 +14,10 @@ import { Difficulty } from '../../shared/quiz/quiz.js';
 import { Lang, WordEntry, keyboardForm } from '../../shared/words/words.js';
 import { loadWords } from '../../shared/words/wordBank.js';
 import {
+  setupCompletionRace,
+  type CompletionRaceHandle,
+} from '../../shared/versus/completionRaceController.js';
+import {
   Cell,
   Puzzle,
   Placement,
@@ -64,6 +68,7 @@ export class WordSearchGame extends GameEngine {
 
   private puzzle: Puzzle | null = null;
   private found = new Set<Placement>();
+  private race: CompletionRaceHandle | null = null;
 
   /** Pointer drag state. */
   private selecting = false;
@@ -87,7 +92,17 @@ export class WordSearchGame extends GameEngine {
       { key: 'found', icon: 'check', label: t('hudFound') },
       { key: 'time', icon: 'clock', label: t('hudTime') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
+      { key: 'opponent', icon: 'users', label: t('scoreRaceOpponent') },
     ]);
+
+    this.race = setupCompletionRace<Puzzle>(this, {
+      finish: { kind: 'bestTime' },
+      generateChallenge: () => buildPuzzle(this.def.size, this.pickWords(), this.def.dirs),
+      applyChallenge: (seed) => this.applyChallenge(seed),
+      getElapsedMs: () => this.clock.seconds * 1000,
+      onOpponentStatus: (timeMs) =>
+        this.hud?.set('opponent', timeMs === null ? '—' : formatClock(Math.round(timeMs / 1000))),
+    });
 
     this.setupPointer();
     setupSettingsPanel([
@@ -144,6 +159,22 @@ export class WordSearchGame extends GameEngine {
   protected restartAfterGameOver(): void {
     this.overlay.hide();
     this.start();
+  }
+
+  /** Builds and starts the identical shared grid from a host-sent challenge. */
+  private applyChallenge(seed: Puzzle): void {
+    this.overlay.hide();
+    this.resetState();
+    this.puzzle = seed;
+    this.found = new Set();
+    this.clock.reset();
+    this.buildGrid();
+    this.renderWordList();
+    this.updateFoundHud();
+    this.hud?.set('time', formatClock(0));
+    this.hud?.set('high', this.scoreManager.getHighScore());
+    this.state.isRunning = true;
+    this.clock.start();
   }
 
   /** Chooses words for the current settings and lays out a fresh grid. */
@@ -347,6 +378,11 @@ export class WordSearchGame extends GameEngine {
   update(): void {}
   render(): void {}
   handleInput(): void {}
+
+  protected onGameOver(): void {
+    if (this.race?.reportSolved(this.clock.seconds * 1000)) return;
+    super.onGameOver();
+  }
 
   protected getGameOverTitle(): string {
     return t('cleared');

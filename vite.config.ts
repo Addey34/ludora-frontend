@@ -439,9 +439,10 @@ const games = [
     key: 'wordsearch',
     label: 'Word Search',
     color: '--color-wordsearch',
-    mode: 'solo',
+    mode: 'duo',
     leaderboard: true,
     settings: true,
+    multiplayer: true,
     controls: [
       { keys: 'Drag', action: 'Trace a straight line of letters over a word' },
       { keys: 'Directions', action: 'Words run any way — including diagonally and backwards' },
