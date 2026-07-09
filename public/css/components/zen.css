@@ -28,7 +28,7 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background: var(--gradient);
+  background: var(--game-accent-page-bg);
 }
 
 /* --- The frame drops its card trim and centers an enlarged board.

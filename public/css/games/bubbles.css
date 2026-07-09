@@ -1,10 +1,14 @@
 @import '/css/global.css';
 
+.game-container {
+  --game-board-fit-ratio: 0.833333;
+}
+
 .bubbles-board {
   background: #0f172a;
   border-radius: var(--border-radius-md);
   overflow: hidden;
-  aspect-ratio: 5/6;
+  aspect-ratio: 5 / 6;
 }
 
 .bubbles-board canvas {
