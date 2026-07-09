@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Global Ranking — Games Zone" css="/css/leaderboard.css"
+  script="./leaderboard-main.ts"}}
+  <body class="app-body">
+    {{> game-chrome}}
+    <main class="profile-content">
+      <div class="profile-header">
+        <div>
+          <h1 class="profile-title" data-i18n="globalRankingTitle">Global ranking</h1>
+          <p class="profile-subtitle" data-i18n="leaderboardSubtitle">
+            The top GamesZone players across every game.
+          </p>
+        </div>
+        <a class="btn btn--secondary profile-back" href="/">
+          <i class="fas fa-arrow-left" aria-hidden="true"></i>
+          <span data-i18n="home">Home</span>
+        </a>
+      </div>
+
+      <p class="profile-rank" id="profileMyRank"></p>
+      <ol class="global-list" id="globalList"></ol>
+      <p class="profile-empty" id="rankEmpty" data-i18n="leaderboardEmpty" hidden>
+        No ranking yet — play a game to get on the board.
+      </p>
+    </main>
+  </body>
+</html>

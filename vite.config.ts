@@ -714,7 +714,7 @@ const categoryDefs = [
 //      Without this the browser's relative import `./ludo-main.ts` would 404
 //      because Vite would look in `src/ludo/` which no longer exists.
 const games_keys = new Set(games.map((g) => g.key));
-const static_pages = new Set(['privacy', 'legal', 'profile']);
+const static_pages = new Set(['privacy', 'legal', 'profile', 'leaderboard']);
 interface RewriteRes {
   writeHead(status: number, headers: Record<string, string>): void;
   end(): void;
@@ -805,6 +805,7 @@ export default defineConfig({
         privacy: resolve(srcRoot, 'privacy/index.html'),
         legal: resolve(srcRoot, 'legal/index.html'),
         profile: resolve(srcRoot, 'profile/index.html'),
+        leaderboard: resolve(srcRoot, 'leaderboard/index.html'),
         ...Object.fromEntries(
           games.map((g) => [g.key, resolve(srcRoot, `games/${g.key}/index.html`)])
         ),

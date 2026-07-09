@@ -174,6 +174,8 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     globalMyRank: 'You are #{rank} with {score} GZP.',
     globalUnranked: 'Play a game to enter the global ranking.',
     globalPoints: '{score} GZP',
+    leaderboardSubtitle: 'The top GamesZone players across every game.',
+    leaderboardEmpty: 'No ranking yet — play a game to get on the board.',
     // Feedback popover.
     feedback: 'Feedback',
     feedbackHint: 'Rate this game',
@@ -501,6 +503,8 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     globalMyRank: 'Tu es #{rank} avec {score} GZP.',
     globalUnranked: 'Joue une partie pour entrer au classement mondial.',
     globalPoints: '{score} GZP',
+    leaderboardSubtitle: 'Les meilleurs joueurs GamesZone, tous jeux confondus.',
+    leaderboardEmpty: 'Pas encore de classement — joue une partie pour y entrer.',
     // Avis / feedback.
     feedback: 'Votre avis',
     feedbackHint: 'Notez ce jeu',

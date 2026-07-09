@@ -52,7 +52,16 @@ function loadGoogleScript(): Promise<void> {
 async function renderAuthArea(area: HTMLElement): Promise<void> {
   const user = await getCurrentUser();
   if (user?.loggedIn) {
+    // Signed in: a Profile and a Leaderboard shortcut sit just above logout.
     area.innerHTML = `
+      <a class="sidebar-auth-item" href="/profile" data-nav="profile" aria-label="${t('profileTitle')}">
+        <span class="sidebar-icon"><i class="fas fa-user" aria-hidden="true"></i></span>
+        <span class="sidebar-label">${escapeHtml(t('profileTitle'))}</span>
+      </a>
+      <a class="sidebar-auth-item" href="/leaderboard" data-nav="leaderboard" aria-label="${t('leaderboard')}">
+        <span class="sidebar-icon"><i class="fas fa-trophy" aria-hidden="true"></i></span>
+        <span class="sidebar-label">${escapeHtml(t('leaderboard'))}</span>
+      </a>
       <button
         class="sidebar-auth-item"
         type="button"
