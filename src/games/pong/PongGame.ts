@@ -17,51 +17,27 @@ import { GameOverlayButton } from '../../shared/ui/gameOverlay.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
 import { playSound } from '../../shared/fx/sound.js';
-
-/**
- * The ball, in logical board coordinates (square 0–100). `vx`/`vy` are in units
- * per millisecond.
- */
-interface Ball {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-}
-
-const BOARD = 100;
-const BALL_R = 1.8;
-/** Paddle height (length) and thickness. */
-const PADDLE_H = 18;
-const PADDLE_T = 2.4;
-/** Fixed x center of each paddle (player left, opponent right). */
-const PLAYER_X = 4;
-const OPPONENT_X = BOARD - 4;
-
-/** Ball base speed and per-hit acceleration (units/ms), capped. The ball ramps
- * up fast so rallies actually end (no endless, unwinnable exchange). */
-const BASE_SPEED = 0.05;
-const SPEED_PER_HIT = 1.08;
-/** Speed at which the ball catches fire (visual cue). There is no speed cap —
- *  the ball keeps accelerating on every hit, so the rally can become unwinnable. */
-const FIRE_SPEED = 0.18;
-/** Paddle travel speed for the player and the bot (units/ms). Both are kept below
- * the ball's max vertical speed so a fast, steep shot can beat either of them —
- * the game stays winnable AND losable even against a perfect bot. */
-const PLAYER_SPEED = 0.115;
-const BOT_SPEED = 0.092;
-/** Maximum return angle off a paddle edge (radians). */
-const MAX_BOUNCE_ANGLE = (50 * Math.PI) / 180;
-/** Pause (ms) before the ball is served after a point / at kickoff. */
-const SERVE_DELAY = 800;
-/** Beat (ms) between the winning point and the result overlay, so the final
- *  score is visible on the scoreboard before the victory panel appears. */
-const END_DELAY = 800;
-
-/** Available win-score choices for the Settings panel. */
-const WIN_SCORES = [3, 5, 11];
-const DEFAULT_WIN_SCORE = 5;
-
+import {
+  PONG_BASE_SPEED,
+  PONG_BOARD,
+  PONG_BOT_SPEED,
+  PONG_DEFAULT_WIN_SCORE,
+  PONG_END_DELAY,
+  PONG_OPPONENT_X,
+  PONG_PLAYER_SPEED,
+  PONG_WIN_SCORES,
+  type PongGameState,
+  type PongRenderState,
+  type PongHostState,
+} from './pongState.js';
+import { PongDOMRenderer } from './PongDOMRenderer.js';
+import {
+  approachPongPaddle,
+  clampPongPaddle,
+  createPongGameState,
+  createPongServe,
+  stepPongBall,
+} from './pongLogic.js';
 /** Match-state op codes exchanged over the relay (see net/match.ts). */
 const OP_INPUT = 1;
 const OP_STATE = 2;
@@ -69,18 +45,6 @@ const OP_END = 3;
 const OP_RESTART = 4;
 /** How often (ms) the host broadcasts state / the guest sends its input (~25 Hz). */
 const NET_SEND_MS = 40;
-
-/** Authoritative snapshot the host broadcasts (host = left paddle). */
-interface HostState {
-  bx: number;
-  by: number;
-  bvx: number;
-  bvy: number;
-  hy: number;
-  hs: number;
-  gs: number;
-  sv: boolean;
-}
 
 /** Guest correction strength applied to the ball on each snapshot (0–1): low
  *  enough to absorb network jitter, high enough to stay in sync. */
@@ -105,17 +69,9 @@ export class PongGame extends GameEngine {
   /** Bot difficulty (solo / host-side fill-in), set from the Settings panel. */
   private difficulty: Difficulty = 'medium';
   /** Points needed to win the match. */
-  private winScore = DEFAULT_WIN_SCORE;
+  private winScore = PONG_DEFAULT_WIN_SCORE;
 
-  private ball: Ball = { x: 50, y: 50, vx: 0, vy: 0 };
-  /** Paddle y centers. */
-  private playerY = BOARD / 2;
-  private opponentY = BOARD / 2;
-  /** Player score is the engine's `state.score`; the opponent's is tracked here. */
-  private opponentScore = 0;
-  private speed = BASE_SPEED;
-  /** Countdown (ms) before the next serve; the ball is frozen while > 0. */
-  private serveTimer = SERVE_DELAY;
+  private pongState: PongGameState = createPongGameState();
 
   /** Movement keys held down by the player. */
   private readonly keys = { up: false, down: false };
@@ -127,9 +83,9 @@ export class PongGame extends GameEngine {
   /** Handle to the settings panel (disabled while in a session). */
   private settings: SettingsPanelHandle | null = null;
   /** Latest guest paddle target received by the host (host applies it, capped). */
-  private guestTargetY = BOARD / 2;
+  private guestTargetY = PONG_BOARD / 2;
   /** Guest-side target for the opponent (host) paddle, smoothed each frame. */
-  private opponentTargetY = BOARD / 2;
+  private opponentTargetY = PONG_BOARD / 2;
   /** Guest-side flag: the host is serving, so the guest freezes the ball. */
   private guestServing = false;
   /** Throttle accumulator for network sends (ms). */
@@ -138,9 +94,7 @@ export class PongGame extends GameEngine {
   private fx: ParticleSystem | null = null;
 
   private boardElement: HTMLElement | null = null;
-  private ballElement: HTMLElement | null = null;
-  private playerPaddleEl: HTMLElement | null = null;
-  private opponentPaddleEl: HTMLElement | null = null;
+  private renderer: PongDOMRenderer | null = null;
 
   constructor(config: GameConfig = {}) {
     super({ ...config, storageKey: 'pong' });
@@ -158,7 +112,7 @@ export class PongGame extends GameEngine {
       { key: 'opp', icon: 'user', label: t('opponent') },
     ]);
 
-    this.buildBoard();
+    if (this.boardElement) this.renderer = new PongDOMRenderer(this.boardElement);
     this.setupEventListeners();
     this.setupSettings();
     this.multiplayer = setupMultiplayerPanel({
@@ -183,9 +137,9 @@ export class PongGame extends GameEngine {
         board: this.boardElement,
         axis: 'y',
         onMove: (ratio) => {
-          this.playerY = this.clampPaddle(ratio * BOARD);
+          this.pongState.playerY = clampPongPaddle(ratio * PONG_BOARD);
         },
-        getRatio: () => this.playerY / BOARD,
+        getRatio: () => this.pongState.playerY / PONG_BOARD,
       });
     }
   }
@@ -200,7 +154,7 @@ export class PongGame extends GameEngine {
         id: 'winScore',
         label: t('firstTo'),
         value: String(this.winScore),
-        choices: WIN_SCORES.map((n) => ({ label: `${n} pts`, value: String(n) })),
+        choices: PONG_WIN_SCORES.map((n) => ({ label: `${n} pts`, value: String(n) })),
         onChange: (value) => {
           this.winScore = Number(value);
           this.reset();
@@ -238,15 +192,19 @@ export class PongGame extends GameEngine {
 
     if (this.role === 'guest') {
       this.sendGuestInput(dt);
-      this.opponentY = this.approach(this.opponentY, this.opponentTargetY, PLAYER_SPEED * dt);
+      this.pongState.opponentY = approachPongPaddle(
+        this.pongState.opponentY,
+        this.opponentTargetY,
+        PONG_PLAYER_SPEED * dt
+      );
       if (!this.guestServing) this.stepBall(dt, false);
       return;
     }
 
     this.moveOpponent(dt);
 
-    if (this.serveTimer > 0) {
-      this.serveTimer -= dt;
+    if (this.pongState.serveTimer > 0) {
+      this.pongState.serveTimer -= dt;
     } else {
       this.stepBall(dt, true);
     }
@@ -258,7 +216,10 @@ export class PongGame extends GameEngine {
     let dir = 0;
     if (this.keys.up) dir -= 1;
     if (this.keys.down) dir += 1;
-    if (dir !== 0) this.playerY = this.clampPaddle(this.playerY + dir * PLAYER_SPEED * dt);
+    if (dir !== 0)
+      this.pongState.playerY = clampPongPaddle(
+        this.pongState.playerY + dir * PONG_PLAYER_SPEED * dt
+      );
   }
 
   /**
@@ -271,34 +232,22 @@ export class PongGame extends GameEngine {
     let speed: number;
     if (this.role === 'host') {
       target = this.guestTargetY;
-      speed = PLAYER_SPEED;
+      speed = PONG_PLAYER_SPEED;
     } else {
       target = pongBotTargetY(
         {
-          ballX: this.ball.x,
-          ballY: this.ball.y,
-          ballVx: this.ball.vx,
-          ballVy: this.ball.vy,
-          paddleX: OPPONENT_X,
-          boardSize: BOARD,
+          ballX: this.pongState.ball.x,
+          ballY: this.pongState.ball.y,
+          ballVx: this.pongState.ball.vx,
+          ballVy: this.pongState.ball.vy,
+          paddleX: PONG_OPPONENT_X,
+          boardSize: PONG_BOARD,
         },
         this.difficulty
       );
-      speed = BOT_SPEED;
+      speed = PONG_BOT_SPEED;
     }
-    this.opponentY = this.approach(this.opponentY, target, speed * dt);
-  }
-
-  /** Moves a value toward a target by at most `maxStep`. */
-  private approach(value: number, target: number, maxStep: number): number {
-    const delta = target - value;
-    if (Math.abs(delta) <= maxStep) return this.clampPaddle(target);
-    return this.clampPaddle(value + Math.sign(delta) * maxStep);
-  }
-
-  /** Clamps a paddle center so the whole paddle stays on the board. */
-  private clampPaddle(y: number): number {
-    return Math.max(PADDLE_H / 2, Math.min(BOARD - PADDLE_H / 2, y));
+    this.pongState.opponentY = approachPongPaddle(this.pongState.opponentY, target, speed * dt);
   }
 
   /**
@@ -306,75 +255,31 @@ export class PongGame extends GameEngine {
    * bottom walls and the paddles, and awarding a point when it exits a side.
    */
   private stepBall(dt: number, allowScore: boolean): void {
-    const distance = Math.max(Math.abs(this.ball.vx), Math.abs(this.ball.vy)) * dt;
-    const steps = Math.max(1, Math.ceil(distance / BALL_R));
-    const stepDt = dt / steps;
+    const result = stepPongBall(
+      this.pongState.ball,
+      this.pongState.speed,
+      { playerY: this.pongState.playerY, opponentY: this.pongState.opponentY },
+      dt
+    );
+    this.pongState.ball = result.ball;
+    this.pongState.speed = result.speed;
 
-    for (let i = 0; i < steps; i++) {
-      this.ball.x += this.ball.vx * stepDt;
-      this.ball.y += this.ball.vy * stepDt;
+    if (result.wallBounce) playSound('bounce');
+    if (result.paddleBounceDir) this.onPaddleBounce(result.paddleBounceDir);
 
-      this.collideWalls();
-      this.collidePaddles();
-
-      if (this.ball.x < -BALL_R) {
-        if (allowScore) this.concede(false);
-        return;
-      }
-      if (this.ball.x > BOARD + BALL_R) {
-        if (allowScore) this.concede(true);
-        return;
-      }
+    if (result.scored === 'opponent') {
+      if (allowScore) this.concede(false);
+      return;
     }
+    if (result.scored === 'player' && allowScore) this.concede(true);
   }
 
-  /** Bounces the ball off the top and bottom walls. */
-  private collideWalls(): void {
-    if (this.ball.y - BALL_R <= 0) {
-      this.ball.y = BALL_R;
-      this.ball.vy = Math.abs(this.ball.vy);
-      playSound('bounce');
-    } else if (this.ball.y + BALL_R >= BOARD) {
-      this.ball.y = BOARD - BALL_R;
-      this.ball.vy = -Math.abs(this.ball.vy);
-      playSound('bounce');
-    }
-  }
-
-  /** Bounces the ball off whichever paddle it is overlapping, angle by impact. */
-  private collidePaddles(): void {
-    if (this.ball.vx < 0 && this.hitsPaddle(PLAYER_X, this.playerY)) {
-      this.bounceOffPaddle(this.playerY, 1);
-      this.ball.x = PLAYER_X + PADDLE_T / 2 + BALL_R;
-    } else if (this.ball.vx > 0 && this.hitsPaddle(OPPONENT_X, this.opponentY)) {
-      this.bounceOffPaddle(this.opponentY, -1);
-      this.ball.x = OPPONENT_X - PADDLE_T / 2 - BALL_R;
-    }
-  }
-
-  /** Whether the ball overlaps the paddle centered at (paddleX, paddleY). */
-  private hitsPaddle(paddleX: number, paddleY: number): boolean {
-    const withinX = Math.abs(this.ball.x - paddleX) <= PADDLE_T / 2 + BALL_R;
-    const withinY = Math.abs(this.ball.y - paddleY) <= PADDLE_H / 2 + BALL_R;
-    return withinX && withinY;
-  }
-
-  /**
-   * Reflects the ball off a paddle: the return angle grows with the distance from
-   * the paddle center (edges = steep), and the ball speeds up a little, capped.
-   * @param dirX +1 to send the ball rightward, -1 leftward.
-   */
-  private bounceOffPaddle(paddleY: number, dirX: number): void {
-    const offset = (this.ball.y - paddleY) / (PADDLE_H / 2);
-    const angle = Math.max(-1, Math.min(1, offset)) * MAX_BOUNCE_ANGLE;
-    this.speed *= SPEED_PER_HIT; // no cap — the ball just keeps getting faster
-    this.ball.vx = dirX * this.speed * Math.cos(angle);
-    this.ball.vy = this.speed * Math.sin(angle);
-
+  private onPaddleBounce(dirX: 1 | -1): void {
     playSound('bounce');
 
-    if (this.fx && this.ballElement) {
-      const rect = this.ballElement.getBoundingClientRect();
+    const ballElement = this.renderer?.getBallElement();
+    if (this.fx && ballElement) {
+      const rect = ballElement.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
       this.fx.emit(cx, cy, {
@@ -397,14 +302,14 @@ export class PongGame extends GameEngine {
    */
   private concede(toPlayer: boolean): void {
     if (toPlayer) this.addScore(1);
-    else this.opponentScore += 1;
+    else this.pongState.opponentScore += 1;
     this.updateScoreDisplay();
     playSound('score');
     screenShake(toPlayer ? 3 : 8, toPlayer ? 180 : 300);
 
-    if (this.state.score >= this.winScore || this.opponentScore >= this.winScore) {
+    if (this.state.score >= this.winScore || this.pongState.opponentScore >= this.winScore) {
       if (this.role === 'host') {
-        this.net?.send(OP_END, { hs: this.state.score, gs: this.opponentScore });
+        this.net?.send(OP_END, { hs: this.state.score, gs: this.pongState.opponentScore });
       }
       this.endMatch();
       return;
@@ -418,76 +323,33 @@ export class PongGame extends GameEngine {
    */
   private endMatch(): void {
     this.stop();
-    this.ball.vx = 0;
-    this.ball.vy = 0;
+    this.pongState.ball.vx = 0;
+    this.pongState.ball.vy = 0;
     this.updateScoreDisplay();
-    window.setTimeout(() => this.gameOver(), END_DELAY);
+    window.setTimeout(() => this.gameOver(), PONG_END_DELAY);
   }
 
   /** Recenters the ball and arms a serve toward the given side after a pause. */
   private resetBall(toPlayer: boolean): void {
-    this.speed = BASE_SPEED;
-    this.serveTimer = SERVE_DELAY;
-    const angle = (Math.random() * 2 - 1) * (MAX_BOUNCE_ANGLE / 2);
-    const dirX = toPlayer ? -1 : 1;
-    this.ball = {
-      x: BOARD / 2,
-      y: BOARD / 2,
-      vx: dirX * this.speed * Math.cos(angle),
-      vy: this.speed * Math.sin(angle),
-    };
-  }
-
-  /** Builds the persistent board structure (paddles + ball) once. */
-  private buildBoard(): void {
-    if (!this.boardElement) return;
-    this.boardElement.innerHTML = `
-      <div class="pong-net" aria-hidden="true"></div>
-      <div class="pong-paddle pong-paddle--player"></div>
-      <div class="pong-paddle pong-paddle--opponent"></div>
-      <div class="pong-ball"></div>`;
-
-    this.playerPaddleEl = this.boardElement.querySelector('.pong-paddle--player');
-    this.opponentPaddleEl = this.boardElement.querySelector('.pong-paddle--opponent');
-    this.ballElement = this.boardElement.querySelector('.pong-ball');
-
-    for (const [el, x] of [
-      [this.playerPaddleEl, PLAYER_X],
-      [this.opponentPaddleEl, OPPONENT_X],
-    ] as const) {
-      if (!el) continue;
-      el.style.width = `${PADDLE_T}%`;
-      el.style.height = `${PADDLE_H}%`;
-      el.style.left = `${x - PADDLE_T / 2}%`;
-    }
-    if (this.ballElement) {
-      this.ballElement.style.width = `${BALL_R * 2}%`;
-      this.ballElement.style.height = `${BALL_R * 2}%`;
-    }
+    const serve = createPongServe(toPlayer);
+    this.pongState.speed = serve.speed;
+    this.pongState.serveTimer = serve.serveTimer;
+    this.pongState.ball = serve.ball;
   }
 
   /** Positions the ball and both paddles from their logical state. */
   render(): void {
-    if (this.ballElement) {
-      this.ballElement.style.left = `${this.ball.x - BALL_R}%`;
-      this.ballElement.style.top = `${this.ball.y - BALL_R}%`;
-      // Past the fire threshold the ball ignites — a stylised cue that the rally
-      // has entered "no mercy" territory.
-      this.ballElement.classList.toggle('is-onfire', this.speed >= FIRE_SPEED);
-    }
-    if (this.playerPaddleEl) this.playerPaddleEl.style.top = `${this.playerY - PADDLE_H / 2}%`;
-    if (this.opponentPaddleEl) {
-      this.opponentPaddleEl.style.top = `${this.opponentY - PADDLE_H / 2}%`;
-    }
+    this.renderer?.render(this.renderState());
   }
 
+  private renderState(): PongRenderState {
+    return this.pongState;
+  }
   /** Resets scores, paddles, ball and state for a fresh match. */
   reset(): void {
     this.resetState();
-    this.opponentScore = 0;
-    this.playerY = BOARD / 2;
-    this.opponentY = BOARD / 2;
-    this.opponentTargetY = BOARD / 2;
+    this.pongState = createPongGameState();
+    this.opponentTargetY = PONG_BOARD / 2;
     this.guestServing = true;
     this.resetBall(true);
     this.updateScoreDisplay();
@@ -497,18 +359,18 @@ export class PongGame extends GameEngine {
   /** Writes both scores into the game header. */
   protected updateScoreDisplay(): void {
     this.hud?.set('score', this.state.score);
-    this.hud?.set('opp', this.opponentScore);
+    this.hud?.set('opp', this.pongState.opponentScore);
   }
 
   /** Title of the game-over overlay: win or loss. */
   protected getGameOverTitle(): string {
-    return this.state.score > this.opponentScore ? t('youWin') : t('youLose');
+    return this.state.score > this.pongState.opponentScore ? t('youWin') : t('youLose');
   }
 
   /** Final score in the overlay body. */
   protected getGameOverContent(): string {
     const oppLabel = this.role === 'solo' ? 'Bot' : 'You';
-    return `<div>Me: ${this.state.score} — ${oppLabel}: ${this.opponentScore}</div>`;
+    return `<div>Me: ${this.state.score} — ${oppLabel}: ${this.pongState.opponentScore}</div>`;
   }
 
   /**
@@ -537,7 +399,7 @@ export class PongGame extends GameEngine {
   private endVersus(): void {
     this.net = null;
     this.role = 'solo';
-    this.guestTargetY = BOARD / 2;
+    this.guestTargetY = PONG_BOARD / 2;
     this.settings?.setDisabled(false);
     this.overlay.hide();
     this.reset();
@@ -560,11 +422,11 @@ export class PongGame extends GameEngine {
     if (this.role === 'host') {
       if (msg.opCode === OP_INPUT) {
         const data = msg.data as { y?: number } | null;
-        if (data && typeof data.y === 'number') this.guestTargetY = this.clampPaddle(data.y);
+        if (data && typeof data.y === 'number') this.guestTargetY = clampPongPaddle(data.y);
       }
       return;
     }
-    if (msg.opCode === OP_STATE) this.applyHostState(msg.data as HostState);
+    if (msg.opCode === OP_STATE) this.applyHostState(msg.data as PongHostState);
     else if (msg.opCode === OP_END) this.applyHostEnd(msg.data as { hs: number; gs: number });
     else if (msg.opCode === OP_RESTART) this.startRound();
   }
@@ -575,30 +437,30 @@ export class PongGame extends GameEngine {
    * right-hand opponent, and the scores are swapped. The guest keeps driving its
    * own (left) paddle locally for responsiveness.
    */
-  private applyHostState(s: HostState): void {
-    const targetX = BOARD - s.bx;
+  private applyHostState(s: PongHostState): void {
+    const targetX = PONG_BOARD - s.bx;
     const targetY = s.by;
     if (s.sv) {
-      this.ball.x = targetX;
-      this.ball.y = targetY;
+      this.pongState.ball.x = targetX;
+      this.pongState.ball.y = targetY;
     } else {
-      this.ball.x += (targetX - this.ball.x) * NET_CORRECT;
-      this.ball.y += (targetY - this.ball.y) * NET_CORRECT;
+      this.pongState.ball.x += (targetX - this.pongState.ball.x) * NET_CORRECT;
+      this.pongState.ball.y += (targetY - this.pongState.ball.y) * NET_CORRECT;
     }
-    this.ball.vx = -s.bvx;
-    this.ball.vy = s.bvy;
-    this.speed = Math.hypot(s.bvx, s.bvy) || BASE_SPEED;
+    this.pongState.ball.vx = -s.bvx;
+    this.pongState.ball.vy = s.bvy;
+    this.pongState.speed = Math.hypot(s.bvx, s.bvy) || PONG_BASE_SPEED;
     this.guestServing = s.sv;
     this.opponentTargetY = s.hy;
     this.state.score = s.gs;
-    this.opponentScore = s.hs;
+    this.pongState.opponentScore = s.hs;
     this.updateScoreDisplay();
   }
 
   /** Ends the match on the guest from the host's final scores. */
   private applyHostEnd(s: { hs: number; gs: number }): void {
     this.state.score = s.gs;
-    this.opponentScore = s.hs;
+    this.pongState.opponentScore = s.hs;
     this.endMatch();
   }
 
@@ -610,7 +472,7 @@ export class PongGame extends GameEngine {
 
   /** Shows the versus result overlay (Rematch for the host, Quit for all). */
   private showVersusGameOver(): void {
-    const won = this.state.score > this.opponentScore;
+    const won = this.state.score > this.pongState.opponentScore;
     const buttons: GameOverlayButton[] = [];
     if (this.role === 'host') {
       buttons.push({
@@ -634,7 +496,7 @@ export class PongGame extends GameEngine {
       this.role === 'guest' ? `<p class="mp-status">${t('waitingForRematch')}</p>` : '';
     this.overlay.show({
       title: won ? t('youWin') : t('youLose'),
-      bodyHtml: `<div>${t('you')}: ${this.state.score} — ${t('opponent')}: ${this.opponentScore}</div>${waiting}`,
+      bodyHtml: `<div>${t('you')}: ${this.state.score} — ${t('opponent')}: ${this.pongState.opponentScore}</div>${waiting}`,
       buttons,
     });
   }
@@ -646,14 +508,14 @@ export class PongGame extends GameEngine {
     if (this.netSendAcc < NET_SEND_MS) return;
     this.netSendAcc = 0;
     this.net.send(OP_STATE, {
-      bx: this.ball.x,
-      by: this.ball.y,
-      bvx: this.ball.vx,
-      bvy: this.ball.vy,
-      hy: this.playerY,
+      bx: this.pongState.ball.x,
+      by: this.pongState.ball.y,
+      bvx: this.pongState.ball.vx,
+      bvy: this.pongState.ball.vy,
+      hy: this.pongState.playerY,
       hs: this.state.score,
-      gs: this.opponentScore,
-      sv: this.serveTimer > 0,
+      gs: this.pongState.opponentScore,
+      sv: this.pongState.serveTimer > 0,
     });
   }
 
@@ -663,6 +525,6 @@ export class PongGame extends GameEngine {
     this.netSendAcc += dt;
     if (this.netSendAcc < NET_SEND_MS) return;
     this.netSendAcc = 0;
-    this.net.send(OP_INPUT, { y: this.playerY });
+    this.net.send(OP_INPUT, { y: this.pongState.playerY });
   }
 }

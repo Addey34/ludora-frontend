@@ -160,7 +160,7 @@ export abstract class GameEngine {
   }
 
   /** DOM binding, listeners and first render. Runs only once. */
-  abstract initialize(): void;
+  abstract initialize(): void | Promise<void>;
   /**
    * Updates the game logic.
    * @param deltaTime Time elapsed since the previous frame (ms).
