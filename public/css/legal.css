@@ -6,7 +6,7 @@
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow);
   padding: clamp(1rem, 3vw, 2rem);
-  max-width: 720px;
+  max-width: 860px;
   width: 100%;
   margin: var(--spacing-md) auto;
   align-self: flex-start;
@@ -22,9 +22,9 @@
 }
 
 .legal-title {
-  font-size: clamp(1.25rem, 3vw, var(--font-size-xl));
+  font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bolder);
-  color: var(--primary-color);
+  color: var(--text-color);
   margin: 0;
   line-height: 1.2;
 }
