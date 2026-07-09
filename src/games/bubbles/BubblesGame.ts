@@ -1,6 +1,7 @@
 import { GameEngine } from '../../shared/engine/GameEngine.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { setupScoreRace, type ScoreRaceHandle } from '../../shared/versus/scoreRaceController.js';
 import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
 import { Difficulty } from '../../shared/bot/difficulty.js';
 import { playSound } from '../../shared/fx/sound.js';
@@ -58,6 +59,7 @@ export class BubblesGame extends GameEngine {
 
   private mouseX = SHOOTER_X;
   private mouseY = SHOOTER_Y - 100;
+  private race: ScoreRaceHandle | null = null;
 
   constructor() {
     super({ storageKey: 'bubbles', leaderboardId: 'bubbles' });
@@ -76,8 +78,25 @@ export class BubblesGame extends GameEngine {
     this.hud = setupHud([
       { key: 'score', icon: 'star', label: t('score') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
+      { key: 'opponent', icon: 'users', label: t('scoreRaceOpponent') },
     ]);
     this.hud.set('high', this.scoreManager.getHighScore());
+    this.race = setupScoreRace(this, {
+      finish: { kind: 'toDeath' },
+      getScore: () => this.state.score,
+      isAlive: () => !this.state.isGameOver,
+      finishLocalRace: () => this.gameOver(),
+      restartLocalRace: () => {
+        this.overlay.hide();
+        this.reset();
+        this.start();
+      },
+      onOpponentProgress: (score) => this.hud?.set('opponent', score),
+      onSessionEnd: () => {
+        this.reset();
+        this.start();
+      },
+    });
     setupSettingsPanel([
       difficultyField(this.difficulty, (v) => {
         this.difficulty = v as Difficulty;
@@ -118,6 +137,17 @@ export class BubblesGame extends GameEngine {
     this.flying = null;
     this.resetState();
     this.buildGrid();
+    this.race?.reset();
+  }
+
+  protected onScoreChange(newScore: number): void {
+    super.onScoreChange(newScore);
+    this.race?.reportProgress(newScore, !this.state.isGameOver);
+  }
+
+  protected onGameOver(): void {
+    if (this.race?.reportFinished(this.state.score)) return;
+    super.onGameOver();
   }
 
   handleInput(e: KeyboardEvent): void {

@@ -555,9 +555,10 @@ const games = [
     key: 'bubbles',
     label: 'Bubble Shooter',
     color: '--color-bubbles',
-    mode: 'solo',
+    mode: 'duo',
     leaderboard: true,
     settings: true,
+    multiplayer: true,
     controls: [
       { keys: 'Move mouse / <kbd>← →</kbd>', action: 'Aim the shooter' },
       { keys: 'Click / <kbd>Space</kbd>', action: 'Shoot a bubble' },
