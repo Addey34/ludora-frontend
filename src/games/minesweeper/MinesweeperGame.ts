@@ -7,6 +7,10 @@ import { ParticleSystem } from '../../shared/fx/particles.js';
 import { screenShake } from '../../shared/fx/screenShake.js';
 import { playSound } from '../../shared/fx/sound.js';
 import { Stopwatch, formatClock } from '../../shared/ui/stopwatch.js';
+import {
+  setupCompletionRace,
+  type CompletionRaceHandle,
+} from '../../shared/versus/completionRaceController.js';
 import { Board, createBoard, floodReveal, isWin } from './minesweeper.js';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
@@ -49,6 +53,7 @@ export class MinesweeperGame extends GameEngine {
   private flagged: boolean[][] = [];
   /** Touch-friendly: when on, a tap flags instead of revealing. */
   private flagMode = false;
+  private race: CompletionRaceHandle | null = null;
 
   private readonly clock = new Stopwatch((s) => this.hud?.set('time', formatClock(s)));
 
@@ -68,7 +73,22 @@ export class MinesweeperGame extends GameEngine {
       { key: 'mines', icon: 'bomb', label: t('hudMinesLeft') },
       { key: 'time', icon: 'clock', label: t('hudTime') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
+      { key: 'opponent', icon: 'users', label: t('scoreRaceOpponent') },
     ]);
+
+    this.race = setupCompletionRace<Board>(this, {
+      finish: { kind: 'bestTime' },
+      generateChallenge: () => {
+        const { rows, cols, mines } = this.def;
+        // No first-click-safe in a duel: both seats share one pre-generated
+        // board (safe cell fixed at the centre), so the challenge is identical.
+        return createBoard(rows, cols, mines, rows >> 1, cols >> 1);
+      },
+      applyChallenge: (seed) => this.applyChallenge(seed),
+      getElapsedMs: () => this.clock.seconds * 1000,
+      onOpponentStatus: (timeMs) =>
+        this.hud?.set('opponent', timeMs === null ? '—' : formatClock(Math.round(timeMs / 1000))),
+    });
 
     // Reveal on left click, flag on right click — both via delegation.
     this.boardEl?.addEventListener('click', (e) => this.onBoardClick(e));
@@ -105,10 +125,30 @@ export class MinesweeperGame extends GameEngine {
     return Array.from({ length: rows }, () => Array.from({ length: cols }, () => false));
   }
 
+  /** Builds and starts the identical shared board from a host-sent challenge. */
+  private applyChallenge(seed: Board): void {
+    this.overlay.hide();
+    this.resetState();
+    this.board = seed;
+    this.revealed = this.grid(seed.rows, seed.cols);
+    this.flagged = this.grid(seed.rows, seed.cols);
+    this.clock.reset();
+    this.buildGrid();
+    this.renderCells();
+    this.updateMinesLeft();
+    this.hud?.set('time', formatClock(0));
+    this.hud?.set('high', this.scoreManager.getHighScore());
+    this.state.isRunning = true;
+    this.clock.start();
+  }
+
   private buildGrid(): void {
     const board = this.boardEl;
     if (!board) return;
-    const { rows, cols } = this.def;
+    // Prefer the active board's dimensions (a host-sent duel board may differ
+    // from the local difficulty); fall back to the difficulty for solo prepare.
+    const rows = this.board?.rows ?? this.def.rows;
+    const cols = this.board?.cols ?? this.def.cols;
     board.style.setProperty('--rows', String(rows));
     board.style.setProperty('--cols', String(cols));
     board.innerHTML = '';
@@ -228,6 +268,9 @@ export class MinesweeperGame extends GameEngine {
     this.revealAllMines(r, c);
     playSound('die');
     screenShake(8, 350);
+    // In a duel, hitting a mine ends this seat's run — the race decides the
+    // winner; skip the solo "Play again" overlay.
+    if (this.race?.reportFailed()) return;
     this.overlay.show({
       title: t('msBoom'),
       bodyHtml: t('msHitMine'),
@@ -319,6 +362,11 @@ export class MinesweeperGame extends GameEngine {
   render(): void {}
 
   handleInput(): void {}
+
+  protected onGameOver(): void {
+    if (this.race?.reportSolved(this.clock.seconds * 1000)) return;
+    super.onGameOver();
+  }
 
   protected getGameOverTitle(): string {
     return t('cleared');

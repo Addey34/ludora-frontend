@@ -164,9 +164,10 @@ const games = [
     key: 'minesweeper',
     label: 'Minesweeper',
     color: '--color-minesweeper',
-    mode: 'solo',
+    mode: 'duo',
     leaderboard: true,
     settings: true,
+    multiplayer: true,
     controls: [
       { keys: 'Click / tap', action: 'Reveal a cell (the first click is always safe)' },
       { keys: 'Right-click', action: 'Flag a suspected mine' },
