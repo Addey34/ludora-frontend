@@ -10,14 +10,16 @@
     name="description"
     content="{{#if game}}Play {{game.label}} free in your browser — no download, no sign-up. {{/if}}Games Zone: browser games you can play instantly."
   />
+  <link rel="canonical" href="{{canonical}}" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Games Zone" />
+  <meta property="og:url" content="{{canonical}}" />
   <meta property="og:title" content="{{title}}" />
   <meta
     property="og:description"
     content="{{#if game}}Play {{game.label}} free in your browser — no download.{{else}}Browser games you can play instantly — no download.{{/if}}"
   />
-  <meta property="og:image" content="https://games-zone.onrender.com/favicon.svg" />
+  <meta property="og:image" content="{{site}}/favicon.svg" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="{{title}}" />
   <meta
@@ -30,6 +32,7 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
   />
   {{#if script}}<script type="module" src="{{script}}"></script>{{/if}}
+  <script type="application/ld+json">{{{ldJson}}}</script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {

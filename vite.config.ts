@@ -801,7 +801,49 @@ export default defineConfig({
           color: c.color,
           games: c.keys.map((k) => games.find((g) => g.key === k)).filter(Boolean),
         }));
-        return { games, game, categories };
+
+        // SEO: the page's clean route + canonical URL, and a per-page JSON-LD
+        // block (structured data). Computed here so `head.hbs` injects it raw
+        // ({{{ldJson}}}) and no per-page markup is needed.
+        const SITE = 'https://games-zone.onrender.com';
+        const staticSegment = path.match(/\/src\/([^/]+)\/index\.html$/)?.[1];
+        const route = game ? `/${game.key}` : staticSegment ? `/${staticSegment}` : '/';
+        const canonical = `${SITE}${route}`;
+        const ldJson = JSON.stringify(
+          game
+            ? [
+                {
+                  '@context': 'https://schema.org',
+                  '@type': 'VideoGame',
+                  name: game.label,
+                  url: canonical,
+                  description: `Play ${game.label} free in your browser — no download, no sign-up.`,
+                  genre: 'Browser game',
+                  gamePlatform: 'Web browser',
+                  applicationCategory: 'GameApplication',
+                  operatingSystem: 'Any',
+                  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+                  publisher: { '@type': 'Organization', name: 'Games Zone', url: SITE },
+                },
+                {
+                  '@context': 'https://schema.org',
+                  '@type': 'BreadcrumbList',
+                  itemListElement: [
+                    { '@type': 'ListItem', position: 1, name: 'Games Zone', item: `${SITE}/` },
+                    { '@type': 'ListItem', position: 2, name: game.label, item: canonical },
+                  ],
+                },
+              ]
+            : {
+                '@context': 'https://schema.org',
+                '@type': 'WebSite',
+                name: 'Games Zone',
+                url: SITE,
+                description: 'Browser games you can play instantly — no download, no sign-up.',
+              }
+        );
+
+        return { games, game, categories, site: SITE, canonical, ldJson };
       },
     }),
   ],
