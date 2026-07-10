@@ -22,10 +22,9 @@
   <meta name="twitter:description" content="{{metaDescription}}" />
   <meta name="twitter:image" content="{{site}}/og-image.png" />
   <link rel="stylesheet" href="{{css}}" />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  />
+  <!-- Font Awesome, self-hosted (no render-blocking third-party CDN request;
+       cacheable by the service worker). Fonts in /vendor/fontawesome/webfonts. -->
+  <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css" />
   {{#if script}}<script type="module" src="{{script}}"></script>{{/if}}
   <script type="application/ld+json">{{{ldJson}}}</script>
   <script>
