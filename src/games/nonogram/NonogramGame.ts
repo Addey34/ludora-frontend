@@ -66,7 +66,7 @@ export class NonogramGame extends GameEngine {
     super({ storageKey: 'nonogram', levels: nonogramLevels() });
   }
 
-  initialize(): void {
+  async initialize(): Promise<void> {
     this.boardEl = document.getElementById('board');
     this.colCluesEl = document.getElementById('colClues');
     this.rowCluesEl = document.getElementById('rowClues');
@@ -80,7 +80,7 @@ export class NonogramGame extends GameEngine {
     this.setupEventListeners(); // keydown → handleInput
     this.setupPointer();
     this.setupTools();
-    this.setupLevels(); // loads progress + selects a level → onLevelSelected
+    await this.setupLevels(); // loads progress + selects a level → onLevelSelected
   }
 
   /** Wires the Fill/Cross tool toggle and the Restart button. */

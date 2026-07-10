@@ -1,15 +1,5 @@
-import { afterEach, describe, expect, it } from 'vitest';
-import {
-  LevelsConfig,
-  defaultProgress,
-  highestUnlocked,
-  isLevelUnlocked,
-  loadLocalProgress,
-} from './levels.js';
-
-afterEach(() => {
-  localStorage.clear();
-});
+import { describe, expect, it } from 'vitest';
+import { LevelsConfig, defaultProgress, highestUnlocked, isLevelUnlocked } from './levels.js';
 
 describe('defaultProgress', () => {
   it('starts with nothing cleared and level 1 selected', () => {
@@ -68,21 +58,5 @@ describe('highestUnlocked', () => {
 
   it('rises as levels are cleared', () => {
     expect(highestUnlocked(config, { cleared: 2, bestScore: 0, selected: 1 })).toBe(10);
-  });
-});
-
-describe('loadLocalProgress', () => {
-  it('returns the default when nothing is stored', () => {
-    expect(loadLocalProgress('pacman')).toEqual(defaultProgress());
-  });
-
-  it('reads and completes a partially-stored progress', () => {
-    localStorage.setItem('gz-levels-pacman', JSON.stringify({ cleared: 5 }));
-    expect(loadLocalProgress('pacman')).toEqual({ cleared: 5, bestScore: 0, selected: 1 });
-  });
-
-  it('falls back to the default on corrupt JSON', () => {
-    localStorage.setItem('gz-levels-pacman', '{not json');
-    expect(loadLocalProgress('pacman')).toEqual(defaultProgress());
   });
 });

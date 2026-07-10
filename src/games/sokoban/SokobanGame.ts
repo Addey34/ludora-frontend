@@ -40,7 +40,7 @@ export class SokobanGame extends GameEngine {
     super({ storageKey: 'sokoban', levels: sokobanLevels() });
   }
 
-  initialize(): void {
+  async initialize(): Promise<void> {
     this.boardEl = document.getElementById('board');
     this.fx = new ParticleSystem();
     this.hud = setupHud([
@@ -53,7 +53,7 @@ export class SokobanGame extends GameEngine {
       setupSwipe(this.boardEl, { onSwipe: (dir) => this.tryMove(dir) });
     }
     this.setupTools();
-    this.setupLevels(); // loads progress + selects a level → onLevelSelected
+    await this.setupLevels(); // loads progress + selects a level → onLevelSelected
   }
 
   /** Wires the on-screen Undo / Restart buttons (for touch, no keyboard). */

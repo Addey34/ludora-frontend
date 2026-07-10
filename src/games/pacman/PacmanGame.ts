@@ -131,12 +131,12 @@ export class PacmanGame extends GameEngine {
    * Binds the DOM elements, builds the map, wires up the keyboard and performs
    * the first render.
    */
-  initialize(): void {
+  async initialize(): Promise<void> {
     this.mapElement = document.getElementById('map');
     this.hud = setupHud([{ key: 'score', icon: 'star', label: t('score') }]);
 
     this.setupEventListeners();
-    this.setupLevels();
+    await this.setupLevels();
 
     if (this.mapElement) {
       setupSwipe(this.mapElement, {

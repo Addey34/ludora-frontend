@@ -5,9 +5,9 @@ import { readStorage, writeStorage } from '../net/nakama.js';
  *
  * A game declares an ordered list of {@link LevelDef}s (each carrying its own
  * unlock rule), and the engine drives the rest: it loads the player's
- * {@link LevelProgress} (locally for an instant offline read, then merged with
- * Nakama Storage for cross-device sync), decides what is unlocked, and persists
- * progress as the player advances. The pure helpers below are unit-tested.
+ * {@link LevelProgress} from Nakama Storage (the single source of truth, shared
+ * across devices), decides what is unlocked, and persists progress as the player
+ * advances. The pure helpers below are unit-tested.
  */
 
 /** How a level becomes available to play. */
@@ -77,61 +77,30 @@ export function highestUnlocked(config: LevelsConfig, progress: LevelProgress): 
   return max;
 }
 
-/** Prefix of every per-game progress key in localStorage. */
+/** Prefix of every per-game progress key in Nakama Storage. */
 const PROGRESS_KEY_PREFIX = 'gz-levels-';
 
-/** localStorage key holding a game's progress (instant, offline fallback). */
+/** Nakama Storage key holding a game's progress. */
 function progressKey(gameKey: string): string {
   return `${PROGRESS_KEY_PREFIX}${gameKey}`;
 }
 
 /**
- * Forgets all locally-cached level progress on this browser. Called on logout
- * and on account-switch so the next player doesn't inherit the previous one's
- * unlocks (the per-account copy on Nakama Storage stays untouched).
+ * Persists progress to the player's Nakama Storage (best-effort). The server is
+ * the single source of truth for level progress — there is no local copy, so a
+ * run made while the backend is unreachable is not saved (same policy as scores).
  */
-export function clearLocalProgress(): void {
-  try {
-    const keys: string[] = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key?.startsWith(PROGRESS_KEY_PREFIX)) keys.push(key);
-    }
-    for (const key of keys) localStorage.removeItem(key);
-  } catch {} // eslint-disable-line no-empty
-}
-
-/** Reads progress synchronously from localStorage (instant, offline). Pure-ish. */
-export function loadLocalProgress(gameKey: string): LevelProgress {
-  try {
-    const raw = localStorage.getItem(progressKey(gameKey));
-    if (!raw) return defaultProgress();
-    return { ...defaultProgress(), ...(JSON.parse(raw) as Partial<LevelProgress>) };
-  } catch {
-    return defaultProgress();
-  }
-}
-
-/** Persists progress to localStorage immediately and to Nakama best-effort. */
 export function saveProgress(gameKey: string, progress: LevelProgress): void {
-  try {
-    localStorage.setItem(progressKey(gameKey), JSON.stringify(progress));
-  } catch {} // eslint-disable-line no-empty
   void writeStorage(progressKey(gameKey), progress);
 }
 
 /**
- * Loads progress from Nakama and merges it with the local copy, keeping the most
- * advanced of the two (so progress made on another device carries over). Falls
- * back to the local copy when the backend is unreachable.
+ * Loads progress from the player's Nakama Storage, completed with defaults for
+ * any missing field. Returns fresh progress when nothing is stored yet or the
+ * backend is unreachable.
  */
 export async function loadProgress(gameKey: string): Promise<LevelProgress> {
-  const local = loadLocalProgress(gameKey);
   const remote = await readStorage<LevelProgress>(progressKey(gameKey));
-  if (!remote) return local;
-  return {
-    cleared: Math.max(local.cleared, remote.cleared ?? 0),
-    bestScore: Math.max(local.bestScore, remote.bestScore ?? 0),
-    selected: remote.selected || local.selected,
-  };
+  if (!remote) return defaultProgress();
+  return { ...defaultProgress(), ...remote };
 }

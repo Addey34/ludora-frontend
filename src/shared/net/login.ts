@@ -1,6 +1,5 @@
 import { consumeAuthRequired, consumeAuthReturnPath } from './authGuard.js';
 import { GOOGLE_CLIENT_ID, loginWithGoogleToken, getCurrentUser, logout } from './nakama.js';
-import { clearLocalProgress } from '../levels/levels.js';
 import { flushPendingScore } from '../score/pendingScore.js';
 import { showToast } from '../ui/toast.js';
 import { t } from '../i18n/i18n.js';
@@ -108,7 +107,6 @@ async function renderAuthArea(area: HTMLElement): Promise<void> {
       }
     });
     area.querySelector('#logoutBtn')?.addEventListener('click', () => {
-      clearLocalProgress();
       logout();
       location.reload();
     });
@@ -146,8 +144,10 @@ async function init(): Promise<void> {
       use_fedcm_for_prompt: true,
       callback: (response) => {
         loginWithGoogleToken(response.credential)
-          .then((switched) => {
-            if (switched) clearLocalProgress();
+          .then(() => {
+            // Level progress lives only on Nakama now, keyed per account, so a
+            // switch to another account shows its own progress on reload — there
+            // is nothing local to clear here anymore.
             const returnPath = consumeAuthReturnPath();
             // Go back to the page that required sign-in, else reload the current
             // one so it re-renders as signed in. Use reload() rather than

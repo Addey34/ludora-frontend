@@ -15,7 +15,6 @@ import {
   LevelsConfig,
   LevelProgress,
   isLevelUnlocked,
-  loadLocalProgress,
   loadProgress,
   saveProgress,
 } from '../levels/levels.js';
@@ -305,18 +304,17 @@ export abstract class GameEngine {
   }
 
   /**
-   * Sets up the level system: loads progress (locally for an instant read, then
-   * merged with Nakama Storage), selects the saved level, builds the "Levels"
-   * panel and applies the level's parameters. Games with a `levels` config call
-   * this once from `initialize()`. No-op when no levels are configured.
+   * Sets up the level system: loads progress from Nakama Storage (the single
+   * source of truth), selects the saved level, builds the "Levels" panel and
+   * applies the level's parameters. Games with a `levels` config `await` this
+   * once from `initialize()` so the saved level is applied before the first
+   * start. No-op when no levels are configured.
    */
-  protected setupLevels(): void {
+  protected async setupLevels(): Promise<void> {
     const config = this.config.levels;
     if (!config) return;
 
-    this.levelProgress = loadLocalProgress(config.gameKey);
-    const topLocal = this.scoreManager.getScores()[0]?.score ?? 0;
-    this.levelProgress.bestScore = Math.max(this.levelProgress.bestScore, topLocal);
+    this.levelProgress = await loadProgress(config.gameKey);
 
     this.currentLevel = this.clampSelectedLevel(this.levelProgress.selected);
     this.onLevelSelected(this.currentLevel);
@@ -326,12 +324,6 @@ export abstract class GameEngine {
       progress: this.levelProgress,
       selected: this.currentLevel,
       onSelect: (id) => this.selectLevel(id),
-    });
-
-    loadProgress(config.gameKey).then((remote) => {
-      remote.bestScore = Math.max(remote.bestScore, topLocal);
-      this.levelProgress = remote;
-      this.levelPanel?.refresh(remote);
     });
   }
 
