@@ -19,9 +19,6 @@ interface GoogleIdApi {
   initialize(config: {
     client_id: string;
     callback: (response: GoogleCredentialResponse) => void;
-    /** Opt into the browser's FedCM UI (required now that third-party-cookie
-     * One Tap is deprecated and silently fails). */
-    use_fedcm_for_prompt?: boolean;
   }): void;
   renderButton(parent: HTMLElement, options: Record<string, string>): void;
   prompt(): void;
@@ -139,9 +136,6 @@ async function init(): Promise<void> {
     await loadGoogleScript();
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
-      // Use the browser-native FedCM prompt; the legacy One Tap relied on
-      // third-party cookies and now fails silently in most browsers.
-      use_fedcm_for_prompt: true,
       callback: (response) => {
         loginWithGoogleToken(response.credential)
           .then(() => {
