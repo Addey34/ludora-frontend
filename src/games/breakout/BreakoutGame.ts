@@ -1,7 +1,7 @@
 import { GameEngine, GameConfig } from '../../shared/engine/GameEngine.js';
 import type { IRenderer } from '../../shared/engine/IRenderer.js';
 import { setupHud } from '../../shared/ui/hud.js';
-import { setupScoreRace, type ScoreRaceHandle } from '../../shared/versus/scoreRaceController.js';
+import { LevelDef } from '../../shared/levels/levels.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
 import { Difficulty } from '../../shared/bot/difficulty.js';
@@ -13,7 +13,6 @@ import {
   BASE_SPEED,
   BOARD,
   SPEED_PER_LEVEL,
-  buildBricksForLevel,
   clampPaddle,
   createBreakoutState,
   movePaddle,
@@ -28,6 +27,14 @@ interface BreakoutConfig extends GameConfig {
   lives?: number;
 }
 
+/** How many selectable levels the "Levels" panel offers (all procedurally distinct). */
+const BREAKOUT_LEVELS = 30;
+
+/** The level set: level 1 is open, the rest unlock by clearing the previous one. */
+function buildBreakoutLevels(): LevelDef[] {
+  return Array.from({ length: BREAKOUT_LEVELS }, (_, i) => ({ id: i + 1 }));
+}
+
 /** Per-difficulty tuning: starting lives and ball-speed multiplier. */
 const TUNING: Record<Difficulty, { lives: number; speedMul: number }> = {
   easy: { lives: 5, speedMul: 0.85 },
@@ -35,10 +42,18 @@ const TUNING: Record<Difficulty, { lives: number; speedMul: number }> = {
   hard: { lives: 2, speedMul: 1.2 },
 };
 
+/**
+ * Breakout as a level-by-level game (like Pac-Man / Sokoban): the player picks a
+ * level from the "Levels" panel, clears every brick to win it — which unlocks the
+ * next and offers a "Next level" button — or loses all lives. The ranked score is
+ * the level reached (see {@link GameEngine.getRecordedScore}).
+ */
 export class BreakoutGame extends GameEngine {
   private difficulty: Difficulty = 'medium';
   private maxLives = 3;
   private speedMul = 1;
+  /** True when the current level was cleared (a win) rather than lost. */
+  private pendingWin = false;
 
   private breakoutState: BreakoutGameState;
   private readonly keys = { left: false, right: false };
@@ -46,15 +61,19 @@ export class BreakoutGame extends GameEngine {
   private boardElement: HTMLElement | null = null;
   private fx: ParticleSystem | null = null;
   private renderer: IRenderer<BreakoutGameState> | null = null;
-  private race: ScoreRaceHandle | null = null;
 
   constructor(config: BreakoutConfig = {}) {
-    super({ ...config, storageKey: 'breakout-high-scores', leaderboardId: 'breakout' });
+    super({
+      ...config,
+      storageKey: 'breakout-high-scores',
+      leaderboardId: 'breakout',
+      levels: { gameKey: 'breakout', levels: buildBreakoutLevels() },
+    });
     this.maxLives = config.lives ?? 3;
     this.breakoutState = createBreakoutState(1, this.maxLives, BASE_SPEED);
   }
 
-  initialize(): void {
+  async initialize(): Promise<void> {
     this.boardElement = document.getElementById('board');
     this.fx = new ParticleSystem();
     if (this.boardElement) this.renderer = new BreakoutDOMRenderer(this.boardElement);
@@ -63,25 +82,7 @@ export class BreakoutGame extends GameEngine {
       { key: 'level', icon: 'layer-group', label: t('hudLevel') },
       { key: 'lives', icon: 'heart', label: t('hudLives') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
-      { key: 'opponent', icon: 'users', label: t('scoreRaceOpponent') },
     ]);
-
-    this.race = setupScoreRace(this, {
-      finish: { kind: 'toDeath' },
-      getScore: () => this.state.score,
-      isAlive: () => !this.state.isGameOver,
-      finishLocalRace: () => this.gameOver(),
-      restartLocalRace: () => {
-        this.overlay.hide();
-        this.reset();
-        this.start();
-      },
-      onOpponentProgress: (score) => this.hud?.set('opponent', score),
-      onSessionEnd: () => {
-        this.reset();
-        this.start();
-      },
-    });
 
     setupSettingsPanel([
       difficultyField(this.difficulty, (v) => {
@@ -92,6 +93,7 @@ export class BreakoutGame extends GameEngine {
     this.setLeaderboardVariant(this.difficulty, t(this.difficulty));
 
     this.setupEventListeners();
+    await this.setupLevels();
     this.updateScoreDisplay();
     this.render();
   }
@@ -146,26 +148,13 @@ export class BreakoutGame extends GameEngine {
 
   reset(): void {
     this.resetState();
-    this.applyDifficulty();
     if (this.boardElement) {
       this.renderer?.dispose?.();
       this.renderer = new BreakoutDOMRenderer(this.boardElement);
     }
-    this.breakoutState = createBreakoutState(1, this.maxLives, BASE_SPEED * this.speedMul);
-    this.race?.reset();
-    this.addScore(1); // score mirrors the level reached, starts at 1
+    this.loadLevel(this.currentLevel);
     this.updateScoreDisplay();
     this.render();
-  }
-
-  protected onScoreChange(newScore: number): void {
-    super.onScoreChange(newScore);
-    this.race?.reportProgress(newScore, !this.state.isGameOver);
-  }
-
-  protected onGameOver(): void {
-    if (this.race?.reportFinished(this.state.score)) return;
-    super.onGameOver();
   }
 
   protected updateScoreDisplay(): void {
@@ -174,11 +163,33 @@ export class BreakoutGame extends GameEngine {
     this.hud?.set('high', this.scoreManager.getHighScore());
   }
 
+  /** The selected level sets the layout, ball speed and the difficulty ramp. */
+  protected onLevelSelected(levelId: number): void {
+    this.loadLevel(levelId);
+  }
+
+  /** A level is cleared when every brick is destroyed (the game's win). */
+  protected didWinLevel(): boolean {
+    return this.pendingWin;
+  }
+
+  protected getGameOverTitle(): string {
+    return this.pendingWin ? t('youWon') : t('gameOver');
+  }
+
   protected getGameOverContent(): string {
     return `<div>${t('hudLevel')}: ${this.breakoutState.level}</div><div>${t('bkWorld')}: ${worldOf(this.breakoutState.level) + 1}</div>`;
   }
 
   // --- private orchestration ---
+
+  /** Builds the playable state for a level: its layout and its ramped ball speed. */
+  private loadLevel(level: number): void {
+    this.applyDifficulty();
+    const speed = BASE_SPEED * this.speedMul * Math.pow(SPEED_PER_LEVEL, level - 1);
+    this.breakoutState = createBreakoutState(level, this.maxLives, speed);
+    this.pendingWin = false;
+  }
 
   private applyDifficulty(): void {
     const tune = TUNING[this.difficulty];
@@ -195,7 +206,9 @@ export class BreakoutGame extends GameEngine {
       } else if (event.type === 'ballLost') {
         this.executeLoseLife();
       } else if (event.type === 'levelComplete') {
-        this.executeNextLevel();
+        this.pendingWin = true;
+        playSound('win');
+        this.gameOver();
       }
     }
   }
@@ -215,23 +228,6 @@ export class BreakoutGame extends GameEngine {
       lives,
       paddleX,
       ball: resetBall(paddleX, this.breakoutState.speed),
-    };
-    this.updateScoreDisplay();
-  }
-
-  private executeNextLevel(): void {
-    const newLevel = this.breakoutState.level + 1;
-    const newSpeed = this.breakoutState.speed * SPEED_PER_LEVEL;
-    this.addScore(1);
-    playSound('score');
-    const bricks = buildBricksForLevel(newLevel);
-    const paddleX = this.breakoutState.paddleX;
-    this.breakoutState = {
-      ...this.breakoutState,
-      level: newLevel,
-      speed: newSpeed,
-      bricks,
-      ball: resetBall(paddleX, newSpeed),
     };
     this.updateScoreDisplay();
   }

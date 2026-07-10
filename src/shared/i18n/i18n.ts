@@ -1018,12 +1018,11 @@ const CONTROLS_FR: Record<string, string> = {
   'Draw mode (1 card, or 3 for a harder game)':
     'Mode pioche (1 carte, ou 3 pour un jeu plus difficile)',
   'Starting chips (100 / 200 / 500)': 'Jetons de départ (100 / 200 / 500)',
-  'Clear a level': 'Vide un niveau',
-  'Advance to the next — endless procedural worlds':
-    'Passe au suivant — mondes procéduraux sans fin',
+  'Clear all bricks': 'Casse toutes les briques',
+  'Complete the level': 'Termine le niveau',
   'Reinforced bricks': 'Briques renforcées',
   'Take several hits before they break': 'Encaissent plusieurs coups avant de casser',
-  'Reach the highest level you can': 'Atteins le niveau le plus haut possible',
+  'Clear every level': 'Termine tous les niveaux',
 };
 
 /**
