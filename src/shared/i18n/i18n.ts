@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Interface localisation — simple, modular, dependency-free.
  *
  * The pattern (reuse it everywhere, incl. future games):

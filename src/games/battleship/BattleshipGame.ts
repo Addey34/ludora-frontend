@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Battleship controller: a two-phase game (placement → combat), playable solo
  * against a bot or 1-v-1 online through the Nakama relay.
  *
