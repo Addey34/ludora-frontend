@@ -719,6 +719,90 @@ const categoryDefs = [
 //      because Vite would look in `src/ludo/` which no longer exists.
 const games_keys = new Set(games.map((g) => g.key));
 const static_pages = new Set(['privacy', 'legal', 'profile', 'leaderboard', 'friends']);
+
+/**
+ * Unique, keyword-rich SEO meta description per game (~110-160 chars), used for
+ * the `<meta name="description">`, Open Graph/Twitter and the JSON-LD. Unique
+ * per-page copy is the biggest on-page lever for ranking on each game's name and
+ * its keyword variants; a game missing here falls back to a generic template.
+ */
+const SEO_BLURBS: Record<string, string> = {
+  typing:
+    'Boost your typing speed with this free browser typing game. Race the clock, raise your WPM and climb the leaderboard — no download.',
+  snake:
+    'Play the classic Snake game free online. Eat, grow and beat your high score in this fast browser arcade game — no download, no sign-up.',
+  pacman:
+    'Play Pac-Man free in your browser. Clear every maze, dodge the ghosts and chase a high score across increasingly tricky levels.',
+  '2048':
+    'Play 2048 online free. Slide and merge the tiles to reach 2048 and beyond in this addictive browser number puzzle — no download.',
+  simon:
+    'Play Simon, the classic memory game. Repeat the growing colour-and-sound sequence as long as you can, free in your browser.',
+  motus:
+    'Guess the hidden word in six tries — a free Wordle-style word game in your browser, in French and English. No download.',
+  tetris:
+    'Play Tetris free online. Stack and clear lines, speed up and chase a high score in this timeless block-puzzle browser game.',
+  memory:
+    'Play the Memory card-matching game free online. Flip the cards, find the pairs and test your recall against a bot or a friend.',
+  minesweeper:
+    'Play Minesweeper free in your browser. Flag the mines and clear the grid on easy, medium or hard — the classic logic puzzle.',
+  breakout:
+    'Play Breakout free online. Bounce the ball, smash every brick and beat your high score in this classic arcade browser game.',
+  pong: 'Play Pong, the original arcade game, free in your browser. Face a bot or a friend in fast 1-v-1 table-tennis action.',
+  ludo: 'Play Ludo (Petits Chevaux) free online. Roll the dice and race your tokens home — up to 4 players or against bots.',
+  connect4:
+    'Play Connect 4 free in your browser. Drop your discs, line up four in a row and beat a friend or a smart bot.',
+  checkers:
+    'Play Checkers (Draughts) free online. Capture your opponent’s pieces and king your way to victory against a bot or a friend.',
+  reversi:
+    'Play Reversi (Othello) free in your browser. Flip discs to your colour and take control of the board against a bot or a friend.',
+  battleship:
+    'Play Battleship free online. Place your fleet, hunt your opponent’s ships and sink them all — versus a bot or a friend.',
+  goose:
+    'Play the Game of the Goose (Jeu de l’oie) free online. Roll, race across the board and dodge the traps — up to 4 players.',
+  math: 'Sharpen your mental math free in your browser. Solve timed arithmetic drills, build streaks and climb the leaderboard.',
+  geoquiz:
+    'Test your geography free online. Guess countries, capitals and flags in this fast multiple-choice quiz — no download.',
+  trivia:
+    'Play free trivia quiz online. Answer questions across many categories, build streaks and challenge a friend — no download.',
+  conjugation:
+    'Practise French verb conjugation free in your browser. Type the correct form, build streaks and master every tense.',
+  anagram:
+    'Unscramble the letters to find the word — a free anagram word game in your browser, in French and English. No download.',
+  hangman:
+    'Play Hangman free online. Guess the hidden word letter by letter before you run out of tries — French and English.',
+  mastermind:
+    'Play Mastermind free in your browser. Crack the secret colour code with logic and deduction — the classic code-breaker.',
+  sokoban:
+    'Play Sokoban free online. Push every crate onto its target in this classic warehouse puzzle across many handcrafted levels.',
+  nonogram:
+    'Play Nonogram (Picross) free in your browser. Use the number clues to reveal the hidden picture — logic puzzles by level.',
+  wordsearch:
+    'Play Word Search free online. Find every hidden word in the grid — a relaxing word puzzle in French and English.',
+  sudoku:
+    'Play Sudoku free in your browser. Fill the 9×9 grid on easy, medium or hard — the classic number logic puzzle, no download.',
+  taquin:
+    'Play the 15-puzzle (Taquin) free online. Slide the tiles back into order in this classic sliding puzzle — beat the clock.',
+  flappy:
+    'Play Flappy Bird free in your browser. Tap to fly between the pipes and chase a high score — just one more try!',
+  solitaire:
+    'Play Klondike Solitaire free online. Stack the cards and clear the tableau in the timeless patience card game — no download.',
+  mancala:
+    'Play Mancala free in your browser. Sow the seeds, capture your opponent’s stones and outsmart the bot in this ancient board game.',
+  blackjack:
+    'Play Blackjack (21) free online. Hit, stand and beat the dealer without going bust — the classic casino card game.',
+  invaders:
+    'Play Space Invaders free in your browser. Blast the alien waves, dodge their fire and chase a high score — retro arcade action.',
+  bubbles:
+    'Play Bubble Shooter free online. Match three bubbles to pop them and clear the board in this addictive arcade game.',
+  dotsboxes:
+    'Play Dots and Boxes free in your browser. Draw lines, close boxes and outscore a friend or a bot in this pen-and-paper classic.',
+  yahtzee:
+    'Play Yahtzee free online. Roll the dice, chase combos and score big in the classic dice game — versus a bot or a friend.',
+  binairo:
+    'Play Binairo (Takuzu) free in your browser. Fill the grid with 0s and 1s by the rules — a binary logic puzzle by size.',
+  kakuro:
+    'Play Kakuro free online. Fill the grid so every run adds up to its clue — a cross-sum number puzzle, no download.',
+};
 interface RewriteRes {
   writeHead(status: number, headers: Record<string, string>): void;
   end(): void;
@@ -809,6 +893,11 @@ export default defineConfig({
         const staticSegment = path.match(/\/src\/([^/]+)\/index\.html$/)?.[1];
         const route = game ? `/${game.key}` : staticSegment ? `/${staticSegment}` : '/';
         const canonical = `${SITE}${route}`;
+        // Unique per-game description (SEO); generic fallbacks otherwise.
+        const metaDescription = game
+          ? (SEO_BLURBS[game.key] ??
+            `Play ${game.label} free in your browser — no download, no sign-up.`)
+          : 'Games Zone: free browser games you can play instantly — no download, no sign-up.';
         const ldJson = JSON.stringify(
           game
             ? [
@@ -817,7 +906,7 @@ export default defineConfig({
                   '@type': 'VideoGame',
                   name: game.label,
                   url: canonical,
-                  description: `Play ${game.label} free in your browser — no download, no sign-up.`,
+                  description: metaDescription,
                   genre: 'Browser game',
                   gamePlatform: 'Web browser',
                   applicationCategory: 'GameApplication',
@@ -839,11 +928,11 @@ export default defineConfig({
                 '@type': 'WebSite',
                 name: 'Games Zone',
                 url: SITE,
-                description: 'Browser games you can play instantly — no download, no sign-up.',
+                description: metaDescription,
               }
         );
 
-        return { games, game, categories, site: SITE, canonical, ldJson };
+        return { games, game, categories, site: SITE, canonical, ldJson, metaDescription };
       },
     }),
   ],
