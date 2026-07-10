@@ -3,7 +3,8 @@ import { GameOverlay } from '../ui/gameOverlay.js';
 import { showStartOverlay, dismissStartOverlay } from '../ui/startOverlay.js';
 import { getPlayerName } from '../net/playerName.js';
 import {
-  submitLeaderboardScore,
+  recordRun,
+  buildScoreMetadata,
   listLeaderboardScores,
   submitGlobalScore,
   getCachedUser,
@@ -112,6 +113,12 @@ export abstract class GameEngine {
   protected scoreManager: ScoreManager;
   /** Base localStorage key, so per-variant boards can suffix it (see {@link setLeaderboardVariant}). */
   private readonly baseStorageKey: string;
+  /**
+   * The game's base online leaderboard id (captured once), so per-variant boards
+   * can suffix it (`<base>-<variant>`) while the base still aggregates the
+   * player's best across variants for the profile. Undefined = no online board.
+   */
+  private readonly baseLeaderboardId: string | undefined;
   /** Game-over overlay (replaces the old modal). */
   protected overlay: GameOverlay;
   /** Handle to the "Leaderboard" panel, when the game opts into one. */
@@ -149,11 +156,11 @@ export abstract class GameEngine {
     };
 
     this.baseStorageKey = this.config.storageKey ?? 'scores';
-    this.scoreManager = new ScoreManager(
-      this.baseStorageKey,
-      this.config.maxScores ?? 10,
-      !!this.config.leaderboardId
-    );
+    this.baseLeaderboardId = this.config.leaderboardId;
+    // Always online mode: the ScoreManager only tracks the in-session high score;
+    // all persistence is server-authoritative (see {@link recordScore}). Scores
+    // are never written to localStorage anymore.
+    this.scoreManager = new ScoreManager(this.baseStorageKey, this.config.maxScores ?? 10, true);
     this.overlay = new GameOverlay();
 
     if (typeof location !== 'undefined') {
@@ -176,19 +183,15 @@ export abstract class GameEngine {
 
   /**
    * Scopes the leaderboard to a variant (e.g. one board per difficulty/language),
-   * so incomparable runs never share a table. Per-variant boards are **local**
-   * (a single online board would mix variants — the very thing this fixes); the
+   * so incomparable runs never share a table. Per-variant boards are **online**
+   * too (`<base>-<variant>`, created on demand by the server), while every run
+   * also feeds the base board so the profile still shows one best per game. The
    * `label` is shown under the "Leaderboard" title. Call from the game on start
    * and whenever the relevant settings change; pass `null` to use the base board.
    */
   protected setLeaderboardVariant(variant: string | null, label = ''): void {
-    const suffix = variant ? `-${variant}` : '';
-    this.scoreManager = new ScoreManager(
-      this.baseStorageKey + suffix,
-      this.config.maxScores ?? 10,
-      variant ? false : !!this.config.leaderboardId
-    );
-    if (variant) this.config.leaderboardId = undefined; // local-only per variant
+    const base = this.baseLeaderboardId;
+    this.config.leaderboardId = base && variant ? `${base}-${variant}` : base;
     const badge = document.getElementById('leaderboardVariant');
     if (badge) badge.textContent = variant ? label : '';
     this.renderScoreTable();
@@ -517,7 +520,12 @@ export abstract class GameEngine {
         text: t('viewLeaderboard'),
         primary: false,
         onClick: () => {
+          // Don't leave the player on the dead finished game: reset to the start
+          // ("Play") screen, then open the leaderboard over it — closing the panel
+          // reveals the Play screen. "Play again" stays a direct relaunch.
           this.overlay.hide();
+          this.reset();
+          this.presentStartScreen();
           this.leaderboardPanel?.open();
         },
       });
@@ -546,21 +554,40 @@ export abstract class GameEngine {
     });
   }
 
-  /** Records a run under `username`: local board, online leaderboard, global GZP. */
+  /**
+   * The leaderboards a run is written to: the base board (cross-variant best,
+   * read by the profile) plus the active variant board, de-duplicated. Empty
+   * when the game has no online board.
+   */
+  private targetBoards(): string[] {
+    const base = this.baseLeaderboardId;
+    if (!base) return [];
+    const active = this.config.leaderboardId;
+    return active && active !== base ? [base, active] : [base];
+  }
+
+  /**
+   * Records a run under `username`, server-authoritative: the run is written to
+   * its leaderboard(s) and the global GamesZone Points total through Nakama. No
+   * score is written to localStorage. If the backend is unreachable the run is
+   * lost and the player is warned (offline scores are not queued).
+   */
   private recordScore(username: string): void {
     const entry = this.buildScoreEntry(username);
-    this.scoreManager.saveScore(entry);
-    // Online-board games don't write localStorage, so the cross-game /profile
-    // (which reads localStorage) would miss them — mirror the entry to a local
-    // board under the same key so it shows up there too.
-    if (this.config.leaderboardId) {
-      new ScoreManager(
-        this.scoreManager.getStorageKey(),
-        this.config.maxScores ?? 10,
-        false
-      ).saveScore(entry);
+    const boards = this.targetBoards();
+    if (boards.length > 0 && this.baseLeaderboardId) {
+      recordRun({
+        game: this.baseLeaderboardId,
+        boards,
+        score: this.state.score,
+        metadata: buildScoreMetadata(entry),
+      })
+        .then(() => this.renderScoreTable())
+        .catch((err) => {
+          console.warn('[nakama] score submission failed:', err);
+          showToast(t('scoreNotSaved'), 'warning');
+        });
     }
-    this.submitOnlineScore(entry);
     submitGlobalScore(gzPoints(this.state.score), username).catch((err) =>
       console.warn('[nakama] global score submission failed:', err)
     );
@@ -570,28 +597,13 @@ export abstract class GameEngine {
   /** Guest chose to save: stash the run and trigger Google sign-in. */
   private signInToSave(): void {
     storePendingScore({
-      storageKey: this.scoreManager.getStorageKey(),
-      maxScores: this.config.maxScores ?? 10,
-      leaderboardId: this.config.leaderboardId,
+      game: this.baseLeaderboardId,
+      boards: this.targetBoards(),
       score: this.state.score,
       extra: this.buildScoreEntry('').additionalData,
       gzp: gzPoints(this.state.score),
     });
     window.dispatchEvent(new CustomEvent('gz-request-login'));
-  }
-
-  /**
-   * Best-effort submission of the score to the online leaderboard (only if the
-   * game declares a `leaderboardId`). Failures are swallowed so a backend issue
-   * never blocks the local save or the restart flow. Refreshes the table once
-   * the write lands, so the new global score appears.
-   */
-  private submitOnlineScore(entry: ScoreEntry): void {
-    const leaderboardId = this.config.leaderboardId;
-    if (!leaderboardId) return;
-    submitLeaderboardScore(leaderboardId, entry)
-      .then(() => this.renderScoreTable())
-      .catch((err) => console.warn('[nakama] online score submission failed:', err));
   }
 
   /**
@@ -636,8 +648,6 @@ export abstract class GameEngine {
       this.leaderboardPanelReady = true;
       this.leaderboardPanel = setupLeaderboardPanel();
     }
-
-    this.renderScoreRows(this.scoreManager.getScores());
 
     const leaderboardId = this.config.leaderboardId;
     if (!leaderboardId) return;

@@ -1,3 +1,4 @@
+import { consumeAuthRequired, consumeAuthReturnPath } from './authGuard.js';
 import { GOOGLE_CLIENT_ID, loginWithGoogleToken, getCurrentUser, logout } from './nakama.js';
 import { clearLocalProgress } from '../levels/levels.js';
 import { flushPendingScore } from '../score/pendingScore.js';
@@ -19,6 +20,9 @@ interface GoogleIdApi {
   initialize(config: {
     client_id: string;
     callback: (response: GoogleCredentialResponse) => void;
+    /** Opt into the browser's FedCM UI (required now that third-party-cookie
+     * One Tap is deprecated and silently fails). */
+    use_fedcm_for_prompt?: boolean;
   }): void;
   renderButton(parent: HTMLElement, options: Record<string, string>): void;
   prompt(): void;
@@ -137,16 +141,32 @@ async function init(): Promise<void> {
     await loadGoogleScript();
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
+      // Use the browser-native FedCM prompt; the legacy One Tap relied on
+      // third-party cookies and now fails silently in most browsers.
+      use_fedcm_for_prompt: true,
       callback: (response) => {
         loginWithGoogleToken(response.credential)
           .then((switched) => {
             if (switched) clearLocalProgress();
-            location.reload();
+            const returnPath = consumeAuthReturnPath();
+            // Go back to the page that required sign-in, else reload the current
+            // one so it re-renders as signed in. Use reload() rather than
+            // re-assigning the same href, which a URL #fragment can no-op.
+            if (returnPath) location.href = returnPath;
+            else location.reload();
           })
           .catch((err) => console.warn('[login] Google sign-in failed:', err));
       },
     });
     await renderAuthArea(area);
+    if (consumeAuthRequired()) {
+      showToast(t('authRequired'), 'warning', 3000);
+      try {
+        google.accounts.id.prompt();
+      } catch {
+        // GIS not ready - ignore
+      }
+    }
     // A guest who signed in to save a run: record it now, under their new name.
     if (await flushPendingScore()) showToast(t('scoreSaved'), 'success');
     // Let any "Sign in to save" button (game-over overlay) open the Google prompt.

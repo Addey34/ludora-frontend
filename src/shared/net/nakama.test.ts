@@ -9,10 +9,18 @@ interface TypingEntry extends ScoreEntry {
   letters: number;
 }
 
-/** Builds an unpadded base64url JWT (only the payload matters here). */
+/**
+ * Builds an unpadded base64url JWT the way Google actually does: the payload is
+ * UTF-8 encoded before base64. Using a naive `btoa(JSON.stringify(...))` would
+ * only exercise the Latin-1 path and hide the accented-name bug.
+ */
 function makeJwt(payload: object): string {
-  const encode = (obj: object): string =>
-    btoa(JSON.stringify(obj)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const encode = (obj: object): string => {
+    const utf8 = new TextEncoder().encode(JSON.stringify(obj));
+    let binary = '';
+    for (const byte of utf8) binary += String.fromCharCode(byte);
+    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  };
   return `${encode({ alg: 'none' })}.${encode(payload)}.signature`;
 }
 
@@ -74,6 +82,11 @@ describe('googleTokenName', () => {
 
   it('falls back to the email when there is no name', () => {
     expect(googleTokenName(makeJwt({ email: 'a@b.co' }))).toBe('a@b.co');
+  });
+
+  it('decodes accented UTF-8 names without mangling them', () => {
+    expect(googleTokenName(makeJwt({ name: 'François Müller' }))).toBe('François Müller');
+    expect(googleTokenName(makeJwt({ name: 'José 日本語' }))).toBe('José 日本語');
   });
 
   it('returns undefined for a malformed token', () => {

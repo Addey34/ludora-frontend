@@ -18,16 +18,35 @@
       </div>
 
       <div class="profile-name" id="profileNameRow" hidden>
-        <label class="profile-name-label" for="displayName" data-i18n="displayNameLabel"
-          >Display name</label
-        >
-        <form class="profile-name-form" id="displayNameForm">
-          <input id="displayName" class="input-field" maxlength="20" autocomplete="off" />
+        <span class="profile-name-label" data-i18n="displayNameLabel">Display name</span>
+        <div class="profile-name-display" id="nameDisplay">
+          <span class="profile-name-value" id="nameValue"></span>
+          <button
+            class="profile-name-edit"
+            type="button"
+            id="editName"
+            data-i18n-aria="editName"
+            aria-label="Edit name"
+          >
+            <i class="fas fa-pencil" aria-hidden="true"></i>
+          </button>
+        </div>
+        <form class="profile-name-form" id="displayNameForm" hidden>
+          <input
+            id="displayName"
+            class="input-field"
+            maxlength="20"
+            autocomplete="off"
+            data-i18n-aria="displayNameLabel"
+          />
           <button type="submit" class="btn btn--primary" data-i18n="saveName">Save</button>
+          <button type="button" class="btn btn--secondary" id="cancelName" data-i18n="cancel">
+            Cancel
+          </button>
         </form>
       </div>
 
-      <p class="profile-empty" id="profileGuest" data-i18n="profileGuest" hidden>
+      <p class="profile-empty profile-empty--account" id="profileGuest" data-i18n="profileGuest">
         Sign in with Google to set your name and appear on the leaderboard.
       </p>
     </main>

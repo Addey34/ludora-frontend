@@ -77,7 +77,7 @@ export class WordSearchGame extends GameEngine {
   private readonly clock = new Stopwatch((s) => this.hud?.set('time', formatClock(s)));
 
   constructor() {
-    super({ storageKey: 'wordsearch-scores' });
+    super({ storageKey: 'wordsearch-scores', leaderboardId: 'wordsearch' });
   }
 
   private get def(): DiffDef {

@@ -1,16 +1,21 @@
 /**
- * Leaderboard with three tabs:
- *  - Personal: the player's best score in every game (localStorage, per-game).
- *  - Friends: placeholder for now (a friend graph is a later feature).
- *  - World: the global "GamesZone Points" ranking (incremental Nakama board).
- * Best-effort throughout; the World tab reveals itself only when the backend
- * answers.
+ * Leaderboard with three direct tabs:
+ *  - Personal: the player's best local score in every score-enabled game.
+ *  - Friends: GamesZone Points scoped to the friend graph.
+ *  - Global: the public GamesZone Points ranking.
+ * Best-effort throughout; ranking panels show their empty state when the
+ * backend cannot answer or when there is no data yet.
  */
 import { applyTranslations, t } from '../shared/i18n/i18n.js';
-import { SCORE_GAMES, readBestScore } from '../shared/score/scoreGames.js';
-import { getMyGlobalRank, listGlobalRanking, type GlobalRankEntry } from '../shared/net/nakama.js';
-
-// --- Personal tab -----------------------------------------------------------
+import { requireGoogleLogin } from '../shared/net/authGuard.js';
+import { SCORE_GAMES } from '../shared/score/scoreGames.js';
+import {
+  getMyBestScores,
+  getMyGlobalRank,
+  listFriendRanking,
+  listGlobalRanking,
+  type GlobalRankEntry,
+} from '../shared/net/nakama.js';
 
 interface Row {
   key: string;
@@ -49,20 +54,19 @@ function gameCard(row: Row): HTMLAnchorElement {
   return a;
 }
 
-function renderPersonal(): void {
+async function renderPersonal(): Promise<void> {
   const grid = document.getElementById('profileGrid');
   if (!grid) return;
-  const rows: Row[] = SCORE_GAMES.map((g) => ({
-    key: g.key,
-    best: readBestScore(localStorage, g.storageKey),
-  }));
+  const best = await getMyBestScores();
+  const rows: Row[] = SCORE_GAMES.map((g) => {
+    const value = best[g.key];
+    return { key: g.key, best: typeof value === 'number' ? value : null };
+  });
   const byName = (a: Row, b: Row): number => nameOf(a.key).localeCompare(nameOf(b.key));
   const played = rows.filter((r) => r.best !== null).sort(byName);
   const unplayed = rows.filter((r) => r.best === null).sort(byName);
   grid.replaceChildren(...[...played, ...unplayed].map(gameCard));
 }
-
-// --- World tab --------------------------------------------------------------
 
 function rankRow(entry: GlobalRankEntry): HTMLLIElement {
   const li = document.createElement('li');
@@ -70,7 +74,12 @@ function rankRow(entry: GlobalRankEntry): HTMLLIElement {
 
   const rank = document.createElement('span');
   rank.className = 'global-rank';
-  rank.textContent = `#${entry.rank}`;
+  if (entry.rank <= 3) {
+    rank.classList.add('is-medal', `medal-${entry.rank}`);
+    rank.textContent = String(entry.rank);
+  } else {
+    rank.textContent = `#${entry.rank}`;
+  }
 
   const name = document.createElement('span');
   name.className = 'global-name';
@@ -84,10 +93,10 @@ function rankRow(entry: GlobalRankEntry): HTMLLIElement {
   return li;
 }
 
-let worldLoaded = false;
-async function renderWorld(): Promise<void> {
-  if (worldLoaded) return;
-  worldLoaded = true;
+let globalLoaded = false;
+async function renderGlobal(): Promise<void> {
+  if (globalLoaded) return;
+  globalLoaded = true;
   const list = document.getElementById('globalList');
   const empty = document.getElementById('rankEmpty');
   const myEl = document.getElementById('profileMyRank');
@@ -96,6 +105,7 @@ async function renderWorld(): Promise<void> {
   const [top, mine] = await Promise.all([listGlobalRanking(50), getMyGlobalRank()]);
   if (top.length === 0) {
     if (empty) empty.hidden = false;
+    if (myEl) myEl.textContent = t('globalUnranked');
     return;
   }
   list.replaceChildren(...top.map(rankRow));
@@ -106,7 +116,21 @@ async function renderWorld(): Promise<void> {
   }
 }
 
-// --- Tabs -------------------------------------------------------------------
+let friendsLoaded = false;
+async function renderFriends(): Promise<void> {
+  if (friendsLoaded) return;
+  friendsLoaded = true;
+  const list = document.getElementById('friendsRankList');
+  const empty = document.getElementById('friendsRankEmpty');
+  if (!list) return;
+
+  const ranking = await listFriendRanking();
+  if (ranking.length <= 1) {
+    if (empty) empty.hidden = false;
+    return;
+  }
+  list.replaceChildren(...ranking.map(rankRow));
+}
 
 function setupTabs(): void {
   const tabs = [...document.querySelectorAll<HTMLButtonElement>('.lb-tab')];
@@ -116,17 +140,30 @@ function setupTabs(): void {
       const name = tab.dataset.tab;
       tabs.forEach((tb) => tb.classList.toggle('is-active', tb === tab));
       panels.forEach((p) => (p.hidden = p.dataset.panel !== name));
-      if (name === 'world') void renderWorld();
+      if (name === 'friends') void renderFriends();
+      if (name === 'global') void renderGlobal();
     });
   }
 }
 
 applyTranslations();
-renderPersonal();
-setupTabs();
+void (async () => {
+  if (!(await requireGoogleLogin())) return;
+  void renderPersonal();
+  setupTabs();
 
-// Open a specific tab when linked (e.g. the sidebar "Friends" shortcut).
-const initialTab = new URLSearchParams(location.search).get('tab');
-if (initialTab) {
-  document.querySelector<HTMLButtonElement>(`.lb-tab[data-tab="${initialTab}"]`)?.click();
-}
+  const params = new URLSearchParams(location.search);
+  const initialTab = params.get('tab');
+  const tabAliases: Record<string, string> = {
+    perso: 'personal',
+    personal: 'personal',
+    friends: 'friends',
+    world: 'global',
+    ranking: 'global',
+    global: 'global',
+  };
+  const tabName = initialTab ? tabAliases[initialTab] : null;
+  if (tabName) {
+    document.querySelector<HTMLButtonElement>(`.lb-tab[data-tab="${tabName}"]`)?.click();
+  }
+})();

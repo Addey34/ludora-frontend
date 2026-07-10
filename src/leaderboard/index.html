@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-  {{> head title="Leaderboard — Games Zone" css="/css/leaderboard.css"
+  {{> head title="Leaderboard � Games Zone" css="/css/leaderboard.css"
   script="./leaderboard-main.ts"}}
   <body class="app-body">
     {{> game-chrome}}
@@ -19,21 +19,31 @@
       </div>
 
       <div class="lb-tabs" role="tablist">
-        <button class="lb-tab is-active" type="button" data-tab="perso" data-i18n="tabPersonal">
+        <button class="lb-tab is-active" type="button" data-tab="personal" data-i18n="tabPersonal">
           Personal
         </button>
-        <button class="lb-tab" type="button" data-tab="world" data-i18n="tabWorld">World</button>
+        <button class="lb-tab" type="button" data-tab="friends" data-i18n="tabFriends">
+          Friends
+        </button>
+        <button class="lb-tab" type="button" data-tab="global" data-i18n="tabGlobal">Global</button>
       </div>
 
-      <section class="lb-panel" data-panel="perso">
+      <section class="lb-panel" data-panel="personal">
         <div class="profile-grid" id="profileGrid"></div>
       </section>
 
-      <section class="lb-panel" data-panel="world" hidden>
+      <section class="lb-panel" data-panel="friends" hidden>
+        <ol class="global-list" id="friendsRankList"></ol>
+        <p class="profile-empty" id="friendsRankEmpty" data-i18n="friendsRankEmpty" hidden>
+          No ranked friends yet � add friends and play a game.
+        </p>
+      </section>
+
+      <section class="lb-panel" data-panel="global" hidden>
         <p class="profile-rank" id="profileMyRank"></p>
         <ol class="global-list" id="globalList"></ol>
         <p class="profile-empty" id="rankEmpty" data-i18n="leaderboardEmpty" hidden>
-          No ranking yet — play a game to get on the board.
+          No ranking yet � play a game to get on the board.
         </p>
       </section>
     </main>

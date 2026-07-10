@@ -741,12 +741,20 @@ function rewriteCleanUrl(req: { url?: string }, res: RewriteRes, next: () => voi
         req.url = `/games/${key}/${segments.slice(1).join('/')}${rest}`;
       }
     } else if (static_pages.has(key)) {
-      if (!path.endsWith('/')) {
+      if (segments.length <= 1 && !path.endsWith('/')) {
+        // Case 1: `/<key>` → redirect to `/<key>/`
         res.writeHead(301, { Location: `/${key}/${rest}` });
         res.end();
         return;
       }
-      req.url = `/${key}/index.html${rest}`;
+      if (segments.length <= 1) {
+        // Case 2: `/<key>/` → the static page's entry point
+        req.url = `/${key}/index.html${rest}`;
+      }
+      // Case 3: `/<key>/foo` (e.g. `/profile/profile-main.ts`) → leave the URL
+      // untouched: the file already lives at `src/<key>/foo`, so Vite serves it
+      // directly. Without this, the module request was redirected back to the
+      // page and the browser loaded HTML as a script → no JS ran on the page.
     }
   }
   next();

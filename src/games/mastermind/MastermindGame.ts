@@ -51,7 +51,7 @@ export class MastermindGame extends GameEngine {
   private feedbackEls: HTMLElement[] = [];
 
   constructor() {
-    super({ storageKey: 'mastermind-scores' });
+    super({ storageKey: 'mastermind-scores', leaderboardId: 'mastermind' });
   }
 
   private get def(): DiffDef {

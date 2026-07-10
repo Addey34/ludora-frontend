@@ -33,13 +33,28 @@
           <button type="submit" class="btn btn--primary" data-i18n="addFriend">Add</button>
         </form>
 
-        <ul class="friends-list" id="friendsList"></ul>
-        <p class="profile-empty" id="friendsEmpty" data-i18n="friendsEmpty" hidden>
-          No friends yet — share your code to add each other.
-        </p>
+        <div class="friends-scroll">
+          <section class="friends-section" id="requestsSection" hidden>
+            <h2 class="friends-heading" data-i18n="friendRequests">Friend requests</h2>
+            <ul class="friends-list" id="requestsList"></ul>
+          </section>
+
+          <section class="friends-section">
+            <h2 class="friends-heading" data-i18n="friendsHeading">Friends</h2>
+            <ul class="friends-list" id="friendsList"></ul>
+            <p
+              class="profile-empty profile-empty--people"
+              id="friendsEmpty"
+              data-i18n="friendsEmpty"
+              hidden
+            >
+              No friends yet — share your code to add each other.
+            </p>
+          </section>
+        </div>
       </div>
 
-      <p class="profile-empty" id="friendsGuest" data-i18n="friendsGuest" hidden>
+      <p class="profile-empty profile-empty--people" id="friendsGuest" data-i18n="friendsGuest">
         Sign in with Google to add friends and see who is online.
       </p>
     </main>

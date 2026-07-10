@@ -6,17 +6,15 @@
  * the Google name: to its local board, its online leaderboard (if any) and the
  * global GamesZone Points total.
  */
-import { ScoreManager, ScoreEntry } from './ScoreManager.js';
-import { getCurrentUser, submitGlobalScore, submitLeaderboardScore } from '../net/nakama.js';
+import { getCurrentUser, submitGlobalScore, recordRun } from '../net/nakama.js';
 
 const PENDING_KEY = 'gz-pending-score';
 
 export interface PendingScore {
-  /** Active local board key (base or per-variant). */
-  storageKey: string;
-  maxScores: number;
-  /** Online leaderboard id, when the game has one. */
-  leaderboardId?: string;
+  /** Base game key (keys the server best-score summary); absent = no online board. */
+  game?: string;
+  /** Leaderboards to write to (base + active variant). */
+  boards: string[];
   score: number;
   /** Game-specific extras (e.g. Typing's wpm/lpm). */
   extra?: Record<string, number>;
@@ -53,16 +51,16 @@ export async function flushPendingScore(): Promise<boolean> {
   const user = await getCurrentUser();
   if (!user?.loggedIn) return false; // wait until the sign-in actually completed
 
-  const entry: ScoreEntry = { username: user.displayName, score: pending.score, date: new Date() };
-  if (pending.extra) entry.additionalData = pending.extra;
-
+  const metadata: Record<string, unknown> = { username: user.displayName, ...pending.extra };
   try {
-    new ScoreManager(pending.storageKey, pending.maxScores, false).saveScore(entry);
-  } catch {
-    // local save is best-effort
-  }
-  try {
-    if (pending.leaderboardId) await submitLeaderboardScore(pending.leaderboardId, entry);
+    if (pending.game && pending.boards.length > 0) {
+      await recordRun({
+        game: pending.game,
+        boards: pending.boards,
+        score: pending.score,
+        metadata,
+      });
+    }
   } catch {
     // online save is best-effort
   }

@@ -49,7 +49,7 @@ export class BreakoutGame extends GameEngine {
   private race: ScoreRaceHandle | null = null;
 
   constructor(config: BreakoutConfig = {}) {
-    super({ ...config, storageKey: 'breakout-high-scores' });
+    super({ ...config, storageKey: 'breakout-high-scores', leaderboardId: 'breakout' });
     this.maxLives = config.lives ?? 3;
     this.breakoutState = createBreakoutState(1, this.maxLives, BASE_SPEED);
   }
