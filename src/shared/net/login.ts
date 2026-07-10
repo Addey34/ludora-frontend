@@ -97,6 +97,12 @@ async function renderAuthArea(area: HTMLElement): Promise<void> {
         toggle?.setAttribute('aria-expanded', 'false');
       }
     });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        account?.classList.remove('is-open');
+        toggle?.setAttribute('aria-expanded', 'false');
+      }
+    });
     area.querySelector('#logoutBtn')?.addEventListener('click', () => {
       clearLocalProgress();
       logout();

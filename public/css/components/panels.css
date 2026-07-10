@@ -54,12 +54,9 @@
   display: none;
 }
 
-/* Revealed purely on hover / keyboard-or-touch focus, exactly like the help
-   panel — so all action buttons behave the same. `.is-open` is only ever set
-   programmatically (the multiplayer flow keeps its lobby pinned during a
-   session); there is no click-to-pin to second-guess. */
-.game-pop:hover .game-pop-panel,
-.game-pop:focus-within .game-pop-panel,
+/* Revealed on click only (`.is-open`, toggled by popover.ts): click to open,
+   Escape / outside-click / re-click to close. No hover- or focus-pin, so it's
+   consistent on desktop and touch and never feels "stuck". */
 .game-pop.is-open .game-pop-panel {
   display: block;
 }

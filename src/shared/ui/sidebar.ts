@@ -13,23 +13,34 @@ if (sidebar) {
     }
   }
 
-  // Category accordions (mobile): the head toggles .is-open on its category. On
-  // desktop the flyout is hover-driven, so this class is a harmless no-op there.
+  // Categories: click to open (accordion on mobile, flyout on desktop). Opening
+  // one closes the others; a click outside or Escape closes them all — same
+  // click-to-toggle model as the game-shell panels.
+  const cats = [...document.querySelectorAll<HTMLElement>('.sidebar-cat')];
+  const closeCats = (): void => {
+    for (const cat of cats) {
+      cat.classList.remove('is-open');
+      cat.querySelector('.sidebar-cat-head')?.setAttribute('aria-expanded', 'false');
+    }
+  };
   for (const head of document.querySelectorAll<HTMLElement>('.sidebar-cat-head')) {
     head.addEventListener('click', () => {
       const cat = head.closest('.sidebar-cat');
-      const open = cat?.classList.toggle('is-open') ?? false;
-      head.setAttribute('aria-expanded', String(open));
+      const willOpen = !cat?.classList.contains('is-open');
+      closeCats();
+      if (cat && willOpen) {
+        cat.classList.add('is-open');
+        head.setAttribute('aria-expanded', 'true');
+      }
     });
   }
+  document.addEventListener('click', (event) => {
+    if (!(event.target as HTMLElement).closest('.sidebar-cat')) closeCats();
+  });
 
-  // Highlight the category holding the active game, and pre-open its accordion
-  // so the current game is visible when the mobile rail slides in.
-  const activeCat = activeLink?.closest('.sidebar-cat');
-  if (activeCat) {
-    activeCat.classList.add('has-active', 'is-open');
-    activeCat.querySelector('.sidebar-cat-head')?.setAttribute('aria-expanded', 'true');
-  }
+  // Highlight the category holding the active game (no pre-open, so the desktop
+  // flyout doesn't pop on load).
+  activeLink?.closest('.sidebar-cat')?.classList.add('has-active');
 
   if (path === '/' || path === '/index.html') {
     document.querySelector('.sidebar-brand')?.setAttribute('aria-current', 'page');
@@ -49,7 +60,10 @@ if (sidebar) {
   );
   scrim?.addEventListener('click', () => setOpen(false));
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') setOpen(false);
+    if (event.key === 'Escape') {
+      setOpen(false);
+      closeCats();
+    }
   });
 }
 

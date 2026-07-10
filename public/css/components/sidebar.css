@@ -670,8 +670,7 @@ body.sidebar-open .sidebar {
       visibility var(--transition-speed) ease;
   }
 
-  .sidebar-cat:hover .sidebar-flyout,
-  .sidebar-cat:focus-within .sidebar-flyout {
+  .sidebar-cat.is-open .sidebar-flyout {
     opacity: 1;
     visibility: visible;
     transform: translateX(0);

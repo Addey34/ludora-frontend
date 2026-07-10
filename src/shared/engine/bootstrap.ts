@@ -1,4 +1,5 @@
 import { GameEngine } from './GameEngine.js';
+import { setupInfoPanel } from '../ui/popover.js';
 
 /**
  * Startup options for a game.
@@ -29,6 +30,7 @@ export function bootstrapGame(
   document.addEventListener('DOMContentLoaded', async () => {
     const game = factory();
     await game.initialize();
+    setupInfoPanel(); // shell "How to play" panel: click to open, Escape/outside to close
     if (options.autoStart !== false) {
       game.presentStartScreen();
     }

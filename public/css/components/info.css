@@ -24,10 +24,7 @@
    and the fixed particle canvas (z 9000) — so the panel is never covered.
    `.game-shell` establishes no stacking context, so this z-index competes at the
    root level. Only raised while open, so the resting buttons stay discreet. */
-.game-actions:has(.game-info:hover),
-.game-actions:has(.game-info:focus-within),
-.game-actions:has(.game-pop:hover),
-.game-actions:has(.game-pop:focus-within),
+.game-actions:has(.game-info.is-open),
 .game-actions:has(.game-pop.is-open) {
   z-index: 9600;
 }
@@ -96,8 +93,9 @@
   display: none;
 }
 
-.game-info:hover .game-info-panel,
-.game-info:focus-within .game-info-panel {
+/* Click-driven (`.is-open`, toggled by setupInfoPanel): click to open,
+   Escape / outside-click / re-click to close — like the action popovers. */
+.game-info.is-open .game-info-panel {
   display: block;
 }
 

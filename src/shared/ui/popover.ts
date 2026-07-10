@@ -1,20 +1,15 @@
 /**
- * Generic collapsible popover used by the game-shell action buttons (Levels,
- * Settings, Leaderboard, Multiplayer). The panel is revealed **purely on hover /
- * focus** in CSS (`panels.css`), exactly like the help panel — so every action
- * button behaves identically and there is no click-to-pin to second-guess (the
- * source of the old "did my click open or close it?" confusion). On touch, where
- * there is no hover, tapping the toggle button focuses it and `:focus-within`
- * reveals the panel; tapping elsewhere blurs it and it closes.
+ * Generic click-driven popover used by the game-shell action buttons (Levels,
+ * Settings, Leaderboard, Multiplayer, Feedback) and the help panel.
  *
- * This module therefore adds no open/close interaction of its own; it only
- * exposes a **programmatic** `open()` / `close()` (toggling `.is-open`) for the
- * one flow that needs to keep a panel up while the cursor is away — the
- * multiplayer session lobby — plus an outside-click that dismisses such a pin.
+ * Interaction (consistent everywhere in the app): **click the button to open**,
+ * and it stays open until you **click outside**, press **Escape**, or **click the
+ * button again**. No hover-pin / focus-pin to second-guess — opening one panel
+ * closes any other (each panel's outside-click dismisses the rest).
  *
- * Markup convention (see `shell-open.hbs` and `panels.css`): a `.game-pop`
- * control wraps a `.game-pop-toggle` button and a `.game-pop-panel`; the pinned
- * state is the `.is-open` class on the control.
+ * Markup convention (see `shell-open.hbs` / `panels.css` / `info.css`): a wrapper
+ * (`.game-pop` or `.game-info`) holds a toggle button and a panel; the open state
+ * is the `.is-open` class on the wrapper.
  */
 
 /** A wired popover: its DOM nodes plus programmatic open/close. */
@@ -33,6 +28,25 @@ export interface PopoverIds {
   panel: string;
 }
 
+/** Wires click-to-toggle + close on outside-click / Escape onto a control trio. */
+function wire(control: HTMLElement, toggle: HTMLElement, panel: HTMLElement): Popover {
+  const setOpen = (open: boolean): void => {
+    control.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+  };
+
+  toggle.addEventListener('click', () => setOpen(!control.classList.contains('is-open')));
+  panel.addEventListener('click', (event) => event.stopPropagation());
+  document.addEventListener('click', (event) => {
+    if (!control.contains(event.target as Node)) setOpen(false);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setOpen(false);
+  });
+
+  return { control, toggle, panel, open: () => setOpen(true), close: () => setOpen(false) };
+}
+
 /**
  * Wires a popover from its element ids. Returns null when any node is absent (a
  * game that did not opt into this panel), so callers can ignore the result.
@@ -42,25 +56,16 @@ export function setupPopover(ids: PopoverIds): Popover | null {
   const toggle = document.getElementById(ids.toggle);
   const panel = document.getElementById(ids.panel);
   if (!control || !toggle || !panel) return null;
+  return wire(control, toggle, panel);
+}
 
-  const setOpen = (open: boolean): void => {
-    control.classList.toggle('is-open', open);
-    toggle.setAttribute('aria-expanded', String(open));
-  };
-
-  panel.addEventListener('click', (event) => {
-    event.stopPropagation();
-  });
-
-  document.addEventListener('click', (event) => {
-    if (!control.contains(event.target as Node)) setOpen(false);
-  });
-
-  return {
-    control,
-    toggle,
-    panel,
-    open: () => setOpen(true),
-    close: () => setOpen(false),
-  };
+/**
+ * Wires the shell's "How to play" help panel (`.game-info`) the same way, found
+ * by class (it has no ids). No-op when the shell isn't present.
+ */
+export function setupInfoPanel(): void {
+  const control = document.querySelector<HTMLElement>('.game-info');
+  const toggle = control?.querySelector<HTMLElement>('.game-info-toggle');
+  const panel = control?.querySelector<HTMLElement>('.game-info-panel');
+  if (control && toggle && panel) wire(control, toggle, panel);
 }
