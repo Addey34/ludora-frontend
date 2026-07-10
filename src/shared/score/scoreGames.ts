@@ -44,6 +44,10 @@ export const SCORE_GAMES: ScoreGame[] = [
   { key: 'bubbles', storageKey: 'bubbles' },
   { key: 'binairo', storageKey: 'binairo' },
   { key: 'kakuro', storageKey: 'kakuro' },
+  // Level games: their "score" is the level reached (GameEngine.getRecordedScore).
+  { key: 'pacman', storageKey: 'pacman-high-scores' },
+  { key: 'sokoban', storageKey: 'sokoban' },
+  { key: 'nonogram', storageKey: 'nonogram' },
 ];
 
 /** The subset of `Storage` this reader needs (so tests can pass a fake). */

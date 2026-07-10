@@ -63,7 +63,7 @@ export class NonogramGame extends GameEngine {
   private readonly clock = new Stopwatch((s) => this.hud?.set('time', formatClock(s)));
 
   constructor() {
-    super({ storageKey: 'nonogram', levels: nonogramLevels() });
+    super({ storageKey: 'nonogram', leaderboardId: 'nonogram', levels: nonogramLevels() });
   }
 
   async initialize(): Promise<void> {

@@ -37,7 +37,7 @@ export class SokobanGame extends GameEngine {
   private history: SokobanState[] = [];
 
   constructor() {
-    super({ storageKey: 'sokoban', levels: sokobanLevels() });
+    super({ storageKey: 'sokoban', leaderboardId: 'sokoban', levels: sokobanLevels() });
   }
 
   async initialize(): Promise<void> {

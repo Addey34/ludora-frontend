@@ -80,6 +80,8 @@ const games = [
     // Drives the shell's "Levels" panel (the level config itself lives in
     // PacmanGame); set `levels: true` on any game that opts into level selection.
     levels: true,
+    // Ranks on the level reached (see GameEngine.getRecordedScore).
+    leaderboard: true,
     controls: [
       { keys: '<kbd>↑ ↓ ← →</kbd> or <kbd>W A S D</kbd>', action: 'Move Pac-Man' },
       { keys: 'Swipe (mobile)', action: 'Move Pac-Man with your finger' },
@@ -413,8 +415,9 @@ const games = [
     color: '--color-sokoban',
     mode: 'solo',
     // Level-based puzzle (like Pac-Man): the shell's "Levels" panel drives
-    // progression; no leaderboard (clearing levels, not scoring).
+    // progression; the leaderboard ranks on the level reached.
     levels: true,
+    leaderboard: true,
     controls: [
       { keys: '<kbd>↑ ↓ ← →</kbd> or <kbd>W A S D</kbd>', action: 'Move / push a crate' },
       { keys: 'Swipe (mobile)', action: 'Move with your finger' },
@@ -428,8 +431,9 @@ const games = [
     color: '--color-nonogram',
     mode: 'solo',
     // Level-based picture logic puzzle (like Sokoban / Pac-Man): the shell's
-    // "Levels" panel drives progression; no leaderboard (clearing pictures).
+    // "Levels" panel drives progression; the leaderboard ranks on the level reached.
     levels: true,
+    leaderboard: true,
     controls: [
       { keys: 'Drag', action: 'Paint a run of cells (the first cell sets the stroke)' },
       { keys: 'Fill / Cross', action: 'Toggle the tool (or right-click to cross a cell out)' },

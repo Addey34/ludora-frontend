@@ -299,7 +299,7 @@ export abstract class GameEngine {
       this.animationFrameId = null;
     }
     document.exitPointerLock?.();
-    this.scoreManager.noteScore(this.state.score);
+    this.scoreManager.noteScore(this.getRecordedScore());
     this.updateLevelProgress();
     this.onGameOver();
   }
@@ -418,7 +418,7 @@ export abstract class GameEngine {
    */
   protected addScore(points: number): void {
     this.state.score += points;
-    this.scoreManager.noteScore(this.state.score);
+    this.scoreManager.noteScore(this.getRecordedScore());
     this.onScoreChange(this.state.score);
   }
 
@@ -510,7 +510,7 @@ export abstract class GameEngine {
    */
   protected showGameOverOverlay(): void {
     const content = this.getGameOverContent();
-    const scoreable = this.state.score > 0;
+    const scoreable = this.getRecordedScore() > 0;
     const user = getCachedUser();
     const loggedIn = user?.loggedIn === true;
 
@@ -571,7 +571,7 @@ export abstract class GameEngine {
     this.overlay.show({
       title: this.getGameOverTitle(),
       bodyHtml: content,
-      score: content === undefined ? this.state.score : undefined,
+      score: content === undefined ? this.getRecordedScore() : undefined,
       buttons,
     });
   }
@@ -596,12 +596,13 @@ export abstract class GameEngine {
    */
   private recordScore(username: string): void {
     const entry = this.buildScoreEntry(username);
+    const score = this.getRecordedScore();
     const boards = this.targetBoards();
     if (boards.length > 0 && this.baseLeaderboardId) {
       recordRun({
         game: this.baseLeaderboardId,
         boards,
-        score: this.state.score,
+        score,
         metadata: buildScoreMetadata(entry),
       })
         .then(() => this.renderScoreTable())
@@ -610,7 +611,7 @@ export abstract class GameEngine {
           showToast(t('scoreNotSaved'), 'warning');
         });
     }
-    submitGlobalScore(gzPoints(this.state.score), username).catch((err) =>
+    submitGlobalScore(gzPoints(score), username).catch((err) =>
       console.warn('[nakama] global score submission failed:', err)
     );
     this.onScoreSaved();
@@ -618,12 +619,13 @@ export abstract class GameEngine {
 
   /** Guest chose to save: stash the run and trigger Google sign-in. */
   private signInToSave(): void {
+    const score = this.getRecordedScore();
     storePendingScore({
       game: this.baseLeaderboardId,
       boards: this.targetBoards(),
-      score: this.state.score,
+      score,
       extra: this.buildScoreEntry('').additionalData,
-      gzp: gzPoints(this.state.score),
+      gzp: gzPoints(score),
     });
     window.dispatchEvent(new CustomEvent('gz-request-login'));
   }
@@ -644,11 +646,22 @@ export abstract class GameEngine {
   }
 
   /**
+   * The score used for ranking — the leaderboard record, GamesZone Points and
+   * the "best" HUD stat. Defaults to the live game score; level games rank on
+   * the level reached instead (so every game contributes coherently and a level
+   * game's in-game score, if any, stays a display-only value). Override for a
+   * custom ranking metric.
+   */
+  protected getRecordedScore(): number {
+    return this.config.levels ? this.currentLevel : this.state.score;
+  }
+
+  /**
    * Builds the entry written to the leaderboard. Override to add game-specific
    * data (e.g. typing speed).
    */
   protected buildScoreEntry(username: string): ScoreEntry {
-    return { username, score: this.state.score, date: new Date() };
+    return { username, score: this.getRecordedScore(), date: new Date() };
   }
 
   /**

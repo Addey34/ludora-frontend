@@ -83,6 +83,7 @@ export class PacmanGame extends GameEngine {
     super({
       ...config,
       storageKey: 'pacman-high-scores',
+      leaderboardId: 'pacman',
       levels: { gameKey: 'pacman', levels: buildPacmanLevels() },
     });
     this.gameSpeed = config.gameSpeed || 200;
