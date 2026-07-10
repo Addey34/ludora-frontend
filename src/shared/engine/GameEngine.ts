@@ -108,10 +108,8 @@ export abstract class GameEngine {
    */
   protected static readonly MAX_FRAME_DELTA = 100;
 
-  /** Persisted leaderboard of the game. */
+  /** Tracks the in-session high score for the HUD (persistence is server-side). */
   protected scoreManager: ScoreManager;
-  /** Base localStorage key, so per-variant boards can suffix it (see {@link setLeaderboardVariant}). */
-  private readonly baseStorageKey: string;
   /**
    * The game's base online leaderboard id (captured once), so per-variant boards
    * can suffix it (`<base>-<variant>`) while the base still aggregates the
@@ -154,12 +152,10 @@ export abstract class GameEngine {
       isPaused: false,
     };
 
-    this.baseStorageKey = this.config.storageKey ?? 'scores';
     this.baseLeaderboardId = this.config.leaderboardId;
-    // Always online mode: the ScoreManager only tracks the in-session high score;
-    // all persistence is server-authoritative (see {@link recordScore}). Scores
-    // are never written to localStorage anymore.
-    this.scoreManager = new ScoreManager(this.baseStorageKey, this.config.maxScores ?? 10, true);
+    // Persistence is server-authoritative (see {@link recordScore}); the
+    // ScoreManager only tracks the in-session high score for the HUD.
+    this.scoreManager = new ScoreManager();
     this.overlay = new GameOverlay();
 
     if (typeof location !== 'undefined') {
