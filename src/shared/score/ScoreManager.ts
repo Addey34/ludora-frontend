@@ -51,6 +51,17 @@ export class ScoreManager {
     return this.storageKey;
   }
 
+  /**
+   * Records a live score into the in-session high score — what the in-game HUD
+   * "best" reads in online mode (Nakama holds the real historical best, shown on
+   * the profile/leaderboard). Never persists, so it is safe to call on every
+   * score change. Without this the online HUD "best" would stay stuck at 0,
+   * since runs are recorded through the server RPC, not {@link saveScore}.
+   */
+  noteScore(score: number): void {
+    this.sessionHighScore = Math.max(this.sessionHighScore, score);
+  }
+
   saveScore(entry: ScoreEntry): void {
     if (this.online) {
       this.sessionHighScore = Math.max(this.sessionHighScore, entry.score);

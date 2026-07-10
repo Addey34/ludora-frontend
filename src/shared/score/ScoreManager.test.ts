@@ -100,6 +100,16 @@ describe('ScoreManager', () => {
       expect(manager.getHighScore()).toBe(80);
     });
 
+    it('noteScore feeds the HUD "best" (session high) without persisting', () => {
+      const manager = new ScoreManager(KEY, 10, true);
+      expect(manager.getHighScore()).toBe(0);
+      manager.noteScore(40);
+      manager.noteScore(90);
+      manager.noteScore(70);
+      expect(manager.getHighScore()).toBe(90);
+      expect(localStorage.getItem(KEY)).toBeNull();
+    });
+
     it('isHighScore is true for any positive score', () => {
       const manager = new ScoreManager(KEY, 10, true);
       expect(manager.isHighScore(1)).toBe(true);

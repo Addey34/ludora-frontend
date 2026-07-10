@@ -299,6 +299,7 @@ export abstract class GameEngine {
       this.animationFrameId = null;
     }
     document.exitPointerLock?.();
+    this.scoreManager.noteScore(this.state.score);
     this.updateLevelProgress();
     this.onGameOver();
   }
@@ -417,6 +418,7 @@ export abstract class GameEngine {
    */
   protected addScore(points: number): void {
     this.state.score += points;
+    this.scoreManager.noteScore(this.state.score);
     this.onScoreChange(this.state.score);
   }
 
