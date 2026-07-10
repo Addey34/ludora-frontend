@@ -407,6 +407,51 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   }
 }
 
+/** A friend of the current player (from Nakama's friend graph). */
+export interface Friend {
+  /** Their friend code (Nakama username) — used to add them. */
+  code: string;
+  displayName: string;
+  online: boolean;
+  /** Nakama friend state: 0 = mutual, 1 = invite sent, 2 = invite received. */
+  state: number;
+}
+
+/** This player's shareable friend code (their Nakama username), or null. */
+export async function getFriendCode(): Promise<string | null> {
+  try {
+    const session = await getSession();
+    const account = await getClient().getAccount(session);
+    return account.user?.username ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Sends a friend request by code (the other player's friend code / username). */
+export async function addFriendByCode(code: string): Promise<void> {
+  const clean = code.trim();
+  if (!clean) return;
+  const session = await getSession();
+  await getClient().addFriends(session, [], [clean]);
+}
+
+/** The current player's friends (mutual, pending and received), with presence. */
+export async function listMyFriends(): Promise<Friend[]> {
+  try {
+    const session = await getSession();
+    const result = await getClient().listFriends(session, undefined, 100);
+    return (result.friends ?? []).map((f) => ({
+      code: f.user?.username ?? '',
+      displayName: f.user?.display_name || f.user?.username || 'Player',
+      online: f.user?.online ?? false,
+      state: f.state ?? 0,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 /**
  * Renames the player: updates their Nakama account display name (used on the
  * leaderboards) and the local cache, so future scores show the new name.

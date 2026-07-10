@@ -69,6 +69,7 @@ services:
       - { type: rewrite, source: /legal, destination: /legal/index.html }
       - { type: rewrite, source: /profile, destination: /profile/index.html }
       - { type: rewrite, source: /leaderboard, destination: /leaderboard/index.html }
+      - { type: rewrite, source: /friends, destination: /friends/index.html }
       # Everything else (old .html URLs, unknown paths) -> home.
       # LAST: the rules above take priority, and so do assets.
       - { type: redirect, source: /*, destination: / }

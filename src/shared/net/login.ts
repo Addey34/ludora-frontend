@@ -76,7 +76,7 @@ async function renderAuthArea(area: HTMLElement): Promise<void> {
           <a class="sidebar-account-link" role="menuitem" href="/leaderboard">
             <i class="fas fa-trophy" aria-hidden="true"></i><span>${escapeHtml(t('leaderboard'))}</span>
           </a>
-          <a class="sidebar-account-link" role="menuitem" href="/leaderboard?tab=friends">
+          <a class="sidebar-account-link" role="menuitem" href="/friends">
             <i class="fas fa-user-group" aria-hidden="true"></i><span>${escapeHtml(t('tabFriends'))}</span>
           </a>
           <button class="sidebar-account-link" role="menuitem" type="button" id="logoutBtn">

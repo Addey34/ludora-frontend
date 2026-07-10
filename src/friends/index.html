@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Friends — Games Zone" css="/css/friends.css" script="./friends-main.ts"}}
+  <body class="app-body">
+    {{> game-chrome}}
+    <main class="profile-content">
+      <div class="profile-header">
+        <div>
+          <h1 class="profile-title" data-i18n="tabFriends">Friends</h1>
+          <p class="profile-subtitle" data-i18n="friendsSubtitle">
+            Add friends by code and see who is online.
+          </p>
+        </div>
+        <a class="btn btn--secondary profile-back" href="/">
+          <i class="fas fa-arrow-left" aria-hidden="true"></i>
+          <span data-i18n="home">Home</span>
+        </a>
+      </div>
+
+      <div id="friendsSignedIn" hidden>
+        <div class="friends-code">
+          <span class="profile-name-label" data-i18n="yourFriendCode">Your friend code</span>
+          <div class="friends-code-box">
+            <code id="friendCode">—</code>
+            <button class="btn btn--secondary" type="button" id="copyCode" data-i18n="copy">
+              Copy
+            </button>
+          </div>
+        </div>
+
+        <form class="friends-add" id="addFriendForm">
+          <input id="friendCodeInput" class="input-field" autocomplete="off" />
+          <button type="submit" class="btn btn--primary" data-i18n="addFriend">Add</button>
+        </form>
+
+        <ul class="friends-list" id="friendsList"></ul>
+        <p class="profile-empty" id="friendsEmpty" data-i18n="friendsEmpty" hidden>
+          No friends yet — share your code to add each other.
+        </p>
+      </div>
+
+      <p class="profile-empty" id="friendsGuest" data-i18n="friendsGuest" hidden>
+        Sign in with Google to add friends and see who is online.
+      </p>
+    </main>
+  </body>
+</html>
