@@ -7,5 +7,6 @@
     "src/shared/ui/feedbackPanel.ts",
     "src/shared/ui/zenMode.ts"
   ],
-  "project": ["src/**/*.ts"]
+  "project": ["src/**/*.ts"],
+  "ignore": ["src/games/_template/**"]
 }

@@ -2,7 +2,6 @@
   "name": "gameszone",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -15,7 +14,8 @@
     "data": "node scripts/build-data.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify": "npm run format:check && npm run lint && npm run build && npm test"
+    "knip": "knip",
+    "verify": "npm run format:check && npm run lint && npm run knip && npm run build && npm test"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,7 @@
     "french-verbs": "^5.4.0",
     "french-verbs-lefff": "^3.4.0",
     "happy-dom": "^20.10.6",
+    "knip": "^5.88.1",
     "prettier": "^3.8.4",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.1",
