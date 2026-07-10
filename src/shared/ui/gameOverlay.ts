@@ -19,7 +19,7 @@ export interface GameOverlayButton {
 }
 
 /** Save prompt, shown when the score is savable so the player decides whether to record it. */
-export interface GameOverlayPrompt {
+interface GameOverlayPrompt {
   label: string;
   placeholder: string;
   /** Pre-filled value (e.g. the stored pseudo), editable by the player. */
@@ -31,7 +31,7 @@ export interface GameOverlayPrompt {
 }
 
 /** Everything needed to render the overlay. */
-export interface GameOverlayOptions {
+interface GameOverlayOptions {
   title: string;
   /** Rich HTML body (trusted, built by the game). Falls back to a plain score. */
   bodyHtml?: string;

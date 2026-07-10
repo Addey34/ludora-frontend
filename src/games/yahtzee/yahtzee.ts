@@ -15,13 +15,7 @@ export type ScoreKey =
   | 'yahtzee'
   | 'chance';
 
-export interface ScoreCategory {
-  key: ScoreKey;
-  label: string;
-  labelFr: string;
-}
-
-export const UPPER_KEYS: ScoreKey[] = ['ones', 'twos', 'threes', 'fours', 'fives', 'sixes'];
+const UPPER_KEYS: ScoreKey[] = ['ones', 'twos', 'threes', 'fours', 'fives', 'sixes'];
 export const LOWER_KEYS: ScoreKey[] = [
   'threeOfKind',
   'fourOfKind',
@@ -79,10 +73,6 @@ export const CATEGORY_META: Record<
 
 export function rollDie(): Die {
   return (Math.floor(Math.random() * 6) + 1) as Die;
-}
-
-export function rollDice(count = 5): Die[] {
-  return Array.from({ length: count }, () => rollDie()) as Die[];
 }
 
 function diceCounts(dice: Die[]): Record<number, number> {

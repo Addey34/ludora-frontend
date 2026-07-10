@@ -1,7 +1,7 @@
 import type { Direction } from '../../shared/engine/input.js';
 import type { TemplateGameState, TemplatePosition, TemplateRenderState } from './templateState.js';
 
-export type RandomSource = () => number;
+type RandomSource = () => number;
 
 export function createTemplateGameState(
   gridSize: number,

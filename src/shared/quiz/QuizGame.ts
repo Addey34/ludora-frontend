@@ -41,7 +41,7 @@ import {
 } from './quizRace.js';
 
 /** Configuration shared by every quiz-style game. */
-export interface QuizGameConfig extends GameConfig {
+interface QuizGameConfig extends GameConfig {
   /** Base points for a correct answer (before difficulty scaling + combo). */
   basePoints?: number;
   /** Questions per round in classic mode (default 10). */

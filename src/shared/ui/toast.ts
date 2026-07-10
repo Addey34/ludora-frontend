@@ -5,7 +5,7 @@
  * They sit on z-index 9500 (above particles at 9000) and never block interaction.
  */
 
-export type ToastType = 'info' | 'success' | 'combo' | 'warning';
+type ToastType = 'info' | 'success' | 'combo' | 'warning';
 
 let _container: HTMLElement | null = null;
 

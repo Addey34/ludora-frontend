@@ -32,7 +32,7 @@ export const RING = 52;
 /** Ring cells a horse traverses before turning into its home column. */
 export const RING_TRAVEL = 51;
 /** Home-column cells, the last one being the centre. */
-export const HOME = 6;
+const HOME = 6;
 
 /** Distance markers along a horse's personal path. */
 export const STABLE = -1;

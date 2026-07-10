@@ -14,7 +14,7 @@ export type Grid = number[][];
 export const SIZE = 9;
 
 /** Empty cells removed from the full solution, per difficulty. */
-export const REMOVALS: Record<Difficulty, number> = {
+const REMOVALS: Record<Difficulty, number> = {
   easy: 40,
   medium: 48,
   hard: 54,

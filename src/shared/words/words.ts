@@ -13,7 +13,6 @@
 import { Difficulty } from '../quiz/quiz.js';
 
 export type Lang = 'fr' | 'en';
-export const LANGS: Lang[] = ['fr', 'en'];
 
 /** A word: its real spelling (`w`, accents kept) and its difficulty tier (`d`). */
 export interface WordEntry {

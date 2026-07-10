@@ -116,7 +116,3 @@ export class DotsBoxesRules implements TurnRules<DBState, DBMove> {
     return state.scores.indexOf(best);
   }
 }
-
-export function dotsBoxesRulesFor(n: number, players = 2): DotsBoxesRules {
-  return new DotsBoxesRules(n, players);
-}

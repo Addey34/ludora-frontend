@@ -16,7 +16,7 @@ import { Difficulty } from '../../shared/bot/difficulty.js';
  * even on `hard` so the bot has memory gaps the player can exploit — every tier
  * stays beatable (a near-perfect bot would be a future "extreme"/"impossible").
  */
-export const MEMORY_RETENTION: Record<Difficulty, number> = {
+const MEMORY_RETENTION: Record<Difficulty, number> = {
   easy: 0.35,
   medium: 0.55,
   hard: 0.8,
@@ -27,7 +27,7 @@ export const MEMORY_RETENTION: Record<Difficulty, number> = {
  * dumb random move). The second beatability knob: even `hard` occasionally
  * "forgets to think", giving the player openings.
  */
-export const MEMORY_SKILL: Record<Difficulty, number> = {
+const MEMORY_SKILL: Record<Difficulty, number> = {
   easy: 0.4,
   medium: 0.65,
   hard: 0.85,

@@ -102,7 +102,7 @@ export function isCorrect(given: string, answer: string): boolean {
  * Fisher-Yates shuffle returning a NEW array (pure given `rng`), used to lay out
  * multiple-choice options in a random order.
  */
-export function shuffle<T>(items: readonly T[], rng: () => number = Math.random): T[] {
+function shuffle<T>(items: readonly T[], rng: () => number = Math.random): T[] {
   const out = [...items];
   for (let i = out.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1));

@@ -13,7 +13,7 @@
  * 3 · 2 · 1 · GO kickoff *overlay*; this is the live in-game timer.
  */
 
-export interface CountdownOptions {
+interface CountdownOptions {
   /** Seconds to count down from. */
   seconds: number;
   /**

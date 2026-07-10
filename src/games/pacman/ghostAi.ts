@@ -23,7 +23,7 @@ export interface ChaseContext {
 }
 
 /** A ghost's targeting behaviour. */
-export interface GhostPersonality {
+interface GhostPersonality {
   name: 'blinky' | 'pinky' | 'clyde';
   /** The tile this ghost steers toward in the current context. */
   target(ctx: ChaseContext): Vec2;

@@ -13,7 +13,7 @@
  * language (e.g. Anagrams/Hangman word lists) stays a separate per-game setting.
  */
 
-export type Locale = 'en' | 'fr';
+type Locale = 'en' | 'fr';
 export const LOCALES: Locale[] = ['en', 'fr'];
 
 const STORAGE_KEY = 'gz-lang';

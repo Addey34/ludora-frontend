@@ -12,7 +12,7 @@ import {
 const MAX_QUEUED_DIRECTIONS = 2;
 const FIRST_COLLIDABLE_SEGMENT = 4;
 
-export type RandomSource = () => number;
+type RandomSource = () => number;
 
 export function createSnakeGameState(
   gridSize: number,

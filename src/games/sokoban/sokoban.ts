@@ -21,7 +21,7 @@ export interface Pos {
 
 export type Dir = 'up' | 'down' | 'left' | 'right';
 
-export const DELTA: Record<Dir, [number, number]> = {
+const DELTA: Record<Dir, [number, number]> = {
   up: [-1, 0],
   down: [1, 0],
   left: [0, -1],

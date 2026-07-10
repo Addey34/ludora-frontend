@@ -18,10 +18,9 @@
 
 import { type TurnRules } from '../../shared/turn/turnGame.js';
 
-export const SQUARES = 63;
 export const SEATS = 4;
-export const COLS = 7;
-export const ROWS = 9;
+const COLS = 7;
+const ROWS = 9;
 
 export const OFF_BOARD = 0;
 export const PASS = 0;
@@ -163,7 +162,7 @@ export function applyMove(state: GooseState, move: GooseMove): GooseState {
   return s;
 }
 
-export function winner(state: GooseState): number | null {
+function winner(state: GooseState): number | null {
   return state.winner;
 }
 

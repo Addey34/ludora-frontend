@@ -42,7 +42,7 @@ export function initialState(): Connect4State {
   return { columns: Array.from({ length: COLS }, () => []), current: 0, winner: null };
 }
 
-export function currentSeat(state: Connect4State): Seat {
+function currentSeat(state: Connect4State): Seat {
   return state.current;
 }
 
@@ -104,7 +104,7 @@ export function applyMove(state: Connect4State, move: Connect4Move): Connect4Sta
   return { columns, current, winner: won };
 }
 
-export function winner(state: Connect4State): Seat | null {
+function winner(state: Connect4State): Seat | null {
   return state.winner;
 }
 

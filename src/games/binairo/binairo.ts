@@ -114,13 +114,6 @@ export function isConflict(grid: Cell[][], r: number, c: number, size: number): 
   return false;
 }
 
-export function countConflicts(grid: Cell[][], size: number): number {
-  let count = 0;
-  for (let r = 0; r < size; r++)
-    for (let c = 0; c < size; c++) if (isConflict(grid, r, c, size)) count++;
-  return count;
-}
-
 export function isSolved(grid: Cell[][], size: number): boolean {
   for (let r = 0; r < size; r++)
     for (let c = 0; c < size; c++)

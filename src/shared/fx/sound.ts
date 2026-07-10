@@ -5,7 +5,7 @@
  * user interaction, which is guaranteed by the "Play" overlay or the first input).
  */
 
-export type SoundId =
+type SoundId =
   | 'eat'
   | 'die'
   | 'combo'
@@ -185,14 +185,4 @@ export function playSound(id: SoundId): void {
 export function playTone(freq: number, duration = 0.35, type: OscillatorType = 'sine'): void {
   if (_muted) return;
   tone(ctx(), freq, freq, duration, 0.25, type);
-}
-
-export function setMuted(v: boolean): void {
-  _muted = v;
-  localStorage.setItem(STORAGE_KEY, v ? '0' : '1');
-  window.dispatchEvent(new CustomEvent('gz-sound-change', { detail: { muted: v } }));
-}
-
-export function isMuted(): boolean {
-  return _muted;
 }

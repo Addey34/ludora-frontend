@@ -146,7 +146,7 @@ export const STABLES: readonly (readonly Cell[])[] = [
 export const CENTER: Cell = [7, 7];
 
 /** Ring index (0..51) of a horse at ring distance `d` for `seat`. */
-export function ringIndex(seat: Seat, d: number): number {
+function ringIndex(seat: Seat, d: number): number {
   return (entryCell(seat) + d) % RING;
 }
 

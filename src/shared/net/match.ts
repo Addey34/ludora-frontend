@@ -39,7 +39,7 @@ const DEFAULT_SCOPE = 'gameszone';
  * consumed internally (never delivered to the game's {@link NetMatch.onMessage}).
  * Game op codes MUST stay below it (Pong uses 1–4, Memory 1–2).
  */
-export const SYS_OP_BASE = 1000;
+const SYS_OP_BASE = 1000;
 const OP_SYS_LOBBY = SYS_OP_BASE;
 const OP_SYS_START = SYS_OP_BASE + 1;
 
@@ -64,7 +64,7 @@ export interface LobbySnapshot {
 }
 
 /** A live relayed match the game drives. */
-export interface MatchPresenceLike {
+interface MatchPresenceLike {
   session_id?: string;
 }
 

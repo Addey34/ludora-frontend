@@ -1,7 +1,7 @@
 import { generateLevel } from './breakoutLevels.js';
 import type { Ball, Brick, BreakoutEvent, BreakoutGameState } from './breakoutState.js';
 
-export type RandomSource = () => number;
+type RandomSource = () => number;
 
 // --- Board constants (exported for renderers) ---
 export const BOARD = 100;

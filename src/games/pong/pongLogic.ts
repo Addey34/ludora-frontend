@@ -13,20 +13,20 @@ import {
   type PongGameState,
 } from './pongState.js';
 
-export type RandomSource = () => number;
+type RandomSource = () => number;
 
-export interface PongServe {
+interface PongServe {
   ball: PongBall;
   speed: number;
   serveTimer: number;
 }
 
-export interface PongPaddles {
+interface PongPaddles {
   playerY: number;
   opponentY: number;
 }
 
-export interface PongBallStepResult {
+interface PongBallStepResult {
   ball: PongBall;
   speed: number;
   scored: 'player' | 'opponent' | null;

@@ -19,7 +19,7 @@ export interface LevelPanelHandle {
 }
 
 /** Inputs to build the panel. */
-export interface LevelPanelOptions {
+interface LevelPanelOptions {
   config: LevelsConfig;
   /** Current progress (decides lock states). */
   progress: LevelProgress;

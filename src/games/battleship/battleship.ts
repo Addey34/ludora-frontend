@@ -99,7 +99,7 @@ export function randomFleet(rng: () => number = Math.random): ShipPlacement[] {
 }
 
 /** A blank fleet ready for combat. */
-export function emptyFleet(ships: ShipPlacement[]): Fleet {
+function emptyFleet(ships: ShipPlacement[]): Fleet {
   return { ships, shots: {}, sunkIds: [] };
 }
 
@@ -108,7 +108,7 @@ export function initialState(fleet0: ShipPlacement[], fleet1: ShipPlacement[]): 
   return { fleets: [emptyFleet(fleet0), emptyFleet(fleet1)], current: 0, winner: null };
 }
 
-export function currentSeat(state: BattleshipState): Seat {
+function currentSeat(state: BattleshipState): Seat {
   return state.current;
 }
 
@@ -163,7 +163,7 @@ export function applyMove(state: BattleshipState, move: BattleshipMove): Battles
   };
 }
 
-export function winner(state: BattleshipState): Seat | null {
+function winner(state: BattleshipState): Seat | null {
   return state.winner;
 }
 

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/**/*-main.ts",
+    "src/shared/ui/sidebar.ts",
+    "src/shared/net/login.ts",
+    "src/shared/ui/feedbackPanel.ts",
+    "src/shared/ui/zenMode.ts"
+  ],
+  "project": ["src/**/*.ts"]
+}

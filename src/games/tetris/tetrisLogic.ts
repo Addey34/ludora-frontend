@@ -6,9 +6,9 @@ import type {
   TetrisGameState,
 } from './tetrisState.js';
 
-export type RandomSource = () => number;
+type RandomSource = () => number;
 
-export const TETROMINOES: readonly Tetromino[] = [
+const TETROMINOES: readonly Tetromino[] = [
   {
     type: 'I',
     matrix: [

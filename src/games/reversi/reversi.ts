@@ -69,7 +69,7 @@ export function initialState(): ReversiState {
   return { board, current: 0, done: false, winner: null };
 }
 
-export function currentSeat(state: ReversiState): Seat {
+function currentSeat(state: ReversiState): Seat {
   return state.current;
 }
 

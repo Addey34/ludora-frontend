@@ -63,7 +63,7 @@ export interface GameConfig {
 /**
  * Runtime state shared by all games.
  */
-export interface GameState {
+interface GameState {
   /** Current score of the game. */
   score: number;
   /** The game loop is running. */

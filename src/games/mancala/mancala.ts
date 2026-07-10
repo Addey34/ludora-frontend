@@ -19,9 +19,8 @@
 import { Seat, TurnRules } from '../../shared/turn/turnGame.js';
 
 export const SEATS = 2;
-export const PITS_PER_SIDE = 6;
-export const STORE_0 = 6;
-export const STORE_1 = 13;
+const STORE_0 = 6;
+const STORE_1 = 13;
 const P0_PITS = [0, 1, 2, 3, 4, 5] as const;
 const P1_PITS = [7, 8, 9, 10, 11, 12] as const;
 
@@ -44,9 +43,9 @@ export const eqMove = (a: MancalaMove, b: MancalaMove): boolean => a.pit === b.p
 export const storeOf = (seat: Seat): number => (seat === 0 ? STORE_0 : STORE_1);
 export const pitsOf = (seat: Seat): readonly number[] => (seat === 0 ? P0_PITS : P1_PITS);
 /** The pit directly across the board from `pit` (only valid for 0-5 and 7-12). */
-export const oppositeOf = (pit: number): number => 12 - pit;
+const oppositeOf = (pit: number): number => 12 - pit;
 
-export function initialState(): MancalaState {
+function initialState(): MancalaState {
   const pits = new Array<number>(14).fill(4);
   pits[STORE_0] = 0;
   pits[STORE_1] = 0;

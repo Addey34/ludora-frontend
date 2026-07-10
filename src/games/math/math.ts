@@ -6,9 +6,9 @@
 
 import { Difficulty, Question } from '../../shared/quiz/quiz.js';
 
-export type Operation = '+' | '-' | '×' | '÷';
+type Operation = '+' | '-' | '×' | '÷';
 
-export interface MathParams {
+interface MathParams {
   /** Operations allowed at this difficulty. */
   ops: Operation[];
   /** Upper bound of the operands (1..max). */

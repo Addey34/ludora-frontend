@@ -17,7 +17,7 @@
  * ratio (0..1 along `axis`) and reads the current ratio back to apply relative
  * (locked) motion, so the caller's own clamp naturally bounds the accumulation.
  */
-export interface PaddlePointerConfig {
+interface PaddlePointerConfig {
   /** The square play area: provides the bounds and is the Pointer Lock target. */
   board: HTMLElement;
   /** Axis the paddle slides along: `'x'` (Breakout) or `'y'` (Pong). */

@@ -14,7 +14,7 @@
 import { t } from '../i18n/i18n.js';
 import { DIE_PIPS } from './dicePips.js';
 
-export interface DiceOptions {
+interface DiceOptions {
   /** Tumble duration before the result settles (ms). */
   rollMs?: number;
   /** How long the settled result is held before {@link DiceHandle.show} resolves (ms). */

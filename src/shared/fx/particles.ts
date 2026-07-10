@@ -1,4 +1,4 @@
-export interface ParticleOptions {
+interface ParticleOptions {
   count?: number;
   speed?: number;
   /** Full spread angle in radians (default = full circle). */
@@ -130,7 +130,7 @@ export class ParticleSystem {
 }
 
 /** A festive multi-colour palette shared by every victory burst. */
-export const CELEBRATION_COLORS = ['#e11d48', '#fbbf24', '#ffffff', '#34d399', '#4361ee'];
+const CELEBRATION_COLORS = ['#e11d48', '#fbbf24', '#ffffff', '#34d399', '#4361ee'];
 
 /**
  * Fires a celebratory confetti burst centred on `element` — the shared "you

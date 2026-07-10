@@ -60,7 +60,7 @@ export function keyboardDirection(event: KeyboardEvent): Direction | null {
 /**
  * Options for the touch swipe detector.
  */
-export interface SwipeOptions {
+interface SwipeOptions {
   /** Minimum movement (px) for a gesture to count as a swipe (default: 30). */
   threshold?: number;
   /** Called with the direction of a validated swipe. */

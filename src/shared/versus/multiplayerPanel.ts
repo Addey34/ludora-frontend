@@ -24,7 +24,7 @@ export interface MultiplayerHandle {
 }
 
 /** Callbacks the game wires into the panel. */
-export interface MultiplayerOptions {
+interface MultiplayerOptions {
   /** Internal session namespace. Defaults to the current game key from the URL. */
   /** Maximum human seats (default 2 for 1-v-1; e.g. 4 for Ludo). */
   capacity?: number;

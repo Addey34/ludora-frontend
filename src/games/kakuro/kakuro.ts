@@ -1,4 +1,4 @@
-export type KCellKind = 'black' | 'clue' | 'fill';
+type KCellKind = 'black' | 'clue' | 'fill';
 
 export interface KCell {
   kind: KCellKind;
@@ -111,45 +111,6 @@ export const PUZZLES: KakuroPuzzle[] = [
     ],
   },
 ];
-
-export function getPuzzle(id: number): KakuroPuzzle {
-  return PUZZLES.find((p) => p.id === id) ?? PUZZLES[0];
-}
-
-export function getRunsForGrid(grid: KCell[][]): {
-  acrossRuns: { r: number; c: number; len: number; sum: number }[];
-  downRuns: { r: number; c: number; len: number; sum: number }[];
-} {
-  const rows = grid.length;
-  const cols = grid[0].length;
-  const acrossRuns: { r: number; c: number; len: number; sum: number }[] = [];
-  const downRuns: { r: number; c: number; len: number; sum: number }[] = [];
-
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const cell = grid[r][c];
-      if (cell.kind === 'clue' && cell.across !== undefined) {
-        let len = 0;
-        let nc = c + 1;
-        while (nc < cols && grid[r][nc].kind === 'fill') {
-          len++;
-          nc++;
-        }
-        if (len > 0) acrossRuns.push({ r, c, len, sum: cell.across });
-      }
-      if (cell.kind === 'clue' && cell.down !== undefined) {
-        let len = 0;
-        let nr = r + 1;
-        while (nr < rows && grid[nr][c].kind === 'fill') {
-          len++;
-          nr++;
-        }
-        if (len > 0) downRuns.push({ r, c, len, sum: cell.down });
-      }
-    }
-  }
-  return { acrossRuns, downRuns };
-}
 
 export function checkSolution(
   puzzle: KakuroPuzzle,

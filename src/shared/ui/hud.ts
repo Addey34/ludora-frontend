@@ -10,7 +10,7 @@
  * The game owns only the values; the markup and styling are identical everywhere.
  */
 
-export interface StatDef {
+interface StatDef {
   /** Stable key used to update the stat (e.g. 'time', 'score', 'high'). */
   key: string;
   /** Font Awesome icon name without the `fa-` prefix (e.g. 'clock', 'trophy'). */

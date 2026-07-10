@@ -7,14 +7,14 @@
  * without ever being hand-authored.
  */
 
-export interface BrickSpec {
+interface BrickSpec {
   row: number;
   col: number;
   /** Hits needed to destroy the brick (1 = normal, 2–3 = reinforced). */
   hp: number;
 }
 
-export interface LevelSpec {
+interface LevelSpec {
   level: number;
   world: number;
   cols: number;

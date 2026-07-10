@@ -18,7 +18,7 @@ import {
 
 const PROGRESS_MIN_INTERVAL_MS = 250;
 
-export interface ScoreRaceOptions {
+interface ScoreRaceOptions {
   finish: RaceFinish;
   getScore: () => number;
   isAlive?: () => boolean;

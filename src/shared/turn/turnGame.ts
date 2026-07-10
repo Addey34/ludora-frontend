@@ -35,15 +35,6 @@ export interface TurnRules<S, M> {
   winner(state: S): Seat | null;
 }
 
-/**
- * A turn-based opponent: chooses one move among the legal ones for the seat to
- * play. The host runs one per non-human seat (and, in solo, for every other
- * seat). This is the turn-based analogue of the real-time bots' target helpers.
- */
-export interface TurnBot<S, M> {
-  decideMove(state: S, legalMoves: M[]): M;
-}
-
 /** The next seat clockwise, wrapping around the table. */
 export function nextSeat(seat: Seat, seats: number): Seat {
   return (seat + 1) % seats;

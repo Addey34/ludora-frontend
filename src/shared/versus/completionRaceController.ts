@@ -25,7 +25,7 @@ import {
  * Composition (like {@link setupScoreRace}), not a base class — the game keeps
  * its own loop and rendering and only supplies the seed plumbing.
  */
-export interface CompletionRaceOptions<Seed> {
+interface CompletionRaceOptions<Seed> {
   finish: CompletionFinish;
   /** Host only: build the shared challenge payload (must be JSON-serialisable). */
   generateChallenge: () => Seed;

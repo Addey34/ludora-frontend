@@ -69,7 +69,7 @@ export function initialState(): CheckersState {
   return { board, current: 0, chain: null, winner: null };
 }
 
-export function currentSeat(state: CheckersState): Seat {
+function currentSeat(state: CheckersState): Seat {
   return state.current;
 }
 

@@ -10,7 +10,7 @@ import { getCurrentUser, submitGlobalScore, recordRun } from '../net/nakama.js';
 
 const PENDING_KEY = 'gz-pending-score';
 
-export interface PendingScore {
+interface PendingScore {
   /** Base game key (keys the server best-score summary); absent = no online board. */
   game?: string;
   /** Leaderboards to write to (base + active variant). */

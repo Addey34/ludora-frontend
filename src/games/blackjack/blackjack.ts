@@ -44,15 +44,15 @@ export function isBust(hand: Card[]): boolean {
   return handValue(hand) > 21;
 }
 
-export function isBlackjack(hand: Card[]): boolean {
+function isBlackjack(hand: Card[]): boolean {
   return hand.length === 2 && handValue(hand) === 21;
 }
 
-export function dealerShouldHit(hand: Card[]): boolean {
+function dealerShouldHit(hand: Card[]): boolean {
   return handValue(hand) < 17;
 }
 
-export function getResult(playerHand: Card[], dealerHand: Card[]): BJResult {
+function getResult(playerHand: Card[], dealerHand: Card[]): BJResult {
   if (isBust(playerHand)) return 'bust';
   if (isBlackjack(playerHand) && !isBlackjack(dealerHand)) return 'blackjack';
   if (isBust(dealerHand)) return 'win';
@@ -63,7 +63,7 @@ export function getResult(playerHand: Card[], dealerHand: Card[]): BJResult {
   return 'lose';
 }
 
-export function chipsDelta(result: BJResult, bet: number): number {
+function chipsDelta(result: BJResult, bet: number): number {
   if (result === 'blackjack') return Math.floor(bet * 1.5);
   if (result === 'win') return bet;
   if (result === 'push') return 0;

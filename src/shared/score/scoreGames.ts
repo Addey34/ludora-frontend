@@ -11,7 +11,7 @@
  * (see `GameEngine.setLeaderboardVariant`), so a game's real best is the max across
  * its base board **and** every variant board — {@link readBestScore} handles that.
  */
-export interface ScoreGame {
+interface ScoreGame {
   /** Game key (folder / route / icon name). */
   key: string;
   /** Base localStorage key the game writes its leaderboard to. */

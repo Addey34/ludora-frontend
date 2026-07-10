@@ -13,7 +13,7 @@
  */
 
 /** A wired popover: its DOM nodes plus programmatic open/close. */
-export interface Popover {
+interface Popover {
   control: HTMLElement;
   toggle: HTMLElement;
   panel: HTMLElement;
@@ -22,7 +22,7 @@ export interface Popover {
 }
 
 /** ids of the three popover nodes (control / toggle / panel). */
-export interface PopoverIds {
+interface PopoverIds {
   control: string;
   toggle: string;
   panel: string;
