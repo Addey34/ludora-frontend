@@ -27,6 +27,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
   en: {
     play: 'Play',
     playAgain: 'Play again',
+    nextLevel: 'Next level',
     viewLeaderboard: 'View leaderboard',
     leaderboard: 'Leaderboard',
     howToPlay: 'How to play',
@@ -388,6 +389,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
   fr: {
     play: 'Jouer',
     playAgain: 'Rejouer',
+    nextLevel: 'Niveau suivant',
     viewLeaderboard: 'Voir le classement',
     leaderboard: 'Classement',
     howToPlay: 'Comment jouer',

@@ -342,6 +342,21 @@ export abstract class GameEngine {
     this.start();
   }
 
+  /**
+   * The id of the level right after the current one, but only when it exists and
+   * is actually unlocked (sequential clears unlock it; score-gated levels still
+   * need their threshold). Null otherwise — including on the last level. Drives
+   * the game-over "Next level" button.
+   */
+  private nextUnlockedLevelId(): number | null {
+    const config = this.config.levels;
+    if (!config || !this.levelProgress) return null;
+    const idx = config.levels.findIndex((l) => l.id === this.currentLevel);
+    const next = idx >= 0 ? config.levels[idx + 1] : undefined;
+    if (!next) return null;
+    return isLevelUnlocked(next, this.levelProgress) ? next.id : null;
+  }
+
   /** Clamps a saved level to one that is actually unlocked (else level 1). */
   private clampSelectedLevel(levelId: number): number {
     const config = this.config.levels;
@@ -497,16 +512,29 @@ export abstract class GameEngine {
     const user = getCachedUser();
     const loggedIn = user?.loggedIn === true;
 
-    const buttons: { text: string; primary?: boolean; onClick: () => void }[] = [
-      {
-        text: t('playAgain'),
+    // On a cleared level with a further unlocked level, lead with "Next level"
+    // and demote "Play again" (which replays the current level).
+    const nextLevelId = this.didWinLevel() ? this.nextUnlockedLevelId() : null;
+
+    const buttons: { text: string; primary?: boolean; onClick: () => void }[] = [];
+    if (nextLevelId !== null) {
+      buttons.push({
+        text: t('nextLevel'),
         primary: true,
         onClick: () => {
           this.overlay.hide();
-          this.restartAfterGameOver();
+          this.selectLevel(nextLevelId);
         },
+      });
+    }
+    buttons.push({
+      text: t('playAgain'),
+      primary: nextLevelId === null,
+      onClick: () => {
+        this.overlay.hide();
+        this.restartAfterGameOver();
       },
-    ];
+    });
     if (this.leaderboardPanel) {
       buttons.push({
         text: t('viewLeaderboard'),
