@@ -17,6 +17,16 @@
         </a>
       </div>
 
+      <div class="profile-name" id="profileNameRow" hidden>
+        <label class="profile-name-label" for="displayName" data-i18n="displayNameLabel"
+          >Display name</label
+        >
+        <form class="profile-name-form" id="displayNameForm">
+          <input id="displayName" class="input-field" maxlength="20" autocomplete="off" />
+          <button type="submit" class="btn btn--primary" data-i18n="saveName">Save</button>
+        </form>
+      </div>
+
       <div class="profile-grid" id="profileGrid"></div>
     </main>
   </body>

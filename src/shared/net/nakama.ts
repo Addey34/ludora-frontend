@@ -1,6 +1,5 @@
 import { Client, Session } from '@heroiclabs/nakama-js';
 import { ScoreEntry } from '../score/ScoreManager.js';
-import { getPlayerName } from './playerName.js';
 
 /**
  * Thin wrapper around the Nakama client used for the online leaderboards.
@@ -242,10 +241,13 @@ function toGlobalEntry(
  * Rejects if the backend is unreachable or the 'global' board isn't created yet,
  * so callers should swallow errors (best-effort, like the per-game submit).
  */
-export async function submitGlobalScore(points: number): Promise<void> {
+export async function submitGlobalScore(points: number, username?: string): Promise<void> {
   if (points <= 0) return;
   const session = await getSession();
-  const name = getPlayerName();
+  // Show the player's Google display name on the board (their chosen name),
+  // not the old local pseudo. Each incr write refreshes the record's metadata,
+  // so a renamed player's board row updates on their next run.
+  const name = username ?? cachedUser?.displayName;
   await getClient().writeLeaderboardRecord(session, GLOBAL_LEADERBOARD, {
     score: String(points),
     metadata: name ? { username: name } : {},
@@ -403,6 +405,19 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   } catch {
     return null;
   }
+}
+
+/**
+ * Renames the player: updates their Nakama account display name (used on the
+ * leaderboards) and the local cache, so future scores show the new name.
+ * Rejects if the backend is unreachable.
+ */
+export async function updateDisplayName(name: string): Promise<void> {
+  const clean = name.trim().slice(0, 20);
+  if (!clean) return;
+  const session = await getSession();
+  await getClient().updateAccount(session, { display_name: clean });
+  if (cachedUser) cachedUser.displayName = clean;
 }
 
 /**

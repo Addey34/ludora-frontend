@@ -1,13 +1,14 @@
 /**
- * Games Zone service worker — makes the app installable (PWA) and usable offline.
+ * Games Zone service worker — makes the app installable (PWA) and caches static
+ * assets for speed/offline.
  *
- * Strategy: network-first for same-origin GET requests. Online users always get
- * fresh content (never a stale cache — important with hashed assets and a live
- * leaderboard); offline users fall back to whatever was cached, and navigations
- * fall back to the cached home shell. Cross-origin (fonts CDN, Google, Nakama)
- * is left untouched.
+ * IMPORTANT: it never intercepts navigations (page loads). With clean-URL
+ * rewrites, a cached *redirected* response served for a navigation makes the
+ * browser throw and the link silently fails — so navigations always go straight
+ * to the network. Only same-origin, non-redirected GET assets are cached
+ * (network-first). Cross-origin (fonts CDN, Google, Nakama) is left untouched.
  */
-const CACHE = 'gz-cache-v1';
+const CACHE = 'gz-cache-v2';
 
 self.addEventListener('install', () => {
   self.skipWaiting();
@@ -16,6 +17,7 @@ self.addEventListener('install', () => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     (async () => {
+      // Drop older caches (incl. gz-cache-v1, which could hold bad redirects).
       const keys = await caches.keys();
       await Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)));
       await self.clients.claim();
@@ -25,22 +27,23 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+  // Let the browser handle navigations and cross-origin/non-GET itself.
+  if (req.method !== 'GET' || req.mode === 'navigate') return;
+  if (new URL(req.url).origin !== self.location.origin) return;
 
   event.respondWith(
     (async () => {
       try {
         const fresh = await fetch(req);
-        const cache = await caches.open(CACHE);
-        cache.put(req, fresh.clone());
+        // Never cache redirects or error responses.
+        if (fresh.ok && !fresh.redirected) {
+          const cache = await caches.open(CACHE);
+          cache.put(req, fresh.clone());
+        }
         return fresh;
       } catch (err) {
         const cached = await caches.match(req);
         if (cached) return cached;
-        if (req.mode === 'navigate') {
-          const home = await caches.match('/');
-          if (home) return home;
-        }
         throw err;
       }
     })()

@@ -6,6 +6,8 @@
  */
 import { applyTranslations, t } from '../shared/i18n/i18n.js';
 import { SCORE_GAMES, readBestScore } from '../shared/score/scoreGames.js';
+import { getCurrentUser, updateDisplayName } from '../shared/net/nakama.js';
+import { showToast } from '../shared/ui/toast.js';
 
 interface Row {
   key: string;
@@ -65,5 +67,29 @@ function render(): void {
   }
 }
 
+/** Signed-in only: let the player rename themselves (updates the leaderboards). */
+async function setupNameEditor(): Promise<void> {
+  const row = document.getElementById('profileNameRow');
+  const form = document.getElementById('displayNameForm') as HTMLFormElement | null;
+  const input = document.getElementById('displayName') as HTMLInputElement | null;
+  if (!row || !form || !input) return;
+
+  const user = await getCurrentUser();
+  if (!user?.loggedIn) return; // guests can't set a leaderboard name
+
+  input.value = user.displayName;
+  row.hidden = false;
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const value = input.value.trim();
+    if (!value) return;
+    updateDisplayName(value)
+      .then(() => showToast(t('nameSaved'), 'success'))
+      .catch(() => showToast(t('nameSaveError'), 'warning'));
+  });
+}
+
 applyTranslations();
 render();
+void setupNameEditor();

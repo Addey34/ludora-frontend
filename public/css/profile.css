@@ -35,6 +35,28 @@
   flex: none;
 }
 
+.profile-name {
+  margin-bottom: var(--spacing-lg);
+}
+
+.profile-name-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--text-color-muted);
+  margin-bottom: var(--spacing-xs);
+}
+
+.profile-name-form {
+  display: flex;
+  gap: var(--spacing-sm);
+  max-width: 360px;
+}
+
+.profile-name-form .input-field {
+  flex: 1;
+  min-width: 0;
+}
+
 .profile-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));

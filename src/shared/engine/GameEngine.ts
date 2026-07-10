@@ -561,7 +561,7 @@ export abstract class GameEngine {
       ).saveScore(entry);
     }
     this.submitOnlineScore(entry);
-    submitGlobalScore(gzPoints(this.state.score)).catch((err) =>
+    submitGlobalScore(gzPoints(this.state.score), username).catch((err) =>
       console.warn('[nakama] global score submission failed:', err)
     );
     this.onScoreSaved();
