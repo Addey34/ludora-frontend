@@ -1,19 +1,24 @@
 /* =============================================================================
-   Global sidebar — vertical neon rail, replaces the old footer.
-   Mobile-first:
-     - base (mobile) : off-screen, opened via the hamburger button (.sidebar-toggle);
-     - desktop (md+) : fixed compact rail (icons only) that expands on hover.
-   The active item is filled with the game's accent (--nav-accent, set per item).
+   Global sidebar: compact gaming rail + contextual flyouts.
    ========================================================================== */
-
-/* Accent color of the active item: provided inline (style="--nav-accent: …")
-   from the `games` list in vite.config.ts. Fallback here if ever missing. */
 .sidebar-link {
   --nav-accent: var(--primary-color);
 }
 
-/* --- The rail ------------------------------------------------------------ */
 .sidebar {
+  /* Thin aliases forwarding to the shared token layer (variables.css). Single
+     source of truth — see docs/private/DESIGN_SYSTEM.md. */
+  --sidebar-surface: var(--surface-base);
+  --sidebar-surface-raised: var(--surface-1);
+  --sidebar-surface-soft: var(--surface-2);
+  --sidebar-line: var(--line);
+  --sidebar-line-strong: var(--line-strong);
+  --sidebar-text: var(--ink);
+  --sidebar-muted: var(--ink-muted);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-strong: var(--accent-strong);
+  --sidebar-ease: var(--ease-ui);
+
   position: fixed;
   inset: 0 auto 0 0;
   z-index: 1100;
@@ -22,10 +27,12 @@
   flex-direction: column;
   gap: var(--spacing-xs);
   padding: var(--spacing-sm) 0 var(--spacing-md);
-  background: var(--sidebar-bg);
-  box-shadow: var(--shadow-lg);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 28%),
+    linear-gradient(180deg, var(--sidebar-surface-soft), var(--sidebar-surface));
+  border-right: 1px solid var(--sidebar-line);
+  box-shadow: 16px 0 34px rgba(0, 0, 0, 0.28);
   overflow: hidden;
-  /* Mobile: off-screen, slides in when opened. */
   transform: translateX(-100%);
   transition: transform var(--transition-speed) ease;
 }
@@ -34,97 +41,120 @@ body.sidebar-open .sidebar {
   transform: translateX(0);
 }
 
-/* Gradient hairline on the rail's right edge (visual signature). */
 .sidebar::after {
   content: '';
   position: absolute;
   inset: 0 0 0 auto;
-  width: 2px;
-  background: var(--gradient-light);
-  opacity: 0.6;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--sidebar-accent), transparent);
+  opacity: 0.72;
 }
 
-/* --- Logo / brand -------------------------------------------------------- */
+.sidebar-brand,
+.sidebar-auth-item,
+.sidebar-link,
+.sidebar-cat-head {
+  position: relative;
+  border-radius: var(--border-radius-md);
+}
+
 .sidebar-brand {
   display: flex;
   align-items: center;
-  color: var(--white-color);
-  font-weight: var(--font-weight-bolder);
-  font-size: var(--font-size-lg);
+  margin-inline: var(--spacing-sm);
   margin-bottom: var(--spacing-sm);
+  color: var(--sidebar-text);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bolder);
 }
 
 .sidebar-brand .sidebar-icon {
-  color: transparent;
-  background-image: var(--gradient-light);
-  -webkit-background-clip: text;
-  background-clip: text;
+  color: var(--sidebar-accent);
+  filter: drop-shadow(0 0 10px rgba(125, 211, 252, 0.28));
   font-size: var(--font-size-xl);
 }
 
-/* --- Category list ------------------------------------------------------- */
-/* Mobile-first: the rail slides in full-width, so each category is a header
-   row (icon + name + caret) with its games as a tap-to-open accordion beneath.
-   Desktop (md+) turns this into a 64 px icon rail with a hover flyout — see the
-   media query at the bottom. */
 .sidebar-nav {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxs);
+  gap: 2px;
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  scrollbar-color: rgba(148, 163, 184, 0.32) transparent;
 }
 
 .sidebar-nav::-webkit-scrollbar {
   width: 3px;
 }
+
 .sidebar-nav::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .sidebar-nav::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(148, 163, 184, 0.34);
   border-radius: 2px;
 }
+
 .sidebar-nav::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.42);
+  background: rgba(125, 211, 252, 0.56);
 }
 
 .sidebar-cat {
-  --cat-accent: var(--primary-color);
+  --cat-accent: var(--sidebar-accent);
   position: relative;
 }
 
-/* Category header — the tappable/hoverable tile. Resets the native button. */
-.sidebar-cat-head {
-  width: auto;
+.sidebar-cat-head,
+.sidebar-link,
+.sidebar-auth-item {
   display: flex;
   align-items: center;
   margin-inline: var(--spacing-sm);
-  padding: 0;
-  border: none;
-  border-radius: var(--border-radius-lg);
-  background: none;
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(248, 250, 252, 0.78);
   font: inherit;
   font-weight: var(--font-weight-bold);
   white-space: nowrap;
-  cursor: pointer;
   transition:
-    background var(--transition-speed) ease,
-    color var(--transition-speed) ease;
+    background var(--sidebar-ease),
+    color var(--sidebar-ease),
+    border-color var(--sidebar-ease),
+    box-shadow var(--sidebar-ease);
+}
+
+.sidebar-cat-head {
+  width: auto;
+  padding: 0;
+  border: 1px solid transparent;
+  background: none;
+  cursor: pointer;
+}
+
+.sidebar-link,
+.sidebar-auth-item {
+  border: 1px solid transparent;
+  text-decoration: none;
 }
 
 .sidebar-cat-head:hover,
-.sidebar-cat.has-active .sidebar-cat-head {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--white-color);
+.sidebar-cat.has-active .sidebar-cat-head,
+.sidebar-link:hover,
+.sidebar-auth-item:hover {
+  border-color: var(--sidebar-line);
+  background: rgba(248, 250, 252, 0.07);
+  color: var(--sidebar-text);
 }
 
-/* Fixed-width icon box: the glyph stays centered on the compact rail. */
+/* Gaming rail indicator: a left accent bar (no layout shift) marks the open /
+   active category instead of nudging the whole tile. */
+.sidebar-cat.is-open .sidebar-cat-head,
+.sidebar-cat.has-active .sidebar-cat-head {
+  box-shadow: inset 2px 0 0 var(--cat-accent);
+}
+
 .sidebar-icon {
   flex: 0 0 calc(var(--sidebar-width) - 2 * var(--spacing-sm));
   display: grid;
@@ -133,20 +163,17 @@ body.sidebar-open .sidebar {
   font-size: var(--font-size-lg);
 }
 
-/* The category glyph is painted in its accent; the active category glows. */
 .sidebar-cat-head .sidebar-icon {
   color: var(--cat-accent);
-  transition:
-    filter var(--transition-speed) ease,
-    transform var(--transition-speed) ease;
-}
-.sidebar-cat-head:hover .sidebar-icon,
-.sidebar-cat.has-active .sidebar-cat-head .sidebar-icon {
-  filter: drop-shadow(0 0 7px var(--cat-accent));
-  transform: scale(1.08);
+  transition: filter var(--sidebar-ease);
 }
 
-/* Label never wraps; shrinks to 0 on the compact desktop rail. */
+.sidebar-cat-head:hover .sidebar-icon,
+.sidebar-cat.is-open .sidebar-cat-head .sidebar-icon,
+.sidebar-cat.has-active .sidebar-cat-head .sidebar-icon {
+  filter: drop-shadow(0 0 9px color-mix(in srgb, var(--cat-accent) 60%, transparent));
+}
+
 .sidebar-label {
   flex: 1 1 0;
   min-width: 0;
@@ -155,26 +182,25 @@ body.sidebar-open .sidebar {
   text-overflow: ellipsis;
 }
 
-/* Caret hints the fold direction (right = flyout on desktop, rotates down when
-   an accordion opens on mobile). Hidden on the compact desktop rail. */
 .sidebar-cat-caret {
   flex: 0 0 auto;
   margin-left: var(--spacing-xs);
+  padding-right: var(--spacing-sm);
+  color: var(--sidebar-muted);
   font-size: var(--font-size-xs);
-  color: rgba(255, 255, 255, 0.5);
-  transition: transform var(--transition-speed) ease;
+  transition: transform var(--sidebar-ease);
 }
+
 .sidebar-cat.is-open .sidebar-cat-caret {
   transform: rotate(90deg);
 }
 
-/* --- Flyout / accordion panel -------------------------------------------- */
-/* Mobile: an in-flow accordion collapsed to height 0, expanded on .is-open. */
 .sidebar-flyout {
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows var(--transition-speed) ease;
 }
+
 .sidebar-cat.is-open .sidebar-flyout {
   grid-template-rows: 1fr;
 }
@@ -185,8 +211,6 @@ body.sidebar-open .sidebar {
   overflow: hidden;
 }
 
-/* The flyout repeats the category name as a header — only shown as a real panel
-   title on desktop; redundant with the accordion head on mobile. */
 .sidebar-flyout-title {
   display: none;
   margin: 0 0 var(--spacing-xs);
@@ -198,55 +222,11 @@ body.sidebar-open .sidebar {
   text-transform: uppercase;
 }
 
-/* --- Game links ---------------------------------------------------------- */
-.sidebar-link {
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-inline: var(--spacing-sm);
-  border-radius: var(--border-radius-lg);
-  color: rgba(255, 255, 255, 0.78);
-  font-weight: var(--font-weight-bold);
-  white-space: nowrap;
-  transition:
-    background var(--transition-speed) ease,
-    color var(--transition-speed) ease,
-    transform var(--transition-speed) ease;
-}
-
-/* On mobile the game row is indented under its category and its icon box is
-   narrower (the rail is expanded, so there is room for the label). */
 .sidebar-link .sidebar-icon {
   flex-basis: calc(var(--sidebar-width) - 2 * var(--spacing-sm));
   font-size: var(--font-size-md);
 }
 
-.sidebar-auth-item {
-  position: relative;
-  border-radius: var(--border-radius-lg);
-  margin-inline: var(--spacing-sm);
-  display: flex;
-  align-items: center;
-  color: rgba(255, 255, 255, 0.78);
-  font-weight: var(--font-weight-bold);
-  white-space: nowrap;
-  transition:
-    background var(--transition-speed) ease,
-    color var(--transition-speed) ease,
-    transform var(--transition-speed) ease;
-}
-
-.sidebar-brand {
-  position: relative;
-  border-radius: var(--border-radius-lg);
-  margin-inline: var(--spacing-sm);
-}
-
-/* --- Mode badge (solo / duo / multi) ------------------------------------- */
-/* Small bubble at the end of each game link telling how many players the game
-   is for. Data-driven from the game's `mode` field (data-mode); the people glyph
-   is painted in CSS from a Font Awesome codepoint, so a new game gets it for
-   free. Lives in the flyout, so it shows whenever the game row is visible. */
 .sidebar-mode {
   flex: 0 0 auto;
   display: grid;
@@ -254,9 +234,9 @@ body.sidebar-open .sidebar {
   width: 1.4em;
   height: 1.4em;
   margin-left: var(--spacing-xs);
-  border-radius: var(--border-radius-pill, 999px);
-  background: rgba(255, 255, 255, 0.14);
-  color: rgba(255, 255, 255, 0.92);
+  border-radius: 999px;
+  background: rgba(248, 250, 252, 0.12);
+  color: rgba(248, 250, 252, 0.9);
   font-size: var(--font-size-sm);
 }
 
@@ -267,7 +247,6 @@ body.sidebar-open .sidebar {
   line-height: 1;
 }
 
-/* solo = one person, duo = two people, multi = a group (3+). */
 .sidebar-mode[data-mode='solo']::before {
   content: '\f007';
 }
@@ -278,76 +257,56 @@ body.sidebar-open .sidebar {
   content: '\f0c0';
 }
 
-.sidebar-link:hover,
-.sidebar-auth-item:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--white-color);
-  transform: translateX(2px);
-}
-
-/* Active item: filled with the game's color + neon glow. */
 .sidebar-link.is-active {
-  background-color: var(--nav-accent);
-  color: var(--white-color);
-  box-shadow: var(--shadow-lg);
+  border-color: color-mix(in srgb, var(--nav-accent) 52%, var(--sidebar-line));
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--nav-accent) 28%, transparent), transparent),
+    rgba(248, 250, 252, 0.1);
+  color: var(--sidebar-text);
+  box-shadow: inset 3px 0 0 var(--nav-accent);
 }
 
 .sidebar-link.is-active .sidebar-icon {
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.55));
+  color: var(--nav-accent);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--nav-accent) 46%, transparent));
 }
 
-/* On the active item the badge bubble reads against the accent fill. */
 .sidebar-link.is-active .sidebar-mode {
   background: rgba(0, 0, 0, 0.22);
-  color: var(--white-color);
+  color: var(--sidebar-text);
 }
 
-/* --- Sign-in (Google button / signed-in player) ------------------------- */
-/* Pushes the block to the very bottom of the rail; the inner item shows the
-   fixed icon (Google widget / avatar), the label collapsing to 0 on the compact
-   rail like the game links. */
 .sidebar-auth {
   margin-top: auto;
   padding-top: var(--spacing-sm);
-  /* Flex column: the item stretches to the full width (align-items: stretch by
-     default), so the whole row is clickable like the game links. */
   display: flex;
   flex-direction: column;
 }
 
-/* Separator line between the games and the sign-in. */
 .sidebar-auth::before {
   content: '';
   display: block;
   height: 1px;
   margin: 0 var(--spacing-sm) var(--spacing-xs);
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--sidebar-line);
 }
 
-/* Reset native button styles: the look comes from .sidebar-auth-item (shared
-   with .sidebar-link above). padding:0 is essential, otherwise the <button>'s
-   default padding offsets the icon vs the game links (<a>). */
 .sidebar-auth-item {
   width: auto;
   padding: 0;
   background: none;
-  border: none;
-  font: inherit;
   text-align: left;
   cursor: pointer;
 }
 
-/* The Google widget rendered in the icon box stays centered and clipped. */
 .sidebar-auth-item .sidebar-icon {
   overflow: hidden;
 }
 
-/* Sign-out icon: a bit smaller to balance with the G logo. */
 .sidebar-auth-item .sidebar-icon i {
   font-size: 1.1em;
 }
 
-/* --- Signed-in account dropdown (profile / leaderboard / friends / logout) --- */
 .sidebar-account {
   position: relative;
 }
@@ -362,10 +321,10 @@ body.sidebar-open .sidebar {
   flex-direction: column;
   gap: 2px;
   padding: var(--spacing-xs);
-  background: var(--sidebar-bg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--sidebar-line);
+  border-radius: var(--border-radius-md);
+  background: var(--sidebar-surface-raised);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.3);
   opacity: 0;
   visibility: hidden;
   transform: translateY(6px);
@@ -386,10 +345,10 @@ body.sidebar-open .sidebar {
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid transparent;
   border-radius: var(--border-radius-md);
-  color: rgba(255, 255, 255, 0.82);
   background: none;
-  border: none;
+  color: rgba(248, 250, 252, 0.82);
   font: inherit;
   font-weight: var(--font-weight-bold);
   text-align: left;
@@ -397,142 +356,107 @@ body.sidebar-open .sidebar {
   white-space: nowrap;
   cursor: pointer;
   transition:
-    background 0.12s ease,
-    color 0.12s ease;
+    background var(--sidebar-ease),
+    border-color var(--sidebar-ease),
+    color var(--sidebar-ease);
 }
 
 .sidebar-account-link:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--white-color);
+  border-color: var(--sidebar-line);
+  background: rgba(248, 250, 252, 0.08);
+  color: var(--sidebar-text);
 }
 
 .sidebar-account-link i {
   width: 1.2rem;
+  color: var(--sidebar-accent);
   text-align: center;
 }
 
-/* --- Hamburger button (mobile only) -------------------------------------- */
-.sidebar-toggle {
+.sidebar-toggle,
+.sound-toggle,
+.lang-toggle {
   position: fixed;
-  top: var(--spacing-sm);
-  left: var(--spacing-sm);
   z-index: 1200;
   width: 44px;
   height: 44px;
   display: grid;
   place-items: center;
-  font-size: var(--font-size-lg);
-  color: var(--white-color);
-  background: var(--gradient);
-  border: none;
+  border: 1px solid var(--sidebar-line, rgba(148, 163, 184, 0.2));
   border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent), #111827;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+  color: var(--sidebar-text, #f8fafc);
   cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    background 0.15s ease;
 }
 
-/* --- Mobile scrim -------------------------------------------------------- */
+.sidebar-toggle {
+  top: var(--spacing-sm);
+  left: var(--spacing-sm);
+  font-size: var(--font-size-lg);
+}
+
+.sidebar-toggle:hover,
+.sound-toggle:hover,
+.lang-toggle:hover {
+  transform: translateY(-1px);
+  border-color: var(--sidebar-line-strong, rgba(125, 211, 252, 0.42));
+}
+
 .sidebar-scrim {
   position: fixed;
   inset: 0;
   z-index: 1050;
-  background: rgba(26, 26, 46, 0.55);
+  background: rgba(8, 13, 26, 0.72);
   backdrop-filter: blur(2px);
 }
+
 .sidebar-scrim[hidden] {
   display: none;
 }
 
-/* --- Sound toggle bubble — fixed top-right, visible on every page ----------
-   Active (sound on): gradient background + expanding ring pulse animation.
-   Muted: flat dark background, dimmed icon, no animation.
-   -------------------------------------------------------------------------- */
 .sound-toggle {
-  position: fixed;
   top: var(--spacing-sm);
   right: var(--spacing-sm);
-  z-index: 1200;
-
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-
-  background: var(--gradient);
-  border: none;
   border-radius: 50%;
-  box-shadow:
-    var(--shadow),
-    0 0 0 0 rgba(67, 97, 238, 0.5);
-  color: var(--white-color);
   font-size: 1rem;
-  cursor: pointer;
-
-  /* Entrance: tiny pop-in so it doesn't feel bolted on */
-  animation: soundBtnIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-  /* Active-state pulsing ring — paused when muted (see .is-muted below) */
   animation:
     soundBtnIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both,
     soundRing 2.4s 0.35s ease-out infinite;
-
-  transition:
-    background var(--transition-speed) ease,
-    box-shadow var(--transition-speed) ease,
-    color var(--transition-speed) ease,
-    transform 0.15s ease;
 }
 
-.sound-toggle:hover {
-  transform: scale(1.1);
+.sound-toggle:active,
+.lang-toggle:active {
+  transform: scale(0.94);
 }
 
-.sound-toggle:active {
-  transform: scale(0.93);
-}
-
-/* --- Language toggle — fixed top-right, just left of the sound bubble -------- */
 .lang-toggle {
-  position: fixed;
   top: var(--spacing-sm);
   right: calc(var(--spacing-sm) + 44px + var(--spacing-xs));
-  z-index: 1200;
-
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-
-  background: rgba(26, 26, 46, 0.82);
-  backdrop-filter: blur(6px);
-  border: none;
   border-radius: 50%;
-  box-shadow:
-    var(--shadow),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-  color: var(--white-color);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
   letter-spacing: 0.02em;
-  cursor: pointer;
-
-  transition:
-    transform 0.15s ease,
-    background var(--transition-speed) ease;
 }
 
-.lang-toggle:hover {
-  transform: scale(1.1);
-}
-
-.lang-toggle:active {
-  transform: scale(0.93);
-}
-
-.lang-toggle:focus-visible {
-  outline: 3px solid var(--white-color);
+.lang-toggle:focus-visible,
+.sound-toggle:focus-visible,
+.sidebar-toggle:focus-visible {
+  outline: 3px solid var(--line-strong);
   outline-offset: 2px;
 }
 
-/* The inner icon */
+/* Keyboard focus ring for rail items — inset so it stays inside the narrow rail.
+   See docs/private/DESIGN_SYSTEM.md §5. */
+.sidebar :is(a, button):focus-visible {
+  outline: 3px solid var(--line-strong);
+  outline-offset: -3px;
+}
+
 .sound-toggle i {
   position: relative;
   z-index: 1;
@@ -540,25 +464,17 @@ body.sidebar-open .sidebar {
   pointer-events: none;
 }
 
-/* Cosmetic ring element that expands outward on pulse */
 .sound-toggle-ring {
   position: absolute;
   inset: -2px;
+  border: 2px solid rgba(125, 211, 252, 0.45);
   border-radius: 50%;
-  border: 2px solid rgba(67, 97, 238, 0.5);
   pointer-events: none;
   animation: soundRingExpand 2.4s 0.35s ease-out infinite;
 }
 
-/* --- Muted state ---------------------------------------------------------- */
 .sound-toggle.is-muted {
-  background: rgba(26, 26, 46, 0.82);
-  backdrop-filter: blur(6px);
-  box-shadow:
-    var(--shadow),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.38);
-  /* Stop the ring animations */
+  color: rgba(248, 250, 252, 0.42);
   animation: soundBtnIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
@@ -571,7 +487,6 @@ body.sidebar-open .sidebar {
   transform: scale(0.85);
 }
 
-/* --- Keyframes ------------------------------------------------------------ */
 @keyframes soundBtnIn {
   from {
     opacity: 0;
@@ -583,47 +498,36 @@ body.sidebar-open .sidebar {
   }
 }
 
-/* Subtle shadow pulse on the button itself when sound is active */
 @keyframes soundRing {
   0%,
   100% {
     box-shadow:
-      var(--shadow),
-      0 0 0 0 rgba(67, 97, 238, 0.45);
+      0 8px 20px rgba(0, 0, 0, 0.24),
+      0 0 0 0 rgba(125, 211, 252, 0.34);
   }
   50% {
     box-shadow:
-      var(--shadow),
-      0 0 0 7px rgba(67, 97, 238, 0);
+      0 8px 20px rgba(0, 0, 0, 0.24),
+      0 0 0 7px rgba(125, 211, 252, 0);
   }
 }
 
-/* Outer ring that expands and fades — simulates a sound wave */
 @keyframes soundRingExpand {
   0% {
     transform: scale(1);
-    opacity: 0.7;
+    opacity: 0.65;
   }
-  80% {
-    transform: scale(1.65);
-    opacity: 0;
-  }
+  80%,
   100% {
     transform: scale(1.65);
     opacity: 0;
   }
 }
 
-/* =============================================================================
-   Desktop: a fixed 64 px icon rail of category tiles; hovering a tile unfolds a
-   flyout to its right listing that category's games.
-   ========================================================================== */
 @media (min-width: 768px) {
   .sidebar {
     width: var(--sidebar-width);
     transform: none;
-    /* The rail no longer grows; the flyout overlays the content instead. Let it
-       overflow so the flyout can escape the 64 px strip. */
     overflow: visible;
   }
 
@@ -631,19 +535,16 @@ body.sidebar-open .sidebar {
     overflow: visible;
   }
 
-  /* Compact rail: category tile is icon-only, centered; hide name + caret. */
   .sidebar-cat-head {
     margin-inline: var(--spacing-xs);
     justify-content: center;
   }
+
   .sidebar-cat-head .sidebar-label,
   .sidebar-cat-caret {
     display: none;
   }
 
-  /* Flyout: a themed panel anchored flush to the rail's right edge (left:100%,
-     no gap so the cursor can cross into it without dropping the hover). Hidden
-     until the category is hovered or holds keyboard focus. */
   .sidebar-flyout {
     position: absolute;
     top: 0;
@@ -652,57 +553,60 @@ body.sidebar-open .sidebar {
     display: block;
     width: 15rem;
     max-height: min(70vh, 26rem);
-    overflow-y: auto;
-    /* Flush to the rail (no gap) so the cursor never drops the hover mid-cross. */
     margin-left: 0;
     padding: var(--spacing-sm);
-    background: var(--sidebar-bg);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-left: 3px solid var(--cat-accent);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-lg);
+    overflow-y: auto;
+    border: 1px solid var(--sidebar-line);
+    border-left: 2px solid var(--cat-accent);
+    border-radius: var(--border-radius-md);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 30%),
+      var(--sidebar-surface-raised);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.3);
     opacity: 0;
     visibility: hidden;
-    transform: translateX(-6px);
+    /* Unfold out of the rail edge: compressed toward the left, then springs to
+       full width. Snappy easeOutQuint — decelerates once, no jittery return. */
+    transform-origin: left center;
+    transform: translateX(-10px) scaleX(0.92);
     transition:
-      opacity var(--transition-speed) ease,
-      transform var(--transition-speed) ease,
-      visibility var(--transition-speed) ease;
+      opacity 0.16s ease,
+      transform 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0.26s;
   }
 
   .sidebar-cat.is-open .sidebar-flyout {
     opacity: 1;
     visibility: visible;
-    transform: translateX(0);
+    transform: translateX(0) scaleX(1);
   }
 
-  /* The accordion collapse is a mobile-only concern; on desktop the games are
-     always laid out inside the (hidden) flyout. */
   .sidebar-flyout-title {
     display: block;
   }
+
   .sidebar-cat-games {
     overflow: visible;
   }
 
-  /* Inside the flyout the rail is wide: give game rows a comfy padded row with
-     a compact icon box, and always show the label + mode badge. */
   .sidebar-flyout .sidebar-link {
     margin-inline: 0;
     padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) 0;
   }
+
   .sidebar-flyout .sidebar-link .sidebar-icon {
     flex-basis: 2.6rem;
     height: 2.1rem;
   }
 
-  /* Compact rail: the account button is icon-only; its menu flies out right. */
   .sidebar-account-toggle {
     justify-content: center;
   }
+
   .sidebar-account-toggle .sidebar-label {
     display: none;
   }
+
   .sidebar-account-menu {
     left: 100%;
     right: auto;
@@ -710,18 +614,28 @@ body.sidebar-open .sidebar {
     width: 13rem;
     transform: translateX(-6px);
   }
+
   .sidebar-account.is-open .sidebar-account-menu {
     transform: translateX(0);
   }
 
-  /* No toggle or scrim on desktop. */
   .sidebar-toggle,
   .sidebar-scrim {
     display: none;
   }
 }
 
-/* The rail is a fixed layer: it ADDS NO offset to the content. Pages stay
-   centered on the real viewport (centering handled by shared .app-body); the
-   compact rail floats over the left gutter and its flyouts overlay the content.
-   Nothing to do for future pages: .app-body is enough. */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .sidebar-flyout,
+  .sidebar-account-menu,
+  .sound-toggle,
+  .sound-toggle-ring {
+    transition-duration: 0.01ms;
+    animation: none;
+  }
+
+  .sidebar-flyout {
+    transform: none;
+  }
+}

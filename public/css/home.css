@@ -1,10 +1,28 @@
 @import url('./global.css');
 
 /* ------------------------------------------------------------------ */
-/*  Page layout                                                          */
+/*  Page layout                                                       */
 /* ------------------------------------------------------------------ */
 .home-body {
+  /* Thin aliases forwarding to the shared token layer (variables.css). Single
+     source of truth — see docs/private/DESIGN_SYSTEM.md. */
+  --home-bg: var(--surface-base);
+  --home-bg-deep: var(--surface-deep);
+  --home-panel: var(--surface-1);
+  --home-panel-raised: var(--surface-2);
+  --home-card: var(--card);
+  --home-line: var(--line);
+  --home-line-solid: var(--line-solid);
+  --home-text: var(--ink);
+  --home-muted: var(--ink-muted);
+  --home-accent: var(--accent);
+  --home-accent-strong: var(--accent-strong);
+
   gap: 0;
+  max-width: none;
+  padding-inline: clamp(0.75rem, 2vw, 1.5rem);
+  color: var(--home-text);
+  background: var(--portal-bg);
 }
 
 .home-main {
@@ -12,117 +30,150 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-xl);
-  /* Title lands at ~20-25% from the top of the viewport */
-  padding-bottom: var(--spacing-xl);
+  gap: clamp(0.75rem, 1.6dvh, 1.1rem);
   width: 100%;
+  max-width: 1040px;
+  padding: clamp(0.75rem, 2dvh, 1.25rem) 0 var(--spacing-md);
+  animation: pageRise 0.4s ease both;
 }
 
 /* ------------------------------------------------------------------ */
-/*  Hero / title                                                         */
+/*  Hero / title                                                      */
 /* ------------------------------------------------------------------ */
 .home-hero {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-sm);
+  width: min(100%, 860px);
   text-align: center;
 }
 
 .home-title {
-  font-size: clamp(2.8rem, 9vw, 5.5rem);
+  font-size: clamp(2.35rem, 6vw, 4.8rem);
   font-weight: 900;
-  letter-spacing: -0.02em;
-  line-height: 1;
+  letter-spacing: 0;
+  line-height: 0.95;
   text-transform: uppercase;
-  /* Metallic chrome gradient on the brand blue/indigo palette */
   background: linear-gradient(
     150deg,
-    #c7d2fe 0%,
-    #6366f1 14%,
-    #4361ee 28%,
-    #e8ecff 48%,
-    #4361ee 64%,
-    #3730a3 80%,
-    #818cf8 100%
+    #f8fafc 0%,
+    #93c5fd 32%,
+    var(--home-accent) 58%,
+    #2563eb 100%
   );
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  /* 3D relief: stacked drop-shadows create a carved / extruded effect.
-     Uses darker shades of the brand indigo so the depth reads as part
-     of the palette, not a generic black shadow. */
-  filter: drop-shadow(1px 1px 0px #3730a3) drop-shadow(2px 2px 0px #312e81)
-    drop-shadow(3px 3px 0px #1e1b4b) drop-shadow(0px 8px 20px rgba(67, 97, 238, 0.35));
+  filter: drop-shadow(1px 1px 0 #1e3a8a) drop-shadow(2px 2px 0 #172554)
+    drop-shadow(0 10px 22px rgba(125, 211, 252, 0.22));
 }
 
 .home-tagline {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--home-line);
+  border-radius: var(--border-radius-md);
+  background: rgba(17, 24, 42, 0.72);
+  color: var(--home-muted);
   font-size: var(--font-size-sm);
-  color: var(--text-color-muted);
   font-weight: var(--font-weight-medium);
-  letter-spacing: 0.03em;
 }
 
 /* ------------------------------------------------------------------ */
-/*  Category sections                                                   */
+/*  Category sections                                                 */
 /* ------------------------------------------------------------------ */
 .game-category {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: var(--spacing-sm);
-  width: 100%;
+  width: min(100%, 960px);
 }
 
 .game-category-title {
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-bold);
-  color: var(--text-color-muted);
-  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--home-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bolder);
   letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.game-category-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--home-line), transparent);
 }
 
 /* ------------------------------------------------------------------ */
-/*  Compact icon grid                                                   */
+/*  Compact icon grid                                                 */
 /* ------------------------------------------------------------------ */
 .game-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
-  gap: var(--spacing-sm);
-  background: var(--white-color);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow);
-  padding: var(--spacing-lg);
-  max-width: 560px;
+  grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
+  gap: clamp(0.4rem, 0.8vw, 0.6rem);
   width: 100%;
+  padding: clamp(0.55rem, 1vw, 0.8rem);
+  border: 1px solid var(--home-line-solid);
+  border-radius: var(--border-radius-md);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 34%),
+    linear-gradient(180deg, var(--home-panel-raised), var(--home-panel));
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
 }
 
 .game-tile {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 1;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  place-items: center;
+  gap: 0.2rem;
+  min-height: 4.7rem;
+  padding: var(--spacing-xs);
+  border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: var(--border-radius-md);
+  background: var(--home-card);
+  color: var(--nav-accent, var(--home-accent));
   text-decoration: none;
-  color: var(--nav-accent, var(--primary-color));
-  background: color-mix(in srgb, var(--nav-accent, var(--primary-color)) 10%, var(--white-color));
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.16);
   transition:
-    transform var(--transition-speed) ease,
-    box-shadow var(--transition-speed) ease,
-    background var(--transition-speed) ease;
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.game-tile::before {
+  content: attr(data-label);
+  order: 2;
+  max-width: 100%;
+  color: var(--card-ink);
+  font-size: 0.62rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.1;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .game-tile:hover,
 .game-tile:focus-visible {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-  background: color-mix(in srgb, var(--nav-accent, var(--primary-color)) 22%, var(--white-color));
-  outline: none;
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--nav-accent, var(--home-accent)) 46%, var(--home-line));
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--nav-accent, var(--home-accent)) 26%, transparent);
+}
+
+/* Consistent keyboard focus ring (a11y). See docs/private/DESIGN_SYSTEM.md §5. */
+.home-body :is(a, button):focus-visible {
+  outline: 3px solid var(--line-strong);
+  outline-offset: 2px;
 }
 
 .game-tile .game-icon {
-  --game-icon-size: 2.2rem;
+  --game-icon-size: clamp(1.45rem, 1.9vw, 1.8rem);
 }
 
 .game-tile::after {
@@ -130,18 +181,19 @@
   position: absolute;
   bottom: calc(100% + 7px);
   left: 50%;
-  transform: translateX(-50%);
-  background: var(--text-color);
-  color: var(--white-color);
+  z-index: 10;
+  padding: 3px 10px;
+  border: 1px solid var(--home-line);
+  border-radius: var(--border-radius-sm);
+  background: var(--home-bg);
+  color: var(--home-text);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
-  padding: 3px 10px;
-  border-radius: var(--border-radius-sm);
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
+  transform: translateX(-50%);
   transition: opacity 0.15s ease;
-  z-index: 10;
 }
 
 .game-tile:hover::after,
@@ -150,23 +202,51 @@
 }
 
 /* ------------------------------------------------------------------ */
-/*  Footer                                                              */
+/*  Footer                                                            */
 /* ------------------------------------------------------------------ */
 .home-footer {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-  padding: var(--spacing-md) 0 var(--spacing-lg);
-  color: var(--text-color-muted);
-  font-size: var(--font-size-sm);
+  padding: var(--spacing-xs) 0 var(--spacing-sm);
+  color: var(--home-muted);
+  font-size: var(--font-size-xs);
 }
 
 .home-footer a {
-  color: var(--text-color-muted);
+  color: var(--home-muted);
   text-decoration: none;
 }
 
 .home-footer a:hover {
-  color: var(--primary-color);
+  color: var(--home-text);
   text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .game-grid {
+    grid-template-columns: repeat(auto-fill, minmax(66px, 1fr));
+  }
+
+  .game-tile {
+    min-height: 4.35rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-body {
+    padding-inline: var(--spacing-sm);
+  }
+
+  .game-grid {
+    grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+  }
+
+  .game-tile::before {
+    font-size: 0.58rem;
+  }
+
+  .game-tile .game-icon {
+    --game-icon-size: 1.35rem;
+  }
 }

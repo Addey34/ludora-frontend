@@ -52,6 +52,39 @@
   --gradient: linear-gradient(45deg, #4361ee, #3f37c9);
   --gradient-light: linear-gradient(90deg, #6b82f2, #5b54d6);
 
+  /* --- Common-page surface system (single source of truth) ---
+     The dark "portal" look shared by home, the app pages (profile / leaderboard /
+     friends / legal) and the sidebar shell. See docs/private/DESIGN_SYSTEM.md.
+     A common page must go through these tokens — never hardcode a portal color. */
+  --surface-base: #0b1020; /* page background (navy) */
+  --surface-deep: #080d1a; /* background gradient bottom */
+  --surface-1: #111827; /* panel / raised surface */
+  --surface-2: #162033; /* elevated panel top (gradient start) */
+  --surface-glass: rgba(248, 250, 252, 0.06); /* translucent inner panel */
+  --ink: #f8fafc; /* primary text on dark */
+  --ink-muted: #94a3b8; /* secondary text on dark */
+  --card: #1b2640; /* elevated dark card face (game tiles, rows) */
+  --card-muted: #141d30; /* card face variant (darker) */
+  --card-ink: #f8fafc; /* text on a dark card */
+  --card-ink-muted: #94a3b8; /* secondary text on a dark card */
+  --line: rgba(148, 163, 184, 0.22); /* default translucent border */
+  --line-solid: #212c45; /* opaque border (use over the top glow) */
+  --line-strong: rgba(125, 211, 252, 0.42); /* accent-tinted border (hover/focus) */
+  --accent: #7dd3fc; /* cyan accent (icons, links, focus ring) */
+  --accent-strong: #2563eb; /* blue accent (gradients, primary btn) */
+  --ease-ui: 0.16s ease; /* standard UI transition */
+
+  /* Shared "portal" page background (home + app pages): one aurora, two soft
+     glows over the navy gradient. Single source — see DESIGN_SYSTEM.md. */
+  --portal-bg:
+    radial-gradient(circle at 50% 0%, rgba(125, 211, 252, 0.15), transparent 30rem),
+    radial-gradient(circle at 88% 108%, rgba(99, 102, 241, 0.12), transparent 26rem),
+    linear-gradient(180deg, var(--surface-deep) 0%, var(--surface-base) 100%);
+  /* Podium medals (leaderboard top 3, reusable). */
+  --medal-gold: #ffd24a;
+  --medal-silver: #c8d0dc;
+  --medal-bronze: #d68a4e;
+
   /* Solid accent color specific to each game (title + active rail item).
      The home page keeps the blue --primary-color. A palette of distinct hues
      meant to stay legible and welcome future games (add a hue here).

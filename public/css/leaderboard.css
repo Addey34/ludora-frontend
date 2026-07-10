@@ -1,36 +1,47 @@
-/* Leaderboard page — reuses the profile page layout, adds tabs + the ranking. */
+/* Leaderboard page: compact tabs and scrollable rankings on top of profile layout. */
 @import '/css/profile.css';
 
 .lb-tabs {
   display: flex;
   gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-lg);
-  border-bottom: 1px solid var(--border-color-light);
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-xs);
 }
 
 .lb-tab {
   appearance: none;
-  border: none;
-  background: none;
-  padding: var(--spacing-xs) var(--spacing-md);
-  margin-bottom: -1px;
-  border-bottom: 2px solid transparent;
-  color: var(--text-color-muted);
+  flex: 1;
+  min-height: 2.25rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-sm);
+  background: transparent;
+  color: var(--app-muted);
   font: inherit;
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
   cursor: pointer;
   transition:
-    color 0.15s ease,
-    border-color 0.15s ease;
+    color var(--app-ease),
+    background var(--app-ease),
+    border-color var(--app-ease);
 }
 
 .lb-tab:hover {
-  color: var(--text-color);
+  background: rgba(248, 250, 252, 0.08);
+  color: var(--app-text);
 }
 
 .lb-tab.is-active {
-  color: var(--primary-color);
-  border-bottom-color: var(--primary-color);
+  border-color: var(--app-line-strong);
+  background: linear-gradient(135deg, var(--app-accent-strong), var(--app-accent));
+  color: var(--white-color);
+}
+
+.lb-panel {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
 }
 
 .lb-panel[hidden] {
@@ -38,44 +49,64 @@
 }
 
 .profile-rank {
-  margin: 0 0 var(--spacing-md);
-  color: var(--text-color-muted);
-  font-size: var(--font-size-sm);
-}
-
-.profile-empty {
-  color: var(--text-color-muted);
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
 }
 
 .global-list {
   list-style: none;
   margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  padding: 0 var(--spacing-xs) 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-xs);
 }
 
 .global-row {
   display: grid;
-  grid-template-columns: 3rem 1fr auto;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-xs) var(--spacing-md);
-  border-radius: var(--border-radius-sm);
-  background: var(--surface-color, #fff);
-  border: 1px solid var(--border-color-light);
+  gap: var(--spacing-xs);
+  min-height: 2.55rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-sm);
 }
 
 .global-row.is-me {
-  border-color: var(--primary-color);
-  background: color-mix(in srgb, var(--primary-color) 8%, #fff);
+  border-color: var(--app-accent);
+  box-shadow: 0 8px 20px rgba(56, 189, 248, 0.18);
   font-weight: 600;
 }
 
 .global-rank {
-  color: var(--text-color-muted);
   font-variant-numeric: tabular-nums;
+}
+
+/* Podium: top-3 ranks become a colored medal badge (gold / silver / bronze). */
+.global-rank.is-medal {
+  display: inline-grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  color: #1a1400;
+  font-weight: var(--font-weight-bolder);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.6),
+    0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.global-rank.medal-1 {
+  background: radial-gradient(circle at 35% 30%, #fff3bf, var(--medal-gold));
+}
+
+.global-rank.medal-2 {
+  background: radial-gradient(circle at 35% 30%, #f4f7fb, var(--medal-silver));
+}
+
+.global-rank.medal-3 {
+  background: radial-gradient(circle at 35% 30%, #f0c199, var(--medal-bronze));
 }
 
 .global-name {
@@ -86,6 +117,14 @@
 }
 
 .global-pts {
-  color: var(--primary-color);
+  color: var(--app-accent);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .global-list {
+    display: flex;
+    flex-direction: column;
+  }
 }
