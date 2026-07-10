@@ -231,6 +231,16 @@
   .game-tile {
     min-height: 4.35rem;
   }
+
+  /* Keep the hero title clear of the fixed top-right language/sound controls:
+     smaller type fits between the corner buttons, plus a little top breathing room. */
+  .home-hero {
+    padding-top: 2.25rem;
+  }
+
+  .home-title {
+    font-size: clamp(1.85rem, 8.5vw, 2.9rem);
+  }
 }
 
 @media (max-width: 480px) {
