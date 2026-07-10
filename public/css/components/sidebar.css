@@ -347,6 +347,70 @@ body.sidebar-open .sidebar {
   font-size: 1.1em;
 }
 
+/* --- Signed-in account dropdown (profile / leaderboard / friends / logout) --- */
+.sidebar-account {
+  position: relative;
+}
+
+.sidebar-account-menu {
+  position: absolute;
+  left: var(--spacing-sm);
+  right: var(--spacing-sm);
+  bottom: calc(100% + var(--spacing-xs));
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--spacing-xs);
+  background: var(--sidebar-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition:
+    opacity 0.14s ease,
+    transform 0.14s ease,
+    visibility 0.14s ease;
+}
+
+.sidebar-account.is-open .sidebar-account-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.sidebar-account-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-md);
+  color: rgba(255, 255, 255, 0.82);
+  background: none;
+  border: none;
+  font: inherit;
+  font-weight: var(--font-weight-bold);
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease;
+}
+
+.sidebar-account-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white-color);
+}
+
+.sidebar-account-link i {
+  width: 1.2rem;
+  text-align: center;
+}
+
 /* --- Hamburger button (mobile only) -------------------------------------- */
 .sidebar-toggle {
   position: fixed;
@@ -589,7 +653,8 @@ body.sidebar-open .sidebar {
     width: 15rem;
     max-height: min(70vh, 26rem);
     overflow-y: auto;
-    margin-left: var(--spacing-xs);
+    /* Flush to the rail (no gap) so the cursor never drops the hover mid-cross. */
+    margin-left: 0;
     padding: var(--spacing-sm);
     background: var(--sidebar-bg);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -630,6 +695,24 @@ body.sidebar-open .sidebar {
   .sidebar-flyout .sidebar-link .sidebar-icon {
     flex-basis: 2.6rem;
     height: 2.1rem;
+  }
+
+  /* Compact rail: the account button is icon-only; its menu flies out right. */
+  .sidebar-account-toggle {
+    justify-content: center;
+  }
+  .sidebar-account-toggle .sidebar-label {
+    display: none;
+  }
+  .sidebar-account-menu {
+    left: 100%;
+    right: auto;
+    bottom: 0;
+    width: 13rem;
+    transform: translateX(-6px);
+  }
+  .sidebar-account.is-open .sidebar-account-menu {
+    transform: translateX(0);
   }
 
   /* No toggle or scrim on desktop. */

@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en">
-  {{> head title="My Scores — Games Zone" css="/css/profile.css" script="./profile-main.ts"}}
+  {{> head title="Profile — Games Zone" css="/css/profile.css" script="./profile-main.ts"}}
   <body class="app-body">
     {{> game-chrome}}
     <main class="profile-content">
       <div class="profile-header">
         <div>
-          <h1 class="profile-title" data-i18n="profileTitle">My Scores</h1>
-          <p class="profile-subtitle" id="profileSummary" data-i18n="profileSubtitle">
-            Your best score in every game, on this device.
+          <h1 class="profile-title" data-i18n="profileTitle">Profile</h1>
+          <p class="profile-subtitle" data-i18n="profileAccountSubtitle">
+            Your account and display name.
           </p>
         </div>
         <a class="btn btn--secondary profile-back" href="/">
@@ -27,7 +27,9 @@
         </form>
       </div>
 
-      <div class="profile-grid" id="profileGrid"></div>
+      <p class="profile-empty" id="profileGuest" data-i18n="profileGuest" hidden>
+        Sign in with Google to set your name and appear on the leaderboard.
+      </p>
     </main>
   </body>
 </html>

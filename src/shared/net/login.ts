@@ -54,26 +54,49 @@ function loadGoogleScript(): Promise<void> {
 async function renderAuthArea(area: HTMLElement): Promise<void> {
   const user = await getCurrentUser();
   if (user?.loggedIn) {
-    // Signed in: a Profile and a Leaderboard shortcut sit just above logout.
+    // Signed in: one compact account button opening a dropdown (profile,
+    // leaderboard, friends, sign out) — keeps the rail's middle for categories.
     area.innerHTML = `
-      <a class="sidebar-auth-item" href="/profile" data-nav="profile" aria-label="${t('profileTitle')}">
-        <span class="sidebar-icon"><i class="fas fa-user" aria-hidden="true"></i></span>
-        <span class="sidebar-label">${escapeHtml(t('profileTitle'))}</span>
-      </a>
-      <a class="sidebar-auth-item" href="/leaderboard" data-nav="leaderboard" aria-label="${t('leaderboard')}">
-        <span class="sidebar-icon"><i class="fas fa-trophy" aria-hidden="true"></i></span>
-        <span class="sidebar-label">${escapeHtml(t('leaderboard'))}</span>
-      </a>
-      <button
-        class="sidebar-auth-item"
-        type="button"
-        id="logoutBtn"
-        title="${escapeHtml(t('signOutOf', { name: user.displayName }))}"
-        aria-label="${t('signOut')}"
-      >
-        <span class="sidebar-icon"><i class="fas fa-right-from-bracket" aria-hidden="true"></i></span>
-        <span class="sidebar-label">${escapeHtml(user.displayName)}</span>
-      </button>`;
+      <div class="sidebar-account" id="sidebarAccount">
+        <button
+          class="sidebar-auth-item sidebar-account-toggle"
+          type="button"
+          id="accountToggle"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-label="${escapeHtml(user.displayName)}"
+        >
+          <span class="sidebar-icon"><i class="fas fa-circle-user" aria-hidden="true"></i></span>
+          <span class="sidebar-label">${escapeHtml(user.displayName)}</span>
+        </button>
+        <div class="sidebar-account-menu" id="accountMenu" role="menu">
+          <a class="sidebar-account-link" role="menuitem" href="/profile">
+            <i class="fas fa-user" aria-hidden="true"></i><span>${escapeHtml(t('profileTitle'))}</span>
+          </a>
+          <a class="sidebar-account-link" role="menuitem" href="/leaderboard">
+            <i class="fas fa-trophy" aria-hidden="true"></i><span>${escapeHtml(t('leaderboard'))}</span>
+          </a>
+          <a class="sidebar-account-link" role="menuitem" href="/leaderboard?tab=friends">
+            <i class="fas fa-user-group" aria-hidden="true"></i><span>${escapeHtml(t('tabFriends'))}</span>
+          </a>
+          <button class="sidebar-account-link" role="menuitem" type="button" id="logoutBtn">
+            <i class="fas fa-right-from-bracket" aria-hidden="true"></i><span>${escapeHtml(t('signOut'))}</span>
+          </button>
+        </div>
+      </div>`;
+    const account = area.querySelector<HTMLElement>('#sidebarAccount');
+    const toggle = area.querySelector<HTMLButtonElement>('#accountToggle');
+    toggle?.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const open = account?.classList.toggle('is-open') ?? false;
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', (event) => {
+      if (account && !account.contains(event.target as Node)) {
+        account.classList.remove('is-open');
+        toggle?.setAttribute('aria-expanded', 'false');
+      }
+    });
     area.querySelector('#logoutBtn')?.addEventListener('click', () => {
       clearLocalProgress();
       logout();

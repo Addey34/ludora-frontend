@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="en">
-  {{> head title="Global Ranking — Games Zone" css="/css/leaderboard.css"
+  {{> head title="Leaderboard — Games Zone" css="/css/leaderboard.css"
   script="./leaderboard-main.ts"}}
   <body class="app-body">
     {{> game-chrome}}
     <main class="profile-content">
       <div class="profile-header">
         <div>
-          <h1 class="profile-title" data-i18n="globalRankingTitle">Global ranking</h1>
+          <h1 class="profile-title" data-i18n="leaderboard">Leaderboard</h1>
           <p class="profile-subtitle" data-i18n="leaderboardSubtitle">
             The top GamesZone players across every game.
           </p>
@@ -18,11 +18,33 @@
         </a>
       </div>
 
-      <p class="profile-rank" id="profileMyRank"></p>
-      <ol class="global-list" id="globalList"></ol>
-      <p class="profile-empty" id="rankEmpty" data-i18n="leaderboardEmpty" hidden>
-        No ranking yet — play a game to get on the board.
-      </p>
+      <div class="lb-tabs" role="tablist">
+        <button class="lb-tab is-active" type="button" data-tab="perso" data-i18n="tabPersonal">
+          Personal
+        </button>
+        <button class="lb-tab" type="button" data-tab="friends" data-i18n="tabFriends">
+          Friends
+        </button>
+        <button class="lb-tab" type="button" data-tab="world" data-i18n="tabWorld">World</button>
+      </div>
+
+      <section class="lb-panel" data-panel="perso">
+        <div class="profile-grid" id="profileGrid"></div>
+      </section>
+
+      <section class="lb-panel" data-panel="friends" hidden>
+        <p class="profile-empty" data-i18n="friendsSoon">
+          Add friends to compare your scores — coming soon.
+        </p>
+      </section>
+
+      <section class="lb-panel" data-panel="world" hidden>
+        <p class="profile-rank" id="profileMyRank"></p>
+        <ol class="global-list" id="globalList"></ol>
+        <p class="profile-empty" id="rankEmpty" data-i18n="leaderboardEmpty" hidden>
+          No ranking yet — play a game to get on the board.
+        </p>
+      </section>
     </main>
   </body>
 </html>
