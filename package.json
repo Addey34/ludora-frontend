@@ -16,7 +16,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "knip": "knip",
-    "verify": "npm run format:check && npm run lint && npm run knip && npm run build && npm test"
+    "size": "node scripts/check-bundle-size.mjs",
+    "verify": "npm run format:check && npm run lint && npm run knip && npm run build && npm run size && npm test"
   },
   "repository": {
     "type": "git",
