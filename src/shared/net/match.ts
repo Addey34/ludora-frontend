@@ -1,4 +1,4 @@
-import { Socket, Match, MatchData, MatchPresenceEvent } from '@heroiclabs/nakama-js';
+import type { Socket, Match, MatchData, MatchPresenceEvent } from '@heroiclabs/nakama-js';
 import { getClient, getSession } from './nakama.js';
 
 /**
@@ -121,7 +121,7 @@ async function getSocket(): Promise<Socket> {
   if (socket) return socket;
 
   const session = await getSession();
-  const nextSocket = getClient().createSocket(USE_SSL, false);
+  const nextSocket = (await getClient()).createSocket(USE_SSL, false);
   nextSocket.ondisconnect = () => dropSocket(nextSocket);
   try {
     await nextSocket.connect(session, true);

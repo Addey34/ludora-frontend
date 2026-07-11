@@ -1,4 +1,4 @@
-import { Client, Session } from '@heroiclabs/nakama-js';
+import type { Client, Session } from '@heroiclabs/nakama-js';
 import { ScoreEntry } from '../score/ScoreManager.js';
 
 /**
@@ -98,10 +98,24 @@ let client: Client | null = null;
 /** Cached authentication so we only sign in once per page load. */
 let sessionPromise: Promise<Session> | null = null;
 
+/**
+ * Code-splits the Nakama client (~32 KB gzip — the single biggest dependency)
+ * off every page's critical path: it is fetched with a dynamic import only when
+ * the first network call actually needs it, instead of being bundled into the
+ * globally-loaded login chunk. Memoised so it resolves once per page.
+ */
+type NakamaModule = typeof import('@heroiclabs/nakama-js');
+let nakamaModulePromise: Promise<NakamaModule> | null = null;
+function loadNakama(): Promise<NakamaModule> {
+  if (!nakamaModulePromise) nakamaModulePromise = import('@heroiclabs/nakama-js');
+  return nakamaModulePromise;
+}
+
 /** Lazily builds the singleton client. Exported so the realtime layer
  * (`match.ts`) reuses the same client/connection settings. */
-export function getClient(): Client {
+export async function getClient(): Promise<Client> {
   if (!client) {
+    const { Client } = await loadNakama();
     client = new Client(SERVER_KEY, HOST, PORT, USE_SSL);
   }
   return client;
@@ -136,12 +150,13 @@ async function restoreSession(): Promise<Session | null> {
   const token = localStorage.getItem(SESSION_TOKEN_KEY);
   const refresh = localStorage.getItem(SESSION_REFRESH_KEY);
   if (!token) return null;
+  const { Session } = await loadNakama();
   let session = Session.restore(token, refresh ?? '');
   const now = Date.now() / 1000;
   if (session.isexpired(now)) {
     if (!refresh || session.isrefreshexpired(now)) return null;
     try {
-      session = await getClient().sessionRefresh(session);
+      session = await (await getClient()).sessionRefresh(session);
       storeSession(session);
     } catch {
       return null;
@@ -163,7 +178,7 @@ export function getSession(): Promise<Session> {
     sessionPromise = (async () => {
       const restored = await restoreSession();
       if (restored) return restored;
-      const session = await getClient().authenticateDevice(getDeviceId(), true);
+      const session = await (await getClient()).authenticateDevice(getDeviceId(), true);
       storeSession(session);
       return session;
     })().catch((err) => {
@@ -190,7 +205,7 @@ async function resolveDisplayNames(
   const names = new Map<string, string>();
   if (ids.length === 0) return names;
   try {
-    const result = await getClient().getUsers(session, ids);
+    const result = await (await getClient()).getUsers(session, ids);
     for (const user of result.users ?? []) {
       const name = user.display_name || user.username;
       if (user.id && name) names.set(user.id, name);
@@ -211,7 +226,9 @@ export async function submitLeaderboardScore(
   entry: ScoreEntry
 ): Promise<void> {
   const session = await getSession();
-  await getClient().writeLeaderboardRecord(session, leaderboardId, {
+  await (
+    await getClient()
+  ).writeLeaderboardRecord(session, leaderboardId, {
     score: String(entry.score),
     metadata: buildScoreMetadata(entry),
   });
@@ -235,7 +252,9 @@ export async function recordRun(run: {
   metadata?: Record<string, unknown>;
 }): Promise<void> {
   const session = await getSession();
-  await getClient().rpc(session, 'write_score', {
+  await (
+    await getClient()
+  ).rpc(session, 'write_score', {
     game: run.game,
     boards: run.boards,
     score: run.score,
@@ -266,7 +285,9 @@ export async function listLeaderboardScores(
   limit = 10
 ): Promise<ScoreEntry[]> {
   const session = await getSession();
-  const result = await getClient().listLeaderboardRecords(session, leaderboardId, undefined, limit);
+  const result = await (
+    await getClient()
+  ).listLeaderboardRecords(session, leaderboardId, undefined, limit);
   const records = result.records ?? [];
   const names = await resolveDisplayNames(
     session,
@@ -328,7 +349,9 @@ export async function submitGlobalScore(points: number, username?: string): Prom
   // not the old local pseudo. Each incr write refreshes the record's metadata,
   // so a renamed player's board row updates on their next run.
   const name = username ?? cachedUser?.displayName;
-  await getClient().writeLeaderboardRecord(session, GLOBAL_LEADERBOARD, {
+  await (
+    await getClient()
+  ).writeLeaderboardRecord(session, GLOBAL_LEADERBOARD, {
     score: String(points),
     metadata: name ? { username: name } : {},
   });
@@ -338,12 +361,9 @@ export async function submitGlobalScore(points: number, username?: string): Prom
 export async function listGlobalRanking(limit = 20): Promise<GlobalRankEntry[]> {
   try {
     const session = await getSession();
-    const result = await getClient().listLeaderboardRecords(
-      session,
-      GLOBAL_LEADERBOARD,
-      undefined,
-      limit
-    );
+    const result = await (
+      await getClient()
+    ).listLeaderboardRecords(session, GLOBAL_LEADERBOARD, undefined, limit);
     const myId = session.user_id ?? '';
     const records = result.records ?? [];
     const names = await resolveDisplayNames(
@@ -366,12 +386,9 @@ export async function getMyGlobalRank(): Promise<GlobalRankEntry | null> {
   try {
     const session = await getSession();
     const myId = session.user_id ?? '';
-    const result = await getClient().listLeaderboardRecordsAroundOwner(
-      session,
-      GLOBAL_LEADERBOARD,
-      myId,
-      1
-    );
+    const result = await (
+      await getClient()
+    ).listLeaderboardRecordsAroundOwner(session, GLOBAL_LEADERBOARD, myId, 1);
     const mine = (result.records ?? []).find((r) => r.owner_id === myId);
     if (!mine) return null;
     const entry = toGlobalEntry(mine, myId, 0);
@@ -393,7 +410,7 @@ export async function getMyGlobalRank(): Promise<GlobalRankEntry | null> {
  */
 export async function submitFeedback(game: string, rating: number, text: string): Promise<void> {
   const session = await getSession();
-  await getClient().rpc(session, 'submit_feedback', { game, rating, text });
+  await (await getClient()).rpc(session, 'submit_feedback', { game, rating, text });
 }
 
 /** Nakama Storage collection holding this player's per-game progress. */
@@ -407,7 +424,9 @@ const PROGRESS_COLLECTION = 'progress';
 export async function readStorage<T extends object>(key: string): Promise<T | null> {
   try {
     const session = await getSession();
-    const result = await getClient().readStorageObjects(session, {
+    const result = await (
+      await getClient()
+    ).readStorageObjects(session, {
       object_ids: [{ collection: PROGRESS_COLLECTION, key, user_id: session.user_id }],
     });
     const value = result.objects?.[0]?.value;
@@ -425,7 +444,9 @@ export async function readStorage<T extends object>(key: string): Promise<T | nu
 export async function writeStorage<T extends object>(key: string, value: T): Promise<void> {
   try {
     const session = await getSession();
-    await getClient().writeStorageObjects(session, [
+    await (
+      await getClient()
+    ).writeStorageObjects(session, [
       { collection: PROGRESS_COLLECTION, key, value, permission_read: 1, permission_write: 1 },
     ]);
   } catch {} // eslint-disable-line no-empty
@@ -454,7 +475,7 @@ export interface CurrentUser {
  * local caches that belonged to the previous player.
  */
 export async function loginWithGoogleToken(idToken: string): Promise<boolean> {
-  const nakama = getClient();
+  const nakama = await getClient();
   let session = await getSession();
   const previousUserId = session.user_id;
   try {
@@ -539,7 +560,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   userPromise = (async () => {
     try {
       const session = await getSession();
-      const account = await getClient().getAccount(session);
+      const account = await (await getClient()).getAccount(session);
       const loggedIn = Boolean(account.user?.google_id);
       cachedUser = {
         displayName: account.user?.display_name || account.user?.username || 'Player',
@@ -595,7 +616,7 @@ export const FRIEND_STATE = {
 export async function getFriendCode(): Promise<string | null> {
   try {
     const session = await requireGoogleLinkedSession();
-    const account = await getClient().getAccount(session);
+    const account = await (await getClient()).getAccount(session);
     return account.user?.username ?? null;
   } catch {
     return null;
@@ -607,14 +628,14 @@ export async function addFriendByCode(code: string): Promise<void> {
   const clean = code.trim();
   if (!clean) return;
   const session = await requireGoogleLinkedSession();
-  await getClient().addFriends(session, [], [clean]);
+  await (await getClient()).addFriends(session, [], [clean]);
 }
 
 /** The current player's friends (mutual, pending and received), with presence. */
 export async function listMyFriends(): Promise<Friend[]> {
   try {
     const session = await requireGoogleLinkedSession();
-    const result = await getClient().listFriends(session, undefined, 100);
+    const result = await (await getClient()).listFriends(session, undefined, 100);
     return (result.friends ?? []).map((f) => ({
       userId: f.user?.id ?? '',
       code: f.user?.username ?? '',
@@ -635,7 +656,7 @@ export async function acceptFriend(code: string): Promise<void> {
   const clean = code.trim();
   if (!clean) return;
   const session = await requireGoogleLinkedSession();
-  await getClient().addFriends(session, [], [clean]);
+  await (await getClient()).addFriends(session, [], [clean]);
 }
 
 /**
@@ -646,7 +667,7 @@ export async function removeFriend(code: string): Promise<void> {
   const clean = code.trim();
   if (!clean) return;
   const session = await requireGoogleLinkedSession();
-  await getClient().deleteFriends(session, [], [clean]);
+  await (await getClient()).deleteFriends(session, [], [clean]);
 }
 
 /**
@@ -668,12 +689,9 @@ export async function listFriendRanking(): Promise<GlobalRankEntry[]> {
       // De-dupe in case the graph ever returns the owner among the friends.
       .filter((id, i, all) => all.indexOf(id) === i);
     if (ids.length === 0) return [];
-    const result = await getClient().listLeaderboardRecords(
-      session,
-      GLOBAL_LEADERBOARD,
-      ids,
-      ids.length
-    );
+    const result = await (
+      await getClient()
+    ).listLeaderboardRecords(session, GLOBAL_LEADERBOARD, ids, ids.length);
     const records = result.records ?? [];
     const names = await resolveDisplayNames(
       session,
@@ -702,7 +720,7 @@ export async function updateDisplayName(name: string): Promise<void> {
   const clean = name.trim().slice(0, 20);
   if (!clean) return;
   const session = await requireGoogleLinkedSession();
-  await getClient().updateAccount(session, { display_name: clean });
+  await (await getClient()).updateAccount(session, { display_name: clean });
   if (cachedUser) cachedUser.displayName = clean;
 }
 
