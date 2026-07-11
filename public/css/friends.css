@@ -159,6 +159,19 @@
   white-space: nowrap;
 }
 
+/* A mutual-friend row carries a GZP badge + a remove button → one more column. */
+.friend-row:has(.friend-gzp) {
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
+}
+
+.friend-gzp {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--app-accent);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
 @media (max-width: 640px) {
   .friends-add,
   .friends-code-box {

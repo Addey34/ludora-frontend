@@ -680,6 +680,31 @@ export async function removeFriend(code: string): Promise<void> {
 }
 
 /**
+/**
+ * GamesZone Points per user id for the given owners (their global-leaderboard
+ * totals), so the friends list can show each friend's GZP inline. Best-effort:
+ * returns an empty map on any backend issue. Owners with no recorded run are
+ * simply absent from the map.
+ */
+export async function getFriendScores(userIds: string[]): Promise<Map<string, number>> {
+  const scores = new Map<string, number>();
+  const ids = userIds.filter(Boolean);
+  if (ids.length === 0) return scores;
+  try {
+    const session = await requireGoogleLinkedSession();
+    const result = await (
+      await getClient()
+    ).listLeaderboardRecords(session, GLOBAL_LEADERBOARD, ids, ids.length);
+    for (const record of result.records ?? []) {
+      if (record.owner_id) scores.set(record.owner_id, Number(record.score ?? 0));
+    }
+  } catch {
+    // best-effort: no scores shown
+  }
+  return scores;
+}
+
+/**
  * The friends-only GamesZone Points ranking: the current player plus their mutual
  * friends, sorted by GZP (desc) and freshly ranked among themselves. Reads the
  * same global leaderboard as {@link listGlobalRanking} but filtered to the friend

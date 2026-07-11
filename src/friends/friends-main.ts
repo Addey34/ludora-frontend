@@ -12,6 +12,7 @@ import {
   addFriendByCode,
   FRIEND_STATE,
   getFriendCode,
+  getFriendScores,
   listMyFriends,
   removeFriend,
   type Friend,
@@ -48,6 +49,14 @@ function friendRow(friend: Friend, statusText: string, ...actions: HTMLElement[]
   return li;
 }
 
+/** A small "1,234 GZP" badge showing a friend's GamesZone Points. */
+function gzpBadge(points: number): HTMLSpanElement {
+  const span = document.createElement('span');
+  span.className = 'friend-gzp';
+  span.textContent = t('globalPoints', { score: points });
+  return span;
+}
+
 /** A "Online — 3" style group header inside the friends list. */
 function groupHeader(label: string, count: number): HTMLLIElement {
   const li = document.createElement('li');
@@ -71,6 +80,13 @@ async function refreshFriends(): Promise<void> {
   const online = mutual.filter((f) => f.online);
   const offline = mutual.filter((f) => !f.online);
 
+  // Each mutual friend's GamesZone Points, shown inline (best-effort).
+  const scores = await getFriendScores(mutual.map((f) => f.userId));
+  const mutualActions = (f: Friend): HTMLElement[] => {
+    const gzp = scores.get(f.userId);
+    return gzp === undefined ? [removeAction(f)] : [gzpBadge(gzp), removeAction(f)];
+  };
+
   // Incoming requests: accept / decline.
   if (requestsSection && requestsList) {
     requestsList.replaceChildren(
@@ -93,11 +109,11 @@ async function refreshFriends(): Promise<void> {
   const rows: HTMLLIElement[] = [];
   if (online.length > 0) {
     rows.push(groupHeader(t('online'), online.length));
-    rows.push(...online.map((f) => friendRow(f, t('online'), removeAction(f))));
+    rows.push(...online.map((f) => friendRow(f, t('online'), ...mutualActions(f))));
   }
   if (offline.length > 0) {
     rows.push(groupHeader(t('offline'), offline.length));
-    rows.push(...offline.map((f) => friendRow(f, t('offline'), removeAction(f))));
+    rows.push(...offline.map((f) => friendRow(f, t('offline'), ...mutualActions(f))));
   }
   if (pending.length > 0) {
     rows.push(groupHeader(t('friendPending'), pending.length));
