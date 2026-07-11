@@ -27,7 +27,7 @@ export class KakuroGame extends GameEngine {
     this.boardEl = document.getElementById('board');
     this.fx = new ParticleSystem();
     this.hud = setupHud([
-      { key: 'puzzle', icon: 'grid', label: t('kakPuzzle') },
+      { key: 'puzzle', icon: 'table-cells', label: t('kakPuzzle') },
       { key: 'time', icon: 'clock', label: t('hudTime') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);

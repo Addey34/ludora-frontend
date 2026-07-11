@@ -12,6 +12,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "data": "node scripts/build-data.mjs",
+    "icons": "node scripts/build-icons.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "knip": "knip",

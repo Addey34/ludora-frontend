@@ -4,3 +4,4 @@ package-lock.json
 *.hbs
 .claude/
 public/vendor/
+scripts/assets/

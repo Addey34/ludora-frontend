@@ -47,8 +47,9 @@
     })();
   </script>
   <link rel="stylesheet" href="{{css}}" />
-  <!-- Font Awesome, self-hosted (no render-blocking third-party CDN request;
-       cacheable by the service worker). Fonts in /vendor/fontawesome/webfonts. -->
+  <!-- Font Awesome, self-hosted and subset to only the icons we use (see
+       scripts/build-icons.mjs — `npm run icons`): ~3 KB of CSS + the solid
+       woff2, no render-blocking CDN request, cacheable by the service worker. -->
   <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css" />
   {{#if script}}<script type="module" src="{{script}}"></script>{{/if}}
   <script type="application/ld+json">{{{ldJson}}}</script>

@@ -106,7 +106,7 @@ export class BattleshipGame extends BoardGame<BattleshipState, BattleshipMove> {
     this.boardEl = document.getElementById('board');
 
     this.hud = setupHud([
-      { key: 'mine', icon: 'shield-halved', label: t('bsMyShips') },
+      { key: 'mine', icon: 'shield', label: t('bsMyShips') },
       { key: 'enemy', icon: 'crosshairs', label: t('bsEnemyShips') },
       { key: 'turn', icon: 'circle-dot', label: t('hudTurn') },
       { key: 'time', icon: 'clock', label: t('hudTime') },

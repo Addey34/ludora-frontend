@@ -46,7 +46,7 @@ export class BlackjackGame extends GameEngine {
     this.buildDOM();
     this.hud = setupHud([
       { key: 'chips', icon: 'coins', label: t('bjChips') },
-      { key: 'bet', icon: 'circle-dollar', label: t('bjBet') },
+      { key: 'bet', icon: 'dollar-sign', label: t('bjBet') },
       { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
     this.hud.set('high', this.scoreManager.getHighScore());
