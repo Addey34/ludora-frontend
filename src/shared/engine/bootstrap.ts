@@ -1,5 +1,15 @@
 import { GameEngine } from './GameEngine.js';
 import { setupInfoPanel } from '../ui/popover.js';
+import { track } from '../analytics/analytics.js';
+
+/** The game key from the clean URL (`/snake` or `/fr/snake` → `snake`). */
+function gameKeyFromUrl(): string {
+  const seg = location.pathname
+    .replace(/^\/fr(?=\/|$)/, '')
+    .split('/')
+    .filter(Boolean);
+  return seg[0] ?? '';
+}
 
 /**
  * Startup options for a game.
@@ -31,6 +41,7 @@ export function bootstrapGame(
     const game = factory();
     await game.initialize();
     setupInfoPanel(); // shell "How to play" panel: click to open, Escape/outside to close
+    track('game_start', { game: gameKeyFromUrl() });
     if (options.autoStart !== false) {
       game.presentStartScreen();
     }

@@ -32,6 +32,7 @@ import {
   parseChallenge,
 } from '../versus/challengeLink.js';
 import { t } from '../i18n/i18n.js';
+import { track } from '../analytics/analytics.js';
 
 /**
  * Configuration shared by all games, passed to the engine constructor.
@@ -179,6 +180,10 @@ export abstract class GameEngine {
    * doubles as the sign-in check (race-free vs. the cached-user flag).
    */
   private async announceChallenge(challenge: Challenge): Promise<void> {
+    track('challenge_opened', {
+      game: this.baseLeaderboardId ?? '',
+      hasCode: Boolean(challenge.code),
+    });
     const message = challenge.by
       ? t('challengeReceived', { name: challenge.by, score: challenge.score })
       : t('challengeReceivedAnon', { score: challenge.score });
@@ -463,6 +468,7 @@ export abstract class GameEngine {
    */
   protected shareChallenge(): void {
     if (typeof location === 'undefined') return;
+    track('challenge_shared', { game: this.baseLeaderboardId ?? '' });
     const url = buildChallengeUrl(
       location.href,
       this.state.score,
@@ -641,6 +647,7 @@ export abstract class GameEngine {
     submitGlobalScore(gzPoints(score), username).catch((err) =>
       console.warn('[nakama] global score submission failed:', err)
     );
+    track('score_saved', { game: this.baseLeaderboardId ?? '', score });
     this.onScoreSaved();
   }
 

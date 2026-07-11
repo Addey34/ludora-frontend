@@ -3,6 +3,7 @@ import { GOOGLE_CLIENT_ID, loginWithGoogleToken, getCurrentUser, logout } from '
 import { flushPendingScore } from '../score/pendingScore.js';
 import { showToast } from '../ui/toast.js';
 import { t } from '../i18n/i18n.js';
+import { track, initErrorTracking } from '../analytics/analytics.js';
 
 /**
  * Drives the "Sign in with Google" widget in the sidebar (`#authArea`), loaded
@@ -130,6 +131,7 @@ async function renderAuthArea(area: HTMLElement): Promise<void> {
 }
 
 async function init(): Promise<void> {
+  initErrorTracking(); // global client-error beacon (once, on every page)
   const area = document.getElementById('authArea');
   if (!area) return;
   try {
@@ -139,6 +141,7 @@ async function init(): Promise<void> {
       callback: (response) => {
         loginWithGoogleToken(response.credential)
           .then(() => {
+            track('sign_in');
             // Level progress lives only on Nakama now, keyed per account, so a
             // switch to another account shows its own progress on reload — there
             // is nothing local to clear here anymore.
