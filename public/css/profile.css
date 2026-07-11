@@ -139,3 +139,55 @@
     display: none;
   }
 }
+
+/* Danger zone: account deletion (GDPR erasure). */
+.profile-danger {
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-md);
+  border: 1px solid color-mix(in srgb, var(--error-color) 40%, var(--line));
+  border-radius: var(--border-radius-md);
+  background: color-mix(in srgb, var(--error-color) 6%, transparent);
+}
+
+.profile-danger-title {
+  margin: 0 0 var(--spacing-xs);
+  font-size: var(--font-size-md);
+  color: var(--error-color);
+}
+
+.profile-danger-desc {
+  margin: 0 0 var(--spacing-sm);
+  max-width: 52ch;
+  font-size: var(--font-size-sm);
+  color: var(--app-text-muted, var(--ink-muted));
+}
+
+.profile-danger-confirm {
+  margin-top: var(--spacing-sm);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.profile-danger-warn {
+  flex: 1 1 100%;
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+  color: var(--error-color);
+}
+
+.btn--danger {
+  border: 1px solid var(--error-color);
+  background: var(--error-color);
+  color: #fff;
+}
+
+.btn--danger:hover {
+  background: color-mix(in srgb, var(--error-color) 85%, #000);
+}
+
+.btn--danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

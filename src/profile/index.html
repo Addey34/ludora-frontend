@@ -54,6 +54,38 @@
       >
         Sign in with Google to set your name and appear on the leaderboard.
       </p>
+
+      <section class="profile-danger" id="profileDanger" hidden>
+        <h2 class="profile-danger-title" data-i18n="dangerZone">Danger zone</h2>
+        <p class="profile-danger-desc" data-i18n="deleteAccountDesc">
+          Permanently delete your account and all your data — scores, friends and progress. This
+          cannot be undone.
+        </p>
+        <button
+          class="btn btn--danger"
+          type="button"
+          id="deleteAccountBtn"
+          data-i18n="deleteAccount"
+        >
+          Delete account
+        </button>
+        <div class="profile-danger-confirm" id="deleteConfirm" hidden>
+          <p class="profile-danger-warn" data-i18n="deleteAccountConfirm">
+            This permanently erases everything. Are you sure?
+          </p>
+          <button
+            class="btn btn--danger"
+            type="button"
+            id="deleteConfirmBtn"
+            data-i18n="deleteAccountYes"
+          >
+            Yes, delete everything
+          </button>
+          <button class="btn btn--secondary" type="button" id="deleteCancelBtn" data-i18n="cancel">
+            Cancel
+          </button>
+        </div>
+      </section>
     </main>
   </body>
 </html>

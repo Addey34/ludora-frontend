@@ -6,8 +6,40 @@
  */
 import { applyTranslations, t } from '../shared/i18n/i18n.js';
 import { requireGoogleUser } from '../shared/net/authGuard.js';
-import { updateDisplayName, type CurrentUser } from '../shared/net/nakama.js';
+import { deleteAccountData, updateDisplayName, type CurrentUser } from '../shared/net/nakama.js';
 import { showToast } from '../shared/ui/toast.js';
+
+/** Wires the "Danger zone": a two-step confirm, then server-side GDPR erasure. */
+function setupAccountDeletion(): void {
+  const section = document.getElementById('profileDanger');
+  const startBtn = document.getElementById('deleteAccountBtn');
+  const confirm = document.getElementById('deleteConfirm');
+  const confirmBtn = document.getElementById('deleteConfirmBtn') as HTMLButtonElement | null;
+  const cancelBtn = document.getElementById('deleteCancelBtn');
+  if (!section || !startBtn || !confirm || !confirmBtn || !cancelBtn) return;
+
+  section.hidden = false;
+  startBtn.addEventListener('click', () => {
+    confirm.hidden = false;
+    startBtn.hidden = true;
+  });
+  cancelBtn.addEventListener('click', () => {
+    confirm.hidden = true;
+    startBtn.hidden = false;
+  });
+  confirmBtn.addEventListener('click', () => {
+    confirmBtn.disabled = true;
+    deleteAccountData()
+      .then(() => {
+        showToast(t('deleteAccountDone'), 'success');
+        setTimeout(() => (location.href = '/'), 1200);
+      })
+      .catch(() => {
+        showToast(t('deleteAccountError'), 'warning');
+        confirmBtn.disabled = false;
+      });
+  });
+}
 
 function setupNameEditor(user: CurrentUser): void {
   const row = document.getElementById('profileNameRow');
@@ -58,4 +90,5 @@ void (async () => {
   const user = await requireGoogleUser();
   if (!user) return;
   setupNameEditor(user);
+  setupAccountDeletion();
 })();

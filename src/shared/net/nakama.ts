@@ -759,6 +759,20 @@ export async function updateDisplayName(name: string): Promise<void> {
 }
 
 /**
+ * GDPR erasure: asks the server to wipe this account's data (leaderboard rows,
+ * storage, friend edges, then the account itself) via the `delete_account_data`
+ * RPC, then clears all local session state. Rejects if the backend is
+ * unreachable or the RPC is not deployed, so the UI can keep the account intact
+ * and warn the player rather than pretend it was deleted.
+ */
+export async function deleteAccountData(): Promise<void> {
+  const session = await requireGoogleLinkedSession();
+  await (await getClient()).rpc(session, 'delete_account_data', {});
+  logout();
+  cachedFriendCode = null;
+}
+
+/**
  * "Logs out" by abandoning this browser's stored session and anonymous device
  * id: the next session starts as a fresh anonymous player. Signing in with
  * Google again re-attaches to the same Google account (and its scores).
