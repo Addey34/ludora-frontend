@@ -31,6 +31,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     viewLeaderboard: 'View leaderboard',
     leaderboard: 'Leaderboard',
     howToPlay: 'How to play',
+    aboutGame: 'About this game',
     helpAria: 'Help: how to play',
     immersiveMode: 'Immersive mode',
     thPlayer: 'Player',
@@ -175,6 +176,83 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     deleteAccountYes: 'Yes, delete everything',
     deleteAccountDone: 'Account deleted.',
     deleteAccountError: 'Could not delete the account. Please try again.',
+    // Per-game SEO blurbs (shown on-page + used as the meta description).
+    seo_typing:
+      'Boost your typing speed with this free browser typing game. Race the clock, raise your WPM and climb the leaderboard — no download.',
+    seo_snake:
+      'Play the classic Snake game free online. Eat, grow and beat your high score in this fast browser arcade game — no download, no sign-up.',
+    seo_pacman:
+      'Play Pac-Man free in your browser. Clear every maze, dodge the ghosts and chase a high score across increasingly tricky levels.',
+    seo_simon:
+      'Play Simon, the classic memory game. Repeat the growing colour-and-sound sequence as long as you can, free in your browser.',
+    seo_motus:
+      'Guess the hidden word in six tries — a free Wordle-style word game in your browser, in French and English. No download.',
+    seo_tetris:
+      'Play Tetris free online. Stack and clear lines, speed up and chase a high score in this timeless block-puzzle browser game.',
+    seo_memory:
+      'Play the Memory card-matching game free online. Flip the cards, find the pairs and test your recall against a bot or a friend.',
+    seo_minesweeper:
+      'Play Minesweeper free in your browser. Flag the mines and clear the grid on easy, medium or hard — the classic logic puzzle.',
+    seo_breakout:
+      'Play Breakout free online. Bounce the ball, smash every brick and beat your high score in this classic arcade browser game.',
+    seo_pong:
+      'Play Pong, the original arcade game, free in your browser. Face a bot or a friend in fast 1-v-1 table-tennis action.',
+    seo_ludo:
+      'Play Ludo (Petits Chevaux) free online. Roll the dice and race your tokens home — up to 4 players or against bots.',
+    seo_connect4:
+      'Play Connect 4 free in your browser. Drop your discs, line up four in a row and beat a friend or a smart bot.',
+    seo_checkers:
+      'Play Checkers (Draughts) free online. Capture your opponent’s pieces and king your way to victory against a bot or a friend.',
+    seo_reversi:
+      'Play Reversi (Othello) free in your browser. Flip discs to your colour and take control of the board against a bot or a friend.',
+    seo_battleship:
+      'Play Battleship free online. Place your fleet, hunt your opponent’s ships and sink them all — versus a bot or a friend.',
+    seo_goose:
+      'Play the Game of the Goose (Jeu de l’oie) free online. Roll, race across the board and dodge the traps — up to 4 players.',
+    seo_math:
+      'Sharpen your mental math free in your browser. Solve timed arithmetic drills, build streaks and climb the leaderboard.',
+    seo_geoquiz:
+      'Test your geography free online. Guess countries, capitals and flags in this fast multiple-choice quiz — no download.',
+    seo_trivia:
+      'Play free trivia quiz online. Answer questions across many categories, build streaks and challenge a friend — no download.',
+    seo_conjugation:
+      'Practise French verb conjugation free in your browser. Type the correct form, build streaks and master every tense.',
+    seo_anagram:
+      'Unscramble the letters to find the word — a free anagram word game in your browser, in French and English. No download.',
+    seo_hangman:
+      'Play Hangman free online. Guess the hidden word letter by letter before you run out of tries — French and English.',
+    seo_mastermind:
+      'Play Mastermind free in your browser. Crack the secret colour code with logic and deduction — the classic code-breaker.',
+    seo_sokoban:
+      'Play Sokoban free online. Push every crate onto its target in this classic warehouse puzzle across many handcrafted levels.',
+    seo_nonogram:
+      'Play Nonogram (Picross) free in your browser. Use the number clues to reveal the hidden picture — logic puzzles by level.',
+    seo_wordsearch:
+      'Play Word Search free online. Find every hidden word in the grid — a relaxing word puzzle in French and English.',
+    seo_sudoku:
+      'Play Sudoku free in your browser. Fill the 9×9 grid on easy, medium or hard — the classic number logic puzzle, no download.',
+    seo_taquin:
+      'Play the 15-puzzle (Taquin) free online. Slide the tiles back into order in this classic sliding puzzle — beat the clock.',
+    seo_flappy:
+      'Play Flappy Bird free in your browser. Tap to fly between the pipes and chase a high score — just one more try!',
+    seo_solitaire:
+      'Play Klondike Solitaire free online. Stack the cards and clear the tableau in the timeless patience card game — no download.',
+    seo_mancala:
+      'Play Mancala free in your browser. Sow the seeds, capture your opponent’s stones and outsmart the bot in this ancient board game.',
+    seo_blackjack:
+      'Play Blackjack (21) free online. Hit, stand and beat the dealer without going bust — the classic casino card game.',
+    seo_invaders:
+      'Play Space Invaders free in your browser. Blast the alien waves, dodge their fire and chase a high score — retro arcade action.',
+    seo_bubbles:
+      'Play Bubble Shooter free online. Match three bubbles to pop them and clear the board in this addictive arcade game.',
+    seo_dotsboxes:
+      'Play Dots and Boxes free in your browser. Draw lines, close boxes and outscore a friend or a bot in this pen-and-paper classic.',
+    seo_yahtzee:
+      'Play Yahtzee free online. Roll the dice, chase combos and score big in the classic dice game — versus a bot or a friend.',
+    seo_binairo:
+      'Play Binairo (Takuzu) free in your browser. Fill the grid with 0s and 1s by the rules — a binary logic puzzle by size.',
+    seo_kakuro:
+      'Play Kakuro free online. Fill the grid so every run adds up to its clue — a cross-sum number puzzle, no download.',
     tabPersonal: 'Personal',
     tabFriends: 'Friends',
     tabGlobal: 'Global',
@@ -410,6 +488,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     viewLeaderboard: 'Voir le classement',
     leaderboard: 'Classement',
     howToPlay: 'Comment jouer',
+    aboutGame: 'À propos du jeu',
     helpAria: 'Aide : comment jouer',
     immersiveMode: 'Mode immersif',
     thPlayer: 'Joueur',
@@ -554,6 +633,83 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     deleteAccountYes: 'Oui, tout supprimer',
     deleteAccountDone: 'Compte supprimé.',
     deleteAccountError: 'Impossible de supprimer le compte. Réessaie.',
+    // Per-game SEO blurbs (see EN).
+    seo_typing:
+      'Améliore ta vitesse de frappe avec ce jeu de dactylographie gratuit dans le navigateur. Cours contre la montre, augmente tes mots par minute et grimpe au classement — sans téléchargement.',
+    seo_snake:
+      'Joue au classique Snake gratuitement en ligne. Mange, grandis et bats ton meilleur score dans ce jeu d’arcade rapide — sans téléchargement, sans inscription.',
+    seo_pacman:
+      'Joue à Pac-Man gratuitement dans ton navigateur. Vide chaque labyrinthe, esquive les fantômes et vise le meilleur score sur des niveaux de plus en plus corsés.',
+    seo_simon:
+      'Joue à Simon, le classique jeu de mémoire. Répète la séquence de couleurs et de sons qui s’allonge aussi longtemps que possible, gratuitement dans ton navigateur.',
+    seo_motus:
+      'Devine le mot caché en six essais — un jeu de mots gratuit façon Wordle dans ton navigateur, en français et en anglais. Sans téléchargement.',
+    seo_tetris:
+      'Joue à Tetris gratuitement en ligne. Empile et complète des lignes, accélère et vise le meilleur score dans ce jeu de puzzle de blocs intemporel.',
+    seo_memory:
+      'Joue au Memory gratuitement en ligne. Retourne les cartes, trouve les paires et teste ta mémoire contre un bot ou un ami.',
+    seo_minesweeper:
+      'Joue au Démineur gratuitement dans ton navigateur. Marque les mines et nettoie la grille en facile, moyen ou difficile — le classique jeu de logique.',
+    seo_breakout:
+      'Joue à Breakout gratuitement en ligne. Fais rebondir la balle, casse chaque brique et bats ton meilleur score dans ce classique de l’arcade.',
+    seo_pong:
+      'Joue à Pong, le jeu d’arcade originel, gratuitement dans ton navigateur. Affronte un bot ou un ami dans un tennis de table 1 contre 1 rapide.',
+    seo_ludo:
+      'Joue aux Petits Chevaux (Ludo) gratuitement en ligne. Lance le dé et ramène tes pions à la maison — jusqu’à 4 joueurs ou contre des bots.',
+    seo_connect4:
+      'Joue au Puissance 4 gratuitement dans ton navigateur. Lâche tes jetons, aligne-en quatre et bats un ami ou un bot malin.',
+    seo_checkers:
+      'Joue aux Dames gratuitement en ligne. Capture les pièces de l’adversaire et va à dame pour l’emporter contre un bot ou un ami.',
+    seo_reversi:
+      'Joue à Reversi (Othello) gratuitement dans ton navigateur. Retourne les pions à ta couleur et prends le contrôle du plateau contre un bot ou un ami.',
+    seo_battleship:
+      'Joue à la Bataille navale gratuitement en ligne. Place ta flotte, traque les navires adverses et coule-les tous — contre un bot ou un ami.',
+    seo_goose:
+      'Joue au Jeu de l’oie gratuitement en ligne. Lance le dé, avance sur le plateau et évite les pièges — jusqu’à 4 joueurs.',
+    seo_math:
+      'Aiguise ton calcul mental gratuitement dans ton navigateur. Résous des opérations chronométrées, enchaîne les séries et grimpe au classement.',
+    seo_geoquiz:
+      'Teste ta géographie gratuitement en ligne. Devine pays, capitales et drapeaux dans ce quiz à choix multiples rapide — sans téléchargement.',
+    seo_trivia:
+      'Joue à un quiz de culture générale gratuit en ligne. Réponds à des questions de nombreuses catégories, enchaîne les séries et défie un ami — sans téléchargement.',
+    seo_conjugation:
+      'Entraîne-toi à la conjugaison française gratuitement dans ton navigateur. Tape la bonne forme, enchaîne les séries et maîtrise chaque temps.',
+    seo_anagram:
+      'Remets les lettres dans l’ordre pour trouver le mot — un jeu d’anagrammes gratuit dans ton navigateur, en français et en anglais. Sans téléchargement.',
+    seo_hangman:
+      'Joue au Pendu gratuitement en ligne. Devine le mot caché lettre par lettre avant d’épuiser tes essais — en français et en anglais.',
+    seo_mastermind:
+      'Joue au Mastermind gratuitement dans ton navigateur. Perce le code de couleurs secret par logique et déduction — le classique casse-code.',
+    seo_sokoban:
+      'Joue à Sokoban gratuitement en ligne. Pousse chaque caisse sur sa cible dans ce classique puzzle d’entrepôt, sur de nombreux niveaux faits main.',
+    seo_nonogram:
+      'Joue au Nonogram (Picross) gratuitement dans ton navigateur. Utilise les indices chiffrés pour révéler l’image cachée — des puzzles de logique par niveau.',
+    seo_wordsearch:
+      'Joue aux Mots mêlés gratuitement en ligne. Trouve chaque mot caché dans la grille — un puzzle de mots reposant, en français et en anglais.',
+    seo_sudoku:
+      'Joue au Sudoku gratuitement dans ton navigateur. Remplis la grille 9×9 en facile, moyen ou difficile — le classique puzzle de logique chiffré, sans téléchargement.',
+    seo_taquin:
+      'Joue au Taquin (jeu du 15) gratuitement en ligne. Fais glisser les tuiles pour les remettre en ordre dans ce classique puzzle coulissant — bats le chrono.',
+    seo_flappy:
+      'Joue à Flappy Bird gratuitement dans ton navigateur. Touche l’écran pour voler entre les tuyaux et vise le meilleur score — juste un essai de plus !',
+    seo_solitaire:
+      'Joue au Solitaire (Klondike) gratuitement en ligne. Empile les cartes et vide le tableau dans l’intemporel jeu de patience — sans téléchargement.',
+    seo_mancala:
+      'Joue au Mancala gratuitement dans ton navigateur. Sème les graines, capture les pierres de l’adversaire et déjoue le bot dans cet ancien jeu de plateau.',
+    seo_blackjack:
+      'Joue au Blackjack (21) gratuitement en ligne. Tire, reste et bats le croupier sans dépasser — le classique jeu de cartes de casino.',
+    seo_invaders:
+      'Joue à Space Invaders gratuitement dans ton navigateur. Pulvérise les vagues d’aliens, esquive leurs tirs et vise le meilleur score — action arcade rétro.',
+    seo_bubbles:
+      'Joue au Bubble Shooter gratuitement en ligne. Aligne trois bulles pour les éclater et vide le plateau dans ce jeu d’arcade addictif.',
+    seo_dotsboxes:
+      'Joue aux Petits Carrés (Dots and Boxes) gratuitement dans ton navigateur. Trace des lignes, ferme des cases et bats un ami ou un bot dans ce classique papier-crayon.',
+    seo_yahtzee:
+      'Joue au Yahtzee gratuitement en ligne. Lance les dés, cherche les combinaisons et marque gros dans le classique jeu de dés — contre un bot ou un ami.',
+    seo_binairo:
+      'Joue au Binairo (Takuzu) gratuitement dans ton navigateur. Remplis la grille de 0 et de 1 selon les règles — un puzzle de logique binaire par taille.',
+    seo_kakuro:
+      'Joue au Kakuro gratuitement en ligne. Remplis la grille pour que chaque série corresponde à son indice — un puzzle de sommes croisées, sans téléchargement.',
     tabPersonal: 'Perso',
     tabFriends: 'Amis',
     tabGlobal: 'Global',

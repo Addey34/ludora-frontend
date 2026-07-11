@@ -83,6 +83,7 @@ const DYNAMIC_ALLOW = [
   /^game_/, // game_<key> (game titles)
   /^ship_/, // ship_<id> (battleship ship names)
   /^cat_/, // cat_<id> (home categories, if present)
+  /^seo_/, // seo_<key> (per-game on-page blurb, data-i18n="seo_{{game.key}}")
 ];
 const DYNAMIC_KEYS = new Set(['easy', 'medium', 'hard']); // t(this.difficulty)
 

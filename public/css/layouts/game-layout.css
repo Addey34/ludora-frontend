@@ -197,3 +197,28 @@
 .game-stat.is-low {
   color: var(--error-color);
 }
+
+/* On-page per-game SEO/UX blurb, below the play area (shell-close.hbs). */
+.game-about {
+  width: min(92vw, var(--game-frame-width));
+  margin: var(--spacing-md) auto 0;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 1px solid var(--line);
+  border-radius: var(--border-radius-md);
+  background: color-mix(in srgb, var(--surface-1) 55%, transparent);
+  text-align: center;
+}
+
+.game-about-title {
+  margin: 0 0 var(--spacing-xs);
+  font-size: var(--font-size-md);
+  color: var(--title-color, var(--ink));
+}
+
+.game-about-desc {
+  margin: 0 auto;
+  max-width: 62ch;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
