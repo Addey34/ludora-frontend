@@ -201,6 +201,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     // Friend challenges (share-a-score links).
     challengeReceived: '{name} dares you to beat {score}!',
     challengeReceivedAnon: 'Beat {score} to win the challenge!',
+    challengeAddFriend: 'Add {name}',
     challengeWon: 'Challenge beaten — you passed {score}! 🎉',
     challengeButton: 'Challenge a friend',
     challengeShareText: 'Can you beat my score of {score}?',
@@ -570,6 +571,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     nameSaveError: 'Impossible de mettre Ã  jour le nom.',
     challengeReceived: '{name} te défie de battre {score} !',
     challengeReceivedAnon: 'Bats {score} pour gagner le défi !',
+    challengeAddFriend: 'Ajouter {name}',
     challengeWon: 'Défi relevé — tu as dépassé {score} ! 🎉',
     challengeButton: 'Défier un ami',
     challengeShareText: 'Peux-tu battre mon score de {score} ?',

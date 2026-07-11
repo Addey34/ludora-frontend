@@ -8,6 +8,9 @@ import {
   listLeaderboardScores,
   submitGlobalScore,
   getCachedUser,
+  getFriendCode,
+  getCachedFriendCode,
+  addFriendByCode,
 } from '../net/nakama.js';
 import { gzPoints } from '../score/gzPoints.js';
 import { storePendingScore } from '../score/pendingScore.js';
@@ -163,17 +166,37 @@ export abstract class GameEngine {
       const challenge = this.incomingChallenge;
       if (challenge) {
         // Announce shortly after load, once the page chrome has settled.
-        setTimeout(() => {
-          showToast(
-            challenge.by
-              ? t('challengeReceived', { name: challenge.by, score: challenge.score })
-              : t('challengeReceivedAnon', { score: challenge.score }),
-            'info',
-            6000
-          );
-        }, 600);
+        setTimeout(() => void this.announceChallenge(challenge), 600);
       }
     }
+  }
+
+  /**
+   * Shows the "beat this score" toast for an incoming challenge, and — when the
+   * link carries the sender's friend code and I'm signed in as someone else —
+   * offers a one-tap "add friend" action so the challenge doubles as an invite.
+   * `getFriendCode()` returns a code only for a Google-signed-in player, so it
+   * doubles as the sign-in check (race-free vs. the cached-user flag).
+   */
+  private async announceChallenge(challenge: Challenge): Promise<void> {
+    const message = challenge.by
+      ? t('challengeReceived', { name: challenge.by, score: challenge.score })
+      : t('challengeReceivedAnon', { score: challenge.score });
+
+    const code = challenge.code;
+    const myCode = code ? await getFriendCode() : null;
+    if (!code || !myCode || code === myCode) {
+      showToast(message, 'info', 6000);
+      return;
+    }
+    showToast(message, 'info', 9000, {
+      label: challenge.by ? t('challengeAddFriend', { name: challenge.by }) : t('addFriend'),
+      onClick: () => {
+        addFriendByCode(code)
+          .then(() => showToast(t('friendAdded'), 'success'))
+          .catch(() => showToast(t('friendAddError'), 'warning'));
+      },
+    });
   }
 
   /**
@@ -440,7 +463,12 @@ export abstract class GameEngine {
    */
   protected shareChallenge(): void {
     if (typeof location === 'undefined') return;
-    const url = buildChallengeUrl(location.href, this.state.score, getPlayerName());
+    const url = buildChallengeUrl(
+      location.href,
+      this.state.score,
+      getPlayerName(),
+      getCachedFriendCode()
+    );
     const shareData = {
       title: 'Games Zone',
       text: t('challengeShareText', { score: this.state.score }),
@@ -554,6 +582,9 @@ export abstract class GameEngine {
     }
     // Score-based games only (board games leave the score at 0): dare a friend.
     if (scoreable) {
+      // Warm the shareable friend code now so shareChallenge can embed it
+      // synchronously (the "add friend" hook on the opener's side).
+      if (loggedIn) void getFriendCode();
       buttons.push({
         text: t('challengeButton'),
         primary: false,

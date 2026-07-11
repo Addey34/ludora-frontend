@@ -62,3 +62,33 @@
   background: #f59e0b;
   color: #fff;
 }
+
+/* Toast with an inline action (e.g. "Add friend" on a challenge). */
+.toast:has(.toast-action) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.toast-action {
+  flex: 0 0 auto;
+  padding: 0.25em 0.7em;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: inherit;
+  font: inherit;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.toast-action:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.toast-action:active {
+  transform: scale(0.96);
+}

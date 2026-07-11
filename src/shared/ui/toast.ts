@@ -7,6 +7,12 @@
 
 type ToastType = 'info' | 'success' | 'combo' | 'warning';
 
+/** Optional inline action rendered as a button inside the toast. */
+interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
 let _container: HTMLElement | null = null;
 
 function getContainer(): HTMLElement {
@@ -25,12 +31,36 @@ function getContainer(): HTMLElement {
  * @param message  Text to display (keep it short, single line).
  * @param type     Visual style: 'info' | 'success' | 'combo' | 'warning'.
  * @param duration Milliseconds the toast stays visible before fading (default 2000).
+ * @param action   Optional inline button; clicking runs it and dismisses the toast.
  */
-export function showToast(message: string, type: ToastType = 'info', duration = 2000): void {
+export function showToast(
+  message: string,
+  type: ToastType = 'info',
+  duration = 2000,
+  action?: ToastAction
+): void {
   const el = document.createElement('div');
   el.className = `toast toast--${type}`;
   el.setAttribute('role', 'status');
-  el.textContent = message;
+
+  if (action) {
+    const text = document.createElement('span');
+    text.className = 'toast-text';
+    text.textContent = message;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'toast-action';
+    btn.textContent = action.label;
+    btn.addEventListener('click', () => {
+      action.onClick();
+      el.classList.remove('is-visible');
+      el.addEventListener('transitionend', () => el.remove(), { once: true });
+      setTimeout(() => el.remove(), 1000);
+    });
+    el.append(text, btn);
+  } else {
+    el.textContent = message;
+  }
 
   const c = getContainer();
   c.appendChild(el);

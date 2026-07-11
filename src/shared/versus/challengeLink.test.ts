@@ -9,12 +9,28 @@ describe('parseChallenge', () => {
   });
 
   it('reads the score and sender name', () => {
-    expect(parseChallenge('?challenge=1200&by=Alice')).toEqual({ score: 1200, by: 'Alice' });
+    expect(parseChallenge('?challenge=1200&by=Alice')).toEqual({
+      score: 1200,
+      by: 'Alice',
+      code: null,
+    });
   });
 
-  it('treats a missing or blank name as anonymous', () => {
-    expect(parseChallenge('?challenge=50')).toEqual({ score: 50, by: null });
-    expect(parseChallenge('?challenge=50&by=%20%20')).toEqual({ score: 50, by: null });
+  it('reads the sender friend code when present', () => {
+    expect(parseChallenge('?challenge=1200&by=Alice&code=alice-7f3k')).toEqual({
+      score: 1200,
+      by: 'Alice',
+      code: 'alice-7f3k',
+    });
+  });
+
+  it('treats a missing or blank name/code as absent', () => {
+    expect(parseChallenge('?challenge=50')).toEqual({ score: 50, by: null, code: null });
+    expect(parseChallenge('?challenge=50&by=%20%20&code=%20')).toEqual({
+      score: 50,
+      by: null,
+      code: null,
+    });
   });
 
   it('rejects a negative or non-numeric score', () => {
@@ -36,10 +52,18 @@ describe('buildChallengeUrl', () => {
   });
 
   it('replaces an existing challenge rather than stacking it', () => {
-    const url = buildChallengeUrl('https://gz.app/snake?challenge=10&by=Old', 900, null);
+    const url = buildChallengeUrl('https://gz.app/snake?challenge=10&by=Old&code=old', 900, null);
     expect(url).toContain('challenge=900');
     expect(url).not.toContain('challenge=10');
     expect(url).not.toContain('by=');
+    expect(url).not.toContain('code=');
+  });
+
+  it('adds the sender friend code when given, and round-trips through parse', () => {
+    const url = buildChallengeUrl('https://gz.app/snake', 1200, 'Bob', 'bob-9x2');
+    expect(url).toContain('code=bob-9x2');
+    const search = new URL(url).search;
+    expect(parseChallenge(search)).toEqual({ score: 1200, by: 'Bob', code: 'bob-9x2' });
   });
 });
 

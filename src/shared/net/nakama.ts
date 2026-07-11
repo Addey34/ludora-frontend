@@ -612,12 +612,21 @@ export const FRIEND_STATE = {
   inviteReceived: 2, // They sent me a request, awaiting my acceptance.
 } as const;
 
+/** Memoised friend code, so a share flow can read it synchronously once fetched. */
+let cachedFriendCode: string | null = null;
+
+/** The last-known friend code without a round-trip (null until first fetched). */
+export function getCachedFriendCode(): string | null {
+  return cachedFriendCode;
+}
+
 /** This player's shareable friend code (their Nakama username), or null. */
 export async function getFriendCode(): Promise<string | null> {
   try {
     const session = await requireGoogleLinkedSession();
     const account = await (await getClient()).getAccount(session);
-    return account.user?.username ?? null;
+    cachedFriendCode = account.user?.username ?? null;
+    return cachedFriendCode;
   } catch {
     return null;
   }
