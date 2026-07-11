@@ -60,33 +60,3 @@
   gap: var(--spacing-sm);
   justify-content: center;
 }
-
-/* Player-name prompt (only once). */
-.game-over-name {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-  text-align: left;
-}
-
-.game-over-name-label {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-bold);
-  color: var(--card-ink);
-}
-
-.game-over-name-row {
-  display: flex;
-  gap: var(--spacing-xs);
-}
-
-.game-over-name-row .input-field {
-  flex: 1;
-  min-width: 0;
-}
-
-.game-over-name-done {
-  margin: 0;
-  font-size: var(--font-size-sm);
-  color: var(--card-ink-muted);
-}

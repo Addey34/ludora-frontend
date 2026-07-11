@@ -44,7 +44,6 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     draw: 'Draw!',
     score: 'Score',
     scoreValue: 'Score: {score}',
-    scoreSavedAs: 'Score saved as {name}.',
     signInToSave: 'Sign in to save',
     scoreSaved: 'Score saved!',
     scoreNotSaved: 'Score not saved: server unreachable.',
@@ -415,7 +414,6 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     draw: 'Égalité !',
     score: 'Score',
     scoreValue: 'Score : {score}',
-    scoreSavedAs: 'Score enregistré au nom de {name}.',
     signInToSave: 'Se connecter pour enregistrer',
     scoreSaved: 'Score enregistré !',
     scoreNotSaved: 'Score non sauvegardé : serveur injoignable.',
@@ -1094,7 +1092,7 @@ export function setLocale(locale: Locale): void {
 /**
  * Translates a key for the current locale, falling back to English then the key.
  * Optional `params` interpolate `{name}` placeholders, e.g.
- * `t('scoreSavedAs', { name })` → `Score saved as Bob.`.
+ * `t('scoreValue', { score })` → `Score: 42`.
  */
 export function t(key: string, params?: Record<string, string | number>): string {
   const locale = getLocale();

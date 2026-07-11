@@ -36,7 +36,7 @@ describe('i18n catalog', () => {
   });
 
   it('interpolates {name} params and leaves unknown tokens intact', () => {
-    expect(t('scoreSavedAs', { name: 'Bob' })).toContain('Bob');
+    expect(t('challengeReceived', { name: 'Bob', score: 10 })).toContain('Bob');
     expect(t('scoreValue', { score: 42 })).toContain('42');
   });
 

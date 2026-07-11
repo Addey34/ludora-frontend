@@ -18,18 +18,6 @@ export interface GameOverlayButton {
   onClick: () => void;
 }
 
-/** Save prompt, shown when the score is savable so the player decides whether to record it. */
-interface GameOverlayPrompt {
-  label: string;
-  placeholder: string;
-  /** Pre-filled value (e.g. the stored pseudo), editable by the player. */
-  value?: string;
-  /** Submit button label (default: "OK"). */
-  submitLabel?: string;
-  /** Called with the entered (non-empty) value when the player validates. */
-  onSubmit: (value: string) => void;
-}
-
 /** Everything needed to render the overlay. */
 interface GameOverlayOptions {
   title: string;
@@ -37,7 +25,6 @@ interface GameOverlayOptions {
   bodyHtml?: string;
   /** Plain score shown when `bodyHtml` is omitted. */
   score?: number;
-  prompt?: GameOverlayPrompt;
   buttons: GameOverlayButton[];
 }
 
@@ -82,10 +69,6 @@ export class GameOverlay {
     }
     card.appendChild(body);
 
-    if (options.prompt) {
-      card.appendChild(this.buildPrompt(options.prompt));
-    }
-
     const actions = document.createElement('div');
     actions.className = 'game-over-actions';
     let primaryButton: HTMLButtonElement | null = null;
@@ -104,67 +87,12 @@ export class GameOverlay {
     this.host.appendChild(root);
     this.root = root;
 
-    const input = root.querySelector<HTMLInputElement>('.game-over-name input');
-    if (input) {
-      input.focus();
-      input.select();
-    } else {
-      primaryButton?.focus();
-    }
+    primaryButton?.focus();
   }
 
   /** Removes the overlay if it is shown. */
   hide(): void {
     this.root?.remove();
     this.root = null;
-  }
-
-  /** Builds the save prompt: a small inline form with an editable name field. */
-  private buildPrompt(prompt: GameOverlayPrompt): HTMLElement {
-    const form = document.createElement('form');
-    form.className = 'game-over-name';
-
-    const label = document.createElement('label');
-    label.className = 'game-over-name-label';
-    label.textContent = prompt.label;
-    const inputId = 'gameOverName';
-    label.htmlFor = inputId;
-    form.appendChild(label);
-
-    const row = document.createElement('div');
-    row.className = 'game-over-name-row';
-
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.id = inputId;
-    input.className = 'input-field';
-    input.placeholder = prompt.placeholder;
-    input.maxLength = 20;
-    input.value = prompt.value ?? '';
-    row.appendChild(input);
-
-    const submit = document.createElement('button');
-    submit.type = 'submit';
-    submit.className = 'btn btn--primary';
-    submit.textContent = prompt.submitLabel ?? 'OK';
-    row.appendChild(submit);
-
-    form.appendChild(row);
-
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const value = input.value.trim();
-      if (!value) {
-        input.focus();
-        return;
-      }
-      prompt.onSubmit(value);
-      const done = document.createElement('p');
-      done.className = 'game-over-name-done';
-      done.textContent = t('scoreSavedAs', { name: value });
-      form.replaceWith(done);
-    });
-
-    return form;
   }
 }
