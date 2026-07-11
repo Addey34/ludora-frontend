@@ -909,8 +909,6 @@ export default defineConfig({
           altFr,
           ldJson,
           metaDescription,
-          // Whether to render the on-page "How to play" blurb (only when one exists).
-          hasBlurb: Boolean(blurb),
         };
       },
     }),

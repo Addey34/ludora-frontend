@@ -1,13 +1,2 @@
   </section>
-  {{#if hasBlurb}}
-  <!--
-    On-page SEO/UX blurb: a crawlable, unique-per-game description below the play
-    area. Single source with the meta description (the `seo_<key>` i18n key), so
-    it's bilingual on /fr and can't drift. Rendered only when a blurb exists.
-  -->
-  <section class="game-about" aria-labelledby="gameAboutTitle">
-    <h2 class="game-about-title" id="gameAboutTitle" data-i18n="aboutGame">About this game</h2>
-    <p class="game-about-desc" data-i18n="seo_{{game.key}}">{{metaDescription}}</p>
-  </section>
-  {{/if}}
 </main>
