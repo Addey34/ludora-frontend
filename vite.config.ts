@@ -1,7 +1,14 @@
 import { defineConfig } from 'vite';
 import handlebars from 'vite-plugin-handlebars';
-import { resolve, dirname } from 'node:path';
+import { resolve, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readdirSync, readFileSync, writeFileSync, mkdirSync, statSync } from 'node:fs';
+import { translateHtml } from './src/shared/i18n/localizeHtml';
+import { CATALOG, LOCALES } from './src/shared/i18n/i18n';
+
+// Locales that get their own build-time page tree (English is the default,
+// served unprefixed). French lives under /fr/…; see `localizeHtml.ts`.
+const LOCALIZED = LOCALES.filter((l) => l !== 'en');
 
 const projectRoot = dirname(fileURLToPath(import.meta.url));
 const srcRoot = resolve(projectRoot, 'src');
@@ -807,43 +814,67 @@ interface RewriteRes {
   writeHead(status: number, headers: Record<string, string>): void;
   end(): void;
 }
-function rewriteCleanUrl(req: { url?: string }, res: RewriteRes, next: () => void): void {
-  if (req.url) {
-    const [path, rest = ''] = req.url.split(/(?=[?#])/);
-    // Split into segments: '/ludo/ludo-main.ts' → ['ludo', 'ludo-main.ts']
-    const segments = path.split('/').filter(Boolean);
-    const key = segments[0] ?? '';
+type CleanUrlMode = 'dev' | 'preview';
 
-    if (games_keys.has(key)) {
-      if (segments.length <= 1 && !path.endsWith('/')) {
-        // Case 1: `/<key>` → redirect to `/<key>/`
-        res.writeHead(301, { Location: `/${key}/${rest}` });
-        res.end();
-        return;
-      }
-      if (segments.length <= 1) {
-        // Case 2: `/<key>/` → game entry point
-        req.url = `/games/${key}/index.html${rest}`;
-      } else {
-        // Case 3: `/<key>/foo` → game sub-resource
-        req.url = `/games/${key}/${segments.slice(1).join('/')}${rest}`;
-      }
-    } else if (static_pages.has(key)) {
-      if (segments.length <= 1 && !path.endsWith('/')) {
-        // Case 1: `/<key>` → redirect to `/<key>/`
-        res.writeHead(301, { Location: `/${key}/${rest}` });
-        res.end();
-        return;
-      }
-      if (segments.length <= 1) {
-        // Case 2: `/<key>/` → the static page's entry point
-        req.url = `/${key}/index.html${rest}`;
-      }
-      // Case 3: `/<key>/foo` (e.g. `/profile/profile-main.ts`) → leave the URL
-      // untouched: the file already lives at `src/<key>/foo`, so Vite serves it
-      // directly. Without this, the module request was redirected back to the
-      // page and the browser loaded HTML as a script → no JS ran on the page.
-    }
+function rewriteCleanUrl(
+  req: { url?: string },
+  res: RewriteRes,
+  next: () => void,
+  mode: CleanUrlMode
+): void {
+  if (!req.url) return next();
+  const [fullPath, rest = ''] = req.url.split(/(?=[?#])/);
+
+  // A leading `/fr` selects the French page tree. Strip it, resolve as usual on
+  // the English structure, then reattach the prefix where needed. The /fr tree
+  // mirrors the English one, so `dist/fr/<path>` === `dist/<path>` translated.
+  let frPrefix = '';
+  let path = fullPath;
+  if (/^\/fr(\/|$)/.test(fullPath)) {
+    frPrefix = '/fr';
+    path = fullPath.slice(3) || '/';
+  }
+
+  const redirect = (to: string): void => {
+    res.writeHead(301, { Location: `${frPrefix}${to}${rest}` });
+    res.end();
+  };
+
+  const segments = path.split('/').filter(Boolean);
+  const key = segments[0] ?? '';
+
+  // Locale home: `/fr` → `/fr/`, then serve that tree's index.
+  if (frPrefix && segments.length === 0) {
+    if (!fullPath.endsWith('/')) return redirect('/');
+    req.url = mode === 'preview' ? `${frPrefix}/index.html${rest}` : `/index.html${rest}`;
+    return next();
+  }
+
+  // Resolve the English destination file for `path` (null = leave untouched).
+  let dest: string | null = null;
+  if (games_keys.has(key)) {
+    if (segments.length <= 1 && !path.endsWith('/')) return redirect(`/${key}/`);
+    dest =
+      segments.length <= 1
+        ? `/games/${key}/index.html`
+        : `/games/${key}/${segments.slice(1).join('/')}`;
+  } else if (static_pages.has(key)) {
+    if (segments.length <= 1 && !path.endsWith('/')) return redirect(`/${key}/`);
+    if (segments.length <= 1) dest = `/${key}/index.html`;
+    // Sub-resource (e.g. `/profile/profile-main.ts`) → leave untouched: the file
+    // lives at `src/<key>/foo` and Vite serves it directly.
+  }
+
+  if (dest) {
+    // Preview serves the pre-built localized page file; dev serves the English
+    // source and the transformIndexHtml hook below translates it on the fly.
+    // Shared sub-resources (hashed assets) are never under /fr.
+    const localizedPage = frPrefix && mode === 'preview' && dest.endsWith('/index.html');
+    req.url = localizedPage ? `${frPrefix}${dest}${rest}` : `${dest}${rest}`;
+  } else if (frPrefix) {
+    // A /fr request with no page rewrite (sub-resource): drop the prefix so the
+    // real source/asset file is found.
+    req.url = `${path}${rest}`;
   }
   next();
 }
@@ -858,13 +889,26 @@ export default defineConfig({
   appType: 'mpa',
   plugins: [
     // Clean URLs in dev & preview, mirroring render.yaml's rewrites in prod.
+    // Also handles the `/fr` locale prefix: preview serves the pre-built FR page,
+    // dev serves the English source and translates it via transformIndexHtml.
     {
       name: 'gameszone-clean-urls',
       configureServer(server) {
-        server.middlewares.use(rewriteCleanUrl);
+        server.middlewares.use((req, res, next) => rewriteCleanUrl(req, res, next, 'dev'));
       },
       configurePreviewServer(server) {
-        server.middlewares.use(rewriteCleanUrl);
+        server.middlewares.use((req, res, next) => rewriteCleanUrl(req, res, next, 'preview'));
+      },
+      // Dev only: bake the FR translation into `/fr/…` pages after Handlebars has
+      // rendered them (order: 'post'), matching the build's closeBundle output.
+      apply: 'serve',
+      transformIndexHtml: {
+        order: 'post',
+        handler(html, ctx) {
+          return /^\/fr(\/|$)/.test(ctx.originalUrl ?? '')
+            ? translateHtml(html, 'fr', CATALOG)
+            : html;
+        },
       },
     },
     // Shared HTML partials (head, game chrome, sidebar) included via {{> name }}.
@@ -932,9 +976,54 @@ export default defineConfig({
               }
         );
 
-        return { games, game, categories, site: SITE, canonical, ldJson, metaDescription };
+        // Locale alternates for hreflang (English unprefixed, French under /fr/).
+        const altEn = canonical;
+        const altFr = `${SITE}${route === '/' ? '/fr/' : `/fr${route}`}`;
+
+        return {
+          games,
+          game,
+          categories,
+          site: SITE,
+          canonical,
+          altEn,
+          altFr,
+          ldJson,
+          metaDescription,
+        };
       },
     }),
+    // After the English pages are written, bake a translated copy of each under
+    // /<locale>/… (e.g. dist/fr/games/snake/index.html). The FR pages ship already
+    // translated, so a French visitor never sees an EN→FR flash. See localizeHtml.ts.
+    {
+      name: 'gameszone-localized-pages',
+      apply: 'build',
+      closeBundle() {
+        const distRoot = resolve(projectRoot, 'dist');
+        const pages: string[] = [];
+        const collect = (dir: string): void => {
+          for (const name of readdirSync(dir)) {
+            const full = resolve(dir, name);
+            if (statSync(full).isDirectory()) {
+              // Skip the locale trees themselves (never translate a translation).
+              if (dir === distRoot && (LOCALIZED as string[]).includes(name)) continue;
+              collect(full);
+            } else if (name === 'index.html') {
+              pages.push(full);
+            }
+          }
+        };
+        collect(distRoot);
+        for (const locale of LOCALIZED) {
+          for (const page of pages) {
+            const dest = resolve(distRoot, locale, relative(distRoot, page));
+            mkdirSync(dirname(dest), { recursive: true });
+            writeFileSync(dest, translateHtml(readFileSync(page, 'utf8'), locale, CATALOG));
+          }
+        }
+      },
+    },
   ],
   build: {
     outDir: resolve(projectRoot, 'dist'),

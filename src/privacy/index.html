@@ -44,9 +44,9 @@
         Level progress is stored on the server too and cached locally as a UI preference only.
       </p>
       <p class="legal-text">
-        Whether or not you are signed in, your personal best scores are also kept in your browser's
-        <code>localStorage</code> so they show on your device even offline. As a guest (not signed
-        in) nothing is published to the public leaderboards.
+        Guests can play without publishing anything. If a guest chooses "Sign in to save", the run
+        is stashed in <code>localStorage</code> only long enough to complete sign-in, then submitted
+        to the server. Offline scores are not queued.
       </p>
 
       <h2 class="legal-section">Google Sign-In (optional)</h2>

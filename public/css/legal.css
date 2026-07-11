@@ -58,6 +58,13 @@
   text-decoration: underline;
 }
 
+/* Two-column "newspaper" reading on wide screens via CSS multi-column, NOT a
+   grid: multicol flows in document order (down the left column, then the right),
+   so the text stays readable. A 2-col *grid* auto-places items row-by-row, which
+   scrambles the reading order. `break-inside: avoid` (above) keeps each section
+   whole across the column break. The header and footer meta span both columns.
+   The leaderboard reuses .legal-content but resets `column-count: auto`, so it is
+   unaffected. */
 @media (min-width: 760px) {
   .legal-content {
     display: block;

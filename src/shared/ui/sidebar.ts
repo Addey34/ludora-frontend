@@ -70,10 +70,10 @@ if (sidebar) {
 (function wireLanguageToggle() {
   applyTranslations();
   const btn = document.getElementById('langToggle');
-  const code = document.getElementById('langCode');
   if (!btn) return;
   const current = getLocale();
-  if (code) code.textContent = current.toUpperCase();
+  // The visible EN/FR code is CSS-driven from <html lang> (set pre-paint in
+  // head.hbs) to avoid a flash; here we only wire the accessible label + toggle.
   btn.setAttribute('aria-label', `${t('language')}: ${current.toUpperCase()}`);
   btn.addEventListener('click', () => setLocale(getLocale() === 'en' ? 'fr' : 'en'));
 })();

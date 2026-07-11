@@ -9,8 +9,14 @@
   <title>{{title}}</title>
   <meta name="description" content="{{metaDescription}}" />
   <link rel="canonical" href="{{canonical}}" />
+  <!-- Locale alternates. Identical on the EN and FR variants; translateHtml only
+       rewrites <html lang>, canonical and og:url for the FR page. -->
+  <link rel="alternate" hreflang="en" href="{{altEn}}" />
+  <link rel="alternate" hreflang="fr" href="{{altFr}}" />
+  <link rel="alternate" hreflang="x-default" href="{{altEn}}" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Games Zone" />
+  <meta property="og:locale" content="en_US" />
   <meta property="og:url" content="{{canonical}}" />
   <meta property="og:title" content="{{title}}" />
   <meta property="og:description" content="{{metaDescription}}" />
@@ -21,6 +27,25 @@
   <meta name="twitter:title" content="{{title}}" />
   <meta name="twitter:description" content="{{metaDescription}}" />
   <meta name="twitter:image" content="{{site}}/og-image.png" />
+  <script>
+    (function () {
+      var themes = ['portal', 'arcade', 'console', 'esports', 'cards'];
+      var storageKey = 'gz-theme';
+      var params = new URLSearchParams(window.location.search);
+      var requested = params.get('theme');
+      var stored = null;
+      try {
+        stored = localStorage.getItem(storageKey);
+      } catch (error) {}
+      var theme = themes.indexOf(requested) !== -1 ? requested : themes.indexOf(stored) !== -1 ? stored : 'portal';
+      document.documentElement.dataset.uiTheme = theme;
+      if (themes.indexOf(requested) !== -1) {
+        try {
+          localStorage.setItem(storageKey, theme);
+        } catch (error) {}
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="{{css}}" />
   <!-- Font Awesome, self-hosted (no render-blocking third-party CDN request;
        cacheable by the service worker). Fonts in /vendor/fontawesome/webfonts. -->

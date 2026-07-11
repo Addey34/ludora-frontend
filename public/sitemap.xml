@@ -45,4 +45,50 @@
   <url><loc>https://games-zone.onrender.com/yahtzee</loc></url>
   <url><loc>https://games-zone.onrender.com/binairo</loc></url>
   <url><loc>https://games-zone.onrender.com/kakuro</loc></url>
+  <!-- French pages (/fr/…). hreflang alternates are emitted in each page head. -->
+  <url><loc>https://games-zone.onrender.com/fr/</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/profile</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/leaderboard</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/friends</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/legal</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/privacy</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/typing</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/snake</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/pacman</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/2048</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/simon</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/motus</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/tetris</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/memory</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/minesweeper</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/breakout</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/pong</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/ludo</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/connect4</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/checkers</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/reversi</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/battleship</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/goose</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/math</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/geoquiz</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/trivia</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/conjugation</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/anagram</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/hangman</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/mastermind</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/sokoban</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/nonogram</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/wordsearch</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/sudoku</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/taquin</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/flappy</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/solitaire</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/mancala</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/blackjack</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/invaders</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/bubbles</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/dotsboxes</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/yahtzee</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/binairo</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/kakuro</loc></url>
 </urlset>

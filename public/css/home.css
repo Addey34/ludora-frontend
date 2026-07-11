@@ -1,4 +1,5 @@
 @import url('./global.css');
+@import url('./home-variants.css');
 
 /* ------------------------------------------------------------------ */
 /*  Page layout                                                       */
@@ -87,7 +88,7 @@
   flex-direction: column;
   align-items: stretch;
   gap: var(--spacing-sm);
-  width: min(100%, 960px);
+  width: min(100%, 1040px);
 }
 
 .game-category-title {
@@ -232,7 +233,7 @@
     min-height: 4.35rem;
   }
 
-  /* Keep the hero title clear of the fixed top-right language/sound controls:
+  /* Keep the hero title clear of the fixed top-right theme/language/sound controls:
      smaller type fits between the corner buttons, plus a little top breathing room. */
   .home-hero {
     padding-top: 2.25rem;

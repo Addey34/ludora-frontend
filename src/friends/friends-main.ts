@@ -6,12 +6,11 @@
  * by Nakama's friend graph; best-effort.
  */
 import { applyTranslations, t } from '../shared/i18n/i18n.js';
-import { requireGoogleLogin } from '../shared/net/authGuard.js';
+import { requireGoogleUser } from '../shared/net/authGuard.js';
 import {
   acceptFriend,
   addFriendByCode,
   FRIEND_STATE,
-  getCurrentUser,
   getFriendCode,
   listMyFriends,
   removeFriend,
@@ -142,11 +141,6 @@ async function init(): Promise<void> {
   const signedIn = document.getElementById('friendsSignedIn');
   const guest = document.getElementById('friendsGuest');
 
-  const user = await getCurrentUser();
-  if (!user?.loggedIn) {
-    if (guest) guest.hidden = false;
-    return;
-  }
   if (guest) guest.hidden = true;
   if (signedIn) signedIn.hidden = false;
 
@@ -183,6 +177,7 @@ async function init(): Promise<void> {
 
 applyTranslations();
 void (async () => {
-  if (!(await requireGoogleLogin())) return;
+  const user = await requireGoogleUser();
+  if (!user) return;
   await init();
 })();

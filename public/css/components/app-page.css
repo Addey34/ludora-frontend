@@ -17,7 +17,7 @@
   --app-ink-muted: var(--card-ink-muted);
   --app-accent: var(--accent);
   --app-accent-strong: var(--accent-strong);
-  --app-page-width: 960px;
+  --app-page-width: 1040px;
   --app-page-padding: clamp(0.85rem, 1.6vw, 1.2rem);
   --app-page-gap: var(--spacing-md);
   --app-ease: var(--ease-ui);
@@ -32,7 +32,6 @@
 .profile-content,
 .legal-content {
   width: min(100%, var(--app-page-width));
-  max-height: calc(100dvh - 1.5rem);
   margin: auto;
   padding: var(--app-page-padding);
   border: 1px solid var(--app-line);
@@ -47,6 +46,7 @@
 }
 
 .profile-content {
+  max-height: calc(100dvh - 1.5rem);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -55,7 +55,7 @@
 .legal-content {
   display: flex;
   flex-direction: column;
-  overflow: auto;
+  overflow: visible;
 }
 
 .profile-header,
@@ -276,9 +276,12 @@
     padding-inline: var(--spacing-sm);
   }
 
-  .profile-content,
-  .legal-content {
+  .profile-content {
     max-height: calc(100dvh - 0.75rem);
+    margin: auto;
+  }
+
+  .legal-content {
     margin: auto;
   }
 

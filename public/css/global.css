@@ -10,6 +10,7 @@
 
 /* Reusable components */
 @import url('./components/animations.css');
+@import url('./components/themes.css');
 @import url('./components/buttons.css');
 @import url('./components/icon.css');
 @import url('./components/info.css');

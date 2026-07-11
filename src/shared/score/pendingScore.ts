@@ -3,8 +3,8 @@
  * run and chooses to save, we can't record it yet (recording requires a Google
  * account). We stash the run here, trigger sign-in (which reloads the page), and
  * on the next load — now signed in — {@link flushPendingScore} records it under
- * the Google name: to its local board, its online leaderboard (if any) and the
- * global GamesZone Points total.
+ * the Google name: to its online leaderboard(s) and the global GamesZone Points
+ * total.
  */
 import { getCurrentUser, submitGlobalScore, recordRun } from '../net/nakama.js';
 

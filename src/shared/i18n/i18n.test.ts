@@ -51,7 +51,12 @@ describe('i18n catalog', () => {
  * French — including the `data-i18n-html` keys that carry <kbd> markup.
  */
 describe('applyTranslations (control help lines)', () => {
-  afterEach(() => localStorage.removeItem('gz-lang'));
+  // getLocale() now reads <html lang> first (baked per page), falling back to the
+  // stored preference; reset both so a French case can't leak into the next test.
+  afterEach(() => {
+    localStorage.removeItem('gz-lang');
+    document.documentElement.lang = '';
+  });
 
   const infoPanel = (): { root: HTMLElement; keys: HTMLElement; action: HTMLElement } => {
     const root = document.createElement('div');

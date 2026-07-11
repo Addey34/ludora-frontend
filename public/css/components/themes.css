@@ -1,0 +1,220 @@
+/* =============================================================================
+   Global UI themes.
+   These override shared design tokens, so home, app pages, sidebar and game
+   shells all move together from one fixed top-right control.
+   ========================================================================== */
+
+:where(html, body)[data-ui-theme='arcade'] {
+  --background-color: #130a2a;
+  --background-color-light: #23104d;
+  --background-color-dark: #070516;
+  --text-color: #fdf4ff;
+  --text-color-muted: #c8b8ff;
+  --primary-color: #ff4fd8;
+  --primary-color-light: #3b145f;
+  --primary-color-dark: #9d1a8f;
+  --surface-base: #130a2a;
+  --surface-deep: #070516;
+  --surface-1: #140d2b;
+  --surface-2: #23104d;
+  --surface-glass: rgba(255, 79, 216, 0.08);
+  --ink: #fff7fb;
+  --ink-muted: #c8b8ff;
+  --card: #21133d;
+  --card-muted: #180f31;
+  --card-ink: #fff7fb;
+  --card-ink-muted: #d8c9ff;
+  --line: rgba(255, 79, 216, 0.26);
+  --line-solid: rgba(255, 79, 216, 0.34);
+  --line-strong: rgba(34, 211, 238, 0.58);
+  --accent: #ff4fd8;
+  --accent-strong: #22d3ee;
+  --portal-bg:
+    repeating-linear-gradient(0deg, rgba(255, 79, 216, 0.1) 0 1px, transparent 1px 32px),
+    repeating-linear-gradient(90deg, rgba(34, 211, 238, 0.08) 0 1px, transparent 1px 32px),
+    radial-gradient(circle at 50% 0%, rgba(255, 79, 216, 0.24), transparent 28rem),
+    radial-gradient(circle at 88% 88%, rgba(34, 211, 238, 0.18), transparent 26rem),
+    linear-gradient(180deg, #130a2a 0%, #070516 100%);
+  --game-shell-border: rgba(255, 79, 216, 0.28);
+  --game-shell-shadow: 0 18px 46px rgba(0, 0, 0, 0.34), 0 0 28px rgba(255, 79, 216, 0.13);
+}
+
+:where(html, body)[data-ui-theme='console'] {
+  --background-color: #16191f;
+  --background-color-light: #272c35;
+  --background-color-dark: #101216;
+  --text-color: #f8fafc;
+  --text-color-muted: #a7b1bf;
+  --primary-color: #f5c84b;
+  --primary-color-light: #3b3522;
+  --primary-color-dark: #a46a18;
+  --surface-base: #16191f;
+  --surface-deep: #101216;
+  --surface-1: #1c2027;
+  --surface-2: #272c35;
+  --surface-glass: rgba(255, 255, 255, 0.07);
+  --ink: #f8fafc;
+  --ink-muted: #a7b1bf;
+  --card: #f3f6f8;
+  --card-muted: #e6ebf0;
+  --card-ink: #1f2937;
+  --card-ink-muted: #5b6572;
+  --line: rgba(255, 255, 255, 0.12);
+  --line-solid: rgba(255, 255, 255, 0.15);
+  --line-strong: rgba(245, 200, 75, 0.5);
+  --accent: #f5c84b;
+  --accent-strong: #ef4444;
+  --portal-bg:
+    radial-gradient(circle at 18% 18%, rgba(245, 200, 75, 0.15), transparent 23rem),
+    radial-gradient(circle at 86% 86%, rgba(239, 68, 68, 0.13), transparent 24rem),
+    linear-gradient(145deg, #16191f 0%, #252a33 48%, #101216 100%);
+  --game-shell-border: rgba(255, 255, 255, 0.18);
+  --game-shell-shadow: 0 22px 44px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+:where(html, body)[data-ui-theme='esports'] {
+  --background-color: #eef2f7;
+  --background-color-light: #ffffff;
+  --background-color-dark: #dbe4ef;
+  --text-color: #111827;
+  --text-color-muted: #64748b;
+  --primary-color: #2563eb;
+  --primary-color-light: #dbeafe;
+  --primary-color-dark: #1d4ed8;
+  --surface-base: #eef2f7;
+  --surface-deep: #ffffff;
+  --surface-1: #f8fafc;
+  --surface-2: #ffffff;
+  --surface-glass: rgba(255, 255, 255, 0.78);
+  --ink: #111827;
+  --ink-muted: #64748b;
+  --card: #ffffff;
+  --card-muted: #f1f5f9;
+  --card-ink: #111827;
+  --card-ink-muted: #64748b;
+  --line: rgba(15, 23, 42, 0.1);
+  --line-solid: rgba(15, 23, 42, 0.13);
+  --line-strong: rgba(37, 99, 235, 0.38);
+  --accent: #2563eb;
+  --accent-strong: #16a34a;
+  --portal-bg:
+    linear-gradient(135deg, rgba(37, 99, 235, 0.09), transparent 34%),
+    linear-gradient(180deg, #ffffff 0%, #eef2f7 100%);
+  --game-shell-border: rgba(15, 23, 42, 0.1);
+  --game-shell-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
+}
+
+:where(html, body)[data-ui-theme='cards'] {
+  --background-color: #f6ead8;
+  --background-color-light: #fffaf0;
+  --background-color-dark: #e8d8bd;
+  --text-color: #27170c;
+  --text-color-muted: #7c5c42;
+  --primary-color: #0f766e;
+  --primary-color-light: #ccfbf1;
+  --primary-color-dark: #115e59;
+  --surface-base: #f6ead8;
+  --surface-deep: #fffaf0;
+  --surface-1: #fff7ed;
+  --surface-2: #fffbeb;
+  --surface-glass: rgba(255, 255, 255, 0.54);
+  --ink: #27170c;
+  --ink-muted: #7c5c42;
+  --card: #ffffff;
+  --card-muted: #fdf1dd;
+  --card-ink: #27170c;
+  --card-ink-muted: #7c5c42;
+  --line: rgba(120, 53, 15, 0.16);
+  --line-solid: rgba(120, 53, 15, 0.2);
+  --line-strong: rgba(15, 118, 110, 0.42);
+  --accent: #0f766e;
+  --accent-strong: #be123c;
+  --portal-bg:
+    radial-gradient(circle at 18% 20%, rgba(15, 118, 110, 0.13), transparent 24rem),
+    linear-gradient(180deg, #fffaf0 0%, #f6ead8 100%);
+  --game-shell-border: rgba(120, 53, 15, 0.16);
+  --game-shell-shadow: 0 18px 34px rgba(120, 53, 15, 0.1);
+}
+
+html[data-ui-theme] {
+  background: var(--background-color);
+}
+
+:where(html[data-ui-theme] .app-body, .app-body[data-ui-theme]) {
+  background: var(--portal-bg);
+}
+
+.theme-toggle {
+  top: var(--spacing-sm);
+  right: calc(var(--spacing-sm) + 2 * (44px + var(--spacing-xs)));
+  font-size: var(--font-size-md);
+}
+
+.theme-control.is-open .theme-toggle {
+  border-color: var(--line-strong);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 18%, transparent), transparent),
+    var(--surface-1);
+}
+
+.theme-menu {
+  position: fixed;
+  top: calc(var(--spacing-sm) + 44px + var(--spacing-xs));
+  right: calc(var(--spacing-sm) + 2 * (44px + var(--spacing-xs)));
+  z-index: 1210;
+  display: grid;
+  gap: 2px;
+  width: 10rem;
+  padding: var(--spacing-xs);
+  border: 1px solid var(--line);
+  border-radius: var(--border-radius-md);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 36%), var(--surface-1);
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.28);
+}
+
+.theme-menu[hidden] {
+  display: none;
+}
+
+.theme-menu button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-sm);
+  background: transparent;
+  color: var(--ink);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  text-align: left;
+  cursor: pointer;
+}
+
+.theme-menu button::after {
+  content: '';
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+}
+
+.theme-menu button:hover,
+.theme-menu button:focus-visible,
+.theme-menu button.is-active {
+  border-color: var(--line-strong);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.theme-menu button.is-active::after {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .theme-menu {
+    right: var(--spacing-sm);
+  }
+}

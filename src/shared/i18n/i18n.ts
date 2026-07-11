@@ -13,7 +13,7 @@
  * language (e.g. Anagrams/Hangman word lists) stays a separate per-game setting.
  */
 
-type Locale = 'en' | 'fr';
+export type Locale = 'en' | 'fr';
 export const LOCALES: Locale[] = ['en', 'fr'];
 
 const STORAGE_KEY = 'gz-lang';
@@ -156,12 +156,17 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     muteSound: 'Mute sound',
     enableSound: 'Enable sound',
     tagline: 'Browser games — play instantly, no download',
+    themeSwitcher: 'Visual direction',
+    themePortal: 'Portal',
+    themeArcade: 'Arcade',
+    themeConsole: 'Console',
+    themeEsports: 'Esports',
+    themeCards: 'Cards',
     // Cross-game profile ("My Scores").
     home: 'Home',
     profileTitle: 'Profile',
     profileAccountSubtitle: 'Your account and display name.',
     profileGuest: 'Sign in with Google to set your name and appear on the leaderboard.',
-    profileBest: 'Best: <strong>{score}</strong>',
     profileNotPlayed: 'Not played yet',
     tabPersonal: 'Personal',
     tabFriends: 'Friends',
@@ -207,6 +212,10 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     globalPoints: '{score} GZP',
     leaderboardSubtitle: 'The top GamesZone players across every game.',
     leaderboardEmpty: 'No ranking yet — play a game to get on the board.',
+    leaderboardSearch: 'Search a game',
+    leaderboardGameColumn: 'Game',
+    leaderboardBestColumn: 'Best',
+    leaderboardGameSummary: '{shown}/{total} games · {played} played',
     // Feedback popover.
     feedback: 'Feedback',
     feedbackHint: 'Rate this game',
@@ -519,11 +528,16 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     muteSound: 'Couper le son',
     enableSound: 'Activer le son',
     tagline: 'Jeux en ligne — jouez tout de suite, sans téléchargement',
+    themeSwitcher: 'Direction visuelle',
+    themePortal: 'Portail',
+    themeArcade: 'Arcade',
+    themeConsole: 'Console',
+    themeEsports: 'Esport',
+    themeCards: 'Cartes',
     home: 'Accueil',
     profileTitle: 'Profil',
     profileAccountSubtitle: 'Ton compte et ton nom affiché.',
     profileGuest: 'Connecte-toi avec Google pour choisir ton nom et apparaître au classement.',
-    profileBest: 'Record : <strong>{score}</strong>',
     profileNotPlayed: 'Pas encore joué',
     tabPersonal: 'Perso',
     tabFriends: 'Amis',
@@ -567,6 +581,10 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     globalPoints: '{score} GZP',
     leaderboardSubtitle: 'Les meilleurs joueurs GamesZone, tous jeux confondus.',
     leaderboardEmpty: 'Pas encore de classement — joue une partie pour y entrer.',
+    leaderboardSearch: 'Chercher un jeu',
+    leaderboardGameColumn: 'Jeu',
+    leaderboardBestColumn: 'Meilleur',
+    leaderboardGameSummary: '{shown}/{total} jeux · {played} joués',
     // Avis / feedback.
     feedback: 'Votre avis',
     feedbackHint: 'Notez ce jeu',
@@ -1040,15 +1058,37 @@ export const CATALOG: Record<Locale, Record<string, string>> = {
   fr: { ...BASE_CATALOG.fr, ...CONTROLS_FR },
 };
 
-/** The current interface locale (persisted; defaults to English). */
+/**
+ * The current interface locale. The page is built for a locale (English pages are
+ * unprefixed, French pages live under `/fr/…`), so `<html lang>` — baked at build
+ * time — is the source of truth: dynamic `t()` strings then match the page with no
+ * flash. Falls back to the stored preference, then English.
+ */
 export function getLocale(): Locale {
+  const lang = typeof document !== 'undefined' ? document.documentElement.lang : '';
+  if (lang === 'fr' || lang === 'en') return lang;
   return localStorage.getItem(STORAGE_KEY) === 'fr' ? 'fr' : 'en';
 }
 
-/** Switches the interface locale and reloads so every string re-renders. */
+/**
+ * The path of the current page in the other `locale` (adds/removes the `/fr`
+ * prefix). Pure — the single place the locale URL scheme is encoded. Home is `/`
+ * (EN) / `/fr/` (FR); every other page is `/x` / `/fr/x`.
+ */
+export function mirrorPath(pathname: string, locale: Locale): string {
+  const base = pathname.replace(/^\/fr(?=\/|$)/, '') || '/';
+  if (locale === 'en') return base;
+  return base === '/' ? '/fr/' : `/fr${base}`;
+}
+
+/**
+ * Switches the interface locale by navigating to the same page in that locale.
+ * The target page is pre-translated (build-time), so there is no re-render flash.
+ * The choice is also stored as the entry preference.
+ */
 export function setLocale(locale: Locale): void {
   localStorage.setItem(STORAGE_KEY, locale);
-  location.reload();
+  location.assign(mirrorPath(location.pathname, locale) + location.search + location.hash);
 }
 
 /**
@@ -1068,7 +1108,8 @@ export function t(key: string, params?: Record<string, string | number>): string
 /**
  * Translates static markup under `root`: `data-i18n` → textContent,
  * `data-i18n-html` → innerHTML (for values that carry markup, e.g. the help
- * panel's `<kbd>` keys), `data-i18n-aria` → aria-label. Also sets `<html lang>`.
+ * panel's `<kbd>` keys), `data-i18n-aria` → aria-label, `data-i18n-placeholder`
+ * → placeholder (inputs). Also sets `<html lang>`.
  * Call once on load (the sidebar does this on every page); dynamic strings use
  * {@link t} at build time.
  */
@@ -1085,6 +1126,10 @@ export function applyTranslations(root: ParentNode = document): void {
   root.querySelectorAll<HTMLElement>('[data-i18n-aria]').forEach((el) => {
     const key = el.dataset.i18nAria;
     if (key) el.setAttribute('aria-label', t(key));
+  });
+  root.querySelectorAll<HTMLElement>('[data-i18n-placeholder]').forEach((el) => {
+    const key = el.dataset.i18nPlaceholder;
+    if (key) el.setAttribute('placeholder', t(key));
   });
   // `data-label` drives a CSS tooltip (e.g. the home tiles): translate it too.
   root.querySelectorAll<HTMLElement>('[data-i18n-label]').forEach((el) => {

@@ -40,14 +40,14 @@ export interface GameConfig {
   canvasHeight?: number;
   /** Initial loop rate (ms). */
   initialSpeed?: number;
-  /** localStorage key for this game's leaderboard. */
+  /** Legacy local leaderboard key; kept for constructor compatibility. */
   storageKey?: string;
-  /** Number of entries kept in the leaderboard. */
+  /** Legacy local leaderboard size; kept for constructor compatibility. */
   maxScores?: number;
   /**
    * id of the online Nakama leaderboard for this game (e.g. 'snake'). When set,
-   * scores are also submitted to and displayed from the backend; when omitted,
-   * the game stays local-only (localStorage). Backend calls are best-effort.
+   * scores are submitted to and displayed from the backend. When omitted, the
+   * game has no persistent leaderboard. Backend calls are best-effort.
    */
   leaderboardId?: string;
   /**

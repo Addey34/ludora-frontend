@@ -3,6 +3,7 @@
   "entry": [
     "src/**/*-main.ts",
     "src/shared/ui/sidebar.ts",
+    "src/shared/ui/theme.ts",
     "src/shared/net/login.ts",
     "src/shared/ui/feedbackPanel.ts",
     "src/shared/ui/zenMode.ts"

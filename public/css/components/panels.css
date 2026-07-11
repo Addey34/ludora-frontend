@@ -47,8 +47,9 @@
   max-height: min(60vh, 22rem);
   overflow-y: auto;
   padding: var(--spacing-md);
-  background: var(--white-color);
-  border: 2px solid var(--border-color-light);
+  background: var(--card);
+  color: var(--card-ink);
+  border: 2px solid var(--line);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-lg);
   display: none;
@@ -76,7 +77,7 @@
   font-weight: var(--font-weight-bold);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--text-color-muted);
+  color: var(--card-ink-muted);
 }
 .game-pop-subtitle:empty {
   display: none;
@@ -127,7 +128,7 @@
   cursor: pointer;
   font-size: var(--font-size-lg);
   line-height: 1;
-  color: var(--border-color-light);
+  color: var(--card-ink-muted);
   transition:
     color 0.12s ease,
     transform 0.12s ease;
@@ -152,11 +153,12 @@
   width: 100%;
   resize: vertical;
   padding: var(--spacing-xs) var(--spacing-sm);
-  border: 2px solid var(--border-color-light);
+  border: 2px solid var(--line);
   border-radius: var(--border-radius-md);
+  background: var(--card-muted);
   font: inherit;
   font-size: var(--font-size-sm);
-  color: var(--text-color);
+  color: var(--card-ink);
 }
 
 .feedback-text:focus-visible {

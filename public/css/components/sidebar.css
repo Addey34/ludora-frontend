@@ -114,7 +114,7 @@ body.sidebar-open .sidebar {
   display: flex;
   align-items: center;
   margin-inline: var(--spacing-sm);
-  color: rgba(248, 250, 252, 0.78);
+  color: var(--sidebar-muted);
   font: inherit;
   font-weight: var(--font-weight-bold);
   white-space: nowrap;
@@ -234,9 +234,10 @@ body.sidebar-open .sidebar {
   width: 1.4em;
   height: 1.4em;
   margin-left: var(--spacing-xs);
+  border: 1px solid color-mix(in srgb, var(--nav-accent) 34%, var(--sidebar-line));
   border-radius: 999px;
-  background: rgba(248, 250, 252, 0.12);
-  color: rgba(248, 250, 252, 0.9);
+  background: var(--sidebar-text);
+  color: var(--sidebar-surface-raised);
   font-size: var(--font-size-sm);
 }
 
@@ -272,8 +273,8 @@ body.sidebar-open .sidebar {
 }
 
 .sidebar-link.is-active .sidebar-mode {
-  background: rgba(0, 0, 0, 0.22);
-  color: var(--sidebar-text);
+  background: var(--sidebar-text);
+  color: var(--sidebar-surface-raised);
 }
 
 .sidebar-auth {
@@ -374,6 +375,7 @@ body.sidebar-open .sidebar {
 }
 
 .sidebar-toggle,
+.theme-toggle,
 .sound-toggle,
 .lang-toggle {
   position: fixed;
@@ -382,11 +384,13 @@ body.sidebar-open .sidebar {
   height: 44px;
   display: grid;
   place-items: center;
-  border: 1px solid var(--sidebar-line, rgba(148, 163, 184, 0.2));
+  border: 1px solid var(--line);
   border-radius: var(--border-radius-md);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent), #111827;
+  /* Theme-token driven so the three top-right bubbles follow every UI theme
+     (see themes.css). Portal (base) keeps the original dark look. */
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent), var(--surface-1);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
-  color: var(--sidebar-text, #f8fafc);
+  color: var(--ink);
   cursor: pointer;
   transition:
     transform 0.15s ease,
@@ -401,10 +405,11 @@ body.sidebar-open .sidebar {
 }
 
 .sidebar-toggle:hover,
+.theme-toggle:hover,
 .sound-toggle:hover,
 .lang-toggle:hover {
   transform: translateY(-1px);
-  border-color: var(--sidebar-line-strong, rgba(125, 211, 252, 0.42));
+  border-color: var(--line-strong);
 }
 
 .sidebar-scrim {
@@ -429,6 +434,7 @@ body.sidebar-open .sidebar {
     soundRing 2.4s 0.35s ease-out infinite;
 }
 
+.theme-toggle:active,
 .sound-toggle:active,
 .lang-toggle:active {
   transform: scale(0.94);
@@ -443,6 +449,21 @@ body.sidebar-open .sidebar {
   letter-spacing: 0.02em;
 }
 
+/* The pill shows the code matching <html lang> (set before paint in head.hbs),
+   so an FR session never flashes "EN" first. */
+.lang-code-fr {
+  display: none;
+}
+
+html[lang='fr'] .lang-code-en {
+  display: none;
+}
+
+html[lang='fr'] .lang-code-fr {
+  display: inline;
+}
+
+.theme-toggle:focus-visible,
 .lang-toggle:focus-visible,
 .sound-toggle:focus-visible,
 .sidebar-toggle:focus-visible {
@@ -467,14 +488,14 @@ body.sidebar-open .sidebar {
 .sound-toggle-ring {
   position: absolute;
   inset: -2px;
-  border: 2px solid rgba(125, 211, 252, 0.45);
+  border: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
   border-radius: 50%;
   pointer-events: none;
   animation: soundRingExpand 2.4s 0.35s ease-out infinite;
 }
 
 .sound-toggle.is-muted {
-  color: rgba(248, 250, 252, 0.42);
+  color: var(--ink-muted);
   animation: soundBtnIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
@@ -503,12 +524,12 @@ body.sidebar-open .sidebar {
   100% {
     box-shadow:
       0 8px 20px rgba(0, 0, 0, 0.24),
-      0 0 0 0 rgba(125, 211, 252, 0.34);
+      0 0 0 0 color-mix(in srgb, var(--accent) 34%, transparent);
   }
   50% {
     box-shadow:
       0 8px 20px rgba(0, 0, 0, 0.24),
-      0 0 0 7px rgba(125, 211, 252, 0);
+      0 0 0 7px transparent;
   }
 }
 
@@ -629,6 +650,7 @@ body.sidebar-open .sidebar {
   .sidebar,
   .sidebar-flyout,
   .sidebar-account-menu,
+  .theme-toggle,
   .sound-toggle,
   .sound-toggle-ring {
     transition-duration: 0.01ms;

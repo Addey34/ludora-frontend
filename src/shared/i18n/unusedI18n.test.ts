@@ -48,7 +48,7 @@ function tKeys(): Set<string> {
 /** Keys marked via data-i18n* — in the partials/pages AND TS-built markup. */
 function markupKeys(): Set<string> {
   const keys = new Set<string>();
-  const re = /data-i18n(?:-aria|-label|-html)?=["'`]([^"'`{]+)["'`]/g; // skip {{dynamic}}
+  const re = /data-i18n(?:-aria|-label|-html|-placeholder)?=["'`]([^"'`{]+)["'`]/g; // skip {{dynamic}}
   for (const file of walk(resolve(root, 'src'), ['.hbs', '.html', '.ts'])) {
     if (file.endsWith('.test.ts')) continue;
     const src = readFileSync(file, 'utf8');

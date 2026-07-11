@@ -121,8 +121,9 @@ The interface is bilingual. Any visible string must have an English and a French
 - Follow the existing style (TypeScript `strict`, CSS design tokens, mobile-first).
   Formatting is handled by **Prettier** and code style by **ESLint** — run `npm run verify`
   before pushing so the CI passes on the first try.
-- Scores persist in `localStorage` and, when a game opts in, in online leaderboards on the
-  Nakama backend (best-effort — `localStorage` is always the fallback).
+- Scores are server-authoritative for signed-in players. Guests can choose "Sign in to save";
+  the run is stashed only long enough to complete Google sign-in, then recorded through Nakama.
+  Offline scores are not queued.
 - A question or an idea before coding? Open an **Issue** to discuss it.
 
 Thanks! 🙌

@@ -30,7 +30,7 @@ function markupKeys(): Set<string> {
     ...walk(resolve(root, 'src/games'), ['index.html']),
   ];
   const keys = new Set<string>();
-  const re = /data-i18n(?:-aria|-label|-html)?="([^"]+)"/g;
+  const re = /data-i18n(?:-aria|-label|-html|-placeholder)?="([^"]+)"/g;
   for (const file of files) {
     const src = readFileSync(file, 'utf8');
     let m: RegExpExecArray | null;

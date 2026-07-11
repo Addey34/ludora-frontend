@@ -22,7 +22,8 @@
   max-height: 90%;
   overflow-y: auto;
   padding: var(--spacing-lg);
-  background: var(--white-color);
+  background: var(--card);
+  color: var(--card-ink);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-lg);
   text-align: center;
@@ -39,7 +40,7 @@
 
 .game-over-body {
   font-size: var(--font-size-md);
-  color: var(--text-color);
+  color: var(--card-ink);
 }
 
 /* Multi-line rich content (e.g. Typing's word/letter/speed breakdown). */
@@ -71,7 +72,7 @@
 .game-over-name-label {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
-  color: var(--text-color);
+  color: var(--card-ink);
 }
 
 .game-over-name-row {
@@ -87,5 +88,5 @@
 .game-over-name-done {
   margin: 0;
   font-size: var(--font-size-sm);
-  color: var(--text-color-muted);
+  color: var(--card-ink-muted);
 }

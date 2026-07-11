@@ -70,6 +70,54 @@ services:
       - { type: rewrite, source: /profile, destination: /profile/index.html }
       - { type: rewrite, source: /leaderboard, destination: /leaderboard/index.html }
       - { type: rewrite, source: /friends, destination: /friends/index.html }
+      # ---- French pages (/fr/…). Same order/list as the English routes
+      # above; a parity test (routesLocale.test.ts) enforces one per page. ----
+      - { type: rewrite, source: /fr, destination: /fr/index.html }
+      - { type: rewrite, source: /fr/typing, destination: /fr/games/typing/index.html }
+      - { type: rewrite, source: /fr/snake, destination: /fr/games/snake/index.html }
+      - { type: rewrite, source: /fr/pacman, destination: /fr/games/pacman/index.html }
+      - { type: rewrite, source: /fr/2048, destination: /fr/games/2048/index.html }
+      - { type: rewrite, source: /fr/simon, destination: /fr/games/simon/index.html }
+      - { type: rewrite, source: /fr/motus, destination: /fr/games/motus/index.html }
+      - { type: rewrite, source: /fr/tetris, destination: /fr/games/tetris/index.html }
+      - { type: rewrite, source: /fr/memory, destination: /fr/games/memory/index.html }
+      - { type: rewrite, source: /fr/minesweeper, destination: /fr/games/minesweeper/index.html }
+      - { type: rewrite, source: /fr/breakout, destination: /fr/games/breakout/index.html }
+      - { type: rewrite, source: /fr/pong, destination: /fr/games/pong/index.html }
+      - { type: rewrite, source: /fr/ludo, destination: /fr/games/ludo/index.html }
+      - { type: rewrite, source: /fr/connect4, destination: /fr/games/connect4/index.html }
+      - { type: rewrite, source: /fr/checkers, destination: /fr/games/checkers/index.html }
+      - { type: rewrite, source: /fr/reversi, destination: /fr/games/reversi/index.html }
+      - { type: rewrite, source: /fr/battleship, destination: /fr/games/battleship/index.html }
+      - { type: rewrite, source: /fr/goose, destination: /fr/games/goose/index.html }
+      - { type: rewrite, source: /fr/math, destination: /fr/games/math/index.html }
+      - { type: rewrite, source: /fr/geoquiz, destination: /fr/games/geoquiz/index.html }
+      - { type: rewrite, source: /fr/trivia, destination: /fr/games/trivia/index.html }
+      - { type: rewrite, source: /fr/conjugation, destination: /fr/games/conjugation/index.html }
+      - { type: rewrite, source: /fr/anagram, destination: /fr/games/anagram/index.html }
+      - { type: rewrite, source: /fr/hangman, destination: /fr/games/hangman/index.html }
+      - { type: rewrite, source: /fr/mastermind, destination: /fr/games/mastermind/index.html }
+      - { type: rewrite, source: /fr/sokoban, destination: /fr/games/sokoban/index.html }
+      - { type: rewrite, source: /fr/nonogram, destination: /fr/games/nonogram/index.html }
+      - { type: rewrite, source: /fr/wordsearch, destination: /fr/games/wordsearch/index.html }
+      - { type: rewrite, source: /fr/sudoku, destination: /fr/games/sudoku/index.html }
+      - { type: rewrite, source: /fr/taquin, destination: /fr/games/taquin/index.html }
+      - { type: rewrite, source: /fr/flappy, destination: /fr/games/flappy/index.html }
+      - { type: rewrite, source: /fr/mancala, destination: /fr/games/mancala/index.html }
+      - { type: rewrite, source: /fr/solitaire, destination: /fr/games/solitaire/index.html }
+      - { type: rewrite, source: /fr/blackjack, destination: /fr/games/blackjack/index.html }
+      - { type: rewrite, source: /fr/invaders, destination: /fr/games/invaders/index.html }
+      - { type: rewrite, source: /fr/bubbles, destination: /fr/games/bubbles/index.html }
+      - { type: rewrite, source: /fr/dotsboxes, destination: /fr/games/dotsboxes/index.html }
+      - { type: rewrite, source: /fr/yahtzee, destination: /fr/games/yahtzee/index.html }
+      - { type: rewrite, source: /fr/binairo, destination: /fr/games/binairo/index.html }
+      - { type: rewrite, source: /fr/kakuro, destination: /fr/games/kakuro/index.html }
+      - { type: rewrite, source: /fr/privacy, destination: /fr/privacy/index.html }
+      - { type: rewrite, source: /fr/legal, destination: /fr/legal/index.html }
+      - { type: rewrite, source: /fr/profile, destination: /fr/profile/index.html }
+      - { type: rewrite, source: /fr/leaderboard, destination: /fr/leaderboard/index.html }
+      - { type: rewrite, source: /fr/friends, destination: /fr/friends/index.html }
+
       # Everything else (old .html URLs, unknown paths) -> home.
       # LAST: the rules above take priority, and so do assets.
       - { type: redirect, source: /*, destination: / }

@@ -1,41 +1,65 @@
 <!doctype html>
 <html lang="en">
-  {{> head title="Leaderboard � Games Zone" css="/css/leaderboard.css"
+  {{> head title="Leaderboard — Games Zone" css="/css/leaderboard.css"
   script="./leaderboard-main.ts"}}
   <body class="app-body">
     {{> game-chrome}}
-    <main class="profile-content">
-      <div class="profile-header">
+    <main class="legal-content leaderboard-content">
+      <div class="legal-header">
         <div>
-          <h1 class="profile-title" data-i18n="leaderboard">Leaderboard</h1>
-          <p class="profile-subtitle" data-i18n="leaderboardSubtitle">
+          <h1 class="legal-title" data-i18n="leaderboard">Leaderboard</h1>
+          <p class="leaderboard-subtitle" data-i18n="leaderboardSubtitle">
             The top GamesZone players across every game.
           </p>
         </div>
-        <a class="btn btn--secondary profile-back" href="/">
+        <a class="btn btn--secondary legal-back" href="/">
           <i class="fas fa-arrow-left" aria-hidden="true"></i>
           <span data-i18n="home">Home</span>
         </a>
       </div>
 
       <div class="lb-tabs" role="tablist">
-        <button class="lb-tab is-active" type="button" data-tab="personal" data-i18n="tabPersonal">
-          Personal
+        <button class="lb-tab is-active" type="button" data-tab="personal">
+          <i class="fas fa-user" aria-hidden="true"></i>
+          <span data-i18n="tabPersonal">Personal</span>
         </button>
-        <button class="lb-tab" type="button" data-tab="friends" data-i18n="tabFriends">
-          Friends
+        <button class="lb-tab" type="button" data-tab="friends">
+          <i class="fas fa-user-group" aria-hidden="true"></i>
+          <span data-i18n="tabFriends">Friends</span>
         </button>
-        <button class="lb-tab" type="button" data-tab="global" data-i18n="tabGlobal">Global</button>
+        <button class="lb-tab" type="button" data-tab="global">
+          <i class="fas fa-earth-americas" aria-hidden="true"></i>
+          <span data-i18n="tabGlobal">Global</span>
+        </button>
       </div>
 
-      <section class="lb-panel" data-panel="personal">
-        <div class="profile-grid" id="profileGrid"></div>
-      </section>
+      <section class="lb-panel lb-panel--personal" data-panel="personal">
+        <div class="lb-game-tools">
+          <label class="lb-game-search">
+            <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+            <input
+              id="gameSearch"
+              type="search"
+              autocomplete="off"
+              data-i18n-aria="leaderboardSearch"
+              data-i18n-placeholder="leaderboardSearch"
+            />
+          </label>
+          <p class="lb-game-summary" id="gameSummary"></p>
+        </div>
 
+        <div class="lb-record-head" aria-hidden="true">
+          <span>#</span>
+          <span data-i18n="leaderboardGameColumn">Game</span>
+          <span data-i18n="leaderboardBestColumn">Best</span>
+          <span></span>
+        </div>
+        <div class="lb-record-table" id="profileGrid"></div>
+      </section>
       <section class="lb-panel" data-panel="friends" hidden>
         <ol class="global-list" id="friendsRankList"></ol>
         <p class="profile-empty" id="friendsRankEmpty" data-i18n="friendsRankEmpty" hidden>
-          No ranked friends yet � add friends and play a game.
+          No ranked friends yet — add friends and play a game.
         </p>
       </section>
 
@@ -43,7 +67,7 @@
         <p class="profile-rank" id="profileMyRank"></p>
         <ol class="global-list" id="globalList"></ol>
         <p class="profile-empty" id="rankEmpty" data-i18n="leaderboardEmpty" hidden>
-          No ranking yet � play a game to get on the board.
+          No ranking yet — play a game to get on the board.
         </p>
       </section>
     </main>

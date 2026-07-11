@@ -1,4 +1,4 @@
-import { getCurrentUser } from './nakama.js';
+import { getCurrentUser, type CurrentUser } from './nakama.js';
 
 const AUTH_RETURN_KEY = 'gz-auth-return';
 const AUTH_REQUIRED_KEY = 'gz-auth-required';
@@ -16,12 +16,12 @@ export function consumeAuthReturnPath(): string | null {
   return path;
 }
 
-export async function requireGoogleLogin(): Promise<boolean> {
+export async function requireGoogleUser(): Promise<CurrentUser | null> {
   const user = await getCurrentUser();
-  if (user?.loggedIn) return true;
+  if (user?.loggedIn) return user;
 
   sessionStorage.setItem(AUTH_RETURN_KEY, `${location.pathname}${location.search}${location.hash}`);
   sessionStorage.setItem(AUTH_REQUIRED_KEY, '1');
   location.replace('/');
-  return false;
+  return null;
 }

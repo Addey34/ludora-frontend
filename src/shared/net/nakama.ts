@@ -5,8 +5,8 @@ import { ScoreEntry } from '../score/ScoreManager.js';
  * Thin wrapper around the Nakama client used for the online leaderboards.
  *
  * The backend is a self-hosted Nakama server (see project memory). Everything
- * here is best-effort: if the server is unreachable, callers fall back to the
- * local `localStorage` leaderboard, so the games keep working offline.
+ * here is best-effort: if the server is unreachable, the run is not recorded and
+ * callers keep the game playable without persistent score storage.
  *
  * It is game-agnostic: a whole {@link ScoreEntry} is stored, with the score in
  * the record's score field and every other field (username + game-specific
