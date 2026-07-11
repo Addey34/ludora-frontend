@@ -406,7 +406,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     immersiveMode: 'Mode immersif',
     thPlayer: 'Joueur',
     thSpeed: 'Vitesse',
-    // Overlay de fin de partie + invite de sauvegarde (GameEngine, commun Ã  tous les jeux).
+    // Overlay de fin de partie + invite de sauvegarde (GameEngine, commun à tous les jeux).
     gameOver: 'Partie terminée !',
     gameOverAria: 'Partie terminée',
     youWin: 'Gagné ! 🎉',
@@ -436,13 +436,13 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     opponent: 'Adversaire',
     bot: 'Bot',
     cancel: 'Annuler',
-    // Panneau de lobby multijoueur (commun Ã  tous les jeux multiplayer: true).
+    // Panneau de lobby multijoueur (commun à tous les jeux multiplayer: true).
     multiplayer: 'Multijoueur',
     mpCreate: 'Créer une session',
     mpOr: 'ou',
     mpCode: 'Code',
     mpJoin: 'Rejoindre',
-    mpCodeAria: 'Code de session Ã  rejoindre',
+    mpCodeAria: 'Code de session à rejoindre',
     mpCopyCode: 'Copier le code',
     mpStart: 'Démarrer',
     mpWaitingPlayer: "En attente d'un autre joueur.",
@@ -451,7 +451,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     mpRoleGuest: "Vous êtes l'invité.",
     mpWaitingHost: "En attente du lancement par l'hôte…",
     mpStillWaiting:
-      "Toujours en attente â€” l'hÃ´te a peut-Ãªtre dÃ©jÃ  lancÃ© ou quittÃ©. Quittez et rÃ©essayez.",
+      "Toujours en attente — l'hôte a peut-être déjà lancé ou quitté. Quittez et réessayez.",
     mpLeave: 'Quitter la session',
     mpBotsNote: 'Les places vides seront occupées par des bots.',
     mpCreating: 'Création de la session…',
@@ -460,7 +460,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     mpInvalidCode: 'Code invalide ou serveur injoignable.',
     mpEnded: 'La session est terminée.',
     mpLeaveConfirm: 'Quitter la session ?',
-    mpLeaveBody: 'Vous reviendrez Ã  une partie solo.',
+    mpLeaveBody: 'Vous reviendrez à une partie solo.',
     // Récap quiz (QuizGame).
     flawless: 'Sans faute ! ✨',
     roundOver: 'Manche terminée',
@@ -511,7 +511,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     bjStartChips: 'Jetons',
     bots: 'Bots',
     firstMove: 'Premier coup',
-    firstTo: 'Premier Ã ',
+    firstTo: 'Premier à',
     easy: 'Facile',
     medium: 'Moyen',
     hard: 'Difficile',
@@ -567,8 +567,8 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     editName: 'Modifier le nom',
     displayNameLabel: 'Nom affiché',
     saveName: 'Enregistrer',
-    nameSaved: 'Nom mis Ã  jour !',
-    nameSaveError: 'Impossible de mettre Ã  jour le nom.',
+    nameSaved: 'Nom mis à jour !',
+    nameSaveError: 'Impossible de mettre à jour le nom.',
     challengeReceived: '{name} te défie de battre {score} !',
     challengeReceivedAnon: 'Bats {score} pour gagner le défi !',
     challengeAddFriend: 'Ajouter {name}',
@@ -840,7 +840,7 @@ const CONTROLS_FR: Record<string, string> = {
   'Retype the displayed words': 'Retape les mots affichés',
   'Language (EN/FR) and difficulty (harder = accents, longer words)':
     'Langue (EN/FR) et difficulté (plus dur = accents, mots plus longs)',
-  'Starts on the first letter': 'DÃ©marre Ã  la premiÃ¨re lettre',
+  'Starts on the first letter': 'Démarre à la première lettre',
   '2D: steer on the board. 3D: left/right turn relative to the snake':
     '2D : dirige sur le plateau. 3D : gauche/droite tourne par rapport au serpent',
   '2D: swipe a direction. 3D: swipe left/right to turn':
@@ -878,8 +878,8 @@ const CONTROLS_FR: Record<string, string> = {
     'Révèle toutes les cases sûres sans toucher de mine',
   'Move the paddle': 'Déplace la raquette',
   'Move your paddle': 'Déplace ta raquette',
-  'Score past the opponent paddle': 'Marque au-delÃ  de la raquette adverse',
-  'Rolled automatically on your turn': 'LancÃ© automatiquement Ã  ton tour',
+  'Score past the opponent paddle': 'Marque au-delà de la raquette adverse',
+  'Rolled automatically on your turn': 'Lancé automatiquement à ton tour',
   'Choose which horse to move': 'Choisis quel cheval déplacer',
   'Brings a horse out of the stable and rolls again': 'Sort un cheval de l’écurie et relance',
   'Bring your 4 horses home to the center': 'Ramène tes 4 chevaux au centre',
@@ -906,10 +906,10 @@ const CONTROLS_FR: Record<string, string> = {
   'Sink all 5 enemy ships first': 'Coule les 5 navires ennemis en premier',
   'Roll the dice': 'Lance les dés',
   'Roll again, moving forward by the same number': 'Relance et avance du même nombre',
-  'Jump straight to square 12': 'Saute directement Ã  la case 12',
+  'Jump straight to square 12': 'Saute directement à la case 12',
   'Skip 1 turn': 'Passe 1 tour',
   'Skip 3 turns': 'Passe 3 tours',
-  'Back to square 1': 'Retour Ã  la case 1',
+  'Back to square 1': 'Retour à la case 1',
   'Exact count required — first to arrive wins': 'Compte exact requis — le premier arrivé gagne',
   'Answer the sum and press Enter': 'Réponds au calcul et appuie sur Entrée',
   'Pick a difficulty and Classic / Timed mode':
@@ -922,7 +922,7 @@ const CONTROLS_FR: Record<string, string> = {
     'Associe pays et capitales ; garde ta série',
   'Choose a category, difficulty and mode': 'Choisis une catégorie, une difficulté et un mode',
   'Answer general-knowledge questions; build a streak':
-    'RÃ©ponds Ã  des questions de culture gÃ©nÃ©rale ; enchaÃ®ne les sÃ©ries',
+    'Réponds à des questions de culture générale ; enchaîne les séries',
   'Write the conjugated form and press Enter': 'Écris la forme conjuguée et appuie sur Entrée',
   'Difficulty unlocks more tenses; Classic / Timed':
     'La difficulté débloque plus de temps ; Classique / Chrono',
@@ -931,13 +931,13 @@ const CONTROLS_FR: Record<string, string> = {
   'Unscramble the letters and press Enter': 'Remets les lettres dans l’ordre et appuie sur Entrée',
   'Language (FR/EN), difficulty and mode': 'Langue (FR/EN), difficulté et mode',
   'Find the hidden word from its shuffled letters':
-    'Trouve le mot cachÃ© Ã  partir de ses lettres mÃ©langÃ©es',
+    'Trouve le mot caché à partir de ses lettres mélangées',
   'Guess a letter on the keyboard': 'Devine une lettre au clavier',
   'Guess a letter with the keyboard': 'Devine une lettre avec le clavier',
   'Language (FR/EN) and difficulty (word length)': 'Langue (FR/EN) et difficulté (longueur du mot)',
   'Find the word before the figure is complete (6 misses)':
     'Trouve le mot avant que le dessin soit complet (6 erreurs)',
-  'Add a colour to your guess': 'Ajoute une couleur Ã  ta proposition',
+  'Add a colour to your guess': 'Ajoute une couleur à ta proposition',
   'Delete a peg / submit the guess': 'Supprime un pion / valide la proposition',
   'Black peg = right colour & spot, white = right colour only':
     'Pion noir = bonne couleur et place, blanc = bonne couleur seulement',
@@ -955,7 +955,7 @@ const CONTROLS_FR: Record<string, string> = {
   'Reveal the hidden picture the clues describe': 'Révèle l’image cachée décrite par les indices',
   'Trace a straight line of letters over a word': 'Trace une ligne droite de lettres sur un mot',
   'Words run any way — including diagonally and backwards':
-    'Les mots vont dans tous les sens â€” dont en diagonale et Ã  lâ€™envers',
+    'Les mots vont dans tous les sens — dont en diagonale et à l’envers',
   'Language (FR/EN) and difficulty (grid + word count)':
     'Langue (FR/EN) et difficulté (grille + nombre de mots)',
   'Find every word in the list before the clock climbs':
@@ -1001,7 +1001,7 @@ const CONTROLS_FR: Record<string, string> = {
   // --- Yahtzee ---
   'Click the dice area': 'Cliquer la zone des dés',
   'Roll all non-held dice (up to 3 times per turn)':
-    'Lancer tous les dÃ©s non conservÃ©s (jusquâ€™Ã  3 fois par tour)',
+    'Lancer tous les dés non conservés (jusqu’à 3 fois par tour)',
   'Click a die': 'Cliquer sur un dé',
   'Hold it (keep between rolls)': 'Le conserver entre les lancers',
   'Click a category': 'Cliquer une catégorie',
@@ -1019,7 +1019,7 @@ const CONTROLS_FR: Record<string, string> = {
   '<kbd>Delete</kbd>': '<kbd>Delete</kbd>',
   'Clear the selected cell': 'Effacer la case sélectionnée',
   'Fill each run with unique digits that sum to the clue':
-    'Remplir chaque sÃ©rie avec des chiffres uniques dont la somme correspond Ã  lâ€™indice',
+    'Remplir chaque série avec des chiffres uniques dont la somme correspond à l’indice',
   'Move with your finger': 'Déplace avec ton doigt',
   'Undo a move / restart the level': 'Annule un coup / recommence le niveau',
   'Push every crate onto a target': 'Pousse chaque caisse sur une cible',
