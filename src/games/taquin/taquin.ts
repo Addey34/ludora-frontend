@@ -80,7 +80,11 @@ export function isMovable(state: TaquinState, idx: number): boolean {
  * Shuffles from the solved state by making `n` random legal moves,
  * never immediately reversing the previous move.
  */
-export function shuffle(state: TaquinState, n: number): TaquinState {
+export function shuffle(
+  state: TaquinState,
+  n: number,
+  rng: () => number = Math.random
+): TaquinState {
   const dirs: Dir[] = ['up', 'down', 'left', 'right'];
   let s = state;
   let last: Dir | null = null;
@@ -88,7 +92,7 @@ export function shuffle(state: TaquinState, n: number): TaquinState {
     const candidates = dirs.filter(
       (d) => (last === null || d !== REVERSE[last]) && neighborIdx(s, d) !== -1
     );
-    const d = candidates[Math.floor(Math.random() * candidates.length)];
+    const d = candidates[Math.floor(rng() * candidates.length)];
     s = move(s, d)!;
     last = d;
   }

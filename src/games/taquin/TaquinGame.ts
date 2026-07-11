@@ -1,7 +1,10 @@
 import { GameEngine } from '../../shared/engine/GameEngine.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import { showToast } from '../../shared/ui/toast.js';
 import { dismissStartOverlay } from '../../shared/ui/startOverlay.js';
+import { dailySeed, mulberry32, dayKey, type DailyProgress } from '../../shared/daily/daily.js';
+import { loadDailyProgress, recordDailyWin, streakToday } from '../../shared/daily/dailyStore.js';
 import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPanel.js';
 import { Stopwatch, formatClock } from '../../shared/ui/stopwatch.js';
 import { playSound } from '../../shared/fx/sound.js';
@@ -51,6 +54,12 @@ export class TaquinGame extends GameEngine {
   private moves = 0;
   private race: CompletionRaceHandle | null = null;
 
+  /** Daily-challenge mode (`?daily`): the puzzle is seeded from today's date so
+   *  every player gets the same one, and solving it feeds a consecutive-day streak. */
+  private daily =
+    typeof location !== 'undefined' && new URLSearchParams(location.search).has('daily');
+  private dailyProgress: DailyProgress | null = null;
+
   private readonly clock = new Stopwatch((s) => this.hud?.set('time', formatClock(s)));
 
   constructor() {
@@ -67,7 +76,9 @@ export class TaquinGame extends GameEngine {
     this.hud = setupHud([
       { key: 'moves', icon: 'arrows-up-down-left-right', label: t('hudMoves') },
       { key: 'time', icon: 'clock', label: t('hudTime') },
-      { key: 'high', icon: 'trophy', label: t('hudBest') },
+      this.daily
+        ? { key: 'streak', icon: 'fire', label: t('hudStreak') }
+        : { key: 'high', icon: 'trophy', label: t('hudBest') },
       { key: 'opponent', icon: 'users', label: t('scoreRaceOpponent') },
     ]);
     this.race = setupCompletionRace<TaquinState>(this, {
@@ -89,6 +100,25 @@ export class TaquinGame extends GameEngine {
     ]);
     this.applyLeaderboardVariant();
     this.newRound();
+    if (this.daily) void this.refreshDailyStreak();
+  }
+
+  /** Today's puzzle: date-seeded (identical for everyone) in daily mode, else random. */
+  private makePuzzle(): TaquinState {
+    if (this.daily) {
+      return shuffle(
+        initial(this.def.size),
+        this.def.shuffleMoves,
+        mulberry32(dailySeed(dayKey()))
+      );
+    }
+    return shuffle(initial(this.def.size), this.def.shuffleMoves);
+  }
+
+  /** Loads and shows the current daily streak on the HUD (best-effort). */
+  private async refreshDailyStreak(): Promise<void> {
+    this.dailyProgress = await loadDailyProgress('taquin');
+    this.hud?.set('streak', streakToday(this.dailyProgress));
   }
 
   private applyLeaderboardVariant(): void {
@@ -122,7 +152,7 @@ export class TaquinGame extends GameEngine {
 
   private newRound(): void {
     this.moves = 0;
-    this.puzzle = shuffle(initial(this.def.size), this.def.shuffleMoves);
+    this.puzzle = this.makePuzzle();
     this.clock.reset();
     this.clock.start();
     this.buildBoard();
@@ -229,7 +259,17 @@ export class TaquinGame extends GameEngine {
 
   protected onGameOver(): void {
     if (this.race?.reportSolved(this.clock.seconds * 1000)) return;
+    if (this.daily) void this.recordDaily();
     super.onGameOver();
+  }
+
+  /** Solving today's daily extends the streak (idempotent per day); toast the result. */
+  private async recordDaily(): Promise<void> {
+    const progress = await recordDailyWin('taquin');
+    this.dailyProgress = progress;
+    const streak = streakToday(progress);
+    this.hud?.set('streak', streak);
+    showToast(t('dailyStreak', { n: streak }), 'success', 4000);
   }
 
   protected getGameOverTitle(): string {
