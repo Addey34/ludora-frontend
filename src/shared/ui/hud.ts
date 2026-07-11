@@ -9,6 +9,19 @@
  * icon + its value — so the "time" stat's clock icon is the shared time logo.
  * The game owns only the values; the markup and styling are identical everywhere.
  */
+import { t } from '../i18n/i18n.js';
+
+/**
+ * Maps the common cross-game HUD labels to their i18n key, so the aria-labels
+ * are localised (a screen reader announces "Temps" on a French page). A label
+ * with no mapping falls through to `t()`, which returns the literal unchanged —
+ * so game-specific labels (Yahtzee categories, player codes) stay as authored.
+ */
+const LABEL_KEYS: Record<string, string> = {
+  Time: 'hudTime',
+  Score: 'score',
+  Best: 'hudBest',
+};
 
 interface StatDef {
   /** Stable key used to update the stat (e.g. 'time', 'score', 'high'). */
@@ -52,7 +65,7 @@ export function setupHud(defs: StatDef[], host?: HTMLElement | null): HudHandle 
       chip.className = 'game-stat';
       chip.dataset.stat = def.key;
       chip.hidden = true;
-      chip.setAttribute('aria-label', def.label);
+      chip.setAttribute('aria-label', t(LABEL_KEYS[def.label] ?? def.label));
 
       const icon = document.createElement('i');
       icon.className = `fas fa-${def.icon}`;
