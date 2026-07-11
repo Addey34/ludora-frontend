@@ -38,7 +38,8 @@ function usedIconNames(files: string[]): string[] {
       if (!STYLE_ALIASES.has(m[1])) names.add(m[1]);
     }
     if (file.endsWith('.ts')) {
-      for (const m of text.matchAll(/\bicon:\s*'([a-z0-9-]+)'/g)) names.add(m[1]);
+      for (const m of text.matchAll(/\bicon:\s*'([a-z0-9-]+)'/g))
+        names.add(m[1].replace(/^fa-/, ''));
     }
   }
   return [...names].sort();
@@ -46,7 +47,12 @@ function usedIconNames(files: string[]): string[] {
 
 describe('Font Awesome subset', () => {
   const css = readFileSync(SHIPPED, 'utf8');
-  const used = usedIconNames(walk(join(ROOT, 'src')).concat(walk(join(ROOT, 'public/css'))));
+  // vite.config.ts holds the sidebar category `icon:` classes (fa-brain, …), so
+  // it is part of the scan just like the generator's — see build-icons.mjs.
+  const files = walk(join(ROOT, 'src'))
+    .concat(walk(join(ROOT, 'public/css')))
+    .concat([join(ROOT, 'vite.config.ts')]);
+  const used = usedIconNames(files);
 
   it('ships every used icon (run `npm run icons` after adding one)', () => {
     const missing = used.filter((name) => !css.includes(`.fa-${name}:before{`));

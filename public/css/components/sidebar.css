@@ -114,7 +114,10 @@ body.sidebar-open .sidebar {
   display: flex;
   align-items: center;
   margin-inline: var(--spacing-sm);
-  color: var(--sidebar-muted);
+  /* Near-full-contrast at rest (theme-aware: flips with the sidebar text token),
+     brightening to full on hover/active below. A flat muted tone here washed the
+     nav out on every theme. */
+  color: color-mix(in srgb, var(--sidebar-text) 80%, transparent);
   font: inherit;
   font-weight: var(--font-weight-bold);
   white-space: nowrap;

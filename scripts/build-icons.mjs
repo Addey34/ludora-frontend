@@ -16,6 +16,10 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE = join(ROOT, 'scripts/assets/fontawesome-full.css');
 const OUT = join(ROOT, 'public/vendor/fontawesome/css/all.min.css');
 const SCAN_DIRS = [join(ROOT, 'src'), join(ROOT, 'public/css')];
+// vite.config.ts is the single source of truth for the game list AND the sidebar
+// category `icon:` classes (fa-brain, fa-chess, …), so it must be scanned too or
+// those category icons would be dropped from the subset and render blank.
+const SCAN_FILES = [join(ROOT, 'vite.config.ts')];
 const SCAN_EXT = new Set(['.hbs', '.html', '.ts', '.css']);
 
 /** Recursively collect files under a dir with a scannable extension. */
@@ -35,7 +39,8 @@ function walk(dir, out = []) {
 /**
  * Scan the source for every used solid icon name. Two shapes:
  *  - static markup / css: `fa-<name>` class tokens
- *  - HUD icons: `icon: '<name>'` (rendered as `fas fa-${name}` in hud.ts)
+ *  - HUD icons: `icon: '<name>'` (bare, hud.ts renders `fas fa-${name}`) and
+ *    sidebar category `icon: 'fa-<name>'` (already prefixed) in vite.config.ts.
  * Excludes the style aliases (fa-solid/regular/…) which are not glyphs.
  */
 function usedIconNames(files) {
@@ -47,7 +52,9 @@ function usedIconNames(files) {
       if (!STYLE_ALIASES.has(m[1])) names.add(m[1]);
     }
     if (file.endsWith('.ts')) {
-      for (const m of text.matchAll(/\bicon:\s*'([a-z0-9-]+)'/g)) names.add(m[1]);
+      // strip a leading `fa-` so `icon: 'fa-bolt'` and `icon: 'bomb'` both land as bare names
+      for (const m of text.matchAll(/\bicon:\s*'([a-z0-9-]+)'/g))
+        names.add(m[1].replace(/^fa-/, ''));
     }
   }
   return names;
@@ -74,7 +81,8 @@ function solidFontFace(fullCss) {
 
 function build() {
   const fullCss = readFileSync(SOURCE, 'utf8');
-  const used = [...usedIconNames(walk(SCAN_DIRS[0]).concat(walk(SCAN_DIRS[1])))].sort();
+  const files = SCAN_DIRS.flatMap((dir) => walk(dir)).concat(SCAN_FILES);
+  const used = [...usedIconNames(files)].sort();
   const map = codepointMap(fullCss);
 
   const missing = used.filter((n) => !map.has(n));
