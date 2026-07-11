@@ -218,3 +218,31 @@ html[data-ui-theme] {
     right: var(--spacing-sm);
   }
 }
+
+/* =============================================================================
+   Sidebar accent rendering per theme.
+   The category (--cat-accent) and game (--nav-accent) accents are tuned for the
+   dark navy rail. These knobs re-tune only how they RENDER in the sidebar
+   (the *-accent-render vars in sidebar.css) — the underlying category and game
+   color tokens, and each game's own board, are left untouched. Only lightness
+   is adjusted; the identity hue is preserved. Dark themes keep the vivid default
+   (via the 100%/transparent fallback), so only the variants that need it appear.
+   ========================================================================== */
+
+/* Neon arcade: nudge accents brighter so they glow on the near-black purple rail. */
+html[data-ui-theme='arcade'] .sidebar {
+  --accent-keep: 88%;
+  --accent-into: #ffffff;
+}
+
+/* Light themes: deepen accents toward the dark ink so a color designed for a dark
+   rail still has contrast and looks intentional on a light one. */
+html[data-ui-theme='esports'] .sidebar {
+  --accent-keep: 74%;
+  --accent-into: var(--ink);
+}
+
+html[data-ui-theme='cards'] .sidebar {
+  --accent-keep: 72%;
+  --accent-into: var(--ink);
+}

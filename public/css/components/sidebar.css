@@ -3,6 +3,15 @@
    ========================================================================== */
 .sidebar-link {
   --nav-accent: var(--primary-color);
+  /* Sidebar-only rendering of the accent: same identity hue, but its lightness is
+     tuned per theme (see the --accent-keep / --accent-into knobs on .sidebar) so a
+     color designed for the dark navy rail still reads on a light theme's rail. The
+     game's own --color-* token is untouched, so the game board keeps its identity. */
+  --nav-accent-render: color-mix(
+    in srgb,
+    var(--nav-accent) var(--accent-keep, 100%),
+    var(--accent-into, transparent)
+  );
 }
 
 .sidebar {
@@ -105,6 +114,12 @@ body.sidebar-open .sidebar {
 
 .sidebar-cat {
   --cat-accent: var(--sidebar-accent);
+  /* See --nav-accent-render: theme-tuned rendering of the category accent. */
+  --cat-accent-render: color-mix(
+    in srgb,
+    var(--cat-accent) var(--accent-keep, 100%),
+    var(--accent-into, transparent)
+  );
   position: relative;
 }
 
@@ -155,7 +170,7 @@ body.sidebar-open .sidebar {
    active category instead of nudging the whole tile. */
 .sidebar-cat.is-open .sidebar-cat-head,
 .sidebar-cat.has-active .sidebar-cat-head {
-  box-shadow: inset 2px 0 0 var(--cat-accent);
+  box-shadow: inset 2px 0 0 var(--cat-accent-render);
 }
 
 .sidebar-icon {
@@ -167,14 +182,14 @@ body.sidebar-open .sidebar {
 }
 
 .sidebar-cat-head .sidebar-icon {
-  color: var(--cat-accent);
+  color: var(--cat-accent-render);
   transition: filter var(--sidebar-ease);
 }
 
 .sidebar-cat-head:hover .sidebar-icon,
 .sidebar-cat.is-open .sidebar-cat-head .sidebar-icon,
 .sidebar-cat.has-active .sidebar-cat-head .sidebar-icon {
-  filter: drop-shadow(0 0 9px color-mix(in srgb, var(--cat-accent) 60%, transparent));
+  filter: drop-shadow(0 0 9px color-mix(in srgb, var(--cat-accent-render) 60%, transparent));
 }
 
 .sidebar-label {
@@ -218,7 +233,7 @@ body.sidebar-open .sidebar {
   display: none;
   margin: 0 0 var(--spacing-xs);
   padding: 0 var(--spacing-sm);
-  color: var(--cat-accent);
+  color: var(--cat-accent-render);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bolder);
   letter-spacing: 0.08em;
@@ -237,7 +252,7 @@ body.sidebar-open .sidebar {
   width: 1.4em;
   height: 1.4em;
   margin-left: var(--spacing-xs);
-  border: 1px solid color-mix(in srgb, var(--nav-accent) 34%, var(--sidebar-line));
+  border: 1px solid color-mix(in srgb, var(--nav-accent-render) 34%, var(--sidebar-line));
   border-radius: 999px;
   background: var(--sidebar-text);
   color: var(--sidebar-surface-raised);
@@ -262,17 +277,21 @@ body.sidebar-open .sidebar {
 }
 
 .sidebar-link.is-active {
-  border-color: color-mix(in srgb, var(--nav-accent) 52%, var(--sidebar-line));
+  border-color: color-mix(in srgb, var(--nav-accent-render) 52%, var(--sidebar-line));
   background:
-    linear-gradient(90deg, color-mix(in srgb, var(--nav-accent) 28%, transparent), transparent),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--nav-accent-render) 28%, transparent),
+      transparent
+    ),
     rgba(248, 250, 252, 0.1);
   color: var(--sidebar-text);
-  box-shadow: inset 3px 0 0 var(--nav-accent);
+  box-shadow: inset 3px 0 0 var(--nav-accent-render);
 }
 
 .sidebar-link.is-active .sidebar-icon {
-  color: var(--nav-accent);
-  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--nav-accent) 46%, transparent));
+  color: var(--nav-accent-render);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--nav-accent-render) 46%, transparent));
 }
 
 .sidebar-link.is-active .sidebar-mode {
