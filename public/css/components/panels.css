@@ -93,6 +93,7 @@
 .game-pop-panel .score-table {
   width: 100%;
   margin-top: 0;
+  background: transparent;
   border: none;
   box-shadow: none;
   font-size: var(--font-size-sm);

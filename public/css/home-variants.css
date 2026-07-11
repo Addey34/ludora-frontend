@@ -127,6 +127,12 @@
 }
 
 :where(html[data-ui-theme='esports'] .home-body, .home-body[data-ui-theme='esports'])
+  .home-tagline {
+  border-color: var(--home-line-solid);
+  color: var(--home-text);
+}
+
+:where(html[data-ui-theme='esports'] .home-body, .home-body[data-ui-theme='esports'])
   .game-category-title::after {
   background: linear-gradient(90deg, rgba(37, 99, 235, 0.32), transparent);
 }
@@ -165,6 +171,12 @@
   -webkit-text-fill-color: currentColor;
   filter: none;
   text-transform: none;
+}
+
+:where(html[data-ui-theme='cards'] .home-body, .home-body[data-ui-theme='cards']) .home-tagline {
+  border-color: var(--home-line-solid);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--home-text);
 }
 
 :where(html[data-ui-theme='cards'] .home-body, .home-body[data-ui-theme='cards']) .game-category {
