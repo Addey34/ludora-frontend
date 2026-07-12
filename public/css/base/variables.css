@@ -73,6 +73,10 @@
   --accent: #7dd3fc; /* cyan accent (icons, links, focus ring) */
   --accent-strong: #2563eb; /* blue accent (gradients, primary btn) */
   --flame: #f59e0b; /* amber — daily/weekly challenge marker (flame) */
+  /* Semantic state colors (toasts, banners) — one source, used via var(). */
+  --success: #22c55e; /* green */
+  --warning: #f59e0b; /* amber */
+  --danger: #ef4444; /* red */
   --ease-ui: 0.16s ease; /* standard UI transition */
 
   /* Shared "portal" page background (home + app pages): one aurora, two soft
