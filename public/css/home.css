@@ -262,14 +262,8 @@
   }
 }
 
-/* Daily-challenge strip: sits above the categories, gently highlighted. */
-.home-daily {
-  padding: var(--spacing-md);
-  border: 1px solid color-mix(in srgb, var(--color-taquin, #f59e0b) 30%, var(--line));
-  border-radius: var(--border-radius-lg, 16px);
-  background: color-mix(in srgb, var(--color-taquin, #f59e0b) 7%, transparent);
-}
-
+/* Daily challenge: just a normal category row (no boxed container), set apart
+   only by the flame in its title — sits above the other categories. */
 .home-daily .game-category-title {
   display: flex;
   align-items: center;
@@ -278,12 +272,6 @@
 
 .home-daily .game-category-title i {
   color: #f59e0b;
-}
-
-.home-daily-sub {
-  margin: 0 0 var(--spacing-sm);
-  font-size: var(--font-size-sm);
-  color: var(--home-text-muted, var(--ink-muted));
 }
 
 /* Weekly-challenge flame: a small badge pinned to the featured game's tile
