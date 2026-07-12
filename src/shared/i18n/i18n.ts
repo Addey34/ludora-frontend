@@ -48,6 +48,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     scoreSaved: 'Score saved!',
     scoreNotSaved: 'Score not saved: server unreachable.',
     gzpEarned: '+{n} GamesZone Points',
+    gzpEarnGuest: 'Sign in to earn +{n} GamesZone Points',
     gzpBonusWeekly: 'weekly challenge ×{mult}',
     gzpBonusDifficulty: 'difficulty ×{mult}',
     // Versus result overlay (BoardGame).
@@ -510,6 +511,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     scoreSaved: 'Score enregistré !',
     scoreNotSaved: 'Score non sauvegardé : serveur injoignable.',
     gzpEarned: '+{n} points GamesZone',
+    gzpEarnGuest: 'Connecte-toi pour gagner +{n} points GamesZone',
     gzpBonusWeekly: 'défi hebdo ×{mult}',
     gzpBonusDifficulty: 'difficulté ×{mult}',
     // Overlay de résultat versus (BoardGame).

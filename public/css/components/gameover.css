@@ -71,6 +71,14 @@
   animation: gzpPop 0.45s ease 0.15s both;
 }
 
+/* Guest incentive variant: same pop, quieter tone (it's a prompt, not a reward). */
+.gzp-earned--muted {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  color: var(--card-ink);
+  opacity: 0.85;
+}
+
 .gzp-bonus {
   margin: 0;
   font-size: var(--font-size-sm);

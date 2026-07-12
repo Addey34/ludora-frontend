@@ -607,7 +607,11 @@ export abstract class GameEngine {
       title: this.getGameOverTitle(),
       bodyHtml: content,
       score: content === undefined ? this.getRecordedScore() : undefined,
-      footerHtml: scoreable && loggedIn ? this.gzpNoteHtml(this.getRecordedScore()) : undefined,
+      footerHtml: scoreable
+        ? loggedIn
+          ? this.gzpNoteHtml(this.getRecordedScore())
+          : this.gzpGuestTeaser(this.getRecordedScore())
+        : undefined,
       buttons,
     });
   }
@@ -691,6 +695,17 @@ export abstract class GameEngine {
     if (difficulty > 1) bonuses.push(t('gzpBonusDifficulty', { mult: difficulty }));
     const bonusLine = bonuses.length ? `<p class="gzp-bonus">${bonuses.join(' · ')}</p>` : '';
     return `<p class="gzp-earned">${t('gzpEarned', { n: total })}</p>${bonusLine}`;
+  }
+
+  /**
+   * The GamesZone Points a guest *would* earn — shown under the game-over body as
+   * an incentive next to the "Sign in to save" button (guests earn nothing until
+   * they sign in). Turns the abstract prompt into a concrete reward.
+   */
+  private gzpGuestTeaser(score: number): string {
+    const { total } = this.gzpBreakdown(score);
+    if (total <= 0) return '';
+    return `<p class="gzp-earned gzp-earned--muted">${t('gzpEarnGuest', { n: total })}</p>`;
   }
 
   /** The active leaderboard variant (e.g. `hard`, `fr-hard`, `4`), or null for
