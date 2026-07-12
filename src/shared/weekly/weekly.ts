@@ -49,24 +49,12 @@ export function weeklySeed(key: string): number {
  * The featured game for a given week: a deterministic pick from `pool`. Returns
  * `null` for an empty pool. The order of `pool` is part of the rotation, so keep
  * it stable (it is driven by the `SCORE_GAMES` registry).
+ *
+ * How much the spotlight rewards (the GZP multiplier) lives in the central tuning
+ * hub `src/shared/score/multipliers.ts`, not here — this file only decides *when*
+ * and *which*.
  */
 export function featuredGame(pool: readonly string[], key: string = weekKey()): string | null {
   if (pool.length === 0) return null;
   return pool[weeklySeed(key) % pool.length];
-}
-
-/** GamesZone Points multiplier awarded to a run of the week's featured game. */
-export const WEEKLY_MULTIPLIER = 2;
-
-/**
- * The GZP multiplier for a run of `game` this week: {@link WEEKLY_MULTIPLIER} when
- * it is the featured game, else 1. Applied to the incremental global submission
- * so the spotlight game literally "earns more" — the retention hook.
- */
-export function gzpMultiplier(
-  game: string,
-  pool: readonly string[],
-  key: string = weekKey()
-): number {
-  return featuredGame(pool, key) === game ? WEEKLY_MULTIPLIER : 1;
 }

@@ -13,7 +13,7 @@ import {
   addFriendByCode,
 } from '../net/nakama.js';
 import { gzPoints } from '../score/gzPoints.js';
-import { gzpMultiplier } from '../weekly/weekly.js';
+import { runMultiplier } from '../score/multipliers.js';
 import { SCORE_GAMES } from '../score/scoreGames.js';
 import { storePendingScore } from '../score/pendingScore.js';
 import {
@@ -654,17 +654,25 @@ export abstract class GameEngine {
   }
 
   /**
-   * GamesZone Points for a run, boosted this week if this is the featured game
-   * (the weekly spotlight — see `src/shared/weekly/`). The bonus is baked in at
-   * play time, so a guest who signs in later still keeps the week's multiplier.
+   * GamesZone Points for a run, scaled by difficulty and the weekly spotlight
+   * (see `src/shared/score/multipliers.ts`). The bonus is baked in at play time,
+   * so a guest who signs in later still keeps the multiplier that applied then.
    */
   private weeklyGzp(score: number): number {
-    const key = this.baseLeaderboardId ?? '';
-    const mult = gzpMultiplier(
-      key,
+    const mult = runMultiplier(
+      this.baseLeaderboardId ?? '',
+      this.currentVariant(),
       SCORE_GAMES.map((g) => g.key)
     );
-    return gzPoints(score) * mult;
+    return Math.round(gzPoints(score) * mult);
+  }
+
+  /** The active leaderboard variant (e.g. `hard`, `fr-hard`, `4`), or null for
+   *  the base board — recovered from the `<base>-<variant>` leaderboard id. */
+  private currentVariant(): string | null {
+    const base = this.baseLeaderboardId;
+    const id = this.config.leaderboardId;
+    return base && id && id !== base ? id.slice(base.length + 1) : null;
   }
 
   /** Guest chose to save: stash the run and trigger Google sign-in. */

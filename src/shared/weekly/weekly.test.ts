@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { weekKey, weeklySeed, featuredGame, gzpMultiplier, WEEKLY_MULTIPLIER } from './weekly.js';
+import { weekKey, weeklySeed, featuredGame } from './weekly.js';
 
 describe('weekKey (ISO-8601, UTC)', () => {
   it('formats as YYYY-Www', () => {
@@ -65,20 +65,5 @@ describe('featuredGame', () => {
       )
     );
     expect(picks.size).toBeGreaterThan(1);
-  });
-});
-
-describe('gzpMultiplier', () => {
-  const pool = ['snake', 'tetris', '2048', 'motus'];
-
-  it('boosts the featured game and leaves the rest at 1', () => {
-    const featured = featuredGame(pool, '2026-W29')!;
-    expect(gzpMultiplier(featured, pool, '2026-W29')).toBe(WEEKLY_MULTIPLIER);
-    const other = pool.find((g) => g !== featured)!;
-    expect(gzpMultiplier(other, pool, '2026-W29')).toBe(1);
-  });
-
-  it('is 1 for an unknown game', () => {
-    expect(gzpMultiplier('pong', pool, '2026-W29')).toBe(1);
   });
 });

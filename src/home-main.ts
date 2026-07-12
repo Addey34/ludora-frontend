@@ -7,7 +7,8 @@
  * shows a stale week. It reuses the game tile already on the page for the
  * featured game's label + accent colour, so there is no extra data to plumb.
  */
-import { featuredGame, WEEKLY_MULTIPLIER } from './shared/weekly/weekly.js';
+import { featuredGame } from './shared/weekly/weekly.js';
+import { WEEKLY_MULT } from './shared/score/multipliers.js';
 import { SCORE_GAMES } from './shared/score/scoreGames.js';
 import { getLocale, mirrorPath, t } from './shared/i18n/i18n.js';
 
@@ -31,11 +32,11 @@ function renderSpotlight(gameKey: string): void {
   card.href = mirrorPath(`/${gameKey}`, getLocale());
   card.setAttribute('aria-label', `${t('weeklySpotlightTitle')}: ${label}`);
   card.innerHTML = `
-    <span class="home-weekly-badge">×${WEEKLY_MULTIPLIER}</span>
+    <span class="home-weekly-badge">×${WEEKLY_MULT}</span>
     <span class="game-icon" style="--game-icon: url(/icons/${gameKey}.svg)" aria-hidden="true"></span>
     <span class="home-weekly-text">
       <span class="home-weekly-title">${t('weeklySpotlightTitle')}</span>
-      <span class="home-weekly-sub">${t('weeklySpotlightSub', { game: label, mult: WEEKLY_MULTIPLIER })}</span>
+      <span class="home-weekly-sub">${t('weeklySpotlightSub', { game: label, mult: WEEKLY_MULT })}</span>
     </span>`;
 
   section.appendChild(card);
