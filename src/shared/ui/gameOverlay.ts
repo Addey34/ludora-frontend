@@ -25,6 +25,8 @@ interface GameOverlayOptions {
   bodyHtml?: string;
   /** Plain score shown when `bodyHtml` is omitted. */
   score?: number;
+  /** Trusted HTML shown under the body (e.g. the GamesZone Points breakdown). */
+  footerHtml?: string;
   buttons: GameOverlayButton[];
 }
 
@@ -68,6 +70,13 @@ export class GameOverlay {
       body.textContent = t('scoreValue', { score: options.score });
     }
     card.appendChild(body);
+
+    if (options.footerHtml) {
+      const footer = document.createElement('div');
+      footer.className = 'game-over-footer';
+      footer.innerHTML = options.footerHtml;
+      card.appendChild(footer);
+    }
 
     const actions = document.createElement('div');
     actions.className = 'game-over-actions';

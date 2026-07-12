@@ -54,6 +54,27 @@
   justify-content: center;
 }
 
+/* GamesZone Points earned (signed-in runs) — makes the difficulty / weekly
+   bonus visible so the player sees why a run was worth more. */
+.game-over-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gzp-earned {
+  margin: 0;
+  font-weight: var(--font-weight-bolder);
+  color: var(--title-color, var(--primary-color));
+}
+
+.gzp-bonus {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--card-ink);
+  opacity: 0.8;
+}
+
 .game-over-actions {
   display: flex;
   flex-wrap: wrap;
