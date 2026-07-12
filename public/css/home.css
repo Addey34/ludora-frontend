@@ -261,3 +261,27 @@
     --game-icon-size: 1.35rem;
   }
 }
+
+/* Daily-challenge strip: sits above the categories, gently highlighted. */
+.home-daily {
+  padding: var(--spacing-md);
+  border: 1px solid color-mix(in srgb, var(--color-taquin, #f59e0b) 30%, var(--line));
+  border-radius: var(--border-radius-lg, 16px);
+  background: color-mix(in srgb, var(--color-taquin, #f59e0b) 7%, transparent);
+}
+
+.home-daily .game-category-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.home-daily .game-category-title i {
+  color: #f59e0b;
+}
+
+.home-daily-sub {
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--home-text-muted, var(--ink-muted));
+}

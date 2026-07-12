@@ -8,7 +8,37 @@
         <h1 class="home-title">Games Zone</h1>
         <p class="home-tagline" data-i18n="tagline">Browser games — play instantly, no download</p>
       </header>
-      {{#each categories}}
+      {{#if dailyGames.length}}
+      <section class="game-category home-daily">
+        <h2 class="game-category-title">
+          <i class="fas fa-fire" aria-hidden="true"></i>
+          <span data-i18n="dailyChallengeTitle">Daily challenge</span>
+        </h2>
+        <p class="home-daily-sub" data-i18n="dailyChallengeSub">
+          One shared puzzle a day — keep your streak alive.
+        </p>
+        <nav class="game-grid" aria-label="Daily challenge">
+          {{#each dailyGames}}
+          <a
+            href="/{{key}}?daily"
+            class="game-tile"
+            data-game="{{key}}"
+            aria-label="{{label}}"
+            data-i18n-aria="game_{{key}}"
+            data-label="{{label}}"
+            data-i18n-label="game_{{key}}"
+            style="--nav-accent: var({{color}})"
+          >
+            <span
+              class="game-icon"
+              style="--game-icon: url(/icons/{{key}}.svg)"
+              aria-hidden="true"
+            ></span>
+          </a>
+          {{/each}}
+        </nav>
+      </section>
+      {{/if}} {{#each categories}}
       <section class="game-category">
         <h2 class="game-category-title" data-i18n="cat_{{id}}">{{label}}</h2>
         <nav class="game-grid" aria-label="{{label}}">

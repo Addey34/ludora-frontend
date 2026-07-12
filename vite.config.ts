@@ -486,6 +486,7 @@ const games = [
     leaderboard: true,
     settings: true,
     multiplayer: true,
+    daily: true,
     controls: [
       { keys: '<kbd>↑ ↓ ← →</kbd>', action: 'Move the blank tile' },
       { keys: 'Click / tap', action: 'Slide a tile toward the blank' },
@@ -846,6 +847,8 @@ export default defineConfig({
           color: c.color,
           games: c.keys.map((k) => games.find((g) => g.key === k)).filter(Boolean),
         }));
+        // Games offering a daily challenge (`?daily`), for the home "Daily" strip.
+        const dailyGames = games.filter((g) => (g as { daily?: boolean }).daily === true);
 
         // SEO: the page's clean route + canonical URL, and a per-page JSON-LD
         // block (structured data). Computed here so `head.hbs` injects it raw
@@ -903,6 +906,7 @@ export default defineConfig({
           games,
           game,
           categories,
+          dailyGames,
           site: SITE,
           canonical,
           altEn,
