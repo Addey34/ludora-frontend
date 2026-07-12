@@ -132,6 +132,7 @@ const games = [
     leaderboard: true,
     settings: true,
     multiplayer: true,
+    daily: true,
     controls: [
       { keys: 'Type', action: 'Enter a 5-letter word, then Enter' },
       { keys: '<kbd>Enter</kbd> / <kbd>⌫</kbd>', action: 'Submit / delete a letter' },

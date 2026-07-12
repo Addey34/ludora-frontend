@@ -10,6 +10,8 @@ import {
   setupCompletionRace,
   type CompletionRaceHandle,
 } from '../../shared/versus/completionRaceController.js';
+import { dailySeed, dayKey, type DailyProgress } from '../../shared/daily/daily.js';
+import { loadDailyProgress, recordDailyWin, streakToday } from '../../shared/daily/dailyStore.js';
 import { MAX_TRIES, WORD_LEN, Verdict, normalizeWord, scoreGuess } from './motus.js';
 
 type Lang = 'fr' | 'en';
@@ -58,6 +60,12 @@ export class MotusGame extends GameEngine {
   /** Solve time is the duel metric; not shown in the solo HUD. */
   private readonly clock = new Stopwatch(() => {});
 
+  /** Daily "word of the day" mode (`?daily`): the word is date-seeded so everyone
+   *  gets the same one, and solving it feeds a consecutive-day streak. */
+  private daily =
+    typeof location !== 'undefined' && new URLSearchParams(location.search).has('daily');
+  private dailyProgress: DailyProgress | null = null;
+
   constructor() {
     super({ storageKey: 'motus-scores', leaderboardId: 'motus' });
   }
@@ -67,7 +75,9 @@ export class MotusGame extends GameEngine {
     this.keyboardEl = document.getElementById('keyboard');
     this.hud = setupHud([
       { key: 'tries', icon: 'list-ol', label: t('hudTries') },
-      { key: 'high', icon: 'trophy', label: t('hudBest') },
+      this.daily
+        ? { key: 'streak', icon: 'fire', label: t('hudStreak') }
+        : { key: 'high', icon: 'trophy', label: t('hudBest') },
       { key: 'opponent', icon: 'users', label: t('scoreRaceOpponent') },
     ]);
 
@@ -90,6 +100,22 @@ export class MotusGame extends GameEngine {
 
     this.renderScoreTable();
     await this.loadWords();
+    if (this.daily) await this.refreshDailyStreak();
+  }
+
+  /** Loads and shows the current daily streak on the HUD (best-effort). */
+  private async refreshDailyStreak(): Promise<void> {
+    this.dailyProgress = await loadDailyProgress('motus');
+    this.hud?.set('streak', streakToday(this.dailyProgress));
+  }
+
+  /** Today's word: date-seeded (identical for everyone) in daily mode, else random. */
+  private pickWord(): string {
+    if (this.words.length === 0) return FALLBACK[this.lang][0];
+    const i = this.daily
+      ? dailySeed(dayKey()) % this.words.length
+      : Math.floor(Math.random() * this.words.length);
+    return this.words[i] ?? FALLBACK[this.lang][0];
   }
 
   private async loadWords(): Promise<void> {
@@ -182,9 +208,7 @@ export class MotusGame extends GameEngine {
   }
 
   private newRound(): void {
-    this.applyWord(
-      this.words[Math.floor(Math.random() * this.words.length)] ?? FALLBACK[this.lang][0]
-    );
+    this.applyWord(this.pickWord());
   }
 
   /** Builds and starts the identical shared word from a host-sent challenge. */
@@ -288,7 +312,17 @@ export class MotusGame extends GameEngine {
     const points = (MAX_TRIES - this.row + 1) * 200;
     this.addScore(points);
     playSound('win');
+    if (this.daily) void this.recordDaily();
     this.gameOver();
+  }
+
+  /** Solving today's word extends the streak (idempotent per day); toast the result. */
+  private async recordDaily(): Promise<void> {
+    const progress = await recordDailyWin('motus');
+    this.dailyProgress = progress;
+    const streak = streakToday(progress);
+    this.hud?.set('streak', streak);
+    showToast(t('dailyStreak', { n: streak }), 'success', 4000);
   }
 
   private lose(): void {
