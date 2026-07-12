@@ -13,11 +13,18 @@
 #
 # NB: this file is NOT applied automatically (the service was created by hand).
 # The ENGLISH routes below are hand-mirrored in the dashboard (Settings >
-# Redirects/Rewrites), same order. The FRENCH pages need NO rule: they are built
-# un-nested at dist/fr/<key>/index.html (see vite.config.ts closeBundle), and
-# Render serves a folder's index.html directly when the file exists — so /fr/<key>
-# resolves on its own (verified live: /fr/privacy already works this way). The
-# /fr entries below are kept only for documentation + the routesLocale parity test.
+# Redirects/Rewrites), same order.
+#
+# FRENCH: Render only serves a folder's index.html WITH a trailing slash, and
+# clean URLs have none — so folder-index alone doesn't cover /fr/<key>; an
+# explicit rewrite is required. The FR pages are built UN-NESTED at
+# dist/fr/<key>/index.html (see vite.config.ts closeBundle), so the whole /fr tree
+# (games AND static pages) is covered in the dashboard by just TWO rules, placed
+# before the /* catch-all:
+#     Rewrite  /fr     -> /fr/index.html
+#     Rewrite  /fr/*   -> /fr/*/index.html      (Render's wildcard: * = the match)
+# The explicit /fr/<key> entries below are kept only as documentation + to satisfy
+# the routesLocale parity test; the dashboard uses the 2-rule wildcard instead.
 services:
   - type: web
     name: games-zone
