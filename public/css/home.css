@@ -172,6 +172,14 @@
   transform: translateY(0) scale(0.97);
 }
 
+/* Touch: no real hover, so don't let the lift stick after a tap. */
+@media (hover: none) {
+  .game-tile:hover {
+    transform: none;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.16);
+  }
+}
+
 /* Consistent keyboard focus ring (a11y). See docs/private/DESIGN_SYSTEM.md §5. */
 .home-body :is(a, button):focus-visible {
   outline: 3px solid var(--line-strong);

@@ -46,6 +46,15 @@
   border: 2px solid var(--border-color-light);
 }
 
+/* Touch devices have no real hover: skip the lift so it can't "stick" after a
+   tap (the :active press feedback above still applies). */
+@media (hover: none) {
+  .btn:hover {
+    transform: none;
+    box-shadow: var(--shadow);
+  }
+}
+
 /* Desktop: slightly roomier buttons. */
 @media (min-width: 768px) {
   .btn {
