@@ -249,7 +249,7 @@ body.sidebar-open .sidebar {
    injected client-side by weeklyFeature.ts). Marks the game that earns ×N GZP. */
 .sidebar-flame {
   flex: 0 0 auto;
-  color: #f59e0b;
+  color: var(--flame);
   font-size: var(--font-size-sm);
 }
 

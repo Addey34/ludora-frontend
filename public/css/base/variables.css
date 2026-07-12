@@ -72,6 +72,7 @@
   --line-strong: rgba(125, 211, 252, 0.42); /* accent-tinted border (hover/focus) */
   --accent: #7dd3fc; /* cyan accent (icons, links, focus ring) */
   --accent-strong: #2563eb; /* blue accent (gradients, primary btn) */
+  --flame: #f59e0b; /* amber — daily/weekly challenge marker (flame) */
   --ease-ui: 0.16s ease; /* standard UI transition */
 
   /* Shared "portal" page background (home + app pages): one aurora, two soft
