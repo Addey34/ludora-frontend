@@ -947,6 +947,29 @@ export default defineConfig({
             writeFileSync(dest, translateHtml(readFileSync(page, 'utf8'), locale, CATALOG));
           }
         }
+
+        // Emit a Render `_redirects` file (Netlify-compatible) so the clean URLs
+        // — the whole EN tree AND the /fr tree — are applied automatically on
+        // deploy, with no hand-maintained dashboard rules. Generated from the same
+        // `games` / `static_pages` lists as everything else, so it can't drift from
+        // the app. Rewrites keep the URL (status 200); the final catch-all sends
+        // unknown paths home. Render serves any real file first, so assets are
+        // never caught by the catch-all. This supersedes the manual dashboard
+        // mirroring noted in render.yaml.
+        const redirects: string[] = [];
+        const rule = (from: string, to: string, code = 200): void => {
+          redirects.push(`${from}  ${to}  ${code}`);
+        };
+        for (const g of games) rule(`/${g.key}`, `/games/${g.key}/index.html`);
+        for (const p of static_pages) rule(`/${p}`, `/${p}/index.html`);
+        for (const locale of LOCALIZED) {
+          rule(`/${locale}`, `/${locale}/index.html`);
+          for (const g of games)
+            rule(`/${locale}/${g.key}`, `/${locale}/games/${g.key}/index.html`);
+          for (const p of static_pages) rule(`/${locale}/${p}`, `/${locale}/${p}/index.html`);
+        }
+        rule('/*', '/', 301);
+        writeFileSync(resolve(distRoot, '_redirects'), `${redirects.join('\n')}\n`);
       },
     },
   ],

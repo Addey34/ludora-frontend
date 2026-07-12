@@ -12,8 +12,12 @@
 # /data) — they are served as-is.
 #
 # NB: this file is NOT applied automatically (the service was created by hand).
-# Mirror these same routes in the dashboard (Settings > Redirects/Rewrites),
-# in the same order.
+# It is kept as documentation / a Blueprint reference. The routes below are ALSO
+# emitted at build into `dist/_redirects` (see vite.config.ts closeBundle), a
+# Netlify-compatible file Render applies automatically on deploy — so the clean
+# URLs and the whole /fr tree work with NO manual dashboard rules. Once the
+# deployed site serves `/fr/...` correctly, the hand-added dashboard rules can be
+# removed (the `_redirects` file supersedes them).
 services:
   - type: web
     name: games-zone
