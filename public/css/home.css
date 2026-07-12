@@ -167,6 +167,11 @@
   box-shadow: 0 10px 22px color-mix(in srgb, var(--nav-accent, var(--home-accent)) 26%, transparent);
 }
 
+/* Tap feedback: settle back down on press. */
+.game-tile:active {
+  transform: translateY(0) scale(0.97);
+}
+
 /* Consistent keyboard focus ring (a11y). See docs/private/DESIGN_SYSTEM.md §5. */
 .home-body :is(a, button):focus-visible {
   outline: 3px solid var(--line-strong);

@@ -24,6 +24,12 @@
   box-shadow: var(--shadow-lg);
 }
 
+/* Press feedback: the button settles back down (consistent across the app). */
+.btn:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: var(--shadow);
+}
+
 .btn:focus-visible {
   outline: 3px solid var(--primary-color-light);
   outline-offset: 2px;

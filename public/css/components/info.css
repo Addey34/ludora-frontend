@@ -72,6 +72,13 @@
   transform: scale(1.08);
 }
 
+/* Press feedback: consistent quick settle on tap/click. */
+.game-info-toggle:active,
+.game-fullscreen-toggle:active,
+.game-pop-toggle:active {
+  transform: scale(0.94);
+}
+
 /* Hidden when the fullscreen API is unavailable (e.g. iPhone). */
 .game-fullscreen-toggle[hidden] {
   display: none;
