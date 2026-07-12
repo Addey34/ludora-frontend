@@ -13,6 +13,8 @@ import {
   addFriendByCode,
 } from '../net/nakama.js';
 import { gzPoints } from '../score/gzPoints.js';
+import { gzpMultiplier } from '../weekly/weekly.js';
+import { SCORE_GAMES } from '../score/scoreGames.js';
 import { storePendingScore } from '../score/pendingScore.js';
 import {
   LevelsConfig,
@@ -644,11 +646,25 @@ export abstract class GameEngine {
           showToast(t('scoreNotSaved'), 'warning');
         });
     }
-    submitGlobalScore(gzPoints(score), username).catch((err) =>
+    submitGlobalScore(this.weeklyGzp(score), username).catch((err) =>
       console.warn('[nakama] global score submission failed:', err)
     );
     track('score_saved', { game: this.baseLeaderboardId ?? '', score });
     this.onScoreSaved();
+  }
+
+  /**
+   * GamesZone Points for a run, boosted this week if this is the featured game
+   * (the weekly spotlight — see `src/shared/weekly/`). The bonus is baked in at
+   * play time, so a guest who signs in later still keeps the week's multiplier.
+   */
+  private weeklyGzp(score: number): number {
+    const key = this.baseLeaderboardId ?? '';
+    const mult = gzpMultiplier(
+      key,
+      SCORE_GAMES.map((g) => g.key)
+    );
+    return gzPoints(score) * mult;
   }
 
   /** Guest chose to save: stash the run and trigger Google sign-in. */
@@ -659,7 +675,7 @@ export abstract class GameEngine {
       boards: this.targetBoards(),
       score,
       extra: this.buildScoreEntry('').additionalData,
-      gzp: gzPoints(score),
+      gzp: this.weeklyGzp(score),
     });
     window.dispatchEvent(new CustomEvent('gz-request-login'));
   }
