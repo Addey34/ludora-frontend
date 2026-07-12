@@ -100,7 +100,9 @@ export class MotusGame extends GameEngine {
 
     this.renderScoreTable();
     await this.loadWords();
-    if (this.daily) await this.refreshDailyStreak();
+    // Fire-and-forget: the streak is a HUD nicety and must never delay the game
+    // becoming playable on a slow/unreachable backend (loads via Nakama).
+    if (this.daily) void this.refreshDailyStreak();
   }
 
   /** Loads and shows the current daily streak on the HUD (best-effort). */
