@@ -6,6 +6,9 @@ import { setupSettingsPanel, difficultyField } from '../../shared/ui/settingsPan
 import { playSound } from '../../shared/fx/sound.js';
 import { Stopwatch, formatClock } from '../../shared/ui/stopwatch.js';
 import { Difficulty } from '../../shared/quiz/quiz.js';
+import { showToast } from '../../shared/ui/toast.js';
+import { dailySeed, dayKey, mulberry32, type DailyProgress } from '../../shared/daily/daily.js';
+import { loadDailyProgress, recordDailyWin, streakToday } from '../../shared/daily/dailyStore.js';
 import { Grid, SIZE, cloneGrid, conflicts, generatePuzzle, isSolved } from './sudoku.js';
 
 /** Base points + par time (s) for the score bonus, per difficulty. */
@@ -35,8 +38,15 @@ export class SudokuGame extends GameEngine {
 
   private readonly clock = new Stopwatch((s) => this.hud?.set('time', formatClock(s)));
 
+  /** Daily "puzzle of the day" mode (`?daily`): a date-seeded medium grid shared
+   *  by everyone, whose solve feeds a consecutive-day streak. */
+  private daily =
+    typeof location !== 'undefined' && new URLSearchParams(location.search).has('daily');
+  private dailyProgress: DailyProgress | null = null;
+
   constructor() {
     super({ storageKey: 'sudoku-scores', leaderboardId: 'sudoku' });
+    if (this.daily) this.difficulty = 'medium';
   }
 
   initialize(): void {
@@ -45,7 +55,9 @@ export class SudokuGame extends GameEngine {
     this.hud = setupHud([
       { key: 'time', icon: 'clock', label: t('hudTime') },
       { key: 'score', icon: 'star', label: t('score') },
-      { key: 'high', icon: 'trophy', label: t('hudBest') },
+      this.daily
+        ? { key: 'streak', icon: 'fire', label: t('hudStreak') }
+        : { key: 'high', icon: 'trophy', label: t('hudBest') },
     ]);
 
     this.buildGrid();
@@ -65,6 +77,13 @@ export class SudokuGame extends GameEngine {
 
     this.renderScoreTable();
     this.newGame();
+    if (this.daily) void this.refreshDailyStreak();
+  }
+
+  /** Loads and shows the current daily streak on the HUD (best-effort). */
+  private async refreshDailyStreak(): Promise<void> {
+    this.dailyProgress = await loadDailyProgress('sudoku');
+    this.hud?.set('streak', streakToday(this.dailyProgress));
   }
 
   private buildGrid(): void {
@@ -109,7 +128,9 @@ export class SudokuGame extends GameEngine {
 
   private newGame(): void {
     this.clock.reset();
-    const { puzzle, solution } = generatePuzzle(this.difficulty);
+    // Daily mode seeds a date-derived PRNG so everyone gets the identical grid.
+    const rng = this.daily ? mulberry32(dailySeed(dayKey())) : undefined;
+    const { puzzle, solution } = generatePuzzle(this.difficulty, rng);
     this.grid = cloneGrid(puzzle);
     this.solution = solution;
     this.given = puzzle.map((row) => row.map((v) => v !== 0));
@@ -117,7 +138,7 @@ export class SudokuGame extends GameEngine {
     this.draw();
     this.hud?.set('time', formatClock(0));
     this.hud?.set('score', this.state.score);
-    this.hud?.set('high', this.scoreManager.getHighScore());
+    if (!this.daily) this.hud?.set('high', this.scoreManager.getHighScore());
   }
 
   start(): void {
@@ -185,7 +206,16 @@ export class SudokuGame extends GameEngine {
     this.addScore(base + Math.max(0, par - this.clock.seconds));
     this.hud?.set('score', this.state.score);
     playSound('win');
+    if (this.daily) void this.recordDaily();
     this.gameOver();
+  }
+
+  /** Solving today's puzzle extends the streak (idempotent per day); toast it. */
+  private async recordDaily(): Promise<void> {
+    this.dailyProgress = await recordDailyWin('sudoku');
+    const streak = streakToday(this.dailyProgress);
+    this.hud?.set('streak', streak);
+    showToast(t('dailyStreak', { n: streak }), 'success', 4000);
   }
 
   stop(): void {

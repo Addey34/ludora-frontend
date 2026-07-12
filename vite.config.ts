@@ -472,6 +472,7 @@ const games = [
     mode: 'solo',
     leaderboard: true,
     settings: true,
+    daily: true,
     controls: [
       { keys: 'Click / tap', action: 'Select a cell' },
       { keys: '<kbd>1 – 9</kbd>', action: 'Fill the selected cell (0 / Backspace clears)' },
