@@ -245,6 +245,14 @@ body.sidebar-open .sidebar {
   font-size: var(--font-size-md);
 }
 
+/* Weekly-challenge flame on the featured game's link (left of the players badge,
+   injected client-side by weeklyFeature.ts). Marks the game that earns ×N GZP. */
+.sidebar-flame {
+  flex: 0 0 auto;
+  color: #f59e0b;
+  font-size: var(--font-size-sm);
+}
+
 .sidebar-mode {
   flex: 0 0 auto;
   display: grid;

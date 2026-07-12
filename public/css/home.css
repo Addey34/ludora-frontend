@@ -286,64 +286,25 @@
   color: var(--home-text-muted, var(--ink-muted));
 }
 
-/* Weekly spotlight banner — injected client-side (home-main.ts) so the featured
-   game never goes stale. Accent comes from the featured game's own tile. */
-.home-weekly {
-  padding: 0;
-  border: 0;
-  background: none;
+/* Weekly-challenge flame: a small badge pinned to the featured game's tile
+   (injected client-side, see weeklyFeature.ts) — no extra container, just a
+   "hot this week" marker on the card itself. */
+.game-tile {
+  position: relative;
 }
 
-.home-weekly-card {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
-  border: 1px solid color-mix(in srgb, var(--nav-accent) 40%, var(--line));
-  border-radius: var(--border-radius-lg, 16px);
-  background: color-mix(in srgb, var(--nav-accent) 10%, transparent);
-  text-decoration: none;
-  color: inherit;
-  transition:
-    transform 0.15s ease,
-    background 0.15s ease;
-}
-
-.home-weekly-card:hover {
-  transform: translateY(-2px);
-  background: color-mix(in srgb, var(--nav-accent) 16%, transparent);
-}
-
-.home-weekly-badge {
-  flex: none;
+.weekly-flame {
+  position: absolute;
+  top: -6px;
+  right: -6px;
   display: grid;
   place-items: center;
-  min-width: 2.4rem;
-  height: 2.4rem;
-  padding: 0 var(--spacing-xs);
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 999px;
-  font-weight: 700;
+  background: #f59e0b;
   color: #fff;
-  background: var(--nav-accent);
-}
-
-.home-weekly-card .game-icon {
-  --game-icon-size: 2rem;
-  flex: none;
-  background-color: var(--nav-accent);
-}
-
-.home-weekly-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.home-weekly-title {
-  font-weight: 700;
-}
-
-.home-weekly-sub {
-  font-size: var(--font-size-sm);
-  color: var(--home-text-muted, var(--ink-muted));
+  font-size: 0.7rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  pointer-events: auto;
 }

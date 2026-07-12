@@ -1,4 +1,5 @@
 import { applyTranslations, getLocale, setLocale, t } from '../i18n/i18n.js';
+import { markWeeklyChallenge } from '../weekly/weeklyFeature.js';
 
 const sidebar = document.querySelector('.sidebar');
 if (sidebar) {
@@ -109,5 +110,9 @@ if (sidebar) {
 
   window.addEventListener('gz-sound-change', () => updateIcon());
 })();
+
+// Flag the featured game of the week (flame + tooltip) on its sidebar link and,
+// on the home page, its tile. Client-side so the week is never stale.
+markWeeklyChallenge();
 
 export {};
