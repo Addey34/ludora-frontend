@@ -4,8 +4,10 @@
   <body class="app-body">
     {{> shell-open title="Motus" key="motus"}}
     <div class="game-details"></div>
-    <div class="motus-area">
-      <div class="motus-grid" id="grid"></div>
+    <div class="motus-area game-stack">
+      <div class="game-stack-main">
+        <div class="motus-grid" id="grid"></div>
+      </div>
       <div class="motus-keyboard" id="keyboard"></div>
     </div>
     {{> shell-close}} {{> game-chrome}}

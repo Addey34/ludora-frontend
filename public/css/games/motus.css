@@ -12,24 +12,36 @@
   --motus-absent: #787c7e;
   --motus-border: #d3d6da;
   --motus-key: #e7e9ee;
+  /* Portrait footprint (grid over keyboard): narrow the shell to the content so
+     it fills the height without a wide square of empty side-space. */
+  --game-board-fit-ratio: 0.7;
 }
 
+/* .game-stack (shared) lays this out as a centered column. The aspect-ratio
+   (matching --game-board-fit-ratio) gives it a DEFINITE height that fills the
+   shell — like a square .game-board, but portrait — so the height-driven grid
+   below has room to grow into. */
 .motus-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-md);
+  aspect-ratio: var(--game-board-fit-ratio);
+  min-height: 0;
+  max-height: 100%;
   width: 100%;
+  gap: var(--spacing-sm);
 }
 
 /* ── Guess grid ──────────────────────────────────────────────────────────── */
-
+/* Height-driven: takes all the vertical room .game-stack-main gives it and
+   derives its width from the 5/6 aspect (never wider than the shell). */
 .motus-grid {
   display: grid;
   grid-template-rows: repeat(6, 1fr);
   gap: 5px;
-  width: min(88%, 20rem);
+  height: 100%;
+  max-height: 100%;
+  width: auto;
+  max-width: 100%;
   aspect-ratio: 5 / 6;
+  margin-inline: auto;
 }
 
 .motus-row {
