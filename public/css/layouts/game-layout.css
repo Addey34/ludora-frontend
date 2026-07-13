@@ -27,7 +27,10 @@
   width: 100%;
   max-width: none;
   margin: 0;
-  padding-block: var(--game-page-padding-block);
+  /* Reserve the top band for the fixed global controls so a full-height (tall)
+     game's own header never slides under the sidebar toggle / theme-lang-sound
+     bubbles; keep the small default padding at the bottom. */
+  padding-block: var(--game-chrome-clearance) var(--game-page-padding-block);
   /* Fills exactly the first screen and centers the frame in it. The
      .app-body::before bar is `position: fixed` (out of flow): nothing to subtract. */
   min-height: 100vh;
@@ -52,7 +55,10 @@
 .game-shell {
   position: relative;
   width: min(100%, var(--game-frame-width));
-  max-height: calc(100dvh - 1rem);
+  /* Height available below the reserved top chrome band (+ a little breathing
+     room), so a full-height shell sits fully visible instead of under the fixed
+     global controls. */
+  max-height: calc(100dvh - var(--game-chrome-clearance) - var(--spacing-sm));
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -75,6 +81,19 @@
   font-size: clamp(1.25rem, 3vw, 1.6rem);
   line-height: 1.15;
   text-shadow: none;
+  /* Mobile-first: the action-pill cluster (.game-actions) is absolutely anchored
+     top-left and the fullscreen button top-right; on a narrow shell the centered
+     title would slide UNDER the pills and get clipped ("Snake" → "ake"). Reserve a
+     band the height of one pill button so the title sits BELOW the controls. Reset
+     to the inline centered layout at ≥md, where the wide shell leaves room beside
+     the pills. */
+  margin-top: calc(2rem + var(--spacing-xs));
+}
+
+@media (min-width: 768px) {
+  .game-shell .app-title {
+    margin-top: 0;
+  }
 }
 
 /* --- Play surface: square by default. Games that need a non-square surface
