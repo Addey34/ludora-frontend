@@ -27,11 +27,9 @@
   width: 100%;
   max-width: none;
   margin: 0;
-  /* Reserve the top band (fixed global controls) on BOTH sides so the frame is
-     truly centered in the viewport — not pushed down — while its top never
-     slides under the sidebar toggle / theme-lang-sound bubbles. A full-height
-     shell (max-height below) fits exactly inside this symmetric reserve. */
-  padding-block: var(--game-chrome-clearance);
+  /* Spend the whole height on the game: only clear the fixed top chrome, and hug
+     the bottom. The shell (max-height = --game-avail-height) fills what's left. */
+  padding-block: var(--game-chrome-clearance) var(--game-page-padding-block);
   /* Fills exactly the first screen and centers the frame in it. The
      .app-body::before bar is `position: fixed` (out of flow): nothing to subtract. */
   min-height: 100vh;
@@ -41,6 +39,16 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
+}
+
+/* Desktop/tablet: the frame is centered and narrower than the viewport, so its
+   top edge no longer runs under the corner controls (sidebar toggle / theme-lang-
+   sound). Drop the top clearance to a hair so the game uses almost the full
+   height. Phones keep the full clearance (there the shell spans the width). */
+@media (min-width: 768px) {
+  .app-body:has(.game-container) {
+    --game-chrome-clearance: var(--game-page-padding-block);
+  }
 }
 
 /* Fullscreen (dedicated button): the play area fills the screen with the same
@@ -56,10 +64,10 @@
 .game-shell {
   position: relative;
   width: min(100%, var(--game-frame-width));
-  /* Height available inside the container's symmetric chrome reserve, so a
-     full-height shell sits fully visible and centered (never under the fixed
-     global controls, top or bottom). Matches the --game-frame-width height base. */
-  max-height: calc(100dvh - 2 * var(--game-chrome-clearance));
+  /* Fill the height left after the top-chrome clearance (see --game-avail-height).
+     Same base as --game-frame-width, so a square board stays square and as large
+     as the viewport allows. */
+  max-height: var(--game-avail-height);
   display: flex;
   flex-direction: column;
   align-items: stretch;

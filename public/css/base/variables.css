@@ -203,19 +203,19 @@
   --game-board-aspect-wide: 16 / 9;
   --game-board-aspect: var(--game-board-aspect-square);
   --game-board-fit-ratio: 1;
-  --game-frame-height-reserve: 6rem;
-  /* Shell width = the square board's side. The board fills the height left once
-     the fixed top/bottom chrome clearance and the shell's own title+HUD reserve
-     are removed — so tall screens (incl. 2K/4K) use nearly the whole height
-     instead of stopping at a fixed pixel cap. `min(100%, …)` at the use site
-     keeps it width-limited on phones (where width, not height, is the limit). */
+  --game-frame-height-reserve: 5rem;
+  /* Height available for the shell: the whole viewport minus the fixed top-chrome
+     clearance and a hair of bottom padding — nothing else. Maximises the play
+     area; on desktop the clearance shrinks (see game-layout.css) since a centered
+     shell no longer reaches the corner controls, so games nearly fill the height. */
+  --game-avail-height: calc(100vh - var(--game-chrome-clearance) - var(--game-page-padding-block));
+  --game-avail-height: calc(100dvh - var(--game-chrome-clearance) - var(--game-page-padding-block));
+  /* Shell width = the square board's side: the available height minus the shell's
+     own title+HUD reserve. No fixed pixel cap, so tall screens (incl. 2K/4K) use
+     nearly the whole height. `min(100%, …)` at the use site keeps it width-limited
+     on phones (where width, not height, is the limit). */
   --game-frame-width: calc(
-    (100vh - 2 * var(--game-chrome-clearance) - var(--game-frame-height-reserve)) *
-      var(--game-board-fit-ratio)
-  );
-  --game-frame-width: calc(
-    (100dvh - 2 * var(--game-chrome-clearance) - var(--game-frame-height-reserve)) *
-      var(--game-board-fit-ratio)
+    (var(--game-avail-height) - var(--game-frame-height-reserve)) * var(--game-board-fit-ratio)
   );
   --game-shell-border: color-mix(in srgb, var(--white-color) 64%, var(--border-color-light));
   --game-shell-shadow: 0 18px 42px rgba(15, 23, 42, 0.2), 0 2px 8px rgba(15, 23, 42, 0.12);
