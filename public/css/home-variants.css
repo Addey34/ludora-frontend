@@ -1,33 +1,14 @@
 /* =============================================================================
-   Home visual directions.
-   The default `portal` direction is still driven by home.css. These overrides are
-   a lightweight mockup lab selected with `/?theme=<name>`.
+   Home-page flourishes per theme.
+   Page-wide tokens (background, surfaces, accents) live in
+   public/css/components/themes.css. This file adds ONLY the home hero's signature
+   touches — the gradient title, the grid glow and the tile tint — that aren't
+   plain tokens. Selectors are attribute+class (not :where) so the themed title
+   beats the base .home-title gradient in home.css.
    ========================================================================== */
 
-:where(html[data-ui-theme='arcade'] .home-body, .home-body[data-ui-theme='arcade']) {
-  --home-panel: #140d2b;
-  --home-panel-raised: #23104d;
-  --home-card: #21133d;
-  --home-line: rgba(255, 79, 216, 0.26);
-  --home-line-solid: rgba(255, 79, 216, 0.34);
-  --home-muted: #c8b8ff;
-  --home-accent: #ff4fd8;
-  --home-accent-strong: #22d3ee;
-  --portal-bg:
-    repeating-linear-gradient(0deg, rgba(255, 79, 216, 0.1) 0 1px, transparent 1px 32px),
-    repeating-linear-gradient(90deg, rgba(34, 211, 238, 0.08) 0 1px, transparent 1px 32px),
-    radial-gradient(circle at 50% 0%, rgba(255, 79, 216, 0.24), transparent 28rem),
-    radial-gradient(circle at 88% 88%, rgba(34, 211, 238, 0.18), transparent 26rem),
-    linear-gradient(180deg, #130a2a 0%, #070516 100%);
-  background-size:
-    auto,
-    32px 32px,
-    auto,
-    auto,
-    auto;
-}
-
-:where(html[data-ui-theme='arcade'] .home-body, .home-body[data-ui-theme='arcade']) .home-title {
+/* --- Neon arcade (default): magenta → cyan → gold title, pink grid glow. --- */
+html[data-ui-theme='arcade'] .home-body .home-title {
   background: linear-gradient(135deg, #fff7fb 0%, #ff4fd8 42%, #22d3ee 74%, #facc15 100%);
   background-clip: text;
   -webkit-background-clip: text;
@@ -35,173 +16,83 @@
     drop-shadow(0 0 22px rgba(34, 211, 238, 0.24));
 }
 
-:where(html[data-ui-theme='arcade'] .home-body, .home-body[data-ui-theme='arcade']) .game-grid {
+html[data-ui-theme='arcade'] .home-body .game-grid {
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.05),
     0 0 28px rgba(255, 79, 216, 0.16),
     0 18px 38px rgba(0, 0, 0, 0.35);
 }
 
-:where(html[data-ui-theme='arcade'] .home-body, .home-body[data-ui-theme='arcade']) .game-tile {
+html[data-ui-theme='arcade'] .home-body .game-tile {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent),
     color-mix(in srgb, var(--nav-accent, var(--home-accent)) 18%, var(--home-card));
 }
 
-:where(html[data-ui-theme='console'] .home-body, .home-body[data-ui-theme='console']) {
-  --home-panel: #1c2027;
-  --home-panel-raised: #272c35;
-  --home-card: #f3f6f8;
-  --home-line: rgba(255, 255, 255, 0.12);
-  --home-line-solid: rgba(255, 255, 255, 0.15);
-  --home-text: #f8fafc;
-  --home-muted: #a7b1bf;
-  --home-accent: #f5c84b;
-  --home-accent-strong: #ef4444;
-  --portal-bg:
-    radial-gradient(circle at 18% 18%, rgba(245, 200, 75, 0.15), transparent 23rem),
-    radial-gradient(circle at 86% 86%, rgba(239, 68, 68, 0.13), transparent 24rem),
-    linear-gradient(145deg, #16191f 0%, #252a33 48%, #101216 100%);
+/* --- Midnight: cyan → violet title, cool cyan grid glow. --- */
+html[data-ui-theme='midnight'] .home-body .home-title {
+  background: linear-gradient(135deg, #f2f8ff 0%, #38bdf8 46%, #818cf8 74%, #a78bfa 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.45))
+    drop-shadow(0 0 22px rgba(167, 139, 250, 0.22));
 }
 
-:where(html[data-ui-theme='console'] .home-body, .home-body[data-ui-theme='console']) .home-main {
-  max-width: 1120px;
-}
-
-:where(html[data-ui-theme='console'] .home-body, .home-body[data-ui-theme='console']) .home-title {
-  color: var(--home-text);
-  background: none;
-  -webkit-text-fill-color: currentColor;
-  filter: none;
-  text-transform: none;
-}
-
-:where(html[data-ui-theme='console'] .home-body, .home-body[data-ui-theme='console']) .home-tagline,
-:where(html[data-ui-theme='console'] .home-body, .home-body[data-ui-theme='console']) .game-grid {
-  border-color: rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.07);
+html[data-ui-theme='midnight'] .home-body .game-grid {
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 22px 44px rgba(0, 0, 0, 0.28);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 0 26px rgba(56, 189, 248, 0.14),
+    0 18px 38px rgba(0, 0, 0, 0.4);
 }
 
-:where(html[data-ui-theme='console'] .home-body, .home-body[data-ui-theme='console']) .game-tile {
-  border-color: rgba(15, 23, 42, 0.08);
-  background: var(--home-card);
-  color: color-mix(in srgb, var(--nav-accent, var(--home-accent)) 88%, #111827);
+html[data-ui-theme='midnight'] .home-body .game-tile {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent),
+    color-mix(in srgb, var(--nav-accent, var(--home-accent)) 15%, var(--home-card));
 }
 
-:where(html[data-ui-theme='console'] .home-body, .home-body[data-ui-theme='console'])
-  .game-tile::before {
-  color: #1f2937;
+/* --- Daylight: dark, vivid violet → pink title (readable on white). --- */
+html[data-ui-theme='daylight'] .home-body .home-title {
+  background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 40%, #db2777 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  filter: drop-shadow(0 6px 14px rgba(124, 58, 237, 0.28));
 }
 
-:where(html[data-ui-theme='esports'] .home-body, .home-body[data-ui-theme='esports']) {
-  --home-panel: #f8fafc;
-  --home-panel-raised: #ffffff;
-  --home-card: #ffffff;
-  --home-line: rgba(15, 23, 42, 0.1);
-  --home-line-solid: rgba(15, 23, 42, 0.13);
-  --home-text: #111827;
-  --home-muted: #64748b;
-  --home-accent: #2563eb;
-  --home-accent-strong: #16a34a;
-  --portal-bg:
-    linear-gradient(135deg, rgba(37, 99, 235, 0.09), transparent 34%),
-    linear-gradient(180deg, #ffffff 0%, #eef2f7 100%);
+html[data-ui-theme='daylight'] .home-body .game-grid {
+  box-shadow: 0 16px 34px rgba(76, 29, 149, 0.12);
 }
 
-:where(html[data-ui-theme='esports'] .home-body, .home-body[data-ui-theme='esports']) .home-title {
-  color: #111827;
-  background: none;
-  -webkit-text-fill-color: currentColor;
-  filter: none;
-  letter-spacing: 0;
-  text-transform: none;
+html[data-ui-theme='daylight'] .home-body .game-tile {
+  box-shadow: 0 6px 16px rgba(76, 29, 149, 0.1);
 }
 
-:where(html[data-ui-theme='esports'] .home-body, .home-body[data-ui-theme='esports']) .home-tagline,
-:where(html[data-ui-theme='esports'] .home-body, .home-body[data-ui-theme='esports']) .game-grid {
-  background: rgba(255, 255, 255, 0.78);
-  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
-}
-
-:where(html[data-ui-theme='esports'] .home-body, .home-body[data-ui-theme='esports'])
-  .home-tagline {
-  border-color: var(--home-line-solid);
-  color: var(--home-text);
-}
-
-:where(html[data-ui-theme='esports'] .home-body, .home-body[data-ui-theme='esports'])
-  .game-category-title::after {
-  background: linear-gradient(90deg, rgba(37, 99, 235, 0.32), transparent);
-}
-
-:where(html[data-ui-theme='esports'] .home-body, .home-body[data-ui-theme='esports']) .game-tile {
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.07);
-}
-
-:where(html[data-ui-theme='esports'] .home-body, .home-body[data-ui-theme='esports'])
-  .game-tile::before {
-  color: var(--home-text);
-}
-
-:where(html[data-ui-theme='cards'] .home-body, .home-body[data-ui-theme='cards']) {
-  --home-panel: #fff7ed;
-  --home-panel-raised: #fffbeb;
-  --home-card: #ffffff;
-  --home-line: rgba(120, 53, 15, 0.16);
-  --home-line-solid: rgba(120, 53, 15, 0.2);
-  --home-text: #27170c;
-  --home-muted: #7c5c42;
-  --home-accent: #0f766e;
-  --home-accent-strong: #be123c;
-  --portal-bg:
-    radial-gradient(circle at 18% 20%, rgba(15, 118, 110, 0.13), transparent 24rem),
-    linear-gradient(180deg, #fffaf0 0%, #f6ead8 100%);
-}
-
-:where(html[data-ui-theme='cards'] .home-body, .home-body[data-ui-theme='cards']) .home-main {
-  max-width: 1160px;
-}
-
-:where(html[data-ui-theme='cards'] .home-body, .home-body[data-ui-theme='cards']) .home-title {
-  color: var(--home-text);
-  background: none;
-  -webkit-text-fill-color: currentColor;
-  filter: none;
-  text-transform: none;
-}
-
-:where(html[data-ui-theme='cards'] .home-body, .home-body[data-ui-theme='cards']) .home-tagline {
+/* The default tagline chip is a dark navy pill (built for the dark themes);
+   swap it for a light translucent chip so it belongs on the light surface. */
+html[data-ui-theme='daylight'] .home-body .home-tagline {
   border-color: var(--home-line-solid);
   background: rgba(255, 255, 255, 0.72);
-  color: var(--home-text);
+  color: var(--home-muted);
 }
 
-:where(html[data-ui-theme='cards'] .home-body, .home-body[data-ui-theme='cards']) .game-category {
-  padding: var(--spacing-md);
-  border: 1px solid var(--home-line-solid);
-  border-radius: var(--border-radius-md);
-  background: rgba(255, 255, 255, 0.54);
-  box-shadow: 0 18px 34px rgba(120, 53, 15, 0.08);
+/* --- Amber (low-blue): amber → gold title, warm grid glow, no blue. --- */
+html[data-ui-theme='amber'] .home-body .home-title {
+  background: linear-gradient(135deg, #fff2dc 0%, #fbbf24 44%, #fb923c 74%, #f97316 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(251, 146, 60, 0.45))
+    drop-shadow(0 0 22px rgba(245, 158, 11, 0.22));
 }
 
-:where(html[data-ui-theme='cards'] .home-body, .home-body[data-ui-theme='cards']) .game-grid {
-  padding: 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
+html[data-ui-theme='amber'] .home-body .game-grid {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 0 26px rgba(251, 146, 60, 0.14),
+    0 18px 38px rgba(0, 0, 0, 0.4);
 }
 
-:where(html[data-ui-theme='cards'] .home-body, .home-body[data-ui-theme='cards']) .game-tile {
-  min-height: 5.8rem;
-  border-color: rgba(120, 53, 15, 0.12);
-  background: var(--home-card);
-  box-shadow: 0 10px 24px rgba(120, 53, 15, 0.1);
-}
-
-:where(html[data-ui-theme='cards'] .home-body, .home-body[data-ui-theme='cards'])
-  .game-tile::before {
-  color: var(--home-text);
+html[data-ui-theme='amber'] .home-body .game-tile {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent),
+    color-mix(in srgb, var(--nav-accent, var(--home-accent)) 15%, var(--home-card));
 }

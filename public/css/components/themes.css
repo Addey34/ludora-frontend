@@ -1,9 +1,18 @@
 /* =============================================================================
    Global UI themes.
-   These override shared design tokens, so home, app pages, sidebar and game
-   shells all move together from one fixed top-right control.
+   Four themes, one design language (the neon-arcade look). Each block overrides
+   the shared design tokens, so home, app pages, sidebar and game shells all move
+   together from one fixed top-right control.
+
+     • arcade   — default. Violet night + pink/cyan neon (the signature look).
+     • midnight — sleek cool dark: blue-black + cyan/violet neon (OLED gaming).
+     • daylight — bright, but keeps the arcade energy: violet + pink on white.
+     • amber    — warm, low-blue-light. Deep amber night, zero cool light.
+   Home-only flourishes (title gradient, grid glow, tile tint) live in
+   home-variants.css; page-wide tokens live here.
    ========================================================================== */
 
+/* Neon arcade — DEFAULT. Applied on every page over the navy base tokens. */
 :where(html, body)[data-ui-theme='arcade'] {
   --background-color: #130a2a;
   --background-color-light: #23104d;
@@ -39,101 +48,108 @@
   --game-shell-shadow: 0 18px 46px rgba(0, 0, 0, 0.34), 0 0 28px rgba(255, 79, 216, 0.13);
 }
 
-:where(html, body)[data-ui-theme='console'] {
-  --background-color: #16191f;
-  --background-color-light: #272c35;
-  --background-color-dark: #101216;
-  --text-color: #f8fafc;
-  --text-color-muted: #a7b1bf;
-  --primary-color: #f5c84b;
-  --primary-color-light: #3b3522;
-  --primary-color-dark: #a46a18;
-  --surface-base: #16191f;
-  --surface-deep: #101216;
-  --surface-1: #1c2027;
-  --surface-2: #272c35;
-  --surface-glass: rgba(255, 255, 255, 0.07);
-  --ink: #f8fafc;
-  --ink-muted: #a7b1bf;
-  --card: #f3f6f8;
-  --card-muted: #e6ebf0;
-  --card-ink: #1f2937;
-  --card-ink-muted: #5b6572;
-  --line: rgba(255, 255, 255, 0.12);
-  --line-solid: rgba(255, 255, 255, 0.15);
-  --line-strong: rgba(245, 200, 75, 0.5);
-  --accent: #f5c84b;
-  --accent-strong: #ef4444;
+/* Midnight — cool sleek dark: blue-black with cyan + violet neon. */
+:where(html, body)[data-ui-theme='midnight'] {
+  --background-color: #090d1a;
+  --background-color-light: #141d33;
+  --background-color-dark: #05070f;
+  --text-color: #eaf2ff;
+  --text-color-muted: #93a2c7;
+  --primary-color: #38bdf8;
+  --primary-color-light: #0c2f4a;
+  --primary-color-dark: #0284c7;
+  --surface-base: #090d1a;
+  --surface-deep: #05070f;
+  --surface-1: #101827;
+  --surface-2: #17203a;
+  --surface-glass: rgba(56, 189, 248, 0.07);
+  --ink: #eaf2ff;
+  --ink-muted: #93a2c7;
+  --card: #131c30;
+  --card-muted: #0d1424;
+  --card-ink: #eaf2ff;
+  --card-ink-muted: #aab6d4;
+  --line: rgba(56, 189, 248, 0.2);
+  --line-solid: rgba(56, 189, 248, 0.28);
+  --line-strong: rgba(167, 139, 250, 0.55);
+  --accent: #38bdf8;
+  --accent-strong: #a78bfa;
   --portal-bg:
-    radial-gradient(circle at 18% 18%, rgba(245, 200, 75, 0.15), transparent 23rem),
-    radial-gradient(circle at 86% 86%, rgba(239, 68, 68, 0.13), transparent 24rem),
-    linear-gradient(145deg, #16191f 0%, #252a33 48%, #101216 100%);
-  --game-shell-border: rgba(255, 255, 255, 0.18);
-  --game-shell-shadow: 0 22px 44px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    repeating-linear-gradient(0deg, rgba(56, 189, 248, 0.06) 0 1px, transparent 1px 34px),
+    radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.2), transparent 30rem),
+    radial-gradient(circle at 85% 90%, rgba(167, 139, 250, 0.16), transparent 26rem),
+    linear-gradient(180deg, #090d1a 0%, #05070f 100%);
+  --game-shell-border: rgba(56, 189, 248, 0.26);
+  --game-shell-shadow: 0 18px 46px rgba(0, 0, 0, 0.4), 0 0 26px rgba(56, 189, 248, 0.12);
 }
 
-:where(html, body)[data-ui-theme='esports'] {
-  --background-color: #eef2f7;
+/* Daylight — bright and crisp, but keeps the arcade energy: violet + pink. */
+:where(html, body)[data-ui-theme='daylight'] {
+  --background-color: #f4f2fb;
   --background-color-light: #ffffff;
-  --background-color-dark: #dbe4ef;
-  --text-color: #111827;
-  --text-color-muted: #64748b;
-  --primary-color: #2563eb;
-  --primary-color-light: #dbeafe;
-  --primary-color-dark: #1d4ed8;
-  --surface-base: #eef2f7;
+  --background-color-dark: #e7e2f7;
+  --text-color: #1c1338;
+  --text-color-muted: #6b5f8c;
+  --primary-color: #7c3aed;
+  --primary-color-light: #ede9fe;
+  --primary-color-dark: #6d28d9;
+  --surface-base: #f4f2fb;
   --surface-deep: #ffffff;
-  --surface-1: #f8fafc;
-  --surface-2: #ffffff;
-  --surface-glass: rgba(255, 255, 255, 0.78);
-  --ink: #111827;
-  --ink-muted: #64748b;
+  --surface-1: #ffffff;
+  --surface-2: #faf8ff;
+  --surface-glass: rgba(124, 58, 237, 0.06);
+  --ink: #1c1338;
+  --ink-muted: #6b5f8c;
   --card: #ffffff;
-  --card-muted: #f1f5f9;
-  --card-ink: #111827;
-  --card-ink-muted: #64748b;
-  --line: rgba(15, 23, 42, 0.1);
-  --line-solid: rgba(15, 23, 42, 0.13);
-  --line-strong: rgba(37, 99, 235, 0.38);
-  --accent: #2563eb;
-  --accent-strong: #16a34a;
+  --card-muted: #f4f0ff;
+  --card-ink: #1c1338;
+  --card-ink-muted: #6b5f8c;
+  --line: rgba(124, 58, 237, 0.16);
+  --line-solid: rgba(124, 58, 237, 0.22);
+  --line-strong: rgba(236, 72, 153, 0.42);
+  --accent: #7c3aed;
+  --accent-strong: #db2777;
   --portal-bg:
-    linear-gradient(135deg, rgba(37, 99, 235, 0.09), transparent 34%),
-    linear-gradient(180deg, #ffffff 0%, #eef2f7 100%);
-  --game-shell-border: rgba(15, 23, 42, 0.1);
-  --game-shell-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
+    radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.12), transparent 26rem),
+    radial-gradient(circle at 88% 96%, rgba(236, 72, 153, 0.1), transparent 24rem),
+    linear-gradient(180deg, #ffffff 0%, #f1ecfb 100%);
+  --game-shell-border: rgba(124, 58, 237, 0.18);
+  --game-shell-shadow: 0 16px 38px rgba(76, 29, 149, 0.14), 0 2px 8px rgba(76, 29, 149, 0.08);
 }
 
-:where(html, body)[data-ui-theme='cards'] {
-  --background-color: #f6ead8;
-  --background-color-light: #fffaf0;
-  --background-color-dark: #e8d8bd;
-  --text-color: #27170c;
-  --text-color-muted: #7c5c42;
-  --primary-color: #0f766e;
-  --primary-color-light: #ccfbf1;
-  --primary-color-dark: #115e59;
-  --surface-base: #f6ead8;
-  --surface-deep: #fffaf0;
-  --surface-1: #fff7ed;
-  --surface-2: #fffbeb;
-  --surface-glass: rgba(255, 255, 255, 0.54);
-  --ink: #27170c;
-  --ink-muted: #7c5c42;
-  --card: #ffffff;
-  --card-muted: #fdf1dd;
-  --card-ink: #27170c;
-  --card-ink-muted: #7c5c42;
-  --line: rgba(120, 53, 15, 0.16);
-  --line-solid: rgba(120, 53, 15, 0.2);
-  --line-strong: rgba(15, 118, 110, 0.42);
-  --accent: #0f766e;
-  --accent-strong: #be123c;
+/* Amber — warm, low-blue-light. Deep amber night with zero cool light. */
+:where(html, body)[data-ui-theme='amber'] {
+  --background-color: #1b1206;
+  --background-color-light: #2a1d0d;
+  --background-color-dark: #120b04;
+  --text-color: #fde7cf;
+  --text-color-muted: #cda878;
+  --primary-color: #fb923c;
+  --primary-color-light: #3a2410;
+  --primary-color-dark: #c2410c;
+  --surface-base: #1b1206;
+  --surface-deep: #120b04;
+  --surface-1: #241809;
+  --surface-2: #30210e;
+  --surface-glass: rgba(251, 146, 60, 0.08);
+  --ink: #fde7cf;
+  --ink-muted: #cda878;
+  --card: #271a0b;
+  --card-muted: #1d1307;
+  --card-ink: #fde7cf;
+  --card-ink-muted: #d6b487;
+  --line: rgba(251, 146, 60, 0.22);
+  --line-solid: rgba(251, 146, 60, 0.3);
+  --line-strong: rgba(251, 191, 36, 0.5);
+  --accent: #fbbf24;
+  --accent-strong: #f97316;
   --portal-bg:
-    radial-gradient(circle at 18% 20%, rgba(15, 118, 110, 0.13), transparent 24rem),
-    linear-gradient(180deg, #fffaf0 0%, #f6ead8 100%);
-  --game-shell-border: rgba(120, 53, 15, 0.16);
-  --game-shell-shadow: 0 18px 34px rgba(120, 53, 15, 0.1);
+    repeating-linear-gradient(0deg, rgba(251, 146, 60, 0.06) 0 1px, transparent 1px 34px),
+    radial-gradient(circle at 50% 0%, rgba(251, 146, 60, 0.22), transparent 30rem),
+    radial-gradient(circle at 85% 90%, rgba(245, 158, 11, 0.16), transparent 26rem),
+    linear-gradient(180deg, #1b1206 0%, #120b04 100%);
+  --game-shell-border: rgba(251, 146, 60, 0.26);
+  --game-shell-shadow: 0 18px 46px rgba(0, 0, 0, 0.4), 0 0 26px rgba(251, 146, 60, 0.12);
 }
 
 html[data-ui-theme] {
@@ -229,20 +245,17 @@ html[data-ui-theme] {
    (via the 100%/transparent fallback), so only the variants that need it appear.
    ========================================================================== */
 
-/* Neon arcade: nudge accents brighter so they glow on the near-black purple rail. */
-html[data-ui-theme='arcade'] .sidebar {
+/* Dark themes: nudge accents brighter so they glow on the near-black rail. */
+html[data-ui-theme='arcade'] .sidebar,
+html[data-ui-theme='midnight'] .sidebar,
+html[data-ui-theme='amber'] .sidebar {
   --accent-keep: 88%;
   --accent-into: #ffffff;
 }
 
-/* Light themes: deepen accents toward the dark ink so a color designed for a dark
+/* Light theme: deepen accents toward the dark ink so a color designed for a dark
    rail still has contrast and looks intentional on a light one. */
-html[data-ui-theme='esports'] .sidebar {
+html[data-ui-theme='daylight'] .sidebar {
   --accent-keep: 74%;
-  --accent-into: var(--ink);
-}
-
-html[data-ui-theme='cards'] .sidebar {
-  --accent-keep: 72%;
   --accent-into: var(--ink);
 }

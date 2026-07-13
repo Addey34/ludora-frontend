@@ -29,7 +29,7 @@
   <meta name="twitter:image" content="{{site}}/og-image.png" />
   <script>
     (function () {
-      var themes = ['portal', 'arcade', 'console', 'esports', 'cards'];
+      var themes = ['arcade', 'midnight', 'daylight', 'amber'];
       var storageKey = 'gz-theme';
       var params = new URLSearchParams(window.location.search);
       var requested = params.get('theme');
@@ -37,7 +37,7 @@
       try {
         stored = localStorage.getItem(storageKey);
       } catch (error) {}
-      var theme = themes.indexOf(requested) !== -1 ? requested : themes.indexOf(stored) !== -1 ? stored : 'portal';
+      var theme = themes.indexOf(requested) !== -1 ? requested : themes.indexOf(stored) !== -1 ? stored : 'arcade';
       document.documentElement.dataset.uiTheme = theme;
       if (themes.indexOf(requested) !== -1) {
         try {
