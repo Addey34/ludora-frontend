@@ -48,6 +48,20 @@
 @media (min-width: 768px) {
   .app-body:has(.game-container) {
     --game-chrome-clearance: var(--game-page-padding-block);
+    /* --game-avail-height is declared at :root, so its var(--game-chrome-clearance)
+       is substituted there with the GLOBAL clearance (~56px) and never sees the
+       override above — leaving the shell sized ~45px short and the slack wasted as
+       top/bottom gutter. Recompute it here so it re-substitutes the reduced desktop
+       clearance and the frame actually fills the height (fixes the FHD/2K margin). */
+    --game-avail-height: calc(
+      100dvh - var(--game-chrome-clearance) - var(--game-page-padding-block)
+    );
+    /* Same root-baking applies to the frame width (it derives from avail-height):
+       recompute it here so the square board grows into the reclaimed height instead
+       of the slack turning into gutter. */
+    --game-frame-width: calc(
+      (var(--game-avail-height) - var(--game-frame-height-reserve)) * var(--game-board-fit-ratio)
+    );
   }
 }
 
