@@ -47,6 +47,22 @@ describe('UI theme wiring', () => {
     }
   });
 
+  it('keeps the global controls inside the sidebar above authentication', () => {
+    const hbs = read('src/partials/sidebar.hbs');
+    const controlsStart = hbs.indexOf('<div class="sidebar-utility-controls">');
+    const authStart = hbs.indexOf('<div class="sidebar-auth"');
+    const sidebarEnd = hbs.indexOf('</nav>');
+    const controls = hbs.slice(controlsStart, authStart);
+
+    expect(controlsStart).toBeGreaterThan(-1);
+    expect(authStart).toBeGreaterThan(controlsStart);
+    expect(sidebarEnd).toBeGreaterThan(authStart);
+    for (const id of ['themeControl', 'langToggle', 'soundToggle']) {
+      expect(controls).toContain(`id="${id}"`);
+      expect(hbs.match(new RegExp(`id="${id}"`, 'g'))).toHaveLength(1);
+    }
+  });
+
   it('head.hbs anti-FOUC bootstrap array matches the theme ids and default', () => {
     const hbs = read('src/partials/head.hbs');
     const arr = hbs.match(/var themes = \[([^\]]*)\]/);

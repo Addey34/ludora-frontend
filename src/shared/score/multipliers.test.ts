@@ -1,13 +1,31 @@
 import { describe, expect, it } from 'vitest';
-import { featuredGame } from '../weekly/weekly.js';
+import { dailyGame, weeklyGames } from '../spotlight/spotlight.js';
 import {
   tierFor,
   difficultyMultiplier,
-  weeklyMultiplier,
+  spotlightMultiplier,
   runMultiplier,
   DIFFICULTY_MULT,
-  WEEKLY_MULT,
+  SPOTLIGHT_MULT,
 } from './multipliers.js';
+
+// A pool big enough that at least one game is neither the daily pick nor in the
+// weekly set (7 weekly + 1 daily out of 12).
+const POOL = [
+  'snake',
+  'tetris',
+  '2048',
+  'motus',
+  'simon',
+  'flappy',
+  'bubbles',
+  'kakuro',
+  'binairo',
+  'taquin',
+  'sudoku',
+  'invaders',
+];
+const DAY = new Date('2026-07-14T00:00:00Z');
 
 describe('tierFor', () => {
   it('reads a literal difficulty variant', () => {
@@ -51,30 +69,30 @@ describe('difficultyMultiplier', () => {
   });
 });
 
-describe('weeklyMultiplier', () => {
-  const pool = ['snake', 'tetris', '2048', 'motus'];
-
-  it('boosts the featured game and leaves the rest at 1', () => {
-    const featured = featuredGame(pool, '2026-W29')!;
-    expect(weeklyMultiplier(featured, pool, '2026-W29')).toBe(WEEKLY_MULT);
-    const other = pool.find((g) => g !== featured)!;
-    expect(weeklyMultiplier(other, pool, '2026-W29')).toBe(1);
+describe('spotlightMultiplier', () => {
+  it('is ×daily for the daily pick, ×weekly for a weekly pick, ×0 otherwise', () => {
+    const daily = dailyGame(POOL, DAY)!;
+    const weeklyOnly = weeklyGames(POOL, 7, DAY).find((g) => g !== daily)!;
+    const cold = POOL.find((g) => g !== daily && !weeklyGames(POOL, 7, DAY).includes(g))!;
+    expect(spotlightMultiplier(daily, POOL, DAY)).toBe(SPOTLIGHT_MULT.daily);
+    expect(spotlightMultiplier(weeklyOnly, POOL, DAY)).toBe(SPOTLIGHT_MULT.weekly);
+    expect(spotlightMultiplier(cold, POOL, DAY)).toBe(SPOTLIGHT_MULT.none);
   });
 });
 
 describe('runMultiplier', () => {
-  const pool = ['snake', 'tetris', '2048', 'motus'];
-
-  it('stacks difficulty and the weekly spotlight multiplicatively', () => {
-    const featured = featuredGame(pool, '2026-W29')!;
-    // A hard run of the featured game: difficulty ×2 × weekly ×2 = 4.
-    expect(runMultiplier(featured, 'hard', pool, '2026-W29')).toBeCloseTo(
-      DIFFICULTY_MULT.hard * WEEKLY_MULT
+  it('stacks difficulty and the spotlight multiplicatively', () => {
+    const daily = dailyGame(POOL, DAY)!;
+    // A hard run of the daily game: difficulty ×2 × spotlight ×2 = 4.
+    expect(runMultiplier(daily, 'hard', POOL, DAY)).toBeCloseTo(
+      DIFFICULTY_MULT.hard * SPOTLIGHT_MULT.daily
     );
   });
 
-  it('is 1 for an easy, non-featured, non-difficulty run', () => {
-    const other = pool.find((g) => featuredGame(pool, '2026-W29') !== g)!;
-    expect(runMultiplier(other, null, pool, '2026-W29')).toBe(1);
+  it('is 0 (earns no GZP) for a non-spotlit run, whatever the difficulty', () => {
+    const cold = POOL.find(
+      (g) => g !== dailyGame(POOL, DAY) && !weeklyGames(POOL, 7, DAY).includes(g)
+    )!;
+    expect(runMultiplier(cold, 'hard', POOL, DAY)).toBe(0);
   });
 });

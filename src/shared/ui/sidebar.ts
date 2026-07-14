@@ -1,5 +1,5 @@
 import { applyTranslations, getLocale, setLocale, t } from '../i18n/i18n.js';
-import { markWeeklyChallenge } from '../weekly/weeklyFeature.js';
+import { markSpotlight } from '../weekly/weeklyFeature.js';
 
 const sidebar = document.querySelector('.sidebar');
 if (sidebar) {
@@ -111,8 +111,8 @@ if (sidebar) {
   window.addEventListener('gz-sound-change', () => updateIcon());
 })();
 
-// Flag the featured game of the week (flame + tooltip) on its sidebar link and,
-// on the home page, its tile. Client-side so the week is never stale.
-markWeeklyChallenge();
+// Badge the daily pick and this week's weekly set (icon + tooltip) on their
+// sidebar links and, on the home page, their tiles. Client-side so it's never stale.
+markSpotlight();
 
 export {};

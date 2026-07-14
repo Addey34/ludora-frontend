@@ -5,10 +5,14 @@
    ========================================================================== */
 
 /* Game pages use almost the full viewport. Other pages keep app-shell.css's
-   regular centered content width. */
+   regular centered content width. Keep the sidebar-rail clearance on the left
+   (--rail-clearance, from app-shell.css) so the frame centres beside the rail
+   like the home, never under it — .game-shell is min(100%, …), so shrinking the
+   content box here is enough, no per-game width to touch. */
 .app-body:has(.game-container) {
   max-width: none;
   padding-inline: var(--game-page-padding-inline);
+  padding-left: calc(var(--rail-clearance) + var(--game-page-padding-inline));
   gap: 0;
 }
 
@@ -18,11 +22,15 @@
   --game-accent: var(--title-color, var(--primary-color));
   --game-accent-light: color-mix(in srgb, var(--game-accent) 76%, var(--white-color));
   --game-accent-dark: color-mix(in srgb, var(--game-accent) 76%, var(--black-color));
+  /* Immersive (fullscreen + zen) page background: the theme's own surfaces
+     (theme-aware, see themes.css) lightly tinted with the game's accent — so it
+     follows every theme instead of the old white-anchored gradient that stayed
+     light on the dark themes. */
   --game-accent-page-bg: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--game-accent-light) 24%, var(--white-color)) 0%,
-    color-mix(in srgb, var(--game-accent) 18%, var(--background-color-light)) 34%,
-    color-mix(in srgb, var(--game-accent-dark) 22%, var(--background-color)) 100%
+    color-mix(in srgb, var(--game-accent) 16%, var(--surface-1)) 0%,
+    color-mix(in srgb, var(--game-accent) 12%, var(--surface-base)) 42%,
+    color-mix(in srgb, var(--game-accent) 9%, var(--surface-deep)) 100%
   );
   width: 100%;
   max-width: none;

@@ -2,7 +2,7 @@
    Global UI themes.
    Four themes, one design language (the neon-arcade look). Each block overrides
    the shared design tokens, so home, app pages, sidebar and game shells all move
-   together from one fixed top-right control.
+   together from one control in the sidebar utility cluster.
 
      • arcade   — default. Violet night + pink/cyan neon (the signature look).
      • midnight — sleek cool dark: blue-black + cyan/violet neon (OLED gaming).
@@ -161,8 +161,6 @@ html[data-ui-theme] {
 }
 
 .theme-toggle {
-  top: var(--spacing-sm);
-  right: calc(var(--spacing-sm) + 2 * (44px + var(--spacing-xs)));
   font-size: var(--font-size-md);
 }
 
@@ -174,9 +172,10 @@ html[data-ui-theme] {
 }
 
 .theme-menu {
-  position: fixed;
-  top: calc(var(--spacing-sm) + 44px + var(--spacing-xs));
-  right: calc(var(--spacing-sm) + 2 * (44px + var(--spacing-xs)));
+  position: absolute;
+  right: auto;
+  bottom: calc(100% + var(--spacing-xs));
+  left: 0;
   z-index: 1210;
   display: grid;
   gap: 2px;
@@ -229,9 +228,13 @@ html[data-ui-theme] {
   opacity: 1;
 }
 
-@media (max-width: 480px) {
+@media (min-width: 768px) {
   .theme-menu {
-    right: var(--spacing-sm);
+    top: 0;
+    right: auto;
+    bottom: auto;
+    left: calc(100% + var(--spacing-xs));
+    border-left: 2px solid var(--accent);
   }
 }
 

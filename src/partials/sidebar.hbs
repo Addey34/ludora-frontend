@@ -57,42 +57,41 @@
     </li>
     {{/each}}
   </ul>
+  <div class="sidebar-utility-controls">
+    <div class="theme-control" id="themeControl">
+      <button
+        class="theme-toggle"
+        id="themeToggle"
+        type="button"
+        aria-label="Visual theme"
+        aria-expanded="false"
+        aria-haspopup="menu"
+        data-i18n-aria="themeSwitcher"
+      >
+        <i class="fas fa-palette" aria-hidden="true"></i>
+      </button>
+      <div class="theme-menu" id="themeMenu" role="menu" hidden>
+        <button type="button" role="menuitemradio" data-theme-option="arcade" data-i18n="themeArcade">Neon arcade</button>
+        <button type="button" role="menuitemradio" data-theme-option="midnight" data-i18n="themeMidnight">Midnight</button>
+        <button type="button" role="menuitemradio" data-theme-option="daylight" data-i18n="themeDaylight">Daylight</button>
+        <button type="button" role="menuitemradio" data-theme-option="amber" data-i18n="themeAmber">Amber (low-blue)</button>
+      </div>
+    </div>
+    <!-- Text codes rather than flag emoji, which don't render on Windows. -->
+    <button class="lang-toggle" id="langToggle" type="button" aria-label="Language">
+      <!-- Both codes ship in the DOM; CSS shows the one matching <html lang>, which
+           head.hbs sets before paint. Avoids the EN→FR flash a JS-set label caused. -->
+      <span class="lang-code"
+        ><span class="lang-code-en">EN</span><span class="lang-code-fr">FR</span></span
+      >
+    </button>
+    <button class="sound-toggle" id="soundToggle" type="button" aria-label="Mute sound">
+      <i class="fas fa-volume-high" id="soundIcon" aria-hidden="true"></i>
+      <span class="sound-toggle-ring" aria-hidden="true"></span>
+    </button>
+  </div>
   <div class="sidebar-auth" id="authArea"></div>
 </nav>
-<!-- Theme toggle: fixed top-right bubble, left of language and sound. -->
-<div class="theme-control" id="themeControl">
-  <button
-    class="theme-toggle"
-    id="themeToggle"
-    type="button"
-    aria-label="Visual theme"
-    aria-expanded="false"
-    aria-haspopup="menu"
-    data-i18n-aria="themeSwitcher"
-  >
-    <i class="fas fa-palette" aria-hidden="true"></i>
-  </button>
-  <div class="theme-menu" id="themeMenu" role="menu" hidden>
-    <button type="button" role="menuitemradio" data-theme-option="arcade" data-i18n="themeArcade">Neon arcade</button>
-    <button type="button" role="menuitemradio" data-theme-option="midnight" data-i18n="themeMidnight">Midnight</button>
-    <button type="button" role="menuitemradio" data-theme-option="daylight" data-i18n="themeDaylight">Daylight</button>
-    <button type="button" role="menuitemradio" data-theme-option="amber" data-i18n="themeAmber">Amber (low-blue)</button>
-  </div>
-</div>
-<!-- Language toggle: fixed top-right, left of the sound bubble. Text (EN/FR)
-     rather than a flag emoji, which doesn't render on Windows. -->
-<button class="lang-toggle" id="langToggle" type="button" aria-label="Language">
-  <!-- Both codes ship in the DOM; CSS shows the one matching <html lang>, which
-       head.hbs sets before paint. Avoids the EN→FR flash a JS-set label caused. -->
-  <span class="lang-code"
-    ><span class="lang-code-en">EN</span><span class="lang-code-fr">FR</span></span
-  >
-</button>
-<!-- Sound toggle: fixed top-right bubble, visible on all pages. -->
-<button class="sound-toggle" id="soundToggle" type="button" aria-label="Mute sound">
-  <i class="fas fa-volume-high" id="soundIcon" aria-hidden="true"></i>
-  <span class="sound-toggle-ring" aria-hidden="true"></span>
-</button>
 <script type="module" src="/shared/ui/sidebar.ts"></script>
 <script type="module" src="/shared/ui/theme.ts"></script>
 <script type="module" src="/shared/net/login.ts"></script>

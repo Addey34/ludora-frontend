@@ -253,6 +253,13 @@ body.sidebar-open .sidebar {
   font-size: var(--font-size-sm);
 }
 
+/* Daily-pick badge on a sidebar link — accent colour to match the home tile. */
+.sidebar-daily-flame {
+  flex: 0 0 auto;
+  color: var(--sidebar-accent);
+  font-size: var(--font-size-sm);
+}
+
 .sidebar-mode {
   flex: 0 0 auto;
   display: grid;
@@ -308,7 +315,6 @@ body.sidebar-open .sidebar {
 }
 
 .sidebar-auth {
-  margin-top: auto;
   padding-top: var(--spacing-sm);
   display: flex;
   flex-direction: column;
@@ -407,10 +413,7 @@ body.sidebar-open .sidebar {
 }
 
 .sidebar-toggle,
-.theme-toggle,
-.sound-toggle,
-.lang-toggle {
-  position: fixed;
+.sidebar-utility-controls :is(.theme-toggle, .sound-toggle, .lang-toggle) {
   z-index: 1200;
   width: 44px;
   height: 44px;
@@ -431,15 +434,14 @@ body.sidebar-open .sidebar {
 }
 
 .sidebar-toggle {
+  position: fixed;
   top: var(--spacing-sm);
   left: var(--spacing-sm);
   font-size: var(--font-size-lg);
 }
 
 .sidebar-toggle:hover,
-.theme-toggle:hover,
-.sound-toggle:hover,
-.lang-toggle:hover {
+.sidebar-utility-controls :is(.theme-toggle, .sound-toggle, .lang-toggle):hover {
   transform: translateY(-1px);
   border-color: var(--line-strong);
 }
@@ -456,9 +458,27 @@ body.sidebar-open .sidebar {
   display: none;
 }
 
+.sidebar-utility-controls {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin: var(--spacing-xs) var(--spacing-sm) 0;
+}
+
+.theme-control {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+}
+
+.sidebar-utility-controls :is(.theme-toggle, .sound-toggle, .lang-toggle) {
+  position: relative;
+  flex: 0 0 44px;
+}
+
 .sound-toggle {
-  top: var(--spacing-sm);
-  right: var(--spacing-sm);
   border-radius: 50%;
   font-size: 1rem;
   animation:
@@ -473,8 +493,6 @@ body.sidebar-open .sidebar {
 }
 
 .lang-toggle {
-  top: var(--spacing-sm);
-  right: calc(var(--spacing-sm) + 44px + var(--spacing-xs));
   border-radius: 50%;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
@@ -670,6 +688,16 @@ html[lang='fr'] .lang-code-fr {
 
   .sidebar-account.is-open .sidebar-account-menu {
     transform: translateX(0);
+  }
+
+  .sidebar-utility-controls {
+    flex-direction: column;
+    gap: 2px;
+    margin-inline: var(--spacing-xs);
+  }
+
+  .theme-control {
+    width: 100%;
   }
 
   .sidebar-toggle,

@@ -3,6 +3,13 @@
    Mobile-first.
    ========================================================================== */
 .app-body {
+  /* Width of the fixed sidebar rail to reserve on the left so no page content
+     ever slides under it. THE single source of truth for that offset — every
+     page type (this centred shell, the full-width home, the game pages) reads
+     `--rail-clearance` instead of hard-coding the sidebar width. 0 on mobile,
+     where the rail is an off-canvas overlay (set to the rail width below). */
+  --rail-clearance: 0px;
+
   width: 100%;
   max-width: var(--content-width-max);
   margin: 0 auto;
@@ -16,6 +23,18 @@
   gap: var(--spacing-lg);
   position: relative;
   overflow-x: hidden;
+}
+
+/* Desktop: the sidebar becomes a fixed 64px rail (position: fixed, so it doesn't
+   push layout). Turn on the rail clearance and offset the centred content by it,
+   widening the cap so the reading width is unchanged — just shifted clear of the
+   rail. Because it's a token, the home and game pages inherit the same offset. */
+@media (min-width: 768px) {
+  .app-body {
+    --rail-clearance: var(--sidebar-width);
+    max-width: calc(var(--content-width-max) + var(--rail-clearance));
+    padding-left: calc(var(--rail-clearance) + clamp(1rem, 2vw, 2rem));
+  }
 }
 
 .app-title {

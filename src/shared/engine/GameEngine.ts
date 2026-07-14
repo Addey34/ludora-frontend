@@ -13,7 +13,7 @@ import {
   addFriendByCode,
 } from '../net/nakama.js';
 import { gzPoints } from '../score/gzPoints.js';
-import { difficultyMultiplier, weeklyMultiplier } from '../score/multipliers.js';
+import { difficultyMultiplier, spotlightMultiplier } from '../score/multipliers.js';
 import { SCORE_GAMES } from '../score/scoreGames.js';
 import { storePendingScore } from '../score/pendingScore.js';
 import {
@@ -651,35 +651,42 @@ export abstract class GameEngine {
           showToast(t('scoreNotSaved'), 'warning');
         });
     }
-    submitGlobalScore(this.gzpBreakdown(score).total, username).catch((err) =>
-      console.warn('[nakama] global score submission failed:', err)
-    );
+    // GZP is earned only on a spotlit game (see multipliers.ts); a non-spotlit
+    // run totals 0, so there's nothing to submit to the global season board.
+    const gzp = this.gzpBreakdown(score).total;
+    if (gzp > 0) {
+      submitGlobalScore(gzp, username).catch((err) =>
+        console.warn('[nakama] global score submission failed:', err)
+      );
+    }
     track('score_saved', { game: this.baseLeaderboardId ?? '', score });
     this.onScoreSaved();
   }
 
   /**
    * The GamesZone Points a run earns, broken into its base value and the two
-   * multipliers that scale it — difficulty and the weekly spotlight (see
-   * `src/shared/score/multipliers.ts`). One source of truth for both the amount
+   * factors that scale it — difficulty and the spotlight gate (see
+   * `src/shared/score/multipliers.ts`). GZP is earned **only** on a spotlit game,
+   * so `spotlight` (hence `total`) is 0 for a game that isn't the day's daily pick
+   * or in this week's weekly set. One source of truth for both the amount
    * submitted and the breakdown shown on the game-over overlay. The bonus is baked
    * in at play time, so a guest who signs in later keeps the multiplier from then.
    */
   private gzpBreakdown(score: number): {
     base: number;
     difficulty: number;
-    weekly: number;
+    spotlight: number;
     total: number;
   } {
     const game = this.baseLeaderboardId ?? '';
     const variant = this.currentVariant();
     const base = gzPoints(score);
     const difficulty = difficultyMultiplier(game, variant);
-    const weekly = weeklyMultiplier(
+    const spotlight = spotlightMultiplier(
       game,
       SCORE_GAMES.map((g) => g.key)
     );
-    return { base, difficulty, weekly, total: Math.round(base * difficulty * weekly) };
+    return { base, difficulty, spotlight, total: Math.round(base * difficulty * spotlight) };
   }
 
   /**
@@ -688,10 +695,10 @@ export abstract class GameEngine {
    * the player sees *why* a run was worth more: the retention hook made visible.
    */
   private gzpNoteHtml(score: number): string {
-    const { total, difficulty, weekly } = this.gzpBreakdown(score);
+    const { total, difficulty, spotlight } = this.gzpBreakdown(score);
     if (total <= 0) return '';
     const bonuses: string[] = [];
-    if (weekly > 1) bonuses.push(`🔥 ${t('gzpBonusWeekly', { mult: weekly })}`);
+    if (spotlight > 1) bonuses.push(`🔥 ${t('gzpBonusSpotlight', { mult: spotlight })}`);
     if (difficulty > 1) bonuses.push(t('gzpBonusDifficulty', { mult: difficulty }));
     const bonusLine = bonuses.length ? `<p class="gzp-bonus">${bonuses.join(' · ')}</p>` : '';
     return `<p class="gzp-earned">${t('gzpEarned', { n: total })}</p>${bonusLine}`;

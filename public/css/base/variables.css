@@ -192,10 +192,9 @@
      ratio with `--game-board-aspect: var(--game-board-aspect-wide)`. */
   --game-page-padding-inline: clamp(0.25rem, 1vw, 0.75rem);
   --game-page-padding-block: clamp(0.25rem, 1dvh, 0.75rem);
-  /* Top band occupied by the fixed global controls (sidebar toggle top-left,
-     theme/lang/sound top-right — see sidebar.css: top: spacing-sm, 44px tall).
-     Tall games whose shell fills the viewport must reserve it so their own header
-     (pills + title) doesn't slide UNDER the global chrome. */
+  /* Top band occupied by the fixed mobile sidebar toggle. Tall games whose shell
+     fills the viewport must reserve it so their own header (pills + title) doesn't
+     slide under the global chrome. Desktop overrides this in game-layout.css. */
   --game-chrome-clearance: calc(var(--spacing-sm) + 44px + var(--spacing-xs));
   --game-shell-padding-block: var(--spacing-xs);
   --game-shell-padding-inline: var(--spacing-sm);
