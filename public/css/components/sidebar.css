@@ -379,7 +379,9 @@ body.sidebar-open .sidebar {
   border: 1px solid transparent;
   border-radius: var(--border-radius-md);
   background: none;
-  color: rgba(248, 250, 252, 0.82);
+  /* Theme-aware (flips with the sidebar text token): a hardcoded near-white read
+     as white-on-white on the daylight theme's white menu surface. */
+  color: color-mix(in srgb, var(--sidebar-text) 82%, transparent);
   font: inherit;
   font-weight: var(--font-weight-bold);
   text-align: left;

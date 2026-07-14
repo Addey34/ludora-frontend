@@ -11,7 +11,6 @@
   --motus-present: #c9b458;
   --motus-absent: #787c7e;
   --motus-border: #d3d6da;
-  --motus-key: #e7e9ee;
   /* Portrait footprint (grid over keyboard): narrow the shell to the content so
      it fills the height without a wide square of empty side-space. */
   --game-board-fit-ratio: 0.7;
@@ -112,8 +111,8 @@
   height: 3rem;
   border: none;
   border-radius: var(--border-radius-sm);
-  background: var(--motus-key);
-  color: var(--text-color);
+  background: var(--onscreen-key-bg);
+  color: var(--onscreen-key-ink);
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-sm);
   text-transform: uppercase;

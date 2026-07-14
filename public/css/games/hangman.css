@@ -101,8 +101,8 @@
   height: 2.8rem;
   border: none;
   border-radius: var(--border-radius-sm);
-  background: var(--white-color);
-  color: var(--text-color);
+  background: var(--onscreen-key-bg);
+  color: var(--onscreen-key-ink);
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-md);
   cursor: pointer;

@@ -356,6 +356,15 @@
   --nono-cross-btn: #64748b; /* Cross tool active */
   --nono-cross-btn-hover: #475569;
 
+  /* --- Ink for fixed-light interactive controls: on-screen keyboard/keypad keys
+     (Motus, Hangman) and quiz answer buttons (Geo, Trivia, …). These surfaces are
+     always a light "physical" chip, so their ink must be a fixed dark too — NOT
+     var(--text-color), which is near-white on the dark themes and made the letters
+     vanish (light-on-light). Theme-independent by design. --- */
+  --onscreen-key-bg: #e7e9ee;
+  --onscreen-key-ink: #1e293b;
+  --onscreen-key-hover: #d5d9e2;
+
   /* --- Word Search: letter grid, selection and found highlights --- */
   --ws-frame: #cbd5e1;
   --ws-cell-bg: #f1f5f9;

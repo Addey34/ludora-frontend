@@ -51,7 +51,10 @@
   border: 2px solid var(--border-color-light);
   border-radius: var(--border-radius-md);
   background: var(--white-color);
-  color: var(--text-color);
+  /* Fixed dark ink: the button is always a light surface (white, or a light
+     green/red tint once revealed), so it must not follow the near-white theme
+     text token — that made the answers invisible (white-on-white) on dark themes. */
+  color: var(--onscreen-key-ink);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-medium);
   text-align: left;
