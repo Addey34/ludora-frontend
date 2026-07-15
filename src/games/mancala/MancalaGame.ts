@@ -85,6 +85,14 @@ export class MancalaGame extends BoardGame<MancalaState, MancalaMove> {
       const el = (e.target as HTMLElement).closest<HTMLElement>('[data-pit]');
       if (el?.dataset.pit !== undefined) this.onPitClick(Number(el.dataset.pit));
     });
+    // Keyboard activation: a pit is a role="button", so Enter and Space play it.
+    this.boardEl?.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const el = (e.target as HTMLElement).closest<HTMLElement>('[data-pit]');
+      if (el?.dataset.pit === undefined) return;
+      e.preventDefault();
+      this.onPitClick(Number(el.dataset.pit));
+    });
 
     this.settings = setupSettingsPanel([
       difficultyField(this.difficulty, (v) => {
@@ -228,6 +236,9 @@ export class MancalaGame extends BoardGame<MancalaState, MancalaMove> {
         myPits.includes(idx) &&
         count > 0;
       el.classList.toggle('is-playable', canPlay);
+      // Only a pit you can actually sow is a keyboard tab stop.
+      el.tabIndex = canPlay ? 0 : -1;
+      el.setAttribute('aria-disabled', String(!canPlay));
       el.classList.toggle('is-empty', count === 0);
       el.classList.toggle('is-active-side', this.game.current === seat && !this.game.gameOver);
     }

@@ -112,6 +112,12 @@
   transform: scale(0.96);
 }
 
+/* Keyboard focus ring for the pit buttons (white so it reads on the wood). */
+.mn-pit:focus-visible {
+  outline: 3px solid var(--white-color);
+  outline-offset: 2px;
+}
+
 .mn-pit.is-empty {
   opacity: 0.55;
 }

@@ -5,7 +5,7 @@
   grid-template-columns: repeat(var(--kak-cols, 4), 1fr);
   gap: 2px;
   padding: 12px;
-  background: var(--background-alt);
+  background: var(--background-color-light);
   border-radius: var(--border-radius-md);
 }
 
@@ -74,7 +74,7 @@
   justify-content: center;
   font-size: clamp(0.85rem, 3cqw, 1.3rem);
   font-weight: var(--font-weight-bold);
-  color: var(--text-primary);
+  color: var(--text-color);
   cursor: pointer;
   transition:
     background 0.1s,
@@ -85,6 +85,13 @@
 .kak-fill:hover,
 .kak-fill:focus {
   background: rgba(255, 255, 255, 0.12);
+}
+
+/* Keyboard focus needs a real ring — the subtle background tint alone (same as
+   hover) isn't a visible focus indicator. */
+.kak-fill:focus-visible {
+  outline: 2px solid var(--warning);
+  outline-offset: 1px;
 }
 
 .kak-fill.is-selected {
