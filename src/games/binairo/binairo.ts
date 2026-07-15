@@ -59,7 +59,7 @@ function isPartialRowColValid(
   return true;
 }
 
-function fillGrid(grid: (0 | 1)[][], r: number, c: number, size: number): boolean {
+function fillGrid(grid: Cell[][], r: number, c: number, size: number): boolean {
   if (r === size) return true;
   const nr = c === size - 1 ? r + 1 : r;
   const nc = c === size - 1 ? 0 : c + 1;
@@ -68,21 +68,22 @@ function fillGrid(grid: (0 | 1)[][], r: number, c: number, size: number): boolea
     grid[r][c] = v;
     if (isPartialRowColValid(grid, r, c, size) && fillGrid(grid, nr, nc, size)) return true;
   }
-  (grid[r][c] as unknown) = null;
+  // Backtrack: leave the cell EMPTY (null), not 0. A row-major fill looks ahead
+  // (c+1, r+1…), so unfilled cells must read as "unknown" — seeding them with 0
+  // made every partial check see phantom values and fail, collapsing every board
+  // to the checkerboard fallback.
+  grid[r][c] = null;
   return false;
 }
 
 function generateSolution(size: number): (0 | 1)[][] {
-  const grid: (0 | 1)[][] = Array.from(
-    { length: size },
-    () => new Array(size).fill(0) as (0 | 1)[]
-  );
+  const grid: Cell[][] = Array.from({ length: size }, () => new Array<Cell>(size).fill(null));
   if (!fillGrid(grid, 0, 0, size)) {
     // Fallback alternating pattern (always valid for even sizes)
     for (let r = 0; r < size; r++)
       for (let c = 0; c < size; c++) grid[r][c] = ((r + c) % 2) as 0 | 1;
   }
-  return grid;
+  return grid as (0 | 1)[][];
 }
 
 export function generatePuzzle(size: 6 | 8 = 8): BinairoState {
@@ -127,5 +128,20 @@ export function isSolved(grid: Cell[][], size: number): boolean {
     for (let r = 0; r < size; r++) ones += grid[r][c] ?? 0;
     if (ones !== size / 2) return false;
   }
+  // Uniqueness: no two rows and no two columns may be identical (enforced during
+  // generation, so a filled/balanced grid with a duplicate line is still wrong).
+  for (let r = 0; r < size; r++)
+    for (let pr = r + 1; pr < size; pr++)
+      if (grid[r].every((v, i) => v === grid[pr][i])) return false;
+  for (let c = 0; c < size; c++)
+    for (let pc = c + 1; pc < size; pc++) {
+      let same = true;
+      for (let i = 0; i < size; i++)
+        if (grid[i][c] !== grid[i][pc]) {
+          same = false;
+          break;
+        }
+      if (same) return false;
+    }
   return true;
 }
