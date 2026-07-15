@@ -1,6 +1,9 @@
 @import '/css/global.css';
 
 .yahtzee-board {
+  /* Local surface tokens (used in 2+ places below). */
+  --yh-paper: #fffaf3; /* warm off-white scorecard surface */
+  --yh-preview: #16a34a; /* green — a scorable (preview) category */
   aspect-ratio: auto;
   display: flex;
   flex-direction: column;
@@ -96,9 +99,9 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  border: 1px solid color-mix(in srgb, var(--color-yahtzee) 30%, var(--border-color));
+  border: 1px solid color-mix(in srgb, var(--color-yahtzee) 30%, var(--border-color-light));
   border-radius: var(--border-radius-md);
-  background: #fffaf3;
+  background: var(--yh-paper);
   box-shadow: inset 0 0 0 3px rgba(124, 45, 18, 0.04);
 }
 .yh-table {
@@ -111,12 +114,12 @@
 .yh-table th {
   text-align: left;
   padding: 8px 10px;
-  color: var(--text-muted);
+  color: var(--text-color-muted);
   font-size: var(--font-size-xs);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: color-mix(in srgb, var(--color-yahtzee) 12%, #fffaf3);
-  border-bottom: 2px solid color-mix(in srgb, var(--color-yahtzee) 28%, var(--border-color));
+  background: color-mix(in srgb, var(--color-yahtzee) 12%, var(--yh-paper));
+  border-bottom: 2px solid color-mix(in srgb, var(--color-yahtzee) 28%, var(--border-color-light));
 }
 .yh-table th:last-child {
   text-align: right;
@@ -130,48 +133,31 @@
   cursor: default;
 }
 
-/* An unscored category the current dice could fill: green, clickable, with the
-   projected points shown as a chip. */
-.yh-row.is-preview .yh-cat {
-  cursor: pointer;
-}
-.yh-row.is-preview .yh-row.is-preview .yh-score-cell::before {
-  content: '';
-  display: inline-block;
-  width: 0.45rem;
-  height: 0.45rem;
-  margin-right: 0.35rem;
-  border-radius: 50%;
-  background: #16a34a;
-  vertical-align: middle;
-}
-
+/* The score cell holds each category's number, right-aligned and tabular. */
 .yh-score-cell {
-  color: #16a34a;
-  cursor: pointer;
-}
-.yh-row.is-preview:hover {
-  background: rgba(34, 197, 94, 0.12);
-}
-.yh-row.is-scored td {
-  color: var(--text-muted);
-}
-.yh-row.is-scored .yh-row.is-preview .yh-score-cell::before {
-  content: '';
-  display: inline-block;
-  width: 0.45rem;
-  height: 0.45rem;
-  margin-right: 0.35rem;
-  border-radius: 50%;
-  background: #16a34a;
-  vertical-align: middle;
-}
-
-.yh-score-cell {
-  color: var(--primary-color);
+  min-width: 40px;
+  text-align: right;
   font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
 }
 
+/* A committed score shows the points in the primary color. */
+.yh-row.is-scored td {
+  color: var(--text-color-muted);
+}
+.yh-row.is-scored .yh-score-cell {
+  color: var(--primary-color);
+}
+
+/* An unscored category the current dice could fill: green and clickable, with
+   the projected points preceded by a green dot. */
+.yh-row.is-preview .yh-cat,
+.yh-row.is-preview .yh-score-cell {
+  cursor: pointer;
+}
+.yh-row.is-preview .yh-score-cell {
+  color: var(--yh-preview);
+}
 .yh-row.is-preview .yh-score-cell::before {
   content: '';
   display: inline-block;
@@ -179,15 +165,11 @@
   height: 0.45rem;
   margin-right: 0.35rem;
   border-radius: 50%;
-  background: #16a34a;
+  background: var(--yh-preview);
   vertical-align: middle;
 }
-
-.yh-score-cell {
-  text-align: right;
-  font-weight: 600;
-  min-width: 40px;
-  font-variant-numeric: tabular-nums;
+.yh-row.is-preview:hover {
+  background: color-mix(in srgb, var(--yh-preview) 14%, transparent);
 }
 
 .yh-sep td {
@@ -197,14 +179,14 @@
   content: '';
   display: block;
   height: 2px;
-  background: var(--border-color);
+  background: var(--border-color-light);
   border-radius: 2px;
 }
 
 .yh-table tfoot td {
   padding: 7px 10px;
   font-weight: var(--font-weight-bold);
-  border-top: 2px solid color-mix(in srgb, var(--color-yahtzee) 28%, var(--border-color));
+  border-top: 2px solid color-mix(in srgb, var(--color-yahtzee) 28%, var(--border-color-light));
 }
 .yh-table tfoot td:last-child {
   text-align: right;
@@ -212,6 +194,6 @@
 }
 /* The grand total is the headline number. */
 .yh-table tfoot tr:last-child td {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-md);
   color: var(--color-yahtzee);
 }
