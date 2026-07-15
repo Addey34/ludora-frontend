@@ -22,7 +22,7 @@
   padding: 0.5rem clamp(0.5rem, 3vw, 1.25rem);
   background: var(--mm-board);
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow);
   overflow: hidden;
 }
 

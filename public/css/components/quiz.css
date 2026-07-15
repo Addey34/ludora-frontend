@@ -91,7 +91,7 @@
 
 /* Reveal after answering. */
 .quiz-choice.is-correct {
-  border-color: var(--success-color, #22c55e);
+  border-color: var(--success);
   background: color-mix(in srgb, #22c55e 16%, var(--white-color));
 }
 .quiz-choice.is-correct .quiz-choice-key {

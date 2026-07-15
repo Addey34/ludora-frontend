@@ -18,7 +18,7 @@
   padding: clamp(4px, 1.5vmin, 10px);
   background: var(--nono-frame);
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow);
   touch-action: none;
   user-select: none;
 }

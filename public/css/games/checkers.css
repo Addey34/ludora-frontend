@@ -24,7 +24,7 @@
   border: 4px solid var(--checkers-frame);
   border-radius: var(--border-radius-lg);
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow);
 }
 
 .checkers-cell {

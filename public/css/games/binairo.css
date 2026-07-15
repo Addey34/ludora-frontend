@@ -22,7 +22,7 @@
   transition:
     background 0.1s,
     transform 0.1s;
-  color: var(--text-primary);
+  color: var(--text-color);
 }
 
 .bi-cell:hover:not(.is-fixed) {

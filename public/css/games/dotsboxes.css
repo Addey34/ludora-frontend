@@ -30,7 +30,7 @@
   width: var(--db-dot);
   height: var(--db-dot);
   border-radius: 50%;
-  background: var(--text-primary);
+  background: var(--text-color);
   align-self: center;
   justify-self: center;
 }

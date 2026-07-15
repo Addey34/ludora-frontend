@@ -159,7 +159,7 @@
   margin: 0 0 var(--spacing-sm);
   max-width: 52ch;
   font-size: var(--font-size-sm);
-  color: var(--app-text-muted, var(--ink-muted));
+  color: var(--ink-muted);
 }
 
 .profile-danger-confirm {

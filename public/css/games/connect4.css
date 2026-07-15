@@ -25,7 +25,7 @@
   overflow: hidden;
   background: var(--connect4-board);
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow);
 }
 
 /* One droppable column (the whole column is the click/hover target). */

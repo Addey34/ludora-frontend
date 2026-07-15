@@ -238,7 +238,7 @@
 }
 
 .game-stat.is-active {
-  border-radius: var(--border-radius-pill);
+  border-radius: var(--border-radius-xl);
   background: color-mix(in srgb, var(--white-color) 16%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--white-color) 18%, transparent);
 }

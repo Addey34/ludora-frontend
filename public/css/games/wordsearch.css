@@ -16,7 +16,7 @@
   padding: 4px;
   background: var(--ws-frame);
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow);
   touch-action: none; /* pointer drag must not scroll the page */
   user-select: none;
 }
@@ -62,7 +62,7 @@
   letter-spacing: 0.03em;
   color: var(--ws-cell-text);
   padding: 0.15rem 0.55rem;
-  border-radius: var(--border-radius-pill);
+  border-radius: var(--border-radius-xl);
   background: var(--ws-cell-bg);
   transition:
     opacity 0.2s ease,
