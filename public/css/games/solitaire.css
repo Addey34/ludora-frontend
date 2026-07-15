@@ -67,14 +67,12 @@
   border: 1.5px solid transparent;
 }
 
-/* ---- Playing cards ---- */
+/* ---- Playing cards ----
+   The frame, red/black ink, back hatch and label geometry come from the shared
+   playing-cards component (.pc-card / .pc-corner / .pc-pip / .pc-back). Only
+   Solitaire's interactions, felt-specific bits and responsive scale live here. */
 .sol-card {
-  flex-shrink: 0;
-  border-radius: var(--border-radius-sm);
-  border: 1px solid rgba(0, 0, 0, 0.18);
-  position: relative;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
   transition: transform 0.1s ease;
 }
 
@@ -83,24 +81,9 @@
   background: var(--sol-card-bg);
 }
 
-.sol-card.is-face-up.is-red {
-  color: var(--sol-card-red);
-}
-
-.sol-card.is-face-up.is-black {
-  color: var(--sol-card-black);
-}
-
-/* Face-down card (blue back pattern) */
+/* Face-down card: the shared .pc-back paints the blue hatch; only the cursor
+   differs from a playable card. */
 .sol-card.is-face-down {
-  background: var(--sol-card-back);
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.06) 0,
-    rgba(255, 255, 255, 0.06) 2px,
-    transparent 2px,
-    transparent 8px
-  );
   cursor: default;
 }
 
@@ -112,35 +95,14 @@
   z-index: 5;
 }
 
-/* ---- Card layout: corner labels + center suit ---- */
+/* ---- Card label scale (geometry is shared via .pc-corner / .pc-pip) ---- */
 .sol-card-tl,
 .sol-card-br {
-  position: absolute;
   font-size: clamp(0.6rem, 1.5cqw, 0.85rem);
-  font-weight: var(--font-weight-bold);
-  line-height: 1;
-  white-space: nowrap;
-}
-
-.sol-card-tl {
-  top: 4px;
-  left: 5px;
-}
-
-.sol-card-br {
-  bottom: 4px;
-  right: 5px;
-  transform: rotate(180deg);
 }
 
 .sol-card-center {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: clamp(1rem, 3.5cqw, 2rem);
-  line-height: 1;
   opacity: 0.75;
 }
 

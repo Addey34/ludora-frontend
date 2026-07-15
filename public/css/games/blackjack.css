@@ -31,63 +31,25 @@
   min-height: 80px;
 }
 
+/* Card frame, ink, back pattern and label geometry come from the shared
+   playing-cards component (.pc-card / .pc-corner / .pc-pip / .pc-back). Only
+   Blackjack's fixed size and label scale live here. */
 .bj-card {
   width: 56px;
   height: 80px;
-  border-radius: var(--border-radius-sm);
   background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  position: relative;
-  flex-shrink: 0;
-}
-
-.bj-card.is-red {
-  color: #dc2626;
-}
-.bj-card.is-black {
-  color: #1f2937;
 }
 
 .bj-card.is-dealt {
   animation: cardDeal 0.22s ease-out;
 }
 
-.bj-card-back {
-  background: #1d4ed8;
-  background-image: repeating-linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.07) 0,
-    rgba(255, 255, 255, 0.07) 2px,
-    transparent 2px,
-    transparent 8px
-  );
-}
-
-.bj-card-tl {
-  position: absolute;
-  top: 4px;
-  left: 5px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
+.bj-card-tl,
 .bj-card-br {
-  position: absolute;
-  bottom: 4px;
-  right: 5px;
   font-size: 0.75rem;
-  font-weight: 700;
-  transform: rotate(180deg);
 }
 
 .bj-card-center {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 1.5rem;
   opacity: 0.65;
 }
@@ -123,7 +85,7 @@
   border: none;
   background: rgba(255, 255, 255, 0.15);
   color: #fff;
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-md);
   font-weight: var(--font-weight-bold);
   cursor: pointer;
   transition: background 0.15s;
@@ -151,7 +113,7 @@
 
 .bj-bet-label {
   color: rgba(255, 255, 255, 0.85);
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-md);
   min-width: 60px;
   text-align: center;
 }

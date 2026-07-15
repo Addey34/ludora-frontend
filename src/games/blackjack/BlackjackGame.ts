@@ -241,15 +241,15 @@ export class BlackjackGame extends GameEngine {
   private makeCardHTML(card: Card, isNew = false): string {
     const red = isRed(card.suit);
     const label = RANK_LABEL[card.rank] + SUIT_SYMBOL[card.suit];
-    return `<div class="bj-card ${red ? 'is-red' : 'is-black'}${isNew ? ' is-dealt' : ''}">
-      <div class="bj-card-tl">${label}</div>
-      <div class="bj-card-center">${SUIT_SYMBOL[card.suit]}</div>
-      <div class="bj-card-br">${label}</div>
+    return `<div class="bj-card pc-card ${red ? 'is-red' : 'is-black'}${isNew ? ' is-dealt' : ''}">
+      <div class="bj-card-tl pc-corner">${label}</div>
+      <div class="bj-card-center pc-pip">${SUIT_SYMBOL[card.suit]}</div>
+      <div class="bj-card-br pc-corner pc-corner--br">${label}</div>
     </div>`;
   }
 
   private makeBackCardHTML(): string {
-    return `<div class="bj-card bj-card-back"></div>`;
+    return `<div class="bj-card pc-card pc-back"></div>`;
   }
 
   // ---------------------------------------------------------------------------

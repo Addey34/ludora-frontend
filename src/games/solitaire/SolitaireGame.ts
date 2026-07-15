@@ -304,7 +304,7 @@ export class SolitaireGame extends GameEngine {
 
   private makeCardEl(card: PlacedCard): HTMLElement {
     const el = document.createElement('div');
-    el.className = `sol-card is-face-up ${isRed(card.suit) ? 'is-red' : 'is-black'}`;
+    el.className = `sol-card pc-card is-face-up ${isRed(card.suit) ? 'is-red' : 'is-black'}`;
     el.dataset.suit = card.suit;
     el.dataset.rank = String(card.rank);
     el.style.width = `${this.cardW}px`;
@@ -312,15 +312,15 @@ export class SolitaireGame extends GameEngine {
 
     const label = RANK_LABEL[card.rank] + SUIT_SYMBOL[card.suit];
     const tl = document.createElement('div');
-    tl.className = 'sol-card-tl';
+    tl.className = 'sol-card-tl pc-corner';
     tl.textContent = label;
 
     const center = document.createElement('div');
-    center.className = 'sol-card-center';
+    center.className = 'sol-card-center pc-pip';
     center.textContent = SUIT_SYMBOL[card.suit];
 
     const br = document.createElement('div');
-    br.className = 'sol-card-br';
+    br.className = 'sol-card-br pc-corner pc-corner--br';
     br.textContent = label;
 
     el.appendChild(tl);
@@ -331,7 +331,7 @@ export class SolitaireGame extends GameEngine {
 
   private makeBackCard(): HTMLElement {
     const el = document.createElement('div');
-    el.className = 'sol-card is-face-down';
+    el.className = 'sol-card pc-card pc-back is-face-down';
     el.style.width = `${this.cardW}px`;
     el.style.height = `${this.cardH}px`;
     return el;

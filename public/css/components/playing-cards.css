@@ -1,0 +1,65 @@
+/* =============================================================================
+   Shared playing-card presentation.
+   Blackjack and Solitaire both render a card face (rank+suit corner labels and a
+   centre pip) and a diagonal-hatch card back. Those parts were duplicated in
+   blackjack.css and solitaire.css; they live here now. A card element opts in
+   with the `pc-*` classes ALONGSIDE its game-specific hook class (e.g.
+   `sol-card` / `bj-card`), which the games keep for JS hit-testing and sizing.
+   Card dimensions and face background stay per-game — only the shared frame,
+   ink, back pattern and label geometry are here.
+   ========================================================================== */
+
+.pc-card {
+  position: relative;
+  flex-shrink: 0;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.28);
+}
+
+.pc-card.is-red {
+  color: var(--playing-card-red);
+}
+.pc-card.is-black {
+  color: var(--playing-card-black);
+}
+
+/* Face-down / hole card: blue back with a diagonal hatch. */
+.pc-back {
+  background-color: var(--playing-card-back);
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.07) 0,
+    rgba(255, 255, 255, 0.07) 2px,
+    transparent 2px,
+    transparent 8px
+  );
+}
+
+/* Corner rank+suit label; the bottom-right one is the top-left rotated 180°. */
+.pc-corner {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.pc-corner--br {
+  top: auto;
+  left: auto;
+  right: 5px;
+  bottom: 4px;
+  transform: rotate(180deg);
+}
+
+/* Large centre suit pip. */
+.pc-pip {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
