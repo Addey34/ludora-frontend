@@ -5,6 +5,7 @@ import { t } from '../../shared/i18n/i18n.js';
 import { Direction, keyboardDirection, setupSwipe } from '../../shared/engine/input.js';
 import { ParticleSystem } from '../../shared/fx/particles.js';
 import { playSound } from '../../shared/fx/sound.js';
+import { canMove, emptyCells, orientFromLeft, orientToLeft, planLine } from './2048Logic.js';
 
 /**
  * Configuration specific to the 2048 game.
@@ -320,7 +321,7 @@ export class Game2048 extends GameEngine {
     this.renderTiles();
     this.emitMergeParticles(merges.map((m) => m.id));
 
-    if (!this.canMove()) {
+    if (!canMove(this.board)) {
       playSound('die');
       this.gameOver();
     }
@@ -340,7 +341,7 @@ export class Game2048 extends GameEngine {
     );
     for (const tile of this.tiles) {
       if (tile.removing) continue;
-      const p = this.toLeftOrientedPos(tile.row, tile.col, direction);
+      const p = orientToLeft(tile.row, tile.col, direction, n);
       grid[p.r][p.c] = tile;
     }
 
@@ -350,28 +351,26 @@ export class Game2048 extends GameEngine {
 
     for (let r = 0; r < n; r++) {
       const line = grid[r].filter((t): t is Tile => t !== null);
-      let outCol = 0;
-      for (let i = 0; i < line.length; i++) {
-        const tile = line[i];
-        const next = line[i + 1];
-        if (next && next.value === tile.value) {
-          const dest = this.fromLeftOrientedPos(r, outCol, direction);
+      const { outputs, gained: rowGained } = planLine(line.map((t) => t.value));
+      gained += rowGained;
+
+      let li = 0;
+      outputs.forEach((out, outCol) => {
+        const dest = orientFromLeft(r, outCol, direction, n);
+        const tile = line[li++];
+        if (out.merged) {
+          const next = line[li++];
           this.setTilePos(tile, dest);
           this.setTilePos(next, dest);
           tile.removing = false;
           next.removing = true;
-          merges.push({ id: tile.id, value: tile.value * 2 });
-          gained += tile.value * 2;
+          merges.push({ id: tile.id, value: out.value });
           changed = true;
-          outCol++;
-          i++;
         } else {
-          const dest = this.fromLeftOrientedPos(r, outCol, direction);
           if (tile.row !== dest.row || tile.col !== dest.col) changed = true;
           this.setTilePos(tile, dest);
-          outCol++;
         }
-      }
+      });
     }
 
     const board = Array.from({ length: n }, () => new Array<number>(n).fill(0));
@@ -391,82 +390,17 @@ export class Game2048 extends GameEngine {
   }
 
   /**
-   * Maps a board position to the left-oriented grid, so that a "leftward" slide
-   * corresponds to the requested direction. Inverse of {@link fromLeftOrientedPos}.
-   */
-  private toLeftOrientedPos(
-    row: number,
-    col: number,
-    direction: Direction
-  ): { r: number; c: number } {
-    const n = this.gridSize;
-    switch (direction) {
-      case 'left':
-        return { r: row, c: col };
-      case 'right':
-        return { r: row, c: n - 1 - col };
-      case 'up':
-        return { r: col, c: row };
-      case 'down':
-        return { r: col, c: n - 1 - row };
-    }
-  }
-
-  /**
-   * Maps a position (r, c) in the left-oriented grid back to board coordinates.
-   */
-  private fromLeftOrientedPos(
-    r: number,
-    c: number,
-    direction: Direction
-  ): { row: number; col: number } {
-    const n = this.gridSize;
-    switch (direction) {
-      case 'left':
-        return { row: r, col: c };
-      case 'right':
-        return { row: r, col: n - 1 - c };
-      case 'up':
-        return { row: c, col: r };
-      case 'down':
-        return { row: n - 1 - c, col: r };
-    }
-  }
-
-  /**
    * Spawns a tile (2 at 90%, 4 at 10%) on a randomly chosen free cell. No-op if
    * the grid is full.
    */
   private spawnTile(): void {
-    const empty: Array<{ x: number; y: number }> = [];
-    this.board.forEach((row, y) => {
-      row.forEach((value, x) => {
-        if (value === 0) empty.push({ x, y });
-      });
-    });
-
+    const empty = emptyCells(this.board);
     if (empty.length === 0) return;
 
     const cell = empty[Math.floor(Math.random() * empty.length)];
     const value = Math.random() < 0.9 ? 2 : 4;
     this.board[cell.y][cell.x] = value;
     this.tiles.push({ id: this.nextTileId++, value, row: cell.y, col: cell.x, isNew: true });
-  }
-
-  /**
-   * Tells whether a move is still possible: a free cell, or two equal adjacent
-   * tiles (horizontally or vertically).
-   */
-  private canMove(): boolean {
-    for (let y = 0; y < this.gridSize; y++) {
-      for (let x = 0; x < this.gridSize; x++) {
-        const value = this.board[y][x];
-        if (value === 0) return true;
-        if (x + 1 < this.gridSize && value === this.board[y][x + 1]) return true;
-        if (y + 1 < this.gridSize && value === this.board[y + 1][x]) return true;
-      }
-    }
-    return false;
   }
 
   /**
