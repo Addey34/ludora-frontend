@@ -3,7 +3,10 @@
 Short, stable **principles**. For the _how_, defer to the detailed docs instead of
 repeating them here (so there's one source of truth per topic):
 
-- **Mechanics** (add a game, base classes, translations, PR flow) → `CONTRIBUTING.md`
+- **Mechanics** (add a game, base classes, translations, PR flow) → `CONTRIBUTING.md`.
+  A new game starts with the transactional generator `npm run game:new` (try `--dry-run`
+  first), never a hand copy — it scaffolds the files and updates every registry in one
+  reversible transaction.
 - **Architecture** (engine lifecycle, networking, FX, CSS) → `CLAUDE.md`
 
 This file only holds what those don't: the philosophy and the non-negotiables.
