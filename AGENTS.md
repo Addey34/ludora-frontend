@@ -33,7 +33,12 @@ rules) live **with their game**, even when several games have one each.
    working. The integrity tests in `src/shared/i18n/*.test.ts` are the safety net —
    run them, and add one when you add a cross-game contract.
 3. **Pure logic is unit-tested.** Rules, generators, scoring, parsers — anything with
-   no DOM/time — gets a co-located `*.test.ts`. (Real-time render loops don't.)
+   no DOM/time — gets a co-located `*.test.ts`. (Real-time render loops don't.) Two
+   corollaries: a game whose logic already lives in a shared, tested module (quiz games →
+   `quiz.ts`/`words.ts`) needs no duplicate per-game test; and when a game's logic is
+   tangled with the DOM (state mutated for animation, e.g. 2048), **extract a pure
+   `<key>Logic.ts` first, have the game delegate to it, then test that** — don't test through
+   the DOM.
 4. **All visible text is bilingual.** Every new string is added to **both** `en` and
    `fr` in `CATALOG` (`i18n.ts`) and used via `t('key')` or `data-i18n`. A parity test
    and a dead-key test enforce this.
