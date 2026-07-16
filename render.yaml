@@ -77,6 +77,7 @@ services:
       - { type: rewrite, source: /binairo, destination: /games/binairo/index.html }
       - { type: rewrite, source: /kakuro, destination: /games/kakuro/index.html }
       - { type: rewrite, source: /tictactoe, destination: /games/tictactoe/index.html }
+      - { type: rewrite, source: /gomoku, destination: /games/gomoku/index.html }
       - { type: rewrite, source: /privacy, destination: /privacy/index.html }
       - { type: rewrite, source: /legal, destination: /legal/index.html }
       - { type: rewrite, source: /profile, destination: /profile/index.html }
@@ -125,6 +126,7 @@ services:
       - { type: rewrite, source: /fr/binairo, destination: /fr/binairo/index.html }
       - { type: rewrite, source: /fr/kakuro, destination: /fr/kakuro/index.html }
       - { type: rewrite, source: /fr/tictactoe, destination: /fr/tictactoe/index.html }
+      - { type: rewrite, source: /fr/gomoku, destination: /fr/gomoku/index.html }
       - { type: rewrite, source: /fr/privacy, destination: /fr/privacy/index.html }
       - { type: rewrite, source: /fr/legal, destination: /fr/legal/index.html }
       - { type: rewrite, source: /fr/profile, destination: /fr/profile/index.html }

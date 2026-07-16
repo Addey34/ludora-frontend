@@ -1047,6 +1047,8 @@ const CONTROLS_FR: Record<string, string> = {
   'Move the piece': 'Déplace la pièce',
   'Place your mark': 'Place ton symbole',
   'Line up three to win': 'Aligne-en trois pour gagner',
+  'Place a stone': 'Pose une pierre',
+  'Line up five stones to win': 'Aligne cinq pierres pour gagner',
   Rotate: 'Tourner',
   'Soft drop': 'Descente lente',
   'Hard drop': 'Descente rapide',

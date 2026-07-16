@@ -652,6 +652,16 @@ const games = [
       { keys: '<kbd>1</kbd>–<kbd>9</kbd>', action: 'Line up three to win' },
     ],
   },
+  {
+    key: 'gomoku',
+    label: 'Gomoku',
+    color: '--color-gomoku',
+    mode: 'solo',
+    controls: [
+      { keys: 'Click / tap', action: 'Place a stone' },
+      { keys: 'Goal', action: 'Line up five stones to win' },
+    ],
+  },
 ];
 
 // Home-page grouping: each game key is listed under one section, in display
@@ -716,6 +726,7 @@ const categoryDefs = [
       'dotsboxes',
       'yahtzee',
       'tictactoe',
+      'gomoku',
     ],
   },
   {
