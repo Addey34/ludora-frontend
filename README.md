@@ -73,17 +73,18 @@ npm run dev      # dev server on http://localhost:3000
 
 ## Scripts
 
-| Command              | Description                                               |
-| -------------------- | --------------------------------------------------------- |
-| `npm run dev`        | Development server (hot reload)                           |
-| `npm run build`      | Type-check then production build → `dist/`                |
-| `npm run preview`    | Serve the production build locally                        |
-| `npm run type-check` | Check types without building (`tsc --noEmit`)             |
-| `npm test`           | Run unit tests (Vitest)                                   |
-| `npm run lint`       | Analyze the code (ESLint); `lint:fix` auto-fixes          |
-| `npm run format`     | Format the code (Prettier); `format:check` verifies       |
-| `npm run data`       | Regenerate the `public/data/` datasets from free sources  |
-| `npm run verify`     | Full CI gate: format, lint, dead code, build, size, tests |
+| Command                      | Description                                               |
+| ---------------------------- | --------------------------------------------------------- |
+| `npm run dev`                | Development server (hot reload)                           |
+| `npm run build`              | Type-check then production build → `dist/`                |
+| `npm run preview`            | Serve the production build locally                        |
+| `npm run type-check`         | Check types without building (`tsc --noEmit`)             |
+| `npm test`                   | Run Vitest and generator tool tests                       |
+| `npm run lint`               | Analyze the code (ESLint); `lint:fix` auto-fixes          |
+| `npm run format`             | Format the code (Prettier); `format:check` verifies       |
+| `npm run data`               | Regenerate the `public/data/` datasets from free sources  |
+| `npm run game:new -- --help` | Show the transactional new-game generator                 |
+| `npm run verify`             | Full CI gate: format, lint, dead code, build, size, tests |
 
 ## Project structure
 

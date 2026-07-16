@@ -43,7 +43,36 @@ validated by continuous integration (CI) before being merged.
 
 ## Adding a new game
 
-The architecture is designed to make this simple. To add a game `pong`:
+Start with the transactional generator:
+
+```bash
+npm run game:new -- \
+  --key star-runner \
+  --label "Star Runner" \
+  --label-fr "Course stellaire" \
+  --type realtime \
+  --category action \
+  --color "#2563eb"
+```
+
+Choose `realtime` for a `GameEngine` game, `board` for pure `TurnRules`, or
+`quiz` for a `QuizGame`. Run with `--dry-run` first to inspect the plan. The command
+refuses existing paths and validates every registry before writing anything.
+
+It creates the page, entry point, controller, pure logic and test, CSS, and SVG icon. It
+also updates the game catalog/category, bilingual name and SEO text, colour token, Render
+routes, and English/French sitemap URLs.
+
+Replace the placeholder mechanics and icon, then refine controls and descriptions. Add a
+capability flag (`leaderboard`, `multiplayer`, `levels`) only when its shared
+integration is wired. Finish with:
+
+```bash
+npm run format
+npm run verify
+```
+
+For a manual or advanced extension, the same architecture applies. To add a game `pong`:
 
 1. **One entry** in the `games` array of `vite.config.ts` (the single source of truth):
    ```ts

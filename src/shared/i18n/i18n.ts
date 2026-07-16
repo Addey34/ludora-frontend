@@ -1,3 +1,5 @@
+import { GENERATED_GAME_CATALOG } from './generatedGames.js';
+
 /**
  * Interface localisation — simple, modular, dependency-free.
  *
@@ -1236,8 +1238,8 @@ for (const key of Object.keys(CONTROLS_FR)) controlsEn[key] = key;
 
 /** Exported for the parity test (every `en` key must have an `fr` counterpart). */
 export const CATALOG: Record<Locale, Record<string, string>> = {
-  en: { ...BASE_CATALOG.en, ...controlsEn },
-  fr: { ...BASE_CATALOG.fr, ...CONTROLS_FR },
+  en: { ...BASE_CATALOG.en, ...controlsEn, ...GENERATED_GAME_CATALOG.en },
+  fr: { ...BASE_CATALOG.fr, ...CONTROLS_FR, ...GENERATED_GAME_CATALOG.fr },
 };
 
 /**
