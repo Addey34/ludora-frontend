@@ -177,7 +177,7 @@ body.sidebar-open .sidebar {
   flex: 0 0 calc(var(--sidebar-width) - 2 * var(--spacing-sm));
   display: grid;
   place-items: center;
-  height: 44px;
+  height: var(--sidebar-control-size);
   font-size: var(--font-size-lg);
 }
 
@@ -415,8 +415,8 @@ body.sidebar-open .sidebar {
 .sidebar-toggle,
 .sidebar-utility-controls :is(.theme-toggle, .sound-toggle, .lang-toggle) {
   z-index: 1200;
-  width: 44px;
-  height: 44px;
+  width: var(--sidebar-control-size);
+  height: var(--sidebar-control-size);
   display: grid;
   place-items: center;
   border: 1px solid var(--line);
@@ -470,12 +470,12 @@ body.sidebar-open .sidebar {
   position: relative;
   display: grid;
   place-items: center;
-  width: 44px;
+  width: var(--sidebar-control-size);
 }
 
 .sidebar-utility-controls :is(.theme-toggle, .sound-toggle, .lang-toggle) {
   position: relative;
-  flex: 0 0 44px;
+  flex: 0 0 var(--sidebar-control-size);
 }
 
 .sound-toggle {

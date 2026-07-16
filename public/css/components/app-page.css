@@ -271,18 +271,25 @@
   color: var(--app-ink-muted);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 767px) {
   .app-body {
-    padding-inline: var(--spacing-sm);
+    padding-top: var(--mobile-chrome-clearance);
+    justify-content: flex-start;
   }
 
   .profile-content {
-    max-height: calc(100dvh - 0.75rem);
-    margin: auto;
+    max-height: calc(100dvh - var(--mobile-chrome-clearance) - var(--spacing-sm));
+    margin: 0 auto var(--spacing-sm);
   }
 
   .legal-content {
-    margin: auto;
+    margin: 0 auto var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .app-body {
+    padding-inline: var(--spacing-sm);
   }
 
   .profile-header,

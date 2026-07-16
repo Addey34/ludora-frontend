@@ -224,6 +224,18 @@
   }
 }
 
+@media (max-width: 767px) {
+  .home-main {
+    padding-top: var(--mobile-chrome-clearance);
+  }
+
+  /* The tile label is already visible on mobile. Keeping the hover tooltip in
+     layout while transparent makes edge tiles widen the document. */
+  .game-tile::after {
+    display: none;
+  }
+}
+
 @media (max-width: 480px) {
   .home-body {
     padding-inline: var(--spacing-sm);
