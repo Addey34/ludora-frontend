@@ -1,25 +1,28 @@
 # 🎮 GamesZone
 
 A collection of browser arcade & educational games gathered into a single web app. The
-interface is fully bilingual (**English / French**, toggled from the top bar). Scores and
-level progress are saved locally in the browser (`localStorage`) **and**, when available, on a
-self-hosted **online backend** — online is best-effort, with `localStorage` as the
-always-working fallback.
+interface is fully bilingual (**English / French**, toggled from the shared sidebar). Ranked
+scores are recorded through a self-hosted **online backend** for signed-in players; guests can
+play every game and are offered sign-in when they want to save a result. Network features are
+best-effort, so an unavailable backend never prevents local play.
 
 ## Available games
 
 Games are grouped by family on the home page:
 
-- **Action** — 🐍 Snake · 🟡 Pac-Man (levels) · 🧱 Tetris · 🧱 Breakout · 🏓 Pong
-- **Puzzle** — 🔢 2048 · 💣 Minesweeper · 🔢 Sudoku · 🖼️ Nonogram (levels) · 📦 Sokoban
-  (levels) · 🎯 Mastermind · 🔴 Simon · 🃏 Memory
-- **Words** — ⌨️ Typing · 🟩 Motus · 🔤 Anagrams · 🎪 Hangman · 🔎 Word Search
-- **Quiz** — ➗ Mental Math · 🌍 Geo Quiz · 🧠 Trivia · 📚 Conjugation
-- **Board** — 🔴 Connect 4 · 🎲 Ludo · 🪿 Game of the Goose · 🚢 Battleship · ⚫ Checkers ·
-  ⚪ Reversi
+- **Action** — Snake · Pac-Man · Tetris · Breakout · Pong · Flappy Bird · Space Invaders ·
+  Bubble Shooter
+- **Puzzle** — 2048 · Minesweeper · Sudoku · Nonogram · Sokoban · Mastermind · Sliding Puzzle ·
+  Simon · Memory · Binairo · Kakuro
+- **Words** — Typing · Motus · Anagrams · Hangman · Word Search
+- **Quiz** — Mental Math · Geo Quiz · Trivia · Conjugation
+- **Board** — Connect 4 · Ludo · Game of the Goose · Battleship · Checkers · Reversi · Mancala ·
+  Dots and Boxes · Yahtzee
+- **Cards** — Solitaire · Blackjack
 
-Several games play **against a bot or online** (1-v-1: Pong, Memory, Connect 4, Battleship,
-Checkers, Reversi; up to 4 players: Ludo, Game of the Goose).
+Online play reuses four shared families: turn-based board matches, quiz races, independent
+score races and identical-challenge completion races. Pong and Memory keep their specialised
+realtime/turn implementations. Every online-capable game remains playable offline.
 
 ## Controls
 
@@ -31,15 +34,16 @@ focus on the board (with best-effort native fullscreen).
 
 ## Online features
 
-- **Online leaderboards** — global high scores for the games that opt in (each declares a
-  `leaderboardId`).
+- **Leaderboards** — per-game best scores plus a cross-game GamesZone Points ranking.
 - **Levels & progression** — Pac-Man, Sokoban and Nonogram unlock levels as you clear them,
   synced across devices.
 - **Google sign-in** — optional; players are anonymous by default and can sign in to carry
   their scores and progress across devices.
-- **Online multiplayer** — relayed, host-authoritative sessions over a short session code,
-  with a lobby where the host starts the game. Every game stays fully playable solo against
-  bots if the backend is unreachable.
+- **Profile and friends** — account management, friend presence, friend scores and shareable
+  score challenges.
+- **Online multiplayer** — shared lobbies over a short session code; authority follows each
+  contract (host-owned boards/questions or independent score runs). Every game stays fully
+  playable solo if the backend is unreachable.
 
 The backend is a self-hosted [Nakama](https://heroiclabs.com/nakama/) server; the frontend
 talks to it only through a thin best-effort wrapper, so the app never breaks if it is
@@ -69,17 +73,17 @@ npm run dev      # dev server on http://localhost:3000
 
 ## Scripts
 
-| Command              | Description                                              |
-| -------------------- | -------------------------------------------------------- |
-| `npm run dev`        | Development server (hot reload)                          |
-| `npm run build`      | Type-check then production build → `dist/`               |
-| `npm run preview`    | Serve the production build locally                       |
-| `npm run type-check` | Check types without building (`tsc --noEmit`)            |
-| `npm test`           | Run unit tests (Vitest)                                  |
-| `npm run lint`       | Analyze the code (ESLint); `lint:fix` auto-fixes         |
-| `npm run format`     | Format the code (Prettier); `format:check` verifies      |
-| `npm run data`       | Regenerate the `public/data/` datasets from free sources |
-| `npm run verify`     | Run the full CI gate locally (format, lint, build, test) |
+| Command              | Description                                               |
+| -------------------- | --------------------------------------------------------- |
+| `npm run dev`        | Development server (hot reload)                           |
+| `npm run build`      | Type-check then production build → `dist/`                |
+| `npm run preview`    | Serve the production build locally                        |
+| `npm run type-check` | Check types without building (`tsc --noEmit`)             |
+| `npm test`           | Run unit tests (Vitest)                                   |
+| `npm run lint`       | Analyze the code (ESLint); `lint:fix` auto-fixes          |
+| `npm run format`     | Format the code (Prettier); `format:check` verifies       |
+| `npm run data`       | Regenerate the `public/data/` datasets from free sources  |
+| `npm run verify`     | Full CI gate: format, lint, dead code, build, size, tests |
 
 ## Project structure
 
@@ -90,7 +94,9 @@ src/
     index.html          #   game page (served at the clean URL /<key>)
     <key>-main.ts       #   entry point (bootstrapGame)
     <Key>Game.ts        #   game controller (extends a shared base)
-    <key>.ts            #   pure, unit-tested rules/logic (board/quiz/puzzle games)
+    <key>.ts            #   pure rules for a board/puzzle game (when applicable)
+    <key>Logic.ts       #   extracted pure logic for an animated/legacy controller
+    *.test.ts           #   co-located Vitest coverage for pure logic
   shared/               # all cross-game code, split by domain:
     engine/             #   GameEngine (RAF loop), bootstrap, input
     turn/               #   BoardGame base + TurnRules model (turn-based games)

@@ -29,7 +29,7 @@ validated by continuous integration (CI) before being merged.
    ```
 5. **Make your changes**, then run the **same checks as the CI** in a single command:
    ```bash
-   npm run verify   # format, lint, build + tests — all must pass
+   npm run verify   # format, lint, dead-code, build, bundle size + tests
    ```
    If Prettier reports formatting issues, fix them with `npm run format`, then re-run.
 6. **Commit and push** to your branch:
@@ -77,8 +77,11 @@ Every game extends one of three shared bases, so it only writes what is genuinel
   (Mental Math, Geo Quiz, Trivia…). They supply only `makeQuestion()`; the base owns the
   round, scoring, difficulty/mode settings and the recap. Start from `src/games/geoquiz/`.
 
-Put the game's pure logic in its own `<key>.ts` file (no DOM, no randomness in the reducer)
-and unit-test it — that's how the board, quiz and puzzle games stay robust.
+Keep rules, generators, scoring and parsers in a pure module and cover it with a co-located
+`*.test.ts`. Traditional board/puzzle rules usually live in `<key>.ts`. If a legacy controller
+mixes rules with DOM or animation state, first extract `<key>Logic.ts`, make the controller
+delegate to it, then test the pure module (see `src/games/2048/`). Do not duplicate per-game
+tests when the logic already comes from a shared tested module such as `quiz.ts` or `words.ts`.
 
 ### New game checklist
 
@@ -121,6 +124,7 @@ The interface is bilingual. Any visible string must have an English and a French
 - Follow the existing style (TypeScript `strict`, CSS design tokens, mobile-first).
   Formatting is handled by **Prettier** and code style by **ESLint** — run `npm run verify`
   before pushing so the CI passes on the first try.
+- Use a `.js` extension on every TypeScript import whose target is under `src/`.
 - Scores are server-authoritative for signed-in players. Guests can choose "Sign in to save";
   the run is stashed only long enough to complete Google sign-in, then recorded through Nakama.
   Offline scores are not queued.
