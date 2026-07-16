@@ -19,7 +19,7 @@
   border: 1px solid var(--line);
   border-radius: var(--border-radius-md);
   background: var(--surface-2);
-  color: var(--text);
+  color: var(--text-color);
   font: inherit;
   font-size: clamp(2rem, 12vw, 5rem);
   font-weight: 800;

@@ -5,7 +5,7 @@ import {
 } from '../../shared/turn/turnGame.js';
 
 export const BOARD_WIDTH = 3;
-export const SEAT_COUNT = 2;
+const SEAT_COUNT = 2;
 const LINE_LENGTH = 3;
 const CELL_COUNT = BOARD_WIDTH * BOARD_WIDTH;
 
@@ -46,7 +46,7 @@ export function apply{{Class}}Move(
   };
 }
 
-export function find{{Class}}Winner(cells: Array<Seat | null>): Seat | null {
+function find{{Class}}Winner(cells: Array<Seat | null>): Seat | null {
   const lines: number[][] = [];
   for (let row = 0; row < BOARD_WIDTH; row++) {
     lines.push(Array.from({ length: LINE_LENGTH }, (_, column) => row * BOARD_WIDTH + column));
