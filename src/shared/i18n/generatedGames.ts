@@ -7,9 +7,14 @@
  */
 export const GENERATED_GAME_CATALOG = {
   en: {
+    game_tictactoe: 'Tic-Tac-Toe',
+    seo_tictactoe: 'Play Tic-Tac-Toe free in your browser — no download, no sign-up.',
     // game-generator:catalog-en
   },
   fr: {
+    game_tictactoe: 'Morpion',
+    seo_tictactoe:
+      'Joue à Morpion gratuitement dans ton navigateur — sans téléchargement ni inscription.',
     // game-generator:catalog-fr
   },
 } satisfies Record<'en' | 'fr', Record<string, string>>;

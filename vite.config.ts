@@ -642,6 +642,16 @@ const games = [
       { keys: 'Goal', action: 'Fill each run with unique digits that sum to the clue' },
     ],
   },
+  {
+    key: 'tictactoe',
+    label: 'Tic-Tac-Toe',
+    color: '--color-tictactoe',
+    mode: 'solo',
+    controls: [
+      { keys: 'Click / tap', action: 'Place your mark' },
+      { keys: '<kbd>1</kbd>–<kbd>9</kbd>', action: 'Line up three to win' },
+    ],
+  },
 ];
 
 // Home-page grouping: each game key is listed under one section, in display
@@ -705,6 +715,7 @@ const categoryDefs = [
       'mancala',
       'dotsboxes',
       'yahtzee',
+      'tictactoe',
     ],
   },
   {

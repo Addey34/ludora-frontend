@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Tic-Tac-Toe" css="/css/games/tictactoe.css" script="./tictactoe-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Tic-Tac-Toe" key="tictactoe"}}
+    <div class="game-details"></div>
+    <div class="tictactoe-board game-board" id="board"></div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

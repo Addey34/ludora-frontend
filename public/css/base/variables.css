@@ -134,6 +134,7 @@
   --color-binairo: #1e3a5f; /* dark blue — binary logic */
   --color-kakuro: #312e81; /* indigo — number puzzle */
 
+  --color-tictactoe: #f43f5e; /* generated: Tic-Tac-Toe */
   /* Sidebar super-category accents (icon + flyout tint). Distinct hues, one per
      genre, in the site's vivid palette. */
   --cat-action: #ef4444; /* red — fast reflexes */

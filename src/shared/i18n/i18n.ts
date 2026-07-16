@@ -1045,6 +1045,8 @@ const CONTROLS_FR: Record<string, string> = {
   'Right spot / wrong spot / not in word': 'Bien placé / mal placé / absent du mot',
   'Find the hidden word in 6 tries': 'Trouve le mot caché en 6 essais',
   'Move the piece': 'Déplace la pièce',
+  'Place your mark': 'Place ton symbole',
+  'Line up three to win': 'Aligne-en trois pour gagner',
   Rotate: 'Tourner',
   'Soft drop': 'Descente lente',
   'Hard drop': 'Descente rapide',
