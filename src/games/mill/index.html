@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Nine Men's Morris" css="/css/games/mill.css" script="./mill-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Nine Men's Morris" key="mill"}}
+    <div class="game-details"></div>
+    <div class="mill-board game-board" id="board">
+      <div class="mill-inner">
+        <svg class="mill-lines" viewBox="0 0 6 6" aria-hidden="true">
+          <g fill="none">
+            <rect x="0" y="0" width="6" height="6" />
+            <rect x="1" y="1" width="4" height="4" />
+            <rect x="2" y="2" width="2" height="2" />
+            <path d="M3 0v2M3 4v2M0 3h2M4 3h2" />
+          </g>
+        </svg>
+        <div class="mill-points"></div>
+      </div>
+    </div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

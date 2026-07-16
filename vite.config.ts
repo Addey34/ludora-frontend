@@ -662,6 +662,18 @@ const games = [
       { keys: 'Goal', action: 'Line up five stones to win' },
     ],
   },
+  {
+    key: 'mill',
+    label: "Nine Men's Morris",
+    color: '--color-mill',
+    mode: 'solo',
+    controls: [
+      { keys: 'Place', action: 'Drop your nine pieces on the board' },
+      { keys: 'Click / tap', action: 'Then slide a piece to an adjacent spot' },
+      { keys: 'Mill', action: 'Line up three to remove an enemy piece' },
+      { keys: 'Goal', action: 'Reduce your opponent to two pieces' },
+    ],
+  },
 ];
 
 // Home-page grouping: each game key is listed under one section, in display
@@ -727,6 +739,7 @@ const categoryDefs = [
       'yahtzee',
       'tictactoe',
       'gomoku',
+      'mill',
     ],
   },
   {

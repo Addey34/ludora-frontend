@@ -47,6 +47,7 @@
   <url><loc>https://games-zone.onrender.com/kakuro</loc></url>
   <url><loc>https://games-zone.onrender.com/tictactoe</loc></url>
   <url><loc>https://games-zone.onrender.com/gomoku</loc></url>
+  <url><loc>https://games-zone.onrender.com/mill</loc></url>
   <!-- French pages (/fr/…). hreflang alternates are emitted in each page head. -->
   <url><loc>https://games-zone.onrender.com/fr/</loc></url>
   <url><loc>https://games-zone.onrender.com/fr/profile</loc></url>
@@ -95,4 +96,5 @@
   <url><loc>https://games-zone.onrender.com/fr/kakuro</loc></url>
   <url><loc>https://games-zone.onrender.com/fr/tictactoe</loc></url>
   <url><loc>https://games-zone.onrender.com/fr/gomoku</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/mill</loc></url>
 </urlset>
