@@ -79,6 +79,7 @@ services:
       - { type: rewrite, source: /tictactoe, destination: /games/tictactoe/index.html }
       - { type: rewrite, source: /gomoku, destination: /games/gomoku/index.html }
       - { type: rewrite, source: /mill, destination: /games/mill/index.html }
+      - { type: rewrite, source: /backgammon, destination: /games/backgammon/index.html }
       - { type: rewrite, source: /privacy, destination: /privacy/index.html }
       - { type: rewrite, source: /legal, destination: /legal/index.html }
       - { type: rewrite, source: /profile, destination: /profile/index.html }
@@ -129,6 +130,7 @@ services:
       - { type: rewrite, source: /fr/tictactoe, destination: /fr/tictactoe/index.html }
       - { type: rewrite, source: /fr/gomoku, destination: /fr/gomoku/index.html }
       - { type: rewrite, source: /fr/mill, destination: /fr/mill/index.html }
+      - { type: rewrite, source: /fr/backgammon, destination: /fr/backgammon/index.html }
       - { type: rewrite, source: /fr/privacy, destination: /fr/privacy/index.html }
       - { type: rewrite, source: /fr/legal, destination: /fr/legal/index.html }
       - { type: rewrite, source: /fr/profile, destination: /fr/profile/index.html }

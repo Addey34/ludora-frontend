@@ -686,6 +686,22 @@ const games = [
       { keys: 'Goal', action: 'Reduce your opponent to two pieces' },
     ],
   },
+  {
+    key: 'backgammon',
+    label: 'Backgammon',
+    color: '--color-backgammon',
+    mode: 'duo',
+    // Turn-based dice 2-player: "Settings" popover (bot difficulty + first move) +
+    // "Multiplayer" panel (1-v-1 over the relay); both driven by the game.
+    settings: true,
+    multiplayer: true,
+    controls: [
+      { keys: 'Click / tap', action: 'Select a checker, then a highlighted point' },
+      { keys: 'Bar', action: 'A hit checker must re-enter before any other move' },
+      { keys: 'Bear off', action: 'Move all fifteen checkers home, then off the board' },
+      { keys: 'Goal', action: 'Bear off all your checkers first' },
+    ],
+  },
 ];
 
 // Home-page grouping: each game key is listed under one section, in display
@@ -752,6 +768,7 @@ const categoryDefs = [
       'tictactoe',
       'gomoku',
       'mill',
+      'backgammon',
     ],
   },
   {

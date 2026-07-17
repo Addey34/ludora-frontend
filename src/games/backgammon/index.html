@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Backgammon" css="/css/games/backgammon.css" script="./backgammon-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Backgammon" key="backgammon"}}
+    <div class="game-details"></div>
+    <div class="backgammon-board game-board" id="board">
+      <div class="bg-quad bg-tl"></div>
+      <div class="bg-bar" id="bg-bar" aria-hidden="true"></div>
+      <div class="bg-quad bg-tr"></div>
+      <div class="bg-quad bg-bl"></div>
+      <div class="bg-quad bg-br"></div>
+      <button class="bg-off" id="bg-off" type="button" data-i18n-aria="bgBearOff">
+        <span class="bg-off-stack" id="bg-off-1"></span>
+        <i class="fas fa-arrow-right-from-bracket" aria-hidden="true"></i>
+        <span class="bg-off-stack" id="bg-off-0"></span>
+      </button>
+      <div class="bg-dice" id="bg-dice" aria-hidden="true"></div>
+    </div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

@@ -395,6 +395,8 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     turnMine: 'My turn',
     turnYours: 'Your turn',
     turnBot: "Bot's turn",
+    hudPip: 'Pip count',
+    hudBorneOff: 'Borne off',
     hudLives: 'Lives',
     hudLevel: 'Level',
     bkWorld: 'World',
@@ -417,6 +419,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     hudMoves: 'Moves',
     hudPushes: 'Pushes',
     hudFilled: 'Filled',
+    bgBearOff: 'Bear off selected checker',
     // Reversi: shown when the opponent has no legal move and must skip a turn.
     opponentPassed: 'Opponent had to pass',
     // Word Search recap on the game-over overlay.
@@ -855,6 +858,8 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     turnMine: 'Mon tour',
     turnYours: 'Ton tour',
     turnBot: 'Tour du bot',
+    hudPip: 'Compte de pips',
+    hudBorneOff: 'Sortis',
     hudLives: 'Vies',
     hudLevel: 'Niveau',
     bkWorld: 'Monde',
@@ -877,6 +882,7 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     hudMoves: 'Coups',
     hudPushes: 'Poussées',
     hudFilled: 'Remplies',
+    bgBearOff: 'Sortir le pion sélectionné',
     // Reversi : affiché quand l'adversaire n'a aucun coup légal et saute son tour.
     opponentPassed: 'Adversaire contraint de passer',
     // Récapitulatif Mots mêlés sur l'écran de fin.
@@ -1053,6 +1059,14 @@ const CONTROLS_FR: Record<string, string> = {
   'Right spot / wrong spot / not in word': 'Bien placé / mal placé / absent du mot',
   'Find the hidden word in 6 tries': 'Trouve le mot caché en 6 essais',
   'Move the piece': 'Déplace la pièce',
+  'Select a checker, then a highlighted point': 'Sélectionne un pion, puis un point surligné',
+  Bar: 'Barre',
+  'A hit checker must re-enter before any other move':
+    'Un pion touché doit rentrer avant tout autre coup',
+  'Bear off': 'Sortie',
+  'Move all fifteen checkers home, then off the board':
+    'Amène tes quinze pions à la maison, puis sors-les',
+  'Bear off all your checkers first': 'Sors tous tes pions en premier',
   'Place your mark': 'Place ton symbole',
   'Line up three to win': 'Aligne-en trois pour gagner',
   'Place a stone': 'Pose une pierre',

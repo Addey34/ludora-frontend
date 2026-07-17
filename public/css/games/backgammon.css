@@ -1,0 +1,251 @@
+@import url('../global.css');
+
+:root {
+  --title-color: var(--color-backgammon);
+}
+
+.backgammon-board {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7% minmax(0, 1fr) 7%;
+  grid-template-rows: 1fr 1fr;
+  gap: 0.4rem;
+  aspect-ratio: 1.15;
+  width: 100%;
+  padding: var(--spacing-sm);
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--border-radius-lg);
+}
+
+.bg-tl {
+  grid-area: 1 / 1;
+}
+.bg-bar {
+  grid-area: 1 / 2 / 3 / 3;
+}
+.bg-tr {
+  grid-area: 1 / 3;
+}
+.bg-bl {
+  grid-area: 2 / 1;
+}
+.bg-br {
+  grid-area: 2 / 3;
+}
+.bg-off {
+  grid-area: 1 / 4 / 3 / 5;
+}
+
+.bg-quad {
+  display: flex;
+  gap: 1.5%;
+  padding: 2%;
+  background: var(--surface-2);
+  border-radius: var(--border-radius-md);
+}
+
+.bg-point {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.bg-point.is-top {
+  justify-content: flex-start;
+}
+.bg-point.is-bottom {
+  justify-content: flex-end;
+}
+
+/* Alternating triangular points. */
+.bg-point::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.bg-point.is-top::before {
+  clip-path: polygon(0 0, 100% 0, 50% 90%);
+}
+.bg-point.is-bottom::before {
+  clip-path: polygon(50% 10%, 0 100%, 100% 100%);
+}
+.bg-point:nth-child(odd)::before {
+  background: var(--surface-glass);
+}
+.bg-point:nth-child(even)::before {
+  background: var(--line);
+}
+
+.bg-point.is-selected {
+  box-shadow: inset 0 0 0 2px var(--text-color);
+}
+
+/* A checker the player can move this turn (only its top disc is hinted). */
+.bg-point.is-movable .bg-checker:last-child {
+  box-shadow:
+    inset 0 0 0 2px rgba(0, 0, 0, 0.28),
+    0 0 0 2px var(--color-backgammon);
+}
+
+.bg-point.is-target::after,
+.bg-off.is-target::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  width: 42%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--color-backgammon);
+  opacity: 0.55;
+}
+
+.bg-point:disabled,
+.bg-off:disabled {
+  cursor: default;
+}
+
+/* Stacked checkers (shared by points and the bar). */
+.bg-checker {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 76%;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  margin-top: -6%;
+  color: var(--surface-deep);
+  font-size: 0.55rem;
+  font-weight: 800;
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.28);
+}
+.bg-point.is-top .bg-checker:first-child,
+.bg-point.is-bottom .bg-checker:first-child {
+  margin-top: 0;
+}
+.bg-checker.is-seat-0 {
+  background: var(--color-backgammon);
+}
+.bg-checker.is-seat-1 {
+  background: var(--accent);
+}
+
+.bg-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  padding: 3% 0;
+  background: var(--surface-deep);
+  border-radius: var(--border-radius-md);
+}
+.bg-bar-stack {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.bg-bar-stack .bg-checker {
+  width: 86%;
+}
+.bg-bar.is-active {
+  outline: 2px solid var(--color-backgammon);
+}
+
+/* Dice rolled onto the board — an overlay on the playing field, not a side
+   rail. They sit on MY half (right); the opponent's turn moves them to the
+   left half (.is-away) and their ring takes the roller's checker colour
+   (--dice-accent, set by the game), so the dice always show whose turn it is.
+   Clicks pass through to the points below. */
+.bg-dice {
+  position: absolute;
+  left: 70%;
+  top: 50%;
+  z-index: 3;
+  display: flex;
+  gap: 0.4rem;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: left 0.25s ease;
+}
+.bg-dice.is-away {
+  left: 30%;
+}
+.bg-dice.is-rolling .dice-face {
+  animation: diceTumble 0.65s ease-in-out;
+}
+
+/* Click-to-roll prompt: the dice overlay becomes a single pulsing die button. */
+.bg-dice.is-prompt {
+  pointer-events: auto;
+  cursor: pointer;
+}
+.bg-dice .bg-dice-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dice-pip);
+  font-size: 1.2rem;
+  animation: dicePulse 1.1s ease-in-out infinite;
+}
+.bg-dice .dice-face {
+  width: clamp(1.6rem, 6vw, 2.4rem);
+  height: clamp(1.6rem, 6vw, 2.4rem);
+  min-width: 0;
+  padding: var(--spacing-xs);
+  box-shadow:
+    0 0 0 0.18rem var(--dice-accent, transparent),
+    var(--shadow-lg);
+  pointer-events: none;
+}
+
+/* Bear-off tray, styled as an integral part of the board (like the bar).
+   Each side's borne-off total shows as one counted disc: seat 1 at the top
+   (its home board is top-right), seat 0 at the bottom. */
+.bg-off {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border: 0;
+  border-radius: var(--border-radius-md);
+  background: var(--surface-deep);
+  color: var(--text-color-muted);
+  font-size: 1.1rem;
+  opacity: 0.6;
+  cursor: pointer;
+}
+.bg-off.is-target {
+  color: var(--text-color);
+  opacity: 1;
+}
+.bg-off-stack {
+  display: flex;
+  width: 100%;
+  min-height: 1.4rem;
+  align-items: center;
+  justify-content: center;
+}
+.bg-off-stack .bg-checker {
+  width: 78%;
+  margin-top: 0;
+  font-size: 0.6rem;
+}

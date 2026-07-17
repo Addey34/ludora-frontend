@@ -13,6 +13,8 @@ export const GENERATED_GAME_CATALOG = {
     seo_gomoku: 'Play Gomoku free in your browser — no download, no sign-up.',
     game_mill: "Nine Men's Morris",
     seo_mill: "Play Nine Men's Morris free in your browser — no download, no sign-up.",
+    game_backgammon: 'Backgammon',
+    seo_backgammon: 'Play Backgammon free in your browser — no download, no sign-up.',
     // game-generator:catalog-en
   },
   fr: {
@@ -25,6 +27,9 @@ export const GENERATED_GAME_CATALOG = {
     game_mill: 'Jeu du moulin',
     seo_mill:
       'Joue à Jeu du moulin gratuitement dans ton navigateur — sans téléchargement ni inscription.',
+    game_backgammon: 'Backgammon',
+    seo_backgammon:
+      'Joue à Backgammon gratuitement dans ton navigateur — sans téléchargement ni inscription.',
     // game-generator:catalog-fr
   },
 } satisfies Record<'en' | 'fr', Record<string, string>>;
