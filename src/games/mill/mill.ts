@@ -1,6 +1,8 @@
 import { nextSeat, type Seat, type TurnRules } from '../../shared/turn/turnGame.js';
 
 const SEAT_COUNT = 2;
+/** Seat count, exported for the multiplayer panel capacity. */
+export const SEATS = SEAT_COUNT;
 export const POINT_COUNT = 24;
 export const PIECES_PER_PLAYER = 9;
 

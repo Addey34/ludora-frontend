@@ -2,6 +2,8 @@ import { nextSeat, type Seat, type TurnRules } from '../../shared/turn/turnGame.
 
 export const BOARD_SIZE = 15;
 const SEAT_COUNT = 2;
+/** Seat count, exported for the multiplayer panel capacity. */
+export const SEATS = SEAT_COUNT;
 const WIN_LENGTH = 5;
 const CELL_COUNT = BOARD_SIZE * BOARD_SIZE;
 

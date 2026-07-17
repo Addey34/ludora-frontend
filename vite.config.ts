@@ -646,7 +646,11 @@ const games = [
     key: 'tictactoe',
     label: 'Tic-Tac-Toe',
     color: '--color-tictactoe',
-    mode: 'solo',
+    mode: 'duo',
+    // Turn-based 2-player: "Settings" popover (bot difficulty + first move) +
+    // "Multiplayer" panel (1-v-1 over the relay); both driven by the game.
+    settings: true,
+    multiplayer: true,
     controls: [
       { keys: 'Click / tap', action: 'Place your mark' },
       { keys: '<kbd>1</kbd>–<kbd>9</kbd>', action: 'Line up three to win' },
@@ -656,7 +660,11 @@ const games = [
     key: 'gomoku',
     label: 'Gomoku',
     color: '--color-gomoku',
-    mode: 'solo',
+    mode: 'duo',
+    // Turn-based 2-player: "Settings" popover (bot difficulty + first move) +
+    // "Multiplayer" panel (1-v-1 over the relay); both driven by the game.
+    settings: true,
+    multiplayer: true,
     controls: [
       { keys: 'Click / tap', action: 'Place a stone' },
       { keys: 'Goal', action: 'Line up five stones to win' },
@@ -666,7 +674,11 @@ const games = [
     key: 'mill',
     label: "Nine Men's Morris",
     color: '--color-mill',
-    mode: 'solo',
+    mode: 'duo',
+    // Turn-based 2-player: "Settings" popover (bot difficulty + first move) +
+    // "Multiplayer" panel (1-v-1 over the relay); both driven by the game.
+    settings: true,
+    multiplayer: true,
     controls: [
       { keys: 'Place', action: 'Drop your nine pieces on the board' },
       { keys: 'Click / tap', action: 'Then slide a piece to an adjacent spot' },

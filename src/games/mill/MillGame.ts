@@ -1,18 +1,24 @@
+import { Difficulty } from '../../shared/bot/difficulty.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { BoardGame } from '../../shared/turn/BoardGame.js';
 import type { TurnRules } from '../../shared/turn/turnGame.js';
 import { setupHud } from '../../shared/ui/hud.js';
+import {
+  difficultyField,
+  setupSettingsPanel,
+  SettingsPanelHandle,
+} from '../../shared/ui/settingsPanel.js';
 import { showToast } from '../../shared/ui/toast.js';
 import {
-  bestMillMove,
+  createMillState,
   millRules,
   PIECES_PER_PLAYER,
   POINT_COUNT,
+  SEATS,
   type MillMove,
   type MillState,
 } from './mill.js';
-
-const STONES = ['●', '○'] as const;
+import { decideMove } from './millBot.js';
 
 /** Grid coordinates (0–6) of each of the 24 points, matching the SVG board lines. */
 const COORDS: ReadonlyArray<readonly [number, number]> = [
@@ -47,6 +53,11 @@ export class MillGame extends BoardGame<MillState, MillMove> {
   private selected: number | null = null;
   private removePrompted = false;
 
+  private difficulty: Difficulty = 'medium';
+  private settings: SettingsPanelHandle | null = null;
+  /** Solo only: whether the bot (white) takes the first move (Settings). */
+  private botStarts = false;
+
   constructor() {
     super({ storageKey: 'mill-scores' });
   }
@@ -62,8 +73,51 @@ export class MillGame extends BoardGame<MillState, MillMove> {
     ]);
     this.buildBoard();
     this.setupEventListeners();
+
+    this.settings = setupSettingsPanel([
+      difficultyField(this.difficulty, (value) => {
+        this.difficulty = value as Difficulty;
+      }),
+      {
+        id: 'first',
+        label: t('firstMove'),
+        choices: [
+          { label: t('me'), value: 'me' },
+          { label: t('you'), value: 'you' },
+        ],
+        value: this.botStarts ? 'you' : 'me',
+        onChange: (value) => {
+          this.botStarts = value === 'you';
+          if (this.mode === 'solo') {
+            this.reset();
+            if (this.state.isRunning) this.start();
+          }
+        },
+      },
+    ]);
+    this.setupVersus(SEATS);
+
+    this.game = this.freshGame();
     this.updateTurnDisplay();
     this.renderState();
+  }
+
+  /** A fresh board; in solo the bot (seat 1) takes the first turn when configured. */
+  protected freshGame(): MillState {
+    const state = createMillState();
+    if (this.mode === 'solo' && this.botStarts) state.current = 1;
+    return state;
+  }
+
+  /** Clears the pending selection between rounds. */
+  protected onRoundReset(): void {
+    this.selected = null;
+    this.removePrompted = false;
+  }
+
+  /** Multiplayer freezes the solo-only settings (difficulty / first move). */
+  protected onNetActiveChanged(active: boolean): void {
+    this.settings?.setDisabled(active);
   }
 
   handleInput(_event: KeyboardEvent): void {
@@ -78,10 +132,8 @@ export class MillGame extends BoardGame<MillState, MillMove> {
     return false;
   }
 
-  protected decideBotMove(_legalMoves: MillMove[]): MillMove {
-    const move = bestMillMove(this.game);
-    if (!move) throw new Error('No legal move available');
-    return move;
+  protected decideBotMove(legalMoves: MillMove[]): MillMove {
+    return decideMove(this.game, legalMoves, this.difficulty);
   }
 
   protected isRoundOver(): boolean {
@@ -91,10 +143,6 @@ export class MillGame extends BoardGame<MillState, MillMove> {
   protected getGameOverTitle(): string {
     if (this.game.winner === null) return t('draw');
     return this.game.winner === this.mySeat ? t('youWin') : t('youLose');
-  }
-
-  protected updateTurnDisplay(): void {
-    this.hud?.set('turn', this.isRoundOver() ? '-' : STONES[this.game.current]);
   }
 
   protected renderState(): void {

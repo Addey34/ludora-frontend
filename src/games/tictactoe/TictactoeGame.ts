@@ -1,21 +1,41 @@
+import { Difficulty } from '../../shared/bot/difficulty.js';
 import { t } from '../../shared/i18n/i18n.js';
 import { BoardGame } from '../../shared/turn/BoardGame.js';
 import type { TurnRules } from '../../shared/turn/turnGame.js';
 import { setupHud } from '../../shared/ui/hud.js';
 import {
-  bestTictactoeMove,
+  difficultyField,
+  setupSettingsPanel,
+  SettingsPanelHandle,
+} from '../../shared/ui/settingsPanel.js';
+import {
   BOARD_WIDTH,
+  createTictactoeState,
   isTictactoeDraw,
+  SEATS,
   tictactoeRules,
   type TictactoeMove,
   type TictactoeState,
 } from './tictactoe.js';
+import { decideMove } from './tictactoeBot.js';
 
 const SYMBOLS = ['X', 'O'] as const;
 
+/**
+ * Tic-Tac-Toe controller: a deterministic turn-based game playable **solo**
+ * (human = seat 0 X, bot = seat 1 O) or **1-v-1 online** over the relay. It only
+ * owns the 3×3 board rendering and input; the whole turn/host-authoritative
+ * networking lives in {@link BoardGame}. Bot difficulty + first move live in the
+ * Settings panel; the online seat is wired through the Multiplayer panel.
+ */
 export class TictactoeGame extends BoardGame<TictactoeState, TictactoeMove> {
   private board: HTMLElement | null = null;
   private cells: HTMLButtonElement[] = [];
+
+  private difficulty: Difficulty = 'medium';
+  private settings: SettingsPanelHandle | null = null;
+  /** Solo only: whether the bot (O) takes the first move (Settings). */
+  private botStarts = false;
 
   constructor() {
     super({ storageKey: 'tictactoe-scores' });
@@ -33,8 +53,45 @@ export class TictactoeGame extends BoardGame<TictactoeState, TictactoeMove> {
     ]);
     this.buildBoard();
     this.setupEventListeners();
+
+    this.settings = setupSettingsPanel([
+      difficultyField(this.difficulty, (value) => {
+        this.difficulty = value as Difficulty;
+      }),
+      {
+        id: 'first',
+        label: t('firstMove'),
+        choices: [
+          { label: t('me'), value: 'me' },
+          { label: t('you'), value: 'you' },
+        ],
+        value: this.botStarts ? 'you' : 'me',
+        onChange: (value) => {
+          this.botStarts = value === 'you';
+          if (this.mode === 'solo') {
+            this.reset();
+            if (this.state.isRunning) this.start();
+          }
+        },
+      },
+    ]);
+    this.setupVersus(SEATS);
+
+    this.game = this.freshGame();
     this.updateTurnDisplay();
     this.renderState();
+  }
+
+  /** A fresh board; in solo the bot (seat 1) takes the first turn when configured. */
+  protected freshGame(): TictactoeState {
+    const state = createTictactoeState();
+    if (this.mode === 'solo' && this.botStarts) state.current = 1;
+    return state;
+  }
+
+  /** Multiplayer freezes the solo-only settings (difficulty / first move). */
+  protected onNetActiveChanged(active: boolean): void {
+    this.settings?.setDisabled(active);
   }
 
   handleInput(event: KeyboardEvent): void {
@@ -48,10 +105,8 @@ export class TictactoeGame extends BoardGame<TictactoeState, TictactoeMove> {
     return a.index === b.index;
   }
 
-  protected decideBotMove(_legalMoves: TictactoeMove[]): TictactoeMove {
-    const move = bestTictactoeMove(this.game);
-    if (!move) throw new Error('No legal move available');
-    return move;
+  protected decideBotMove(legalMoves: TictactoeMove[]): TictactoeMove {
+    return decideMove(this.game, legalMoves, this.difficulty);
   }
 
   protected isRoundOver(): boolean {
@@ -70,10 +125,6 @@ export class TictactoeGame extends BoardGame<TictactoeState, TictactoeMove> {
         this.game.current !== this.mySeat ||
         this.isRoundOver();
     });
-  }
-
-  protected updateTurnDisplay(): void {
-    this.hud?.set('turn', this.isRoundOver() ? '-' : SYMBOLS[this.game.current]);
   }
 
   protected getGameOverTitle(): string {
