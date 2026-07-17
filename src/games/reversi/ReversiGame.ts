@@ -179,16 +179,9 @@ export class ReversiGame extends BoardGame<ReversiState, ReversiMove> {
 
   /** Writes whose turn it is, plus the live disc score, into the HUD. */
   protected updateTurnDisplay(): void {
+    super.updateTurnDisplay();
     const [b, w] = countDiscs(this.game.board);
     this.hud?.set('score', `${b} – ${w}`);
-
-    const seat = this.game.current;
-    let text: string;
-    if (this.game.done) text = '—';
-    else if (seat === this.mySeat) text = 'My turn';
-    else if (this.humanSeats.has(seat)) text = 'Your turn';
-    else text = "Bot's turn";
-    this.hud?.set('turn', text);
   }
 
   /** Post-move visuals: place sound, a flip burst, a pass notice, win confetti. */

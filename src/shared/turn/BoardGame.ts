@@ -97,8 +97,14 @@ export abstract class BoardGame<S, M> extends GameEngine {
   protected abstract decideBotMove(legalMoves: M[]): M;
   /** Draws the current state into the DOM (called after every change). */
   protected abstract renderState(): void;
-  /** Refreshes the "whose turn / status" readout. */
-  protected abstract updateTurnDisplay(): void;
+  /**
+   * Refreshes the "whose turn / status" readout. Default: the shared `turn` HUD
+   * chip via {@link turnLabel}, so every game says who is playing with no code;
+   * override to add game-specific stats (pip count, disc score…) alongside it.
+   */
+  protected updateTurnDisplay(): void {
+    this.hud?.set('turn', this.turnLabel());
+  }
 
   /**
    * Post-move visuals (host and guest alike): highlight, token animation, sound,
@@ -122,6 +128,19 @@ export abstract class BoardGame<S, M> extends GameEngine {
   protected isRoundOver(): boolean {
     return this.rules.winner(this.game) !== null;
   }
+  /**
+   * Localised "whose turn" HUD label — mine / another human's / the bot's — or a
+   * dash once the round is over. Every board game shows this same readout so the
+   * player always knows who is playing, in solo and online alike.
+   */
+  protected turnLabel(): string {
+    if (this.isRoundOver()) return '—';
+    const seat = this.rules.currentSeat(this.game);
+    if (seat === this.mySeat) return t('turnMine');
+    if (this.humanSeats.has(seat)) return t('turnYours');
+    return t('turnBot');
+  }
+
   /** Routes a non-standard op code (dice roll, ship placement). Default: ignore. */
   protected handleGameMessage(_msg: MatchMessage): void {}
   /** Called when entering (`true`) or leaving (`false`) a net session. Default: nothing. */

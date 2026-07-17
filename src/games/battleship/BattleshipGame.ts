@@ -578,15 +578,7 @@ export class BattleshipGame extends BoardGame<BattleshipState, BattleshipMove> {
     const enemyFleet = this.game.fleets[1 - this.mySeat];
     this.hud?.set('mine', myFleet.ships.length - myFleet.sunkIds.length);
     this.hud?.set('enemy', enemyFleet.ships.length - enemyFleet.sunkIds.length);
-    if (this.game.winner !== null) {
-      this.hud?.set('turn', '—');
-    } else if (this.game.current === this.mySeat) {
-      this.hud?.set('turn', 'My turn');
-    } else if (this.humanSeats.has(this.game.current)) {
-      this.hud?.set('turn', 'Your turn');
-    } else {
-      this.hud?.set('turn', "Bot's turn");
-    }
+    super.updateTurnDisplay();
   }
 
   private clearHud(): void {

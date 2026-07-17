@@ -260,16 +260,6 @@ export class MancalaGame extends BoardGame<MancalaState, MancalaMove> {
     }
   }
 
-  protected updateTurnDisplay(): void {
-    const seat = this.game.current;
-    let text: string;
-    if (this.game.gameOver) text = '—';
-    else if (seat === this.mySeat) text = 'My turn';
-    else if (this.humanSeats.has(seat)) text = 'Your turn';
-    else text = "Bot's turn";
-    this.hud?.set('turn', text);
-  }
-
   // ---------------------------------------------------------------------------
   // Input
   // ---------------------------------------------------------------------------

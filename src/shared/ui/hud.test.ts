@@ -83,4 +83,40 @@ describe('setupHud', () => {
     expect(bar.querySelectorAll('.game-stat')).toHaveLength(1);
     expect(bar.querySelector('.ludo-players')).not.toBeNull();
   });
+
+  /** The rendered chips in left→right DOM order. */
+  const renderedKeys = (): string[] =>
+    [...bar.querySelectorAll('.game-stat')].map((el) => (el as HTMLElement).dataset.stat!);
+
+  it('renders chips in the canonical order, not the declared order', () => {
+    // Declared deliberately scrambled: best, time, score, opponent, turn.
+    setupHud([
+      { key: 'high', icon: 'trophy', label: 'Best' },
+      { key: 'time', icon: 'clock', label: 'Time' },
+      { key: 'score', icon: 'star', label: 'Score' },
+      { key: 'opponent', icon: 'user', label: 'Opponent' },
+      { key: 'turn', icon: 'circle-dot', label: 'Turn' },
+    ]);
+    // turn → score → time → best → opponent.
+    expect(renderedKeys()).toEqual(['turn', 'score', 'time', 'high', 'opponent']);
+  });
+
+  it('keeps declaration order among stats of equal rank (stable)', () => {
+    // Battleship: two per-side counters share no rank collision, but pip-style
+    // ties must not reorder. `moves` and `score` are both primary-metric rank.
+    setupHud([
+      { key: 'score', icon: 'star', label: 'Score' },
+      { key: 'moves', icon: 'shoe-prints', label: 'Moves' },
+    ]);
+    expect(renderedKeys()).toEqual(['score', 'moves']);
+  });
+
+  it('sorts an unknown game-specific stat just after the primary metric', () => {
+    setupHud([
+      { key: 'time', icon: 'clock', label: 'Time' },
+      { key: 'wobble', icon: 'star', label: 'Wobble' }, // unlisted → DEFAULT_ORDER
+      { key: 'score', icon: 'star', label: 'Score' },
+    ]);
+    expect(renderedKeys()).toEqual(['score', 'wobble', 'time']);
+  });
 });

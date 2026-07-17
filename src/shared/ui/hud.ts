@@ -23,6 +23,69 @@ const LABEL_KEYS: Record<string, string> = {
   Best: 'hudBest',
 };
 
+/**
+ * Canonical left→right priority for the topbar chips. A game declares its stats
+ * in whatever order reads best in its own code; {@link setupHud} then renders
+ * them in this **single shared order** so the strip is laid out the same way in
+ * every game (least effort, maximum consistency). The scheme reads as a sentence
+ * — *whose turn · the live board · what you've built · your reserves · the clock ·
+ * your record · the rival* — grouped into tiers (gaps left for future keys):
+ *
+ *  0  turn / active player — the "who" that frames everything to its right
+ *  10 per-side live board counters (your side, then the opponent's)
+ *  20 the run's primary metric (score and its single-number equivalents)
+ *  30 reserves / streak / secondary counters spent during the run
+ *  40 time
+ *  50 personal best
+ *  60 the versus opponent's score — always the far right
+ *
+ * A key that isn't listed defaults to {@link DEFAULT_ORDER} (just after the
+ * primary metric), so a brand-new game-specific stat still lands sensibly with no
+ * change here. Ties keep the game's declaration order (a stable sort).
+ */
+const STAT_ORDER: Record<string, number> = {
+  turn: 0,
+  // per-side board counters
+  mine: 10,
+  enemy: 11,
+  pip: 12,
+  // primary run metric (only one of these is usually present)
+  score: 20,
+  chips: 20,
+  found: 20,
+  filled: 20,
+  solved: 20,
+  puzzle: 20,
+  moves: 20,
+  tries: 20,
+  guesses: 20,
+  progress: 20,
+  level: 20,
+  lines: 21,
+  // reserves / streaks / secondary counters
+  bet: 30,
+  lives: 30,
+  rolls: 30,
+  streak: 31,
+  mines: 32,
+  off: 33,
+  pushes: 33,
+  errors: 34,
+  status: 35,
+  // trailing group
+  time: 40,
+  high: 50,
+  opponent: 60,
+  opp: 60,
+};
+/** Unlisted keys sort just after the primary metric, before reserves. */
+const DEFAULT_ORDER = 25;
+
+/** The canonical rank of a stat key (see {@link STAT_ORDER}). */
+function statRank(key: string): number {
+  return STAT_ORDER[key] ?? DEFAULT_ORDER;
+}
+
 interface StatDef {
   /** Stable key used to update the stat (e.g. 'time', 'score', 'high'). */
   key: string;
@@ -46,13 +109,20 @@ export interface HudHandle {
 /**
  * Renders the given stats into `host` (default: the page's `.game-details`) and
  * returns a handle to update them. Idempotent: removes chips from a previous run
- * first, leaving sibling markup (e.g. Ludo's player badges) untouched.
+ * first, leaving sibling markup (e.g. Ludo's player badges) untouched. The chips
+ * are laid out in the shared canonical order ({@link STAT_ORDER}), not the order
+ * the game declared them, so every topbar reads the same way left→right.
  */
 export function setupHud(defs: StatDef[], host?: HTMLElement | null): HudHandle {
   const bar = host ?? document.querySelector<HTMLElement>('.game-details');
   const chips = new Map<string, HTMLElement>();
   const values = new Map<string, HTMLElement>();
   const visibilityClass = (key: string): string => `has-${key}-stat`;
+  // Stable sort into the canonical order: ties keep the declaration order.
+  const ordered = defs
+    .map((def, index) => ({ def, index }))
+    .sort((a, b) => statRank(a.def.key) - statRank(b.def.key) || a.index - b.index)
+    .map((entry) => entry.def);
 
   if (bar) {
     bar.querySelectorAll('.game-stat').forEach((el) => el.remove());
@@ -60,7 +130,7 @@ export function setupHud(defs: StatDef[], host?: HTMLElement | null): HudHandle 
       .filter((className) => /^has-.+-stat$/.test(className))
       .forEach((className) => bar.classList.remove(className));
 
-    for (const def of defs) {
+    for (const def of ordered) {
       const chip = document.createElement('span');
       chip.className = 'game-stat';
       chip.dataset.stat = def.key;

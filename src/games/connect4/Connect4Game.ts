@@ -236,17 +236,6 @@ export class Connect4Game extends BoardGame<Connect4State, Connect4Move> {
     }
   }
 
-  /** Writes whose turn it is into the HUD. */
-  protected updateTurnDisplay(): void {
-    const seat = this.game.current;
-    let text: string;
-    if (this.game.winner !== null || isFull(this.game)) text = '—';
-    else if (seat === this.mySeat) text = 'My turn';
-    else if (this.humanSeats.has(seat)) text = 'Your turn';
-    else text = "Bot's turn";
-    this.hud?.set('turn', text);
-  }
-
   /** Post-move visuals (host and guest): drop animation, sound, win confetti. */
   protected onMoveCommitted(move: Connect4Move | null): void {
     if (move) this.animateDrop(move.col);
