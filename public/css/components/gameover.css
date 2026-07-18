@@ -56,7 +56,7 @@
   justify-content: center;
 }
 
-/* GamesZone Points earned (signed-in runs) — makes the difficulty / weekly
+/* Ludora Points earned (signed-in runs) — makes the difficulty / weekly
    bonus visible so the player sees why a run was worth more. */
 .game-over-footer {
   display: flex;

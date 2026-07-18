@@ -1,8 +1,8 @@
 /**
  * Leaderboard with three direct tabs:
  *  - Personal: the player's best server-backed score in every score-enabled game.
- *  - Friends: GamesZone Points scoped to the friend graph.
- *  - Global: the public GamesZone Points ranking.
+ *  - Friends: Ludora Points scoped to the friend graph.
+ *  - Global: the public Ludora Points ranking.
  */
 import { applyTranslations, t } from '../shared/i18n/i18n.js';
 import { requireGoogleUser } from '../shared/net/authGuard.js';

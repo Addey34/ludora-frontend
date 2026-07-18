@@ -4,7 +4,7 @@
  * Each day one game is the **daily** pick and each week seven games are the
  * **weekly** set, chosen deterministically over the scoreable catalogue
  * (`SCORE_GAMES`). Everyone worldwide sees the same picks the same day/week with
- * no server round-trip. The picks are what earn GamesZone Points (gated in
+ * no server round-trip. The picks are what earn Ludora Points (gated in
  * `src/shared/score/multipliers.ts` — GZP is earned *only* on a spotlit game)
  * and what carry the home-tile / sidebar badges (`weeklyFeature.ts`).
  *

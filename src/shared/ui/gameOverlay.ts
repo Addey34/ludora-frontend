@@ -25,7 +25,7 @@ interface GameOverlayOptions {
   bodyHtml?: string;
   /** Plain score shown when `bodyHtml` is omitted. */
   score?: number;
-  /** Trusted HTML shown under the body (e.g. the GamesZone Points breakdown). */
+  /** Trusted HTML shown under the body (e.g. the Ludora Points breakdown). */
   footerHtml?: string;
   buttons: GameOverlayButton[];
 }

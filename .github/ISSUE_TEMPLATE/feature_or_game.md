@@ -11,7 +11,7 @@ labels: enhancement
 
 ## Why?
 
-<!-- How does it improve GamesZone? -->
+<!-- How does it improve Ludora? -->
 
 ## Details (optional)
 

@@ -1,5 +1,5 @@
 /**
- * Games Zone service worker — makes the app installable (PWA) and caches static
+ * Ludora service worker — makes the app installable (PWA) and caches static
  * assets for speed/offline.
  *
  * IMPORTANT: it never intercepts navigations (page loads). With clean-URL

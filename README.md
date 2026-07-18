@@ -1,4 +1,4 @@
-# 🎮 GamesZone
+# 🎮 Ludora
 
 A collection of browser arcade & educational games gathered into a single web app. The
 interface is fully bilingual (**English / French**, toggled from the shared sidebar). Ranked
@@ -34,7 +34,7 @@ focus on the board (with best-effort native fullscreen).
 
 ## Online features
 
-- **Leaderboards** — per-game best scores plus a cross-game GamesZone Points ranking.
+- **Leaderboards** — per-game best scores plus a cross-game Ludora Points ranking.
 - **Levels & progression** — Pac-Man, Sokoban and Nonogram unlock levels as you clear them,
   synced across devices.
 - **Google sign-in** — optional; players are anonymous by default and can sign in to carry

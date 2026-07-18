@@ -933,7 +933,7 @@ export default defineConfig({
         const blurb = game ? CATALOG.en[`seo_${game.key}`] : undefined;
         const metaDescription = game
           ? (blurb ?? `Play ${game.label} free in your browser — no download, no sign-up.`)
-          : 'Games Zone: free browser games you can play instantly — no download, no sign-up.';
+          : 'Ludora: free browser games you can play instantly — no download, no sign-up.';
         const ldJson = JSON.stringify(
           game
             ? [
@@ -948,13 +948,13 @@ export default defineConfig({
                   applicationCategory: 'GameApplication',
                   operatingSystem: 'Any',
                   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-                  publisher: { '@type': 'Organization', name: 'Games Zone', url: SITE },
+                  publisher: { '@type': 'Organization', name: 'Ludora', url: SITE },
                 },
                 {
                   '@context': 'https://schema.org',
                   '@type': 'BreadcrumbList',
                   itemListElement: [
-                    { '@type': 'ListItem', position: 1, name: 'Games Zone', item: `${SITE}/` },
+                    { '@type': 'ListItem', position: 1, name: 'Ludora', item: `${SITE}/` },
                     { '@type': 'ListItem', position: 2, name: game.label, item: canonical },
                   ],
                 },
@@ -962,7 +962,7 @@ export default defineConfig({
             : {
                 '@context': 'https://schema.org',
                 '@type': 'WebSite',
-                name: 'Games Zone',
+                name: 'Ludora',
                 url: SITE,
                 description: metaDescription,
               }

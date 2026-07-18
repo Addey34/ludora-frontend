@@ -54,7 +54,7 @@ const OPTION_NAMES = new Map([
 
 export function usage() {
   return [
-    'Create a complete GamesZone game scaffold.',
+    'Create a complete Ludora game scaffold.',
     '',
     'Usage:',
     '  npm run game:new -- --key <key> --label <label> --type <type> --category <category> --color <hex>',

@@ -1,5 +1,5 @@
 /**
- * "GamesZone Points" (GZP) — the fair cross-game currency behind the global
+ * "Ludora Points" (GZP) — the fair cross-game currency behind the global
  * ranking. A run's contribution is bounded by the log of its score, so a big
  * Tetris score and a modest Snake score weigh comparably and no single game can
  * dominate the global board. Points are cumulative: the global leaderboard is an

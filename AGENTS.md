@@ -1,4 +1,4 @@
-# AGENTS.md — rules for AI agents working on GamesZone
+# AGENTS.md — rules for AI agents working on Ludora
 
 Short, stable **principles**. For the _how_, defer to the detailed docs instead of
 repeating them here (so there's one source of truth per topic):

@@ -301,7 +301,7 @@ export async function listLeaderboardScores(
   });
 }
 
-/** Id of the cross-game "GamesZone Points" leaderboard (incremental, desc). */
+/** Id of the cross-game "Ludora Points" leaderboard (incremental, desc). */
 export const GLOBAL_LEADERBOARD = 'global';
 
 /** An entry of the global cross-game ranking. */
@@ -338,7 +338,7 @@ function toGlobalEntry(
 }
 
 /**
- * Adds GamesZone Points to the player's global total (incremental leaderboard).
+ * Adds Ludora Points to the player's global total (incremental leaderboard).
  * Rejects if the backend is unreachable or the 'global' board isn't created yet,
  * so callers should swallow errors (best-effort, like the per-game submit).
  */
@@ -681,7 +681,7 @@ export async function removeFriend(code: string): Promise<void> {
 
 /**
 /**
- * GamesZone Points per user id for the given owners (their global-leaderboard
+ * Ludora Points per user id for the given owners (their global-leaderboard
  * totals), so the friends list can show each friend's GZP inline. Best-effort:
  * returns an empty map on any backend issue. Owners with no recorded run are
  * simply absent from the map.
@@ -705,7 +705,7 @@ export async function getFriendScores(userIds: string[]): Promise<Map<string, nu
 }
 
 /**
- * The friends-only GamesZone Points ranking: the current player plus their mutual
+ * The friends-only Ludora Points ranking: the current player plus their mutual
  * friends, sorted by GZP (desc) and freshly ranked among themselves. Reads the
  * same global leaderboard as {@link listGlobalRanking} but filtered to the friend
  * graph's owner ids. Returns [] on any error/backend issue.

@@ -3,7 +3,7 @@
  * run and chooses to save, we can't record it yet (recording requires a Google
  * account). We stash the run here, trigger sign-in (which reloads the page), and
  * on the next load — now signed in — {@link flushPendingScore} records it under
- * the Google name: to its online leaderboard(s) and the global GamesZone Points
+ * the Google name: to its online leaderboard(s) and the global Ludora Points
  * total.
  */
 import { getCurrentUser, submitGlobalScore, recordRun } from '../net/nakama.js';
@@ -18,7 +18,7 @@ interface PendingScore {
   score: number;
   /** Game-specific extras (e.g. Typing's wpm/lpm). */
   extra?: Record<string, number>;
-  /** GamesZone Points this run is worth. */
+  /** Ludora Points this run is worth. */
   gzp: number;
 }
 

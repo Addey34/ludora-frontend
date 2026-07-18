@@ -1,6 +1,6 @@
 {
-  "name": "Games Zone",
-  "short_name": "GamesZone",
+  "name": "Ludora",
+  "short_name": "Ludora",
   "description": "Browser games — play instantly, no download.",
   "start_url": "/",
   "scope": "/",

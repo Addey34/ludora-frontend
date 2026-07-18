@@ -72,7 +72,7 @@ async function fetchCountries(lang) {
   }`;
   const url = `https://query.wikidata.org/sparql?format=json&query=${encodeURIComponent(query)}`;
   const res = await fetch(url, {
-    headers: { 'User-Agent': 'GamesZone-data/1.0', Accept: 'application/sparql-results+json' },
+    headers: { 'User-Agent': 'Ludora-data/1.0', Accept: 'application/sparql-results+json' },
   });
   const json = await res.json();
 

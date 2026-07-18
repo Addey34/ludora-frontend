@@ -478,7 +478,7 @@ export abstract class GameEngine {
       getCachedFriendCode()
     );
     const shareData = {
-      title: 'Games Zone',
+      title: 'Ludora',
       text: t('challengeShareText', { score: this.state.score }),
       url,
     };
@@ -630,7 +630,7 @@ export abstract class GameEngine {
 
   /**
    * Records a run under `username`, server-authoritative: the run is written to
-   * its leaderboard(s) and the global GamesZone Points total through Nakama. No
+   * its leaderboard(s) and the global Ludora Points total through Nakama. No
    * score is written to localStorage. If the backend is unreachable the run is
    * lost and the player is warned (offline scores are not queued).
    */
@@ -664,7 +664,7 @@ export abstract class GameEngine {
   }
 
   /**
-   * The GamesZone Points a run earns, broken into its base value and the two
+   * The Ludora Points a run earns, broken into its base value and the two
    * factors that scale it — difficulty and the spotlight gate (see
    * `src/shared/score/multipliers.ts`). GZP is earned **only** on a spotlit game,
    * so `spotlight` (hence `total`) is 0 for a game that isn't the day's daily pick
@@ -690,7 +690,7 @@ export abstract class GameEngine {
   }
 
   /**
-   * The GamesZone Points breakdown shown under the game-over body (signed-in runs
+   * The Ludora Points breakdown shown under the game-over body (signed-in runs
    * only — a guest earns nothing until they sign in). Names each active bonus so
    * the player sees *why* a run was worth more: the retention hook made visible.
    */
@@ -705,7 +705,7 @@ export abstract class GameEngine {
   }
 
   /**
-   * The GamesZone Points a guest *would* earn — shown under the game-over body as
+   * The Ludora Points a guest *would* earn — shown under the game-over body as
    * an incentive next to the "Sign in to save" button (guests earn nothing until
    * they sign in). Turns the abstract prompt into a concrete reward.
    */
@@ -752,7 +752,7 @@ export abstract class GameEngine {
   }
 
   /**
-   * The score used for ranking — the leaderboard record, GamesZone Points and
+   * The score used for ranking — the leaderboard record, Ludora Points and
    * the "best" HUD stat. Defaults to the live game score; level games rank on
    * the level reached instead (so every game contributes coherently and a level
    * game's in-game score, if any, stays a display-only value). Override for a

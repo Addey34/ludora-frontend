@@ -1,4 +1,4 @@
-# Contributing to GamesZone
+# Contributing to Ludora
 
 Thanks for wanting to contribute! 🎮 Whether it's fixing a bug, improving a game, or
 adding a new one, all help is welcome.

@@ -49,7 +49,7 @@ function friendRow(friend: Friend, statusText: string, ...actions: HTMLElement[]
   return li;
 }
 
-/** A small "1,234 GZP" badge showing a friend's GamesZone Points. */
+/** A small "1,234 GZP" badge showing a friend's Ludora Points. */
 function gzpBadge(points: number): HTMLSpanElement {
   const span = document.createElement('span');
   span.className = 'friend-gzp';
@@ -80,7 +80,7 @@ async function refreshFriends(): Promise<void> {
   const online = mutual.filter((f) => f.online);
   const offline = mutual.filter((f) => !f.online);
 
-  // Each mutual friend's GamesZone Points, shown inline (best-effort).
+  // Each mutual friend's Ludora Points, shown inline (best-effort).
   const scores = await getFriendScores(mutual.map((f) => f.userId));
   const mutualActions = (f: Friend): HTMLElement[] => {
     const gzp = scores.get(f.userId);

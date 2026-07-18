@@ -1,5 +1,5 @@
 /**
- * GamesZone Points multipliers — the single tuning hub for "this run is worth
+ * Ludora Points multipliers — the single tuning hub for "this run is worth
  * more". Two factors compose here, and they multiply together:
  *
  *   1. **Difficulty** — a harder variant earns more (easy ×1, medium ×1.5, hard ×2).
@@ -27,7 +27,7 @@ export const DIFFICULTY_MULT: Record<Tier, number> = { easy: 1, medium: 1.5, har
 
 /**
  * GZP multiplier by spotlight status. `none` is 0 on purpose: a game that isn't
- * spotlit today or this week earns no GamesZone Points at all (the season gate).
+ * spotlit today or this week earns no Ludora Points at all (the season gate).
  * The daily pick is worth more than the seven weekly picks.
  */
 export const SPOTLIGHT_MULT = { daily: 2, weekly: 1, none: 0 } as const;

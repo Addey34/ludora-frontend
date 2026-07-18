@@ -3,7 +3,7 @@
  *
  * Rather than a heavy banner, each spotlit game (see `src/shared/spotlight/`)
  * gets a small badge on its home tile and its sidebar link, with a tooltip
- * saying it earns GamesZone Points this day/week. Rendered client-side (from the
+ * saying it earns Ludora Points this day/week. Rendered client-side (from the
  * always-present sidebar) so a static build never shows a stale day/week.
  *
  * The daily pick takes precedence: a game that is both the daily pick and in the
