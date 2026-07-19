@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Dominoes" css="/css/games/dominoes.css" script="./dominoes-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Dominoes" key="dominoes"}}
+    <div class="game-details"></div>
+    <div class="dominoes-board game-board board-table" id="board">
+      <div class="dominoes-opponent board-table__row" id="opponentHand"></div>
+      <div class="dominoes-chain board-table__felt" id="chain"></div>
+      <div class="dominoes-actions board-table__row">
+        <button type="button" class="dominoes-action" id="drawBtn" hidden></button>
+      </div>
+      <div class="dominoes-hand board-table__row" id="hand"></div>
+    </div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

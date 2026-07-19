@@ -702,6 +702,16 @@ const games = [
       { keys: 'Goal', action: 'Bear off all your checkers first' },
     ],
   },
+  {
+    key: 'dominoes',
+    label: 'Dominoes',
+    color: '--color-dominoes',
+    mode: 'solo',
+    controls: [
+      { keys: 'Click / tap', action: 'Play a matching tile' },
+      { keys: 'Draw pile', action: 'Draw when you cannot play' },
+    ],
+  },
 ];
 
 // Home-page grouping: each game key is listed under one section, in display
@@ -769,6 +779,7 @@ const categoryDefs = [
       'gomoku',
       'mill',
       'backgammon',
+      'dominoes',
     ],
   },
   {

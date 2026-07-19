@@ -49,6 +49,7 @@
   <url><loc>https://games-zone.onrender.com/gomoku</loc></url>
   <url><loc>https://games-zone.onrender.com/mill</loc></url>
   <url><loc>https://games-zone.onrender.com/backgammon</loc></url>
+  <url><loc>https://games-zone.onrender.com/dominoes</loc></url>
   <!-- French pages (/fr/…). hreflang alternates are emitted in each page head. -->
   <url><loc>https://games-zone.onrender.com/fr/</loc></url>
   <url><loc>https://games-zone.onrender.com/fr/profile</loc></url>
@@ -99,4 +100,5 @@
   <url><loc>https://games-zone.onrender.com/fr/gomoku</loc></url>
   <url><loc>https://games-zone.onrender.com/fr/mill</loc></url>
   <url><loc>https://games-zone.onrender.com/fr/backgammon</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/dominoes</loc></url>
 </urlset>

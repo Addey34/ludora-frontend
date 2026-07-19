@@ -15,6 +15,9 @@ export const GENERATED_GAME_CATALOG = {
     seo_mill: "Play Nine Men's Morris free in your browser — no download, no sign-up.",
     game_backgammon: 'Backgammon',
     seo_backgammon: 'Play Backgammon free in your browser — no download, no sign-up.',
+    game_dominoes: 'Dominoes',
+    seo_dominoes:
+      'Play classic dominoes online against the computer. Match tiles, block your opponent and empty your hand first.',
     // game-generator:catalog-en
   },
   fr: {
@@ -30,6 +33,9 @@ export const GENERATED_GAME_CATALOG = {
     game_backgammon: 'Backgammon',
     seo_backgammon:
       'Joue à Backgammon gratuitement dans ton navigateur — sans téléchargement ni inscription.',
+    game_dominoes: 'Dominos',
+    seo_dominoes:
+      "Jouez aux dominos classiques en ligne contre l'ordinateur. Posez vos tuiles, bloquez l'adversaire et videz votre main.",
     // game-generator:catalog-fr
   },
 } satisfies Record<'en' | 'fr', Record<string, string>>;

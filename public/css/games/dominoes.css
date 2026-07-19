@@ -1,0 +1,120 @@
+@import url('../global.css');
+
+:root {
+  --title-color: var(--color-dominoes);
+}
+
+/* A domino "table" via the shared `board-table` classes (game-layout.css): the
+   opponent row is pinned to the top, your hand to the bottom, and the chain (the
+   felt) grows to fill everything between them — so the board uses the full height
+   instead of bunching up at the top. Only the felt-specific styling lives here.
+   The top row is ready to hold several opponents once multiplayer lands. */
+.dominoes-board {
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--border-radius-lg);
+}
+
+.dominoes-chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  background: var(--surface-2);
+  border-radius: var(--border-radius-md);
+  box-shadow: inset 0 0 0 1px var(--line);
+  overflow: auto;
+}
+
+.dominoes-hand,
+.dominoes-opponent {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  min-height: 3.4rem;
+}
+
+.dominoes-tile {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: var(--border-radius-sm);
+  background: var(--line);
+}
+
+.dominoes-tile.is-double {
+  flex-direction: column;
+}
+
+button.dominoes-tile {
+  cursor: pointer;
+  font: inherit;
+}
+
+button.dominoes-tile:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.dominoes-tile.is-selected {
+  outline: 2px solid var(--color-dominoes);
+  outline-offset: 1px;
+}
+
+.dominoes-tile.is-back {
+  width: 2.6rem;
+  height: 1.4rem;
+  background: var(--color-dominoes);
+  opacity: 0.55;
+}
+
+.dominoes-half {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 2.2rem;
+  aspect-ratio: 1;
+  /* Match the shared animated die: white face, dark pips. */
+  background: var(--dice-bg);
+  border-radius: var(--border-radius-sm);
+}
+
+.dominoes-end {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px dashed var(--color-dominoes);
+  border-radius: var(--border-radius-sm);
+  background: transparent;
+  color: var(--color-dominoes);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dominoes-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.dominoes-action {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border: 1px solid var(--line);
+  border-radius: var(--border-radius-md);
+  background: var(--surface-2);
+  color: var(--text-color);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .dominoes-half {
+    width: 1.7rem;
+  }
+}
