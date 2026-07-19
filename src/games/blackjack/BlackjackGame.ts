@@ -106,21 +106,21 @@ export class BlackjackGame extends GameEngine {
   private buildDOM(): void {
     if (!this.boardEl) return;
     this.boardEl.innerHTML = `
-      <div class="bj-area bj-dealer-area">
+      <div class="bj-area bj-dealer-area board-table__felt">
         <div class="bj-area-label" id="bj-dealer-label"></div>
         <div class="bj-hand" id="bj-dealer-hand"></div>
       </div>
-      <div class="bj-status" id="bj-status"></div>
-      <div class="bj-area bj-player-area">
+      <div class="bj-status board-table__row" id="bj-status"></div>
+      <div class="bj-area bj-player-area board-table__felt">
         <div class="bj-area-label" id="bj-player-label"></div>
         <div class="bj-hand" id="bj-player-hand"></div>
       </div>
-      <div class="bj-actions" id="bj-actions">
+      <div class="bj-actions board-table__row" id="bj-actions">
         <button class="bj-btn" id="bj-hit" data-i18n="bjHit"></button>
         <button class="bj-btn" id="bj-stand" data-i18n="bjStand"></button>
         <button class="bj-btn" id="bj-double" data-i18n="bjDouble"></button>
       </div>
-      <div class="bj-bet-row" id="bj-bet-row">
+      <div class="bj-bet-row board-table__row" id="bj-bet-row">
         <button class="bj-btn bj-btn-sm" id="bj-bet-down">−</button>
         <span class="bj-bet-label"><span id="bj-bet-val">10</span></span>
         <button class="bj-btn bj-btn-sm" id="bj-bet-up">+</button>

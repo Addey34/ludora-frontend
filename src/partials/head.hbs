@@ -47,6 +47,11 @@
     })();
   </script>
   <link rel="stylesheet" href="{{css}}" />
+  <!-- Landscape boards: a game declaring `board: { fit }` in the games array
+       widens its shell into a proper table frame. Set at :root here (the frame
+       width is computed on .app-body, which can't see a child override) so the
+       game needs no :root block of its own — see game-layout.css `.game-board--fill`. -->
+  {{#if game.board.fit}}<style>:root { --game-board-fit-ratio: {{game.board.fit}} }</style>{{/if}}
   <!-- Font Awesome, self-hosted and subset to only the icons we use (see
        scripts/build-icons.mjs — `npm run icons`): ~3 KB of CSS + the solid
        woff2, no render-blocking CDN request, cacheable by the service worker. -->

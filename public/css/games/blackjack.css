@@ -1,18 +1,24 @@
 @import '/css/global.css';
 
+/* Landscape casino felt: the shell is widened by `board: { fit: 1.7 }` in the
+   games array and fills its height via the shared `game-board--fill` +
+   `board-table` classes (see game-layout.css). Only the felt-specific styling
+   lives here; the dealer/player areas are the growing felt, the status/actions/
+   bet rows are fixed. */
 .blackjack-board {
-  aspect-ratio: auto;
   background: var(--sol-felt);
-  display: flex;
-  flex-direction: column;
   gap: 8px;
   padding: 14px;
   user-select: none;
 }
 
+/* Dealer and player areas are the growing felt (board-table__felt); center the
+   hand in whatever height they're given. On a content-height mobile board this
+   is a no-op; on the definite-height desktop frame it fills and centers. */
 .bj-area {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 6px;
 }
 
@@ -27,6 +33,7 @@
 .bj-hand {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 6px;
   min-height: 80px;
 }
@@ -125,4 +132,28 @@
 
 .bj-btn-deal:hover {
   background: #15803d;
+}
+
+/* Desktop: scale the cards up to match the larger landscape felt so the table
+   reads rich, not a few tiny cards floating in green. Placed after the base
+   .bj-card so it wins on source order (same specificity). The felt fill itself
+   comes from the shared `board-table__felt` class, no per-game flex here. */
+@media (min-width: 768px) {
+  .bj-card {
+    width: 88px;
+    height: 126px;
+  }
+
+  .bj-hand {
+    min-height: 126px;
+  }
+
+  .bj-card-tl,
+  .bj-card-br {
+    font-size: 1.05rem;
+  }
+
+  .bj-card-center {
+    font-size: 2.4rem;
+  }
 }

@@ -532,6 +532,8 @@ const games = [
     mode: 'duo',
     settings: true,
     multiplayer: true,
+    // Landscape table (two stores flanking two rows of pits): widen the shell.
+    board: { fit: 2.5 },
     controls: [
       { keys: 'Click a pit', action: 'Sow its seeds counter-clockwise' },
       { keys: 'Land in own store', action: 'Extra turn' },
@@ -546,6 +548,8 @@ const games = [
     mode: 'solo',
     leaderboard: true,
     settings: true,
+    // Landscape casino felt (dealer above, player below): widen the shell.
+    board: { fit: 1.7 },
     controls: [
       { keys: 'Click Deal', action: 'Deal a new hand with your current bet' },
       { keys: 'Hit', action: 'Draw another card' },

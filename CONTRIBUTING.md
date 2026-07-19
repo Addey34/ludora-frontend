@@ -124,6 +124,16 @@ Before opening a PR for a new game, make sure it has:
 - pure logic covered by co-located tests when the game has rules, scoring or generators;
 - `npm run verify` passing locally.
 
+### Landscape / non-square boards
+
+The board is a square by default. For a landscape "table" game (a card felt, a
+mancala board) don't hand-roll the sizing — declare `board: { fit: <ratio> }` in the
+`games` entry (widens the shell) and reuse the shared classes from `game-layout.css`:
+`game-board--fill` on the board fills the widened frame's height on desktop while
+staying content-height on mobile, and `board-table` / `board-table__felt` /
+`board-table__row` build an "opponent / felt / hand" stack whose felt grows to fill.
+See Mancala, Blackjack and Dominoes, and the layout notes in `CLAUDE.md`.
+
 ### Online play
 
 To make a game playable **online**, add `settings: true` and `multiplayer: true` to its
