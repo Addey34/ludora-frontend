@@ -716,6 +716,20 @@ const games = [
       { keys: 'Draw pile', action: 'Draw when you cannot play' },
     ],
   },
+  {
+    key: 'asteroids',
+    label: 'Asteroids',
+    color: '--color-asteroids',
+    mode: 'solo',
+    leaderboard: true,
+    settings: true,
+    controls: [
+      { keys: '<kbd>← →</kbd> or <kbd>A/Q D</kbd>', action: 'Turn the ship' },
+      { keys: '<kbd>↑</kbd> or <kbd>W/Z</kbd>', action: 'Thrust' },
+      { keys: '<kbd>Space</kbd> / touch button', action: 'Fire' },
+      { keys: 'Goal', action: 'Destroy the asteroids and survive each wave' },
+    ],
+  },
 ];
 
 // Home-page grouping: each game key is listed under one section, in display
@@ -729,7 +743,17 @@ const categoryDefs = [
     label: 'Action',
     icon: 'fa-bolt',
     color: '--cat-action',
-    keys: ['snake', 'pacman', 'tetris', 'breakout', 'pong', 'flappy', 'invaders', 'bubbles'],
+    keys: [
+      'snake',
+      'pacman',
+      'tetris',
+      'breakout',
+      'pong',
+      'flappy',
+      'invaders',
+      'bubbles',
+      'asteroids',
+    ],
   },
   {
     id: 'puzzle',

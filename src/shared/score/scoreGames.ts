@@ -35,6 +35,7 @@ export const SCORE_GAMES: ScoreGame[] = [
   { key: 'solitaire' },
   { key: 'blackjack' },
   { key: 'invaders' },
+  { key: 'asteroids' },
   { key: 'bubbles' },
   { key: 'binairo' },
   { key: 'kakuro' },

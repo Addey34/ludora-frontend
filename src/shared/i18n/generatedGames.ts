@@ -18,6 +18,8 @@ export const GENERATED_GAME_CATALOG = {
     game_dominoes: 'Dominoes',
     seo_dominoes:
       'Play classic dominoes online against the computer. Match tiles, block your opponent and empty your hand first.',
+    game_asteroids: 'Asteroids',
+    seo_asteroids: 'Pilot your ship through an asteroid field and survive as long as possible.',
     // game-generator:catalog-en
   },
   fr: {
@@ -36,6 +38,9 @@ export const GENERATED_GAME_CATALOG = {
     game_dominoes: 'Dominos',
     seo_dominoes:
       "Jouez aux dominos classiques en ligne contre l'ordinateur. Posez vos tuiles, bloquez l'adversaire et videz votre main.",
+    game_asteroids: 'Astéroïdes',
+    seo_asteroids:
+      'Pilote ton vaisseau dans un champ d’astéroïdes et survis le plus longtemps possible.',
     // game-generator:catalog-fr
   },
 } satisfies Record<'en' | 'fr', Record<string, string>>;

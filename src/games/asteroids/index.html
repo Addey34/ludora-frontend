@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Asteroids" css="/css/games/asteroids.css" script="./asteroids-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Asteroids" key="asteroids"}}
+    <div class="game-details"></div>
+    <div class="asteroids-board game-board" id="board"></div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

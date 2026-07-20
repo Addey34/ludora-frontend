@@ -139,6 +139,14 @@
   --color-mill: #14b8a6; /* generated: Nine Men's Morris */
   --color-backgammon: #d97706; /* generated: Backgammon */
   --color-dominoes: #7c5cbf; /* generated: Dominoes */
+  --color-asteroids: #8b5cf6; /* generated: Asteroids */
+  --asteroids-space: #050816;
+  --asteroids-star: #dbeafe;
+  --asteroids-rock: #64748b;
+  --asteroids-rock-detail: #cbd5e1;
+  --asteroids-ship: #a78bfa;
+  --asteroids-flame: #fb923c;
+  --asteroids-shot: #fef08a;
   /* Sidebar super-category accents (icon + flyout tint). Distinct hues, one per
      genre, in the site's vivid palette. */
   --cat-action: #ef4444; /* red — fast reflexes */
