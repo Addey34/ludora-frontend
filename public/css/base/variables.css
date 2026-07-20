@@ -164,6 +164,7 @@
   --quoridor-wall-shadow: rgb(15 23 42 / 55%);
   --quoridor-legal: #fef08a;
   --quoridor-tool-active: rgb(194 65 12 / 14%);
+  --color-sciencequiz: #06b6d4; /* generated: Science Quiz */
   /* Sidebar super-category accents (icon + flyout tint). Distinct hues, one per
      genre, in the site's vivid palette. */
   --cat-action: #ef4444; /* red — fast reflexes */

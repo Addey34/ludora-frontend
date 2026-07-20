@@ -747,6 +747,24 @@ const games = [
       { keys: 'Goal', action: 'Reach the opposite side first' },
     ],
   },
+  {
+    key: 'sciencequiz',
+    label: 'Science Quiz',
+    color: '--color-sciencequiz',
+    mode: 'duo',
+    leaderboard: true,
+    settings: true,
+    multiplayer: true,
+    controls: [
+      { keys: 'Click / tap', action: 'Pick the right answer' },
+      { keys: '<kbd>1 2 3 4</kbd>', action: 'Choose an option with the keyboard' },
+      { keys: 'Settings', action: 'Choose a science topic, difficulty and mode' },
+      {
+        keys: 'Goal',
+        action: 'Master biology, chemistry, physics, space and Earth science',
+      },
+    ],
+  },
 ];
 
 // Home-page grouping: each game key is listed under one section, in display
@@ -803,7 +821,7 @@ const categoryDefs = [
     label: 'Quiz',
     icon: 'fa-brain',
     color: '--cat-quiz',
-    keys: ['math', 'geoquiz', 'trivia', 'conjugation'],
+    keys: ['math', 'geoquiz', 'trivia', 'conjugation', 'sciencequiz'],
   },
   {
     id: 'board',

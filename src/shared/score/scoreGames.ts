@@ -24,6 +24,7 @@ export const SCORE_GAMES: ScoreGame[] = [
   { key: 'math' },
   { key: 'geoquiz' },
   { key: 'trivia' },
+  { key: 'sciencequiz' },
   { key: 'conjugation' },
   { key: 'anagram' },
   { key: 'hangman' },

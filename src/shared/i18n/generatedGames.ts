@@ -23,6 +23,9 @@ export const GENERATED_GAME_CATALOG = {
     game_quoridor: 'Quoridor',
     seo_quoridor:
       'Race across the board, place walls and outsmart the computer in classic Quoridor.',
+    game_sciencequiz: 'Science Quiz',
+    seo_sciencequiz:
+      'Test your knowledge of physics, biology, chemistry, astronomy and Earth science.',
     // game-generator:catalog-en
   },
   fr: {
@@ -47,6 +50,9 @@ export const GENERATED_GAME_CATALOG = {
     game_quoridor: 'Quoridor',
     seo_quoridor:
       'Traverse le plateau, pose des barrières et déjoue l’ordinateur dans le classique Quoridor.',
+    game_sciencequiz: 'Quiz Sciences',
+    seo_sciencequiz:
+      'Teste tes connaissances en physique, biologie, chimie, astronomie et sciences de la Terre.',
     // game-generator:catalog-fr
   },
 } satisfies Record<'en' | 'fr', Record<string, string>>;

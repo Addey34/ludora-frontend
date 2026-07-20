@@ -664,7 +664,7 @@ export abstract class QuizGame extends GameEngine {
     if (this.feedbackEl) {
       this.feedbackEl.classList.add(correct ? 'is-correct' : 'is-wrong');
       const note = this.current?.hint ? ` — ${this.current.hint}` : '';
-      this.feedbackEl.textContent = correct ? 'Correct!' : `Answer: ${answer}${note}`;
+      this.feedbackEl.textContent = correct ? t('quizCorrect') : t('quizAnswer', { answer, note });
     }
   }
 

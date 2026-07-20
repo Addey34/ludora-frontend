@@ -83,6 +83,7 @@ services:
       - { type: rewrite, source: /dominoes, destination: /games/dominoes/index.html }
       - { type: rewrite, source: /asteroids, destination: /games/asteroids/index.html }
       - { type: rewrite, source: /quoridor, destination: /games/quoridor/index.html }
+      - { type: rewrite, source: /sciencequiz, destination: /games/sciencequiz/index.html }
       - { type: rewrite, source: /privacy, destination: /privacy/index.html }
       - { type: rewrite, source: /legal, destination: /legal/index.html }
       - { type: rewrite, source: /profile, destination: /profile/index.html }
@@ -137,6 +138,7 @@ services:
       - { type: rewrite, source: /fr/dominoes, destination: /fr/dominoes/index.html }
       - { type: rewrite, source: /fr/asteroids, destination: /fr/asteroids/index.html }
       - { type: rewrite, source: /fr/quoridor, destination: /fr/quoridor/index.html }
+      - { type: rewrite, source: /fr/sciencequiz, destination: /fr/sciencequiz/index.html }
       - { type: rewrite, source: /fr/privacy, destination: /fr/privacy/index.html }
       - { type: rewrite, source: /fr/legal, destination: /fr/legal/index.html }
       - { type: rewrite, source: /fr/profile, destination: /fr/profile/index.html }
