@@ -15,8 +15,8 @@ validated by continuous integration (CI) before being merged.
    own copy.
 2. **Clone** your copy to your computer:
    ```bash
-   git clone https://github.com/<your-username>/GAMES-ZONE.git
-   cd GAMES-ZONE
+   git clone https://github.com/<your-username>/GameCenter.git
+   cd GameCenter
    ```
 3. **Create a branch** for your change (don't work on `main`):
    ```bash
