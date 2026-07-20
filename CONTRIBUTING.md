@@ -169,4 +169,16 @@ The interface is bilingual. Any visible string must have an English and a French
   Offline scores are not queued.
 - A question or an idea before coding? Open an **Issue** to discuss it.
 
+## License of contributions
+
+Ludora is source-available under the
+[PolyForm Noncommercial License 1.0.0](LICENSE.md) (commercial use reserved to the
+author). By opening a Pull Request, you agree that your contribution is licensed
+under that same license (**inbound = outbound**), and you grant the author
+(Adrian / Addey34) a perpetual, worldwide, irrevocable, royalty-free right to use,
+modify, distribute and **relicense** your contribution — including as part of a
+commercial offering (for example a hosted service, paid features or tips). You keep
+the copyright on your own work; this simply ensures the project can be maintained
+and monetized as a whole without tracking down every past contributor.
+
 Thanks! 🙌

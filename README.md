@@ -1,5 +1,7 @@
 # 🎮 Ludora
 
+[![License: PolyForm NC 1.0.0](https://img.shields.io/badge/license-PolyForm%20NC%201.0.0-blue)](LICENSE.md)
+
 A collection of browser arcade & educational games gathered into a single web app. The
 interface is fully bilingual (**English / French**, toggled from the shared sidebar). Ranked
 scores are recorded through a self-hosted **online backend** for signed-in players; guests can
@@ -138,3 +140,18 @@ The game then appears automatically in the sidebar and on the home page. See
 Contributions are welcome! The project works through **Pull Requests**.
 See the [CONTRIBUTING.md](CONTRIBUTING.md) guide for the detailed steps
 (fork, branch, checks, adding a game).
+
+## License
+
+Ludora is **source-available**, licensed under the
+[PolyForm Noncommercial License 1.0.0](LICENSE.md). You are free to read, fork,
+study, modify and self-host it for **any noncommercial purpose** — personal use,
+hobby projects, research, education. **Commercial use is not permitted** without a
+separate license.
+
+Copyright © 2026 Adrian (Addey34). All commercial rights are reserved by the
+author, who retains the right to distribute Ludora under other terms (for example
+a hosted service, paid features or tips). This license restricts third parties, not
+the author.
+
+Not a lawyer's advice — see [LICENSE.md](LICENSE.md) for the full, binding text.
