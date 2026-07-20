@@ -20,6 +20,9 @@ export const GENERATED_GAME_CATALOG = {
       'Play classic dominoes online against the computer. Match tiles, block your opponent and empty your hand first.',
     game_asteroids: 'Asteroids',
     seo_asteroids: 'Pilot your ship through an asteroid field and survive as long as possible.',
+    game_quoridor: 'Quoridor',
+    seo_quoridor:
+      'Race across the board, place walls and outsmart the computer in classic Quoridor.',
     // game-generator:catalog-en
   },
   fr: {
@@ -41,6 +44,9 @@ export const GENERATED_GAME_CATALOG = {
     game_asteroids: 'Astéroïdes',
     seo_asteroids:
       'Pilote ton vaisseau dans un champ d’astéroïdes et survis le plus longtemps possible.',
+    game_quoridor: 'Quoridor',
+    seo_quoridor:
+      'Traverse le plateau, pose des barrières et déjoue l’ordinateur dans le classique Quoridor.',
     // game-generator:catalog-fr
   },
 } satisfies Record<'en' | 'fr', Record<string, string>>;

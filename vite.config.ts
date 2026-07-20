@@ -730,6 +730,23 @@ const games = [
       { keys: 'Goal', action: 'Destroy the asteroids and survive each wave' },
     ],
   },
+  {
+    key: 'quoridor',
+    label: 'Quoridor',
+    color: '--color-quoridor',
+    mode: 'duo',
+    settings: true,
+    multiplayer: true,
+    controls: [
+      { keys: 'Click / tap', action: 'Choose a highlighted square' },
+      {
+        keys: '<kbd>P</kbd> / <kbd>H</kbd> / <kbd>V</kbd>',
+        action: 'Choose pawn movement or a wall orientation',
+      },
+      { keys: 'Walls', action: 'Block a route without sealing every path' },
+      { keys: 'Goal', action: 'Reach the opposite side first' },
+    ],
+  },
 ];
 
 // Home-page grouping: each game key is listed under one section, in display
@@ -808,6 +825,7 @@ const categoryDefs = [
       'mill',
       'backgammon',
       'dominoes',
+      'quoridor',
     ],
   },
   {
