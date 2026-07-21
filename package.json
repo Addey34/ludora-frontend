@@ -23,16 +23,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Addey34/GameCenter.git"
+    "url": "git+https://github.com/Addey34/ludora-frontend.git"
   },
   "keywords": [],
   "author": "Addey34",
   "license": "PolyForm-Noncommercial-1.0.0",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/Addey34/GameCenter/issues"
+    "url": "https://github.com/Addey34/ludora-frontend/issues"
   },
-  "homepage": "https://github.com/Addey34/GameCenter#readme",
+  "homepage": "https://github.com/Addey34/ludora-frontend#readme",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.9.1",
