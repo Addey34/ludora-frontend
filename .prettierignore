@@ -5,3 +5,4 @@ package-lock.json
 .claude/
 public/vendor/
 scripts/assets/
+.firebaserc

@@ -34,8 +34,8 @@ describe('translateHtml', () => {
   const page = [
     '<!doctype html>',
     '<html lang="en">',
-    '<head><link rel="canonical" href="https://games-zone.onrender.com/snake" />',
-    '<meta property="og:url" content="https://games-zone.onrender.com/snake" /></head>',
+    '<head><link rel="canonical" href="https://ludora.adrianguichard.dev/snake" />',
+    '<meta property="og:url" content="https://ludora.adrianguichard.dev/snake" /></head>',
     '<body>',
     '<h1 data-i18n="home">Home</h1>',
     '<input data-i18n-placeholder="leaderboardSearch" />',
@@ -57,8 +57,8 @@ describe('translateHtml', () => {
     expect(out).toContain(`placeholder="${CATALOG.fr.leaderboardSearch}"`);
     expect(out).toContain('href="/fr/snake"');
     expect(out).toContain('href="/css/x.css"'); // asset untouched
-    expect(out).toContain('href="https://games-zone.onrender.com/fr/snake"'); // canonical
-    expect(out).toContain('content="https://games-zone.onrender.com/fr/snake"'); // og:url
+    expect(out).toContain('href="https://ludora.adrianguichard.dev/fr/snake"'); // canonical
+    expect(out).toContain('content="https://ludora.adrianguichard.dev/fr/snake"'); // og:url
     expect(out).toContain('var a = 1 < 2;'); // script body preserved verbatim
   });
 });

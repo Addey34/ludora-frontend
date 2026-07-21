@@ -15,7 +15,7 @@ import { ScoreEntry } from '../score/ScoreManager.js';
  */
 
 /** Public connection settings of the Nakama backend. */
-const HOST = '82-70-233-45.sslip.io';
+const HOST = 'api-ludora.adrianguichard.dev';
 const PORT = '443';
 const USE_SSL = true;
 /**

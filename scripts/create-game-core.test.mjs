@@ -161,7 +161,7 @@ test('refuses duplicate Render routes and sitemap URLs before writing', () => {
     },
     {
       path: 'public/sitemap.xml',
-      content: '  <url><loc>https://games-zone.onrender.com/star-runner</loc></url>\n',
+      content: '  <url><loc>https://ludora.adrianguichard.dev/star-runner</loc></url>\n',
       error: /Sitemap URL already exists/,
     },
   ];

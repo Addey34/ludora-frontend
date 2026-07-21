@@ -349,12 +349,12 @@ function appendSitemapUrls(source, key) {
   let next = insertBeforeMarker(
     source,
     '  <!-- French pages (/fr/…). hreflang alternates are emitted in each page head. -->',
-    `  <url><loc>https://games-zone.onrender.com/${key}</loc></url>\n`
+    `  <url><loc>https://ludora.adrianguichard.dev/${key}</loc></url>\n`
   );
   next = insertBeforeMarker(
     next,
     '</urlset>',
-    `  <url><loc>https://games-zone.onrender.com/fr/${key}</loc></url>\n`
+    `  <url><loc>https://ludora.adrianguichard.dev/fr/${key}</loc></url>\n`
   );
   return next;
 }

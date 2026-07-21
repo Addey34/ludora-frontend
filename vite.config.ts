@@ -1013,7 +1013,7 @@ export default defineConfig({
         // SEO: the page's clean route + canonical URL, and a per-page JSON-LD
         // block (structured data). Computed here so `head.hbs` injects it raw
         // ({{{ldJson}}}) and no per-page markup is needed.
-        const SITE = 'https://games-zone.onrender.com';
+        const SITE = 'https://ludora.adrianguichard.dev';
         const staticSegment = path.match(/\/src\/([^/]+)\/index\.html$/)?.[1];
         const route = game ? `/${game.key}` : staticSegment ? `/${staticSegment}` : '/';
         const canonical = `${SITE}${route}`;

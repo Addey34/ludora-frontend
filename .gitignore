@@ -12,3 +12,6 @@ CLAUDE.md
 
 # Private docs
 docs/private/
+
+# Firebase deploy cache
+.firebase/
