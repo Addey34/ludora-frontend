@@ -53,6 +53,7 @@
   <url><loc>https://games-zone.onrender.com/asteroids</loc></url>
   <url><loc>https://games-zone.onrender.com/quoridor</loc></url>
   <url><loc>https://games-zone.onrender.com/sciencequiz</loc></url>
+  <url><loc>https://games-zone.onrender.com/whackamole</loc></url>
   <!-- French pages (/fr/…). hreflang alternates are emitted in each page head. -->
   <url><loc>https://games-zone.onrender.com/fr/</loc></url>
   <url><loc>https://games-zone.onrender.com/fr/profile</loc></url>
@@ -107,4 +108,5 @@
   <url><loc>https://games-zone.onrender.com/fr/asteroids</loc></url>
   <url><loc>https://games-zone.onrender.com/fr/quoridor</loc></url>
   <url><loc>https://games-zone.onrender.com/fr/sciencequiz</loc></url>
+  <url><loc>https://games-zone.onrender.com/fr/whackamole</loc></url>
 </urlset>

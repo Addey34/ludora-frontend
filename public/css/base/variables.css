@@ -165,6 +165,23 @@
   --quoridor-legal: #fef08a;
   --quoridor-tool-active: rgb(194 65 12 / 14%);
   --color-sciencequiz: #06b6d4; /* generated: Science Quiz */
+  --color-whackamole: #84cc16; /* generated: Whack-a-Mole */
+  --whack-grass: #3f6212;
+  --whack-grass-light: rgb(132 204 22 / 28%);
+  --whack-grass-edge: #365314;
+  --whack-grass-shadow: rgb(20 83 45 / 34%);
+  --whack-dirt: #78350f;
+  --whack-dirt-edge: #451a03;
+  --whack-hole: #1c0a02;
+  --whack-hole-shadow: rgb(0 0 0 / 70%);
+  --whack-mole: #92400e;
+  --whack-mole-light: rgb(253 186 116 / 38%);
+  --whack-mole-edge: #431407;
+  --whack-eye: #0f172a;
+  --whack-nose: #fda4af;
+  --whack-golden: #facc15;
+  --whack-golden-light: #fef08a;
+  --whack-miss: #ef4444;
   /* Sidebar super-category accents (icon + flyout tint). Distinct hues, one per
      genre, in the site's vivid palette. */
   --cat-action: #ef4444; /* red — fast reflexes */

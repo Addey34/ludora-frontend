@@ -1,0 +1,131 @@
+@import url('../global.css');
+
+:root {
+  --title-color: var(--color-whackamole);
+}
+
+.whackamole-board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.35rem, 1.8vw, 0.8rem);
+  aspect-ratio: 1;
+  width: min(100%, 34rem);
+  padding: clamp(0.55rem, 2.5vw, 1.1rem);
+  overflow: hidden;
+  border: 1px solid var(--whack-grass-edge);
+  border-radius: var(--border-radius-lg);
+  background:
+    radial-gradient(circle at 20% 15%, var(--whack-grass-light), transparent 26%),
+    radial-gradient(circle at 80% 75%, var(--whack-grass-light), transparent 24%),
+    var(--whack-grass);
+  box-shadow: inset 0 0 2rem var(--whack-grass-shadow);
+}
+
+.whackamole-hole {
+  position: relative;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--border-radius-lg);
+  background: color-mix(in srgb, var(--whack-dirt) 32%, transparent);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.whackamole-hole:focus-visible {
+  outline: 3px solid var(--whack-golden-light);
+  outline-offset: -3px;
+}
+
+.whackamole-burrow {
+  position: absolute;
+  z-index: 3;
+  right: 10%;
+  bottom: 7%;
+  left: 10%;
+  height: 26%;
+  border: 3px solid var(--whack-dirt-edge);
+  border-radius: 50%;
+  background: var(--whack-hole);
+  box-shadow:
+    inset 0 0.35rem 0.4rem var(--whack-hole-shadow),
+    0 0.2rem 0 var(--whack-dirt);
+}
+
+.whackamole-mole {
+  position: absolute;
+  z-index: 2;
+  right: 21%;
+  bottom: 14%;
+  left: 21%;
+  height: 66%;
+  border: 2px solid var(--whack-mole-edge);
+  border-radius: 48% 48% 38% 38%;
+  background: var(--whack-mole);
+  box-shadow: inset 0 0.55rem 0.65rem var(--whack-mole-light);
+  transform: translateY(132%);
+  transition:
+    transform 0.13s ease-out,
+    background 0.13s ease,
+    box-shadow 0.13s ease;
+}
+
+.whackamole-mole::before {
+  position: absolute;
+  top: 31%;
+  left: 25%;
+  width: 12%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--whack-eye);
+  box-shadow: 1.45rem 0 0 var(--whack-eye);
+  content: '';
+}
+
+.whackamole-mole::after {
+  position: absolute;
+  top: 49%;
+  left: 40%;
+  width: 20%;
+  aspect-ratio: 1;
+  border-radius: 45% 45% 55% 55%;
+  background: var(--whack-nose);
+  content: '';
+}
+
+.whackamole-hole.is-active .whackamole-mole {
+  transform: translateY(0);
+}
+
+.whackamole-hole.is-golden .whackamole-mole {
+  background: var(--whack-golden);
+  box-shadow:
+    inset 0 0.55rem 0.65rem var(--whack-golden-light),
+    0 0 1rem var(--whack-golden-light);
+}
+
+.whackamole-hole.is-hit .whackamole-mole {
+  transform: translateY(28%) scale(0.82);
+}
+
+.whackamole-hole.is-miss {
+  animation: whack-miss 0.24s ease;
+}
+
+@keyframes whack-miss {
+  50% {
+    box-shadow: inset 0 0 0 4px var(--whack-miss);
+  }
+}
+
+@media (max-width: 480px) {
+  .whackamole-board {
+    gap: 0.3rem;
+    padding: 0.45rem;
+  }
+
+  .whackamole-mole::before {
+    box-shadow: 1rem 0 0 var(--whack-eye);
+  }
+}

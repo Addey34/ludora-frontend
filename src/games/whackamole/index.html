@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+  {{> head title="Whack-a-Mole" css="/css/games/whackamole.css" script="./whackamole-main.ts"}}
+  <body class="app-body">
+    {{> shell-open title="Whack-a-Mole" key="whackamole"}}
+    <div class="game-details"></div>
+    <div class="whackamole-board game-board" id="board"></div>
+    {{> shell-close}} {{> game-chrome}}
+  </body>
+</html>

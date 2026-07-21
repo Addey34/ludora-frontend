@@ -765,6 +765,20 @@ const games = [
       },
     ],
   },
+  {
+    key: 'whackamole',
+    label: 'Whack-a-Mole',
+    color: '--color-whackamole',
+    mode: 'solo',
+    leaderboard: true,
+    settings: true,
+    controls: [
+      { keys: 'Click / tap or <kbd>1–9</kbd>', action: 'Whack the visible mole' },
+      { keys: 'Golden mole', action: 'Worth extra points' },
+      { keys: 'Miss', action: 'A missed mole or wrong hole breaks the streak' },
+      { keys: 'Goal', action: 'Build the highest score before time runs out' },
+    ],
+  },
 ];
 
 // Home-page grouping: each game key is listed under one section, in display
@@ -788,6 +802,7 @@ const categoryDefs = [
       'invaders',
       'bubbles',
       'asteroids',
+      'whackamole',
     ],
   },
   {

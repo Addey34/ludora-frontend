@@ -26,6 +26,9 @@ export const GENERATED_GAME_CATALOG = {
     game_sciencequiz: 'Science Quiz',
     seo_sciencequiz:
       'Test your knowledge of physics, biology, chemistry, astronomy and Earth science.',
+    game_whackamole: 'Whack-a-Mole',
+    seo_whackamole:
+      'Whack the moles before they hide, catch golden bonuses and build the longest streak.',
     // game-generator:catalog-en
   },
   fr: {
@@ -53,6 +56,9 @@ export const GENERATED_GAME_CATALOG = {
     game_sciencequiz: 'Quiz Sciences',
     seo_sciencequiz:
       'Teste tes connaissances en physique, biologie, chimie, astronomie et sciences de la Terre.',
+    game_whackamole: 'Tape-taupe',
+    seo_whackamole:
+      'Tape les taupes avant qu’elles se cachent, attrape les bonus dorés et réalise la plus longue série.',
     // game-generator:catalog-fr
   },
 } satisfies Record<'en' | 'fr', Record<string, string>>;
