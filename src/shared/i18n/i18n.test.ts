@@ -54,7 +54,7 @@ describe('applyTranslations (control help lines)', () => {
   // getLocale() now reads <html lang> first (baked per page), falling back to the
   // stored preference; reset both so a French case can't leak into the next test.
   afterEach(() => {
-    localStorage.removeItem('gz-lang');
+    localStorage.removeItem('ludora-lang');
     document.documentElement.lang = '';
   });
 
@@ -70,7 +70,7 @@ describe('applyTranslations (control help lines)', () => {
   };
 
   it('translates a control action to French (data-i18n)', () => {
-    localStorage.setItem('gz-lang', 'fr');
+    localStorage.setItem('ludora-lang', 'fr');
     const { root, action } = infoPanel();
     applyTranslations(root);
     expect(action.textContent).toBe(
@@ -79,7 +79,7 @@ describe('applyTranslations (control help lines)', () => {
   });
 
   it('translates a control key with <kbd> markup to French (data-i18n-html)', () => {
-    localStorage.setItem('gz-lang', 'fr');
+    localStorage.setItem('ludora-lang', 'fr');
     const { root, keys } = infoPanel();
     applyTranslations(root);
     expect(keys.innerHTML).toContain('ou');

@@ -29,8 +29,24 @@
   <meta name="twitter:image" content="{{site}}/og-image.png" />
   <script>
     (function () {
+      // One-time migration of the legacy `gz-*` localStorage keys to the
+      // `ludora-*` prefix (rename 2026-07). Runs before any module reads a key,
+      // so returning players keep their session, theme, sound/language prefs and
+      // level progress instead of being logged out or reset.
+      try {
+        for (var i = localStorage.length - 1; i >= 0; i--) {
+          var key = localStorage.key(i);
+          if (key && key.indexOf('gz-') === 0) {
+            var next = 'ludora-' + key.slice(3);
+            if (localStorage.getItem(next) === null) localStorage.setItem(next, localStorage.getItem(key));
+            localStorage.removeItem(key);
+          }
+        }
+      } catch (error) {}
+    })();
+    (function () {
       var themes = ['arcade', 'midnight', 'daylight', 'amber'];
-      var storageKey = 'gz-theme';
+      var storageKey = 'ludora-theme';
       var params = new URLSearchParams(window.location.search);
       var requested = params.get('theme');
       var stored = null;

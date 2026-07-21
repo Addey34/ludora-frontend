@@ -7,7 +7,7 @@
  * game-over flow can read it without awaiting the backend.
  */
 
-const NAME_KEY = 'gz-player-name';
+const NAME_KEY = 'ludora-player-name';
 /** Hard cap so a pasted essay can't blow up the leaderboard layout. */
 const MAX_LENGTH = 20;
 

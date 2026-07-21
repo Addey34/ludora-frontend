@@ -78,7 +78,7 @@ export function highestUnlocked(config: LevelsConfig, progress: LevelProgress): 
 }
 
 /** Prefix of every per-game progress key in Nakama Storage. */
-const PROGRESS_KEY_PREFIX = 'gz-levels-';
+const PROGRESS_KEY_PREFIX = 'ludora-levels-';
 
 /** Nakama Storage key holding a game's progress. */
 function progressKey(gameKey: string): string {

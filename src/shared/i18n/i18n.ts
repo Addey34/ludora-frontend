@@ -18,7 +18,7 @@ import { GENERATED_GAME_CATALOG } from './generatedGames.js';
 export type Locale = 'en' | 'fr';
 export const LOCALES: Locale[] = ['en', 'fr'];
 
-const STORAGE_KEY = 'gz-lang';
+const STORAGE_KEY = 'ludora-lang';
 
 /**
  * Base translation catalog. Add a key to `en`, then its `fr` translation.
@@ -50,10 +50,10 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     signInToSave: 'Sign in to save',
     scoreSaved: 'Score saved!',
     scoreNotSaved: 'Score not saved: server unreachable.',
-    gzpEarned: '+{n} Ludora Points',
-    gzpEarnGuest: 'Sign in to earn +{n} Ludora Points',
-    gzpBonusSpotlight: 'featured game ×{mult}',
-    gzpBonusDifficulty: 'difficulty ×{mult}',
+    lpEarned: '+{n} Ludora Points',
+    lpEarnGuest: 'Sign in to earn +{n} Ludora Points',
+    lpBonusSpotlight: 'featured game ×{mult}',
+    lpBonusDifficulty: 'difficulty ×{mult}',
     // Versus result overlay (BoardGame).
     rematch: 'Rematch',
     quit: 'Quit',
@@ -334,9 +334,9 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     challengeShareText: 'Can you beat my score of {score}?',
     challengeCopied: 'Challenge link copied!',
     // Global cross-game ranking (Ludora Points).
-    globalMyRank: 'You are #{rank} with {score} GZP.',
+    globalMyRank: 'You are #{rank} with {score} LP.',
     globalUnranked: 'Play a game to enter the global ranking.',
-    globalPoints: '{score} GZP',
+    globalPoints: '{score} LP',
     leaderboardSubtitle: 'The top Ludora players across every game.',
     leaderboardEmpty: 'No ranking yet — play a game to get on the board.',
     leaderboardSearch: 'Search a game',
@@ -563,10 +563,10 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     signInToSave: 'Se connecter pour enregistrer',
     scoreSaved: 'Score enregistré !',
     scoreNotSaved: 'Score non sauvegardé : serveur injoignable.',
-    gzpEarned: '+{n} points Ludora',
-    gzpEarnGuest: 'Connecte-toi pour gagner +{n} points Ludora',
-    gzpBonusSpotlight: 'jeu vedette ×{mult}',
-    gzpBonusDifficulty: 'difficulté ×{mult}',
+    lpEarned: '+{n} points Ludora',
+    lpEarnGuest: 'Connecte-toi pour gagner +{n} points Ludora',
+    lpBonusSpotlight: 'jeu vedette ×{mult}',
+    lpBonusDifficulty: 'difficulté ×{mult}',
     // Overlay de résultat versus (BoardGame).
     rematch: 'Revanche',
     quit: 'Quitter',
@@ -846,9 +846,9 @@ const BASE_CATALOG: Record<Locale, Record<string, string>> = {
     challengeButton: 'Défier un ami',
     challengeShareText: 'Peux-tu battre mon score de {score} ?',
     challengeCopied: 'Lien du défi copié !',
-    globalMyRank: 'Tu es #{rank} avec {score} GZP.',
+    globalMyRank: 'Tu es #{rank} avec {score} LP.',
     globalUnranked: 'Joue une partie pour entrer au classement mondial.',
-    globalPoints: '{score} GZP',
+    globalPoints: '{score} LP',
     leaderboardSubtitle: 'Les meilleurs joueurs Ludora, tous jeux confondus.',
     leaderboardEmpty: 'Pas encore de classement — joue une partie pour y entrer.',
     leaderboardSearch: 'Chercher un jeu',

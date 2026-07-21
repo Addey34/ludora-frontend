@@ -8,7 +8,7 @@
  */
 import { getCurrentUser, submitGlobalScore, recordRun } from '../net/nakama.js';
 
-const PENDING_KEY = 'gz-pending-score';
+const PENDING_KEY = 'ludora-pending-score';
 
 interface PendingScore {
   /** Base game key (keys the server best-score summary); absent = no online board. */
@@ -19,7 +19,7 @@ interface PendingScore {
   /** Game-specific extras (e.g. Typing's wpm/lpm). */
   extra?: Record<string, number>;
   /** Ludora Points this run is worth. */
-  gzp: number;
+  lp: number;
 }
 
 /** Stashes a run to record after the imminent sign-in. */
@@ -65,7 +65,7 @@ export async function flushPendingScore(): Promise<boolean> {
     // online save is best-effort
   }
   try {
-    await submitGlobalScore(pending.gzp);
+    await submitGlobalScore(pending.lp);
   } catch {
     // global save is best-effort
   }

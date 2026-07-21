@@ -32,7 +32,7 @@ const USE_SSL = true;
 /** Code alphabet without look-alikes (no 0/O, 1/I/L). */
 const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const CODE_LENGTH = 4;
-const DEFAULT_SCOPE = 'gameszone';
+const DEFAULT_SCOPE = 'ludora';
 
 /**
  * Op codes at or above this are **reserved** for the lobby/seat protocol and are

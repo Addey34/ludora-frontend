@@ -246,7 +246,7 @@ body.sidebar-open .sidebar {
 }
 
 /* Weekly-challenge flame on the featured game's link (left of the players badge,
-   injected client-side by weeklyFeature.ts). Marks the game that earns ×N GZP. */
+   injected client-side by weeklyFeature.ts). Marks the game that earns ×N LP. */
 .sidebar-flame {
   flex: 0 0 auto;
   color: var(--flame);

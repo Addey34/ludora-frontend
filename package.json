@@ -1,5 +1,5 @@
 {
-  "name": "gameszone",
+  "name": "ludora",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -23,16 +23,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Addey34/GAMES-ZONE.git"
+    "url": "git+https://github.com/Addey34/GameCenter.git"
   },
   "keywords": [],
   "author": "Addey34",
-  "license": "MIT",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/Addey34/GAMES-ZONE/issues"
+    "url": "https://github.com/Addey34/GameCenter/issues"
   },
-  "homepage": "https://github.com/Addey34/GAMES-ZONE#readme",
+  "homepage": "https://github.com/Addey34/GameCenter#readme",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.9.1",

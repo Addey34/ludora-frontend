@@ -12,7 +12,7 @@ describe('scopedMatchName', () => {
   });
 
   it('falls back to the app scope when no scope is available', () => {
-    expect(scopedMatchName(undefined, 'ABCD')).toBe('gameszone:ABCD');
+    expect(scopedMatchName(undefined, 'ABCD')).toBe('ludora:ABCD');
   });
 });
 

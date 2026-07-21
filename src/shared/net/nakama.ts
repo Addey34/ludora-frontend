@@ -25,15 +25,15 @@ const USE_SSL = true;
 const SERVER_KEY = 'cFmiblnZCHyu3JRSs9jeQEBLUxwI';
 
 /** localStorage key holding this browser's stable device id (one player). */
-const DEVICE_ID_KEY = 'gz-nakama-device-id';
+const DEVICE_ID_KEY = 'ludora-nakama-device-id';
 
 /**
  * localStorage keys persisting the authenticated session across reloads, so a
  * page load resumes the SAME account (crucially the Google one) instead of
  * always falling back to anonymous device auth.
  */
-const SESSION_TOKEN_KEY = 'gz-nakama-session';
-const SESSION_REFRESH_KEY = 'gz-nakama-refresh';
+const SESSION_TOKEN_KEY = 'ludora-nakama-session';
+const SESSION_REFRESH_KEY = 'ludora-nakama-refresh';
 
 /** Entry fields owned by the record itself, hence not duplicated in metadata. */
 const RECORD_OWNED_FIELDS = ['score', 'date'];
@@ -131,7 +131,7 @@ function getDeviceId(): string {
     id =
       typeof crypto !== 'undefined' && 'randomUUID' in crypto
         ? crypto.randomUUID()
-        : `gz-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        : `ludora-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     localStorage.setItem(DEVICE_ID_KEY, id);
   }
   return id;
@@ -522,7 +522,7 @@ let userPromise: Promise<CurrentUser | null> | null = null;
  * a transient backend hiccup keep showing the player as signed in instead of
  * wrongly bouncing them out of /profile or /leaderboard.
  */
-const LOGGED_IN_KEY = 'gz-logged-in';
+const LOGGED_IN_KEY = 'ludora-logged-in';
 
 function rememberLoggedIn(loggedIn: boolean): void {
   try {
@@ -682,7 +682,7 @@ export async function removeFriend(code: string): Promise<void> {
 /**
 /**
  * Ludora Points per user id for the given owners (their global-leaderboard
- * totals), so the friends list can show each friend's GZP inline. Best-effort:
+ * totals), so the friends list can show each friend's LP inline. Best-effort:
  * returns an empty map on any backend issue. Owners with no recorded run are
  * simply absent from the map.
  */
@@ -706,7 +706,7 @@ export async function getFriendScores(userIds: string[]): Promise<Map<string, nu
 
 /**
  * The friends-only Ludora Points ranking: the current player plus their mutual
- * friends, sorted by GZP (desc) and freshly ranked among themselves. Reads the
+ * friends, sorted by LP (desc) and freshly ranked among themselves. Reads the
  * same global leaderboard as {@link listGlobalRanking} but filtered to the friend
  * graph's owner ids. Returns [] on any error/backend issue.
  */

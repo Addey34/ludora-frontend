@@ -18,7 +18,7 @@
  */
 
 /** localStorage key holding the chosen theme id. */
-export const THEME_STORAGE_KEY = 'gz-theme';
+export const THEME_STORAGE_KEY = 'ludora-theme';
 
 interface UiThemeDef {
   /** Stored value, `data-ui-theme` value and `?theme=` URL value. Lowercase a–z. */

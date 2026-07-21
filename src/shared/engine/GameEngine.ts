@@ -12,7 +12,7 @@ import {
   getCachedFriendCode,
   addFriendByCode,
 } from '../net/nakama.js';
-import { gzPoints } from '../score/gzPoints.js';
+import { ludoraPoints } from '../score/ludoraPoints.js';
 import { difficultyMultiplier, spotlightMultiplier } from '../score/multipliers.js';
 import { SCORE_GAMES } from '../score/scoreGames.js';
 import { storePendingScore } from '../score/pendingScore.js';
@@ -609,8 +609,8 @@ export abstract class GameEngine {
       score: content === undefined ? this.getRecordedScore() : undefined,
       footerHtml: scoreable
         ? loggedIn
-          ? this.gzpNoteHtml(this.getRecordedScore())
-          : this.gzpGuestTeaser(this.getRecordedScore())
+          ? this.lpNoteHtml(this.getRecordedScore())
+          : this.lpGuestTeaser(this.getRecordedScore())
         : undefined,
       buttons,
     });
@@ -651,11 +651,11 @@ export abstract class GameEngine {
           showToast(t('scoreNotSaved'), 'warning');
         });
     }
-    // GZP is earned only on a spotlit game (see multipliers.ts); a non-spotlit
+    // LP is earned only on a spotlit game (see multipliers.ts); a non-spotlit
     // run totals 0, so there's nothing to submit to the global season board.
-    const gzp = this.gzpBreakdown(score).total;
-    if (gzp > 0) {
-      submitGlobalScore(gzp, username).catch((err) =>
+    const lp = this.lpBreakdown(score).total;
+    if (lp > 0) {
+      submitGlobalScore(lp, username).catch((err) =>
         console.warn('[nakama] global score submission failed:', err)
       );
     }
@@ -666,13 +666,13 @@ export abstract class GameEngine {
   /**
    * The Ludora Points a run earns, broken into its base value and the two
    * factors that scale it — difficulty and the spotlight gate (see
-   * `src/shared/score/multipliers.ts`). GZP is earned **only** on a spotlit game,
+   * `src/shared/score/multipliers.ts`). LP is earned **only** on a spotlit game,
    * so `spotlight` (hence `total`) is 0 for a game that isn't the day's daily pick
    * or in this week's weekly set. One source of truth for both the amount
    * submitted and the breakdown shown on the game-over overlay. The bonus is baked
    * in at play time, so a guest who signs in later keeps the multiplier from then.
    */
-  private gzpBreakdown(score: number): {
+  private lpBreakdown(score: number): {
     base: number;
     difficulty: number;
     spotlight: number;
@@ -680,7 +680,7 @@ export abstract class GameEngine {
   } {
     const game = this.baseLeaderboardId ?? '';
     const variant = this.currentVariant();
-    const base = gzPoints(score);
+    const base = ludoraPoints(score);
     const difficulty = difficultyMultiplier(game, variant);
     const spotlight = spotlightMultiplier(
       game,
@@ -694,14 +694,14 @@ export abstract class GameEngine {
    * only — a guest earns nothing until they sign in). Names each active bonus so
    * the player sees *why* a run was worth more: the retention hook made visible.
    */
-  private gzpNoteHtml(score: number): string {
-    const { total, difficulty, spotlight } = this.gzpBreakdown(score);
+  private lpNoteHtml(score: number): string {
+    const { total, difficulty, spotlight } = this.lpBreakdown(score);
     if (total <= 0) return '';
     const bonuses: string[] = [];
-    if (spotlight > 1) bonuses.push(`🔥 ${t('gzpBonusSpotlight', { mult: spotlight })}`);
-    if (difficulty > 1) bonuses.push(t('gzpBonusDifficulty', { mult: difficulty }));
-    const bonusLine = bonuses.length ? `<p class="gzp-bonus">${bonuses.join(' · ')}</p>` : '';
-    return `<p class="gzp-earned">${t('gzpEarned', { n: total })}</p>${bonusLine}`;
+    if (spotlight > 1) bonuses.push(`🔥 ${t('lpBonusSpotlight', { mult: spotlight })}`);
+    if (difficulty > 1) bonuses.push(t('lpBonusDifficulty', { mult: difficulty }));
+    const bonusLine = bonuses.length ? `<p class="lp-bonus">${bonuses.join(' · ')}</p>` : '';
+    return `<p class="lp-earned">${t('lpEarned', { n: total })}</p>${bonusLine}`;
   }
 
   /**
@@ -709,10 +709,10 @@ export abstract class GameEngine {
    * an incentive next to the "Sign in to save" button (guests earn nothing until
    * they sign in). Turns the abstract prompt into a concrete reward.
    */
-  private gzpGuestTeaser(score: number): string {
-    const { total } = this.gzpBreakdown(score);
+  private lpGuestTeaser(score: number): string {
+    const { total } = this.lpBreakdown(score);
     if (total <= 0) return '';
-    return `<p class="gzp-earned gzp-earned--muted">${t('gzpEarnGuest', { n: total })}</p>`;
+    return `<p class="lp-earned lp-earned--muted">${t('lpEarnGuest', { n: total })}</p>`;
   }
 
   /** The active leaderboard variant (e.g. `hard`, `fr-hard`, `4`), or null for
@@ -731,9 +731,9 @@ export abstract class GameEngine {
       boards: this.targetBoards(),
       score,
       extra: this.buildScoreEntry('').additionalData,
-      gzp: this.gzpBreakdown(score).total,
+      lp: this.lpBreakdown(score).total,
     });
-    window.dispatchEvent(new CustomEvent('gz-request-login'));
+    window.dispatchEvent(new CustomEvent('ludora-request-login'));
   }
 
   /**

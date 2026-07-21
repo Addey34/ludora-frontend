@@ -138,7 +138,7 @@ describe('loginWithGoogleToken', () => {
   it('marks the player signed-in so a later reload trusts the persisted hint', async () => {
     const { loginWithGoogleToken } = await loadNakama();
     await loginWithGoogleToken(makeJwt({ name: 'Alice' }));
-    expect(localStorage.getItem('gz-logged-in')).toBe('1');
+    expect(localStorage.getItem('ludora-logged-in')).toBe('1');
   });
 });
 
@@ -164,7 +164,7 @@ describe('getCurrentUser', () => {
   });
 
   it('keeps a signed-in player on a backend hiccup via the persisted hint', async () => {
-    localStorage.setItem('gz-logged-in', '1');
+    localStorage.setItem('ludora-logged-in', '1');
     mocks.getAccount.mockRejectedValue(new Error('backend unreachable'));
     const { getCurrentUser } = await loadNakama();
     expect(await getCurrentUser()).toEqual({ displayName: 'Player', loggedIn: true });
@@ -181,12 +181,12 @@ describe('logout', () => {
   it('clears the persisted session and sign-in hint', async () => {
     const { loginWithGoogleToken, logout } = await loadNakama();
     await loginWithGoogleToken(makeJwt({ name: 'Alice' }));
-    expect(localStorage.getItem('gz-logged-in')).toBe('1');
+    expect(localStorage.getItem('ludora-logged-in')).toBe('1');
 
     logout();
 
-    expect(localStorage.getItem('gz-logged-in')).toBeNull();
-    expect(localStorage.getItem('gz-nakama-session')).toBeNull();
-    expect(localStorage.getItem('gz-nakama-device-id')).toBeNull();
+    expect(localStorage.getItem('ludora-logged-in')).toBeNull();
+    expect(localStorage.getItem('ludora-nakama-session')).toBeNull();
+    expect(localStorage.getItem('ludora-nakama-device-id')).toBeNull();
   });
 });

@@ -167,7 +167,7 @@ async function init(): Promise<void> {
     // A guest who signed in to save a run: record it now, under their new name.
     if (await flushPendingScore()) showToast(t('scoreSaved'), 'success');
     // Let any "Sign in to save" button (game-over overlay) open the Google prompt.
-    window.addEventListener('gz-request-login', () => {
+    window.addEventListener('ludora-request-login', () => {
       try {
         google.accounts.id.prompt();
       } catch {

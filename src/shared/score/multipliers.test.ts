@@ -89,7 +89,7 @@ describe('runMultiplier', () => {
     );
   });
 
-  it('is 0 (earns no GZP) for a non-spotlit run, whatever the difficulty', () => {
+  it('is 0 (earns no LP) for a non-spotlit run, whatever the difficulty', () => {
     const cold = POOL.find(
       (g) => g !== dailyGame(POOL, DAY) && !weeklyGames(POOL, 7, DAY).includes(g)
     )!;

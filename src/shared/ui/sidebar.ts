@@ -84,7 +84,7 @@ if (sidebar) {
   const icon = document.getElementById('soundIcon');
   if (!btn || !icon) return;
 
-  const STORAGE_KEY = 'gz-sound';
+  const STORAGE_KEY = 'ludora-sound';
   const isMuted = () => localStorage.getItem(STORAGE_KEY) === '0';
 
   const updateIcon = (animate = false) => {
@@ -104,11 +104,11 @@ if (sidebar) {
   btn.addEventListener('click', () => {
     const nowMuted = !isMuted();
     localStorage.setItem(STORAGE_KEY, nowMuted ? '0' : '1');
-    window.dispatchEvent(new CustomEvent('gz-sound-change', { detail: { muted: nowMuted } }));
+    window.dispatchEvent(new CustomEvent('ludora-sound-change', { detail: { muted: nowMuted } }));
     updateIcon(true);
   });
 
-  window.addEventListener('gz-sound-change', () => updateIcon());
+  window.addEventListener('ludora-sound-change', () => updateIcon());
 })();
 
 // Badge the daily pick and this week's weekly set (icon + tooltip) on their

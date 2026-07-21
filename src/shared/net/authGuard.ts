@@ -1,7 +1,7 @@
 import { getCurrentUser, type CurrentUser } from './nakama.js';
 
-const AUTH_RETURN_KEY = 'gz-auth-return';
-const AUTH_REQUIRED_KEY = 'gz-auth-required';
+const AUTH_RETURN_KEY = 'ludora-auth-return';
+const AUTH_REQUIRED_KEY = 'ludora-auth-required';
 
 export function consumeAuthRequired(): boolean {
   const required = sessionStorage.getItem(AUTH_REQUIRED_KEY) === '1';

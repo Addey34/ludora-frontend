@@ -117,7 +117,7 @@ test('creates a complete game and updates every registry', () => {
       'vite.config.ts',
       'src/shared/i18n/generatedGames.ts',
       'public/css/base/variables.css',
-      'render.yaml',
+      'firebase.json',
       'public/sitemap.xml',
     ]);
     assert.equal(existsSync(join(root, 'src/games/star-runner/StarRunnerGame.ts')), true);
@@ -125,7 +125,7 @@ test('creates a complete game and updates every registry', () => {
     assert.match(read(root, 'vite.config.ts'), /'star-runner'/);
     assert.match(read(root, 'src/shared/i18n/generatedGames.ts'), /game_star-runner/);
     assert.match(read(root, 'public/css/base/variables.css'), /--color-star-runner: #2563eb/);
-    assert.match(read(root, 'render.yaml'), /source: \/star-runner/);
+    assert.match(read(root, 'firebase.json'), /"source": "\/star-runner"/);
     assert.match(read(root, 'public/sitemap.xml'), /\/fr\/star-runner/);
     assert.match(read(root, 'public/icons/star-runner.svg'), /#2563eb/);
     assert.throws(() => scaffoldGame(OPTIONS, { root }), /existing game directory/);
@@ -151,13 +151,13 @@ test('validates the whole transaction before a dry run or write', () => {
     rmSync(root, { recursive: true, force: true });
   }
 });
-test('refuses duplicate Render routes and sitemap URLs before writing', () => {
+test('refuses duplicate Firebase routes and sitemap URLs before writing', () => {
   const residues = [
     {
-      path: 'render.yaml',
+      path: 'firebase.json',
       content:
-        '      - { type: rewrite, source: /star-runner, destination: /games/star-runner/index.html }\n',
-      error: /Render route already exists/,
+        '      {\n        "source": "/star-runner",\n        "destination": "/games/star-runner/index.html"\n      },\n',
+      error: /Firebase route already exists/,
     },
     {
       path: 'public/sitemap.xml',
@@ -194,7 +194,7 @@ test('refuses to remove or reuse a pre-existing game directory', () => {
 function makeFixture() {
   const root = join(
     tmpdir(),
-    'gameszone-create-game-' + process.pid + '-' + Math.random().toString(16).slice(2)
+    'ludora-create-game-' + process.pid + '-' + Math.random().toString(16).slice(2)
   );
   const categoryEntries = GAME_CATEGORIES.map(
     (category) => "  { id: '" + category + "', keys: [] },"
@@ -224,10 +224,12 @@ function makeFixture() {
   );
   write(
     root,
-    'render.yaml',
-    'routes:\n' +
-      '      - { type: rewrite, source: /privacy, destination: /privacy/index.html }\n' +
-      '      - { type: rewrite, source: /fr/privacy, destination: /fr/privacy/index.html }\n'
+    'firebase.json',
+    '{\n  "hosting": {\n    "rewrites": [\n' +
+      '      {\n        "source": "/privacy",\n        "destination": "/privacy/index.html"\n      },\n' +
+      '      {\n        "source": "/fr/privacy",\n        "destination": "/fr/privacy/index.html"\n      },\n' +
+      '      { "source": "**", "destination": "/index.html" }\n' +
+      '    ]\n  }\n}\n'
   );
   write(
     root,

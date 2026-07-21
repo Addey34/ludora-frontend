@@ -64,22 +64,22 @@
   gap: 2px;
 }
 
-.gzp-earned {
+.lp-earned {
   margin: 0;
   font-weight: var(--font-weight-bolder);
   color: var(--title-color, var(--primary-color));
-  animation: gzpPop 0.45s ease 0.15s both;
+  animation: lpPop 0.45s ease 0.15s both;
 }
 
 /* Guest incentive variant: same pop, quieter tone (it's a prompt, not a reward). */
-.gzp-earned--muted {
+.lp-earned--muted {
   font-weight: var(--font-weight-bold);
   font-size: var(--font-size-sm);
   color: var(--card-ink);
   opacity: 0.85;
 }
 
-.gzp-bonus {
+.lp-bonus {
   margin: 0;
   font-size: var(--font-size-sm);
   color: var(--card-ink);

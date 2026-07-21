@@ -31,21 +31,21 @@
    The browser treats matched named elements as "shared"; with animation:none they
    appear completely fixed across page changes while the main content fades. */
 .sidebar {
-  view-transition-name: gz-sidebar;
+  view-transition-name: ludora-sidebar;
 }
 .sidebar-toggle {
-  view-transition-name: gz-sidebar-toggle;
+  view-transition-name: ludora-sidebar-toggle;
 }
 .sound-toggle {
-  view-transition-name: gz-sound-toggle;
+  view-transition-name: ludora-sound-toggle;
 }
 
-::view-transition-old(gz-sidebar),
-::view-transition-new(gz-sidebar),
-::view-transition-old(gz-sidebar-toggle),
-::view-transition-new(gz-sidebar-toggle),
-::view-transition-old(gz-sound-toggle),
-::view-transition-new(gz-sound-toggle) {
+::view-transition-old(ludora-sidebar),
+::view-transition-new(ludora-sidebar),
+::view-transition-old(ludora-sidebar-toggle),
+::view-transition-new(ludora-sidebar-toggle),
+::view-transition-old(ludora-sound-toggle),
+::view-transition-new(ludora-sound-toggle) {
   animation: none;
   mix-blend-mode: normal;
 }
@@ -55,9 +55,9 @@
    animates a pointless shrink back to the compact 64px on the next page. Killing
    the group animation keeps the rail perfectly stable across navigation — its
    open/closed state is driven purely by hover, independent of page changes. */
-::view-transition-group(gz-sidebar),
-::view-transition-group(gz-sidebar-toggle),
-::view-transition-group(gz-sound-toggle) {
+::view-transition-group(ludora-sidebar),
+::view-transition-group(ludora-sidebar-toggle),
+::view-transition-group(ludora-sound-toggle) {
   animation: none;
 }
 
@@ -119,7 +119,7 @@
 }
 
 /* Earned Ludora Points: a brief pop so the reward catches the eye. */
-@keyframes gzpPop {
+@keyframes lpPop {
   0% {
     transform: scale(0.8);
     opacity: 0;

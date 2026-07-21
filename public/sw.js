@@ -8,7 +8,7 @@
  * to the network. Only same-origin, non-redirected GET assets are cached
  * (network-first). Cross-origin (fonts CDN, Google, Nakama) is left untouched.
  */
-const CACHE = 'gz-cache-v2';
+const CACHE = 'ludora-cache-v2';
 
 self.addEventListener('install', () => {
   self.skipWaiting();
@@ -17,7 +17,7 @@ self.addEventListener('install', () => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     (async () => {
-      // Drop older caches (incl. gz-cache-v1, which could hold bad redirects).
+      // Drop older caches (incl. ludora-cache-v1, which could hold bad redirects).
       const keys = await caches.keys();
       await Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)));
       await self.clients.claim();

@@ -24,12 +24,12 @@ type SoundId =
   | 'win'
   | 'connect';
 
-const STORAGE_KEY = 'gz-sound';
+const STORAGE_KEY = 'ludora-sound';
 
 let _ctx: AudioContext | null = null;
 let _muted = localStorage.getItem(STORAGE_KEY) === '0';
 
-window.addEventListener('gz-sound-change', ((e: Event) => {
+window.addEventListener('ludora-sound-change', ((e: Event) => {
   const detail = (e as CustomEvent<{ muted: boolean }>).detail;
   _muted = detail.muted;
 }) as EventListener);

@@ -228,7 +228,7 @@ function buildRegistryMutations(root, options) {
     ),
     mutation(root, GENERATED_CATALOG_PATH, (source) => appendCatalogEntries(source, options)),
     mutation(root, 'public/css/base/variables.css', (source) => appendColorToken(source, options)),
-    mutation(root, 'render.yaml', (source) => appendRenderRoutes(source, options.key)),
+    mutation(root, 'firebase.json', (source) => appendFirebaseRoutes(source, options.key)),
     mutation(root, 'public/sitemap.xml', (source) => appendSitemapUrls(source, options.key)),
   ];
 }
@@ -322,20 +322,20 @@ function appendColorToken(source, rawOptions) {
   );
 }
 
-function appendRenderRoutes(source, key) {
-  const routePattern = new RegExp('source:\\s*/(?:fr/)?' + escapeRegExp(key) + '(?:[,\\s}])');
+function appendFirebaseRoutes(source, key) {
+  const routePattern = new RegExp('"source":\\s*"/(?:fr/)?' + escapeRegExp(key) + '"');
   if (routePattern.test(source)) {
-    throw new Error('Render route already exists: ' + key);
+    throw new Error('Firebase route already exists: ' + key);
   }
   let next = insertBeforeMarker(
     source,
-    '      - { type: rewrite, source: /privacy, destination: /privacy/index.html }',
-    `      - { type: rewrite, source: /${key}, destination: /games/${key}/index.html }\n`
+    '      {\n        "source": "/privacy",\n        "destination": "/privacy/index.html"\n      },',
+    `      {\n        "source": "/${key}",\n        "destination": "/games/${key}/index.html"\n      },\n`
   );
   next = insertBeforeMarker(
     next,
-    '      - { type: rewrite, source: /fr/privacy, destination: /fr/privacy/index.html }',
-    `      - { type: rewrite, source: /fr/${key}, destination: /fr/${key}/index.html }\n`
+    '      {\n        "source": "/fr/privacy",\n        "destination": "/fr/privacy/index.html"\n      },',
+    `      {\n        "source": "/fr/${key}",\n        "destination": "/fr/${key}/index.html"\n      },\n`
   );
   return next;
 }

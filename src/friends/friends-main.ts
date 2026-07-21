@@ -49,10 +49,10 @@ function friendRow(friend: Friend, statusText: string, ...actions: HTMLElement[]
   return li;
 }
 
-/** A small "1,234 GZP" badge showing a friend's Ludora Points. */
-function gzpBadge(points: number): HTMLSpanElement {
+/** A small "1,234 LP" badge showing a friend's Ludora Points. */
+function lpBadge(points: number): HTMLSpanElement {
   const span = document.createElement('span');
-  span.className = 'friend-gzp';
+  span.className = 'friend-lp';
   span.textContent = t('globalPoints', { score: points });
   return span;
 }
@@ -83,8 +83,8 @@ async function refreshFriends(): Promise<void> {
   // Each mutual friend's Ludora Points, shown inline (best-effort).
   const scores = await getFriendScores(mutual.map((f) => f.userId));
   const mutualActions = (f: Friend): HTMLElement[] => {
-    const gzp = scores.get(f.userId);
-    return gzp === undefined ? [removeAction(f)] : [gzpBadge(gzp), removeAction(f)];
+    const lp = scores.get(f.userId);
+    return lp === undefined ? [removeAction(f)] : [lpBadge(lp), removeAction(f)];
   };
 
   // Incoming requests: accept / decline.

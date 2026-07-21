@@ -42,7 +42,7 @@ interface MultiplayerOptions {
 function currentGameScope(): string {
   const segments = location.pathname.split('/').filter(Boolean);
   const gameKey = segments[0] === 'games' ? segments[1] : segments[0];
-  return gameKey ?? 'gameszone';
+  return gameKey ?? 'ludora';
 }
 
 export function setupMultiplayerPanel(opts: MultiplayerOptions): MultiplayerHandle | null {

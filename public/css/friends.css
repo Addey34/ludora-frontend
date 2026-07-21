@@ -159,12 +159,12 @@
   white-space: nowrap;
 }
 
-/* A mutual-friend row carries a GZP badge + a remove button → one more column. */
-.friend-row:has(.friend-gzp) {
+/* A mutual-friend row carries a LP badge + a remove button → one more column. */
+.friend-row:has(.friend-lp) {
   grid-template-columns: auto minmax(0, 1fr) auto auto auto;
 }
 
-.friend-gzp {
+.friend-lp {
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   color: var(--app-accent);

@@ -5,7 +5,7 @@
  * **weekly** set, chosen deterministically over the scoreable catalogue
  * (`SCORE_GAMES`). Everyone worldwide sees the same picks the same day/week with
  * no server round-trip. The picks are what earn Ludora Points (gated in
- * `src/shared/score/multipliers.ts` — GZP is earned *only* on a spotlit game)
+ * `src/shared/score/multipliers.ts` — LP is earned *only* on a spotlit game)
  * and what carry the home-tile / sidebar badges (`weeklyFeature.ts`).
  *
  * Rotation avoids repeats: the pool is shuffled once (a fixed seed) into a stable

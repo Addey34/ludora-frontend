@@ -870,7 +870,7 @@ const categoryDefs = [
   },
 ];
 
-// Dev/preview equivalent of render.yaml's clean-URL rewrites.
+// Dev/preview equivalent of firebase.json's clean-URL rewrites.
 // Three cases handled, in order:
 //   1. `/<key>`      → 301 to `/<key>/` (trailing-slash redirect so that the
 //      browser resolves sub-resource URLs like `./ludo-main.ts` relative to
@@ -966,11 +966,11 @@ export default defineConfig({
   // index.html for any unmatched route (the bug where game URLs showed the home).
   appType: 'mpa',
   plugins: [
-    // Clean URLs in dev & preview, mirroring render.yaml's rewrites in prod.
+    // Clean URLs in dev & preview, mirroring firebase.json's rewrites in prod.
     // Also handles the `/fr` locale prefix: preview serves the pre-built FR page,
     // dev serves the English source and translates it via transformIndexHtml.
     {
-      name: 'gameszone-clean-urls',
+      name: 'ludora-clean-urls',
       configureServer(server) {
         server.middlewares.use((req, res, next) => rewriteCleanUrl(req, res, next, 'dev'));
       },
@@ -1080,7 +1080,7 @@ export default defineConfig({
     // /<locale>/… (e.g. dist/fr/games/snake/index.html). The FR pages ship already
     // translated, so a French visitor never sees an EN→FR flash. See localizeHtml.ts.
     {
-      name: 'gameszone-localized-pages',
+      name: 'ludora-localized-pages',
       apply: 'build',
       closeBundle() {
         const distRoot = resolve(projectRoot, 'dist');
@@ -1121,7 +1121,7 @@ export default defineConfig({
     rollupOptions: {
       // index + one entry per game, derived from the `games` list. Each game page
       // is src/<key>/index.html -> built to dist/<key>/index.html, served at the
-      // clean URL /<key> (see render.yaml for the rewrite).
+      // clean URL /<key> (see firebase.json for the rewrite).
       input: {
         main: resolve(srcRoot, 'index.html'),
         privacy: resolve(srcRoot, 'privacy/index.html'),

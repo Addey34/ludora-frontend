@@ -3,17 +3,17 @@
  * more". Two factors compose here, and they multiply together:
  *
  *   1. **Difficulty** — a harder variant earns more (easy ×1, medium ×1.5, hard ×2).
- *   2. **Spotlight** — GZP is earned **only** on a spotlit game (see
+ *   2. **Spotlight** — LP is earned **only** on a spotlit game (see
  *      `src/shared/spotlight/`): ×2 for the day's daily pick, ×1 for a weekly
- *      pick, and **×0 (no GZP at all)** for a game that is neither. This is the
+ *      pick, and **×0 (no LP at all)** for a game that is neither. This is the
  *      gate that funnels the season competition onto the rotating featured games.
  *
  * Everything tunable is a constant at the top so a balance change during an
  * update is a one-line edit here — no game code to touch. Pure and unit-tested.
  *
- * Only the cross-game GZP total is scaled; per-game leaderboards keep the raw
+ * Only the cross-game LP total is scaled; per-game leaderboards keep the raw
  * score (difficulty variants already have their own board via
- * `setLeaderboardVariant`), so scaling GZP is where "reward the harder run" fits.
+ * `setLeaderboardVariant`), so scaling LP is where "reward the harder run" fits.
  */
 
 import { isSpotlit } from '../spotlight/spotlight.js';
@@ -22,11 +22,11 @@ type Tier = 'easy' | 'medium' | 'hard';
 
 /* ─── Tuning knobs — edit these to rebalance rewards. ─────────────────────── */
 
-/** GZP multiplier per difficulty tier. */
+/** LP multiplier per difficulty tier. */
 export const DIFFICULTY_MULT: Record<Tier, number> = { easy: 1, medium: 1.5, hard: 2 };
 
 /**
- * GZP multiplier by spotlight status. `none` is 0 on purpose: a game that isn't
+ * LP multiplier by spotlight status. `none` is 0 on purpose: a game that isn't
  * spotlit today or this week earns no Ludora Points at all (the season gate).
  * The daily pick is worth more than the seven weekly picks.
  */
@@ -73,7 +73,7 @@ export function difficultyMultiplier(game: string, variant: string | null): numb
 /**
  * The spotlight multiplier for `game`: ×{@link SPOTLIGHT_MULT.daily} for the
  * day's daily pick, ×{@link SPOTLIGHT_MULT.weekly} for a weekly pick, and
- * ×{@link SPOTLIGHT_MULT.none} (0 — earns no GZP) for a game that isn't spotlit.
+ * ×{@link SPOTLIGHT_MULT.none} (0 — earns no LP) for a game that isn't spotlit.
  */
 export function spotlightMultiplier(
   game: string,
@@ -87,9 +87,9 @@ export function spotlightMultiplier(
 }
 
 /**
- * The full GZP multiplier for a run: difficulty × spotlight. The one place the
+ * The full LP multiplier for a run: difficulty × spotlight. The one place the
  * factors are combined — add a monthly factor here when it ships. Note this is
- * 0 for a non-spotlit game, so a run earns GZP only on the featured games.
+ * 0 for a non-spotlit game, so a run earns LP only on the featured games.
  */
 export function runMultiplier(
   game: string,
