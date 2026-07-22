@@ -2,6 +2,7 @@ name: CI
 
 # Runs the exact `npm run verify` gate (format, lint, knip, types+build, tests)
 # on every push and pull request to main, so local and CI can never diverge.
+# On push to main only, also deploys to Firebase Hosting (requires FIREBASE_TOKEN secret).
 on:
   push:
     branches: [main]
@@ -25,3 +26,7 @@ jobs:
 
       - name: Verify (format, lint, knip, build, tests)
         run: npm run verify
+
+      - name: Deploy to Firebase Hosting
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: npx firebase-tools deploy --only hosting --token ${{ secrets.FIREBASE_TOKEN }}
