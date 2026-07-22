@@ -127,6 +127,16 @@
   }
 }
 
+/* A phone/tablet in landscape can cross the desktop width breakpoint while the
+   height-driven square keeps the shell very narrow. In that shape the action
+   cluster and fullscreen button would cover the centered title. Reuse the
+   mobile control band whenever vertical space is short, regardless of width. */
+@media (min-width: 768px) and (max-height: 520px) {
+  .game-shell .app-title {
+    margin-top: calc(2rem + var(--spacing-xs));
+  }
+}
+
 /* --- Play surface: square by default. Games that need a non-square surface
    should set only the ratio, e.g. `--game-board-aspect:
    var(--game-board-aspect-wide)` for 16/9, then keep the common sizing here. --- */

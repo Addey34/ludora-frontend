@@ -50,6 +50,9 @@ const OPTION_NAMES = new Map([
   ['color', 'color'],
   ['description-en', 'descriptionEn'],
   ['description-fr', 'descriptionFr'],
+  ['aliases', 'aliases'],
+  ['tags', 'tags'],
+  ['added-at', 'addedAt'],
 ]);
 
 export function usage() {
@@ -70,6 +73,9 @@ export function usage() {
     '  --label-fr        French display name (defaults to --label)',
     '  --description-en  English SEO description',
     '  --description-fr  French SEO description',
+    '  --aliases         Comma-separated alternative search names',
+    '  --tags            Comma-separated discovery keywords',
+    '  --added-at        Release date (YYYY-MM-DD; defaults to today)',
     '  --dry-run         Validate and print the file plan without writing',
     '  --help            Show this help',
   ].join('\n');
@@ -110,6 +116,9 @@ export function normalizeGameOptions(raw) {
   const color = String(raw.color ?? '')
     .trim()
     .toLowerCase();
+  const aliases = commaSeparated(raw.aliases);
+  const tags = commaSeparated(raw.tags).map((tag) => tag.toLowerCase());
+  const addedAt = String(raw.addedAt ?? new Date().toISOString().slice(0, 10)).trim();
 
   if (!/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/.test(key)) {
     throw new Error('Game key must use lowercase letters, digits and single hyphens');
@@ -125,6 +134,9 @@ export function normalizeGameOptions(raw) {
   if (!/^#[0-9a-f]{6}$/.test(color)) {
     throw new Error('Colour must be a six-digit CSS hex value, e.g. #2563eb');
   }
+  if (!isIsoDate(addedAt)) {
+    throw new Error('Release date must be a valid YYYY-MM-DD date');
+  }
 
   const className = toPascalCase(key);
   const camelName = className[0].toLowerCase() + className.slice(1);
@@ -135,6 +147,9 @@ export function normalizeGameOptions(raw) {
     type,
     category,
     color,
+    aliases,
+    tags,
+    addedAt,
     className,
     camelName,
     descriptionEn:
@@ -426,11 +441,18 @@ function renderGameEntry(options) {
         ? { keys: 'Click / tap', action: 'Move the piece' }
         : { keys: 'Click / tap', action: 'Answer each question' };
   const settings = options.type === 'quiz' ? '    settings: true,\n' : '';
+  const aliases = options.aliases.length
+    ? `    aliases: [${options.aliases.map(jsString).join(', ')}],\n`
+    : '';
+  const tags = options.tags.length ? `    tags: [${options.tags.map(jsString).join(', ')}],\n` : '';
   return (
     '  {\n' +
     `    key: ${jsString(options.key)},\n` +
     `    label: ${jsString(options.label)},\n` +
     `    color: ${jsString(`--color-${options.key}`)},\n` +
+    `    addedAt: ${jsString(options.addedAt)},\n` +
+    aliases +
+    tags +
     "    mode: 'solo',\n" +
     settings +
     '    controls: [\n' +
@@ -438,6 +460,22 @@ function renderGameEntry(options) {
     '    ],\n' +
     '  },\n'
   );
+}
+
+function commaSeparated(value) {
+  return [
+    ...new Set(
+      String(value ?? '')
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean)
+    ),
+  ];
+}
+
+function isIsoDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  return new Date(`${value}T00:00:00.000Z`).toISOString().slice(0, 10) === value;
 }
 
 function insertBeforeMarker(source, marker, addition) {

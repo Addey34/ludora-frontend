@@ -1,10 +1,9 @@
 /* =============================================================================
    Home-page flourishes per theme.
    Page-wide tokens (background, surfaces, accents) live in
-   public/css/components/themes.css. Since the home is now a single flat,
-   frameless grid of accent-tinted tiles (see home.css), this file only adds a
-   subtle per-theme coloured glow to the tiles — the grid itself has no box and
-   there is no hero title to restyle.
+   public/css/components/themes.css. The discovery header and sections consume
+   those shared tokens directly; this file only adds a subtle per-theme coloured
+   glow to the accent-tinted game tiles.
    ========================================================================== */
 
 /* --- Neon arcade (default): pink halo. --- */

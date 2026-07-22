@@ -441,7 +441,7 @@ export async function readStorage<T extends object>(key: string): Promise<T | nu
  * read/write). Best-effort: swallows failures so a backend issue never blocks
  * gameplay.
  */
-export async function writeStorage<T extends object>(key: string, value: T): Promise<void> {
+export async function writeStorage<T extends object>(key: string, value: T): Promise<boolean> {
   try {
     const session = await getSession();
     await (
@@ -449,7 +449,10 @@ export async function writeStorage<T extends object>(key: string, value: T): Pro
     ).writeStorageObjects(session, [
       { collection: PROGRESS_COLLECTION, key, value, permission_read: 1, permission_write: 1 },
     ]);
-  } catch {} // eslint-disable-line no-empty
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /** Google OAuth client id (public) used by the front-end sign-in flow. */

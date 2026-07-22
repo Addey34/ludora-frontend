@@ -52,7 +52,10 @@ npm run game:new -- \
   --label-fr "Course stellaire" \
   --type realtime \
   --category action \
-  --color "#2563eb"
+  --color "#2563eb" \
+  --aliases "runner,space race" \
+  --tags "arcade,fast" \
+  --added-at "2026-07-23"
 ```
 
 Choose `realtime` for a `GameEngine` game, `board` for pure `TurnRules`, or
@@ -61,7 +64,9 @@ refuses existing paths and validates every registry before writing anything.
 
 It creates the page, entry point, controller, pure logic and test, CSS, and SVG icon. It
 also updates the game catalog/category, bilingual name and SEO text, colour token, Render
-routes, and English/French sitemap URLs.
+routes, and English/French sitemap URLs. Discovery metadata is optional: `--aliases` and
+`--tags` improve home search, while `--added-at` controls the New games order (and defaults
+to the current date).
 
 Replace the placeholder mechanics and icon, then refine controls and descriptions. Add a
 capability flag (`leaderboard`, `multiplayer`, `levels`) only when its shared

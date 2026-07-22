@@ -20,6 +20,9 @@ const OPTIONS = {
   type: 'realtime',
   category: 'action',
   color: '#2563eb',
+  aliases: 'runner, space race',
+  tags: 'Arcade, Fast',
+  addedAt: '2026-07-23',
 };
 
 test('parses and normalizes CLI options', () => {
@@ -33,6 +36,12 @@ test('parses and normalizes CLI options', () => {
     'action',
     '--color',
     '#2563EB',
+    '--aliases',
+    'runner, space race',
+    '--tags',
+    'Arcade, Fast',
+    '--added-at',
+    '2026-07-23',
     '--dry-run',
   ]);
   const normalized = normalizeGameOptions(parsed);
@@ -40,6 +49,9 @@ test('parses and normalizes CLI options', () => {
   assert.equal(normalized.className, 'StarRunner');
   assert.equal(normalized.camelName, 'starRunner');
   assert.equal(normalized.color, '#2563eb');
+  assert.deepEqual(normalized.aliases, ['runner', 'space race']);
+  assert.deepEqual(normalized.tags, ['arcade', 'fast']);
+  assert.equal(normalized.addedAt, '2026-07-23');
   assert.equal(parsed.dryRun, true);
 });
 
@@ -48,6 +60,7 @@ test('rejects invalid keys, types, categories and colours', () => {
   assert.throws(() => normalizeGameOptions({ ...OPTIONS, type: '3d' }), /type/);
   assert.throws(() => normalizeGameOptions({ ...OPTIONS, category: 'other' }), /Category/);
   assert.throws(() => normalizeGameOptions({ ...OPTIONS, color: 'blue' }), /Colour/);
+  assert.throws(() => normalizeGameOptions({ ...OPTIONS, addedAt: '2026-02-31' }), /date/);
 });
 
 test('renders syntax-valid TypeScript for every game family', () => {
@@ -122,6 +135,9 @@ test('creates a complete game and updates every registry', () => {
     ]);
     assert.equal(existsSync(join(root, 'src/games/star-runner/StarRunnerGame.ts')), true);
     assert.match(read(root, 'vite.config.ts'), /key: 'star-runner'/);
+    assert.match(read(root, 'vite.config.ts'), /addedAt: '2026-07-23'/);
+    assert.match(read(root, 'vite.config.ts'), /aliases: \['runner', 'space race'\]/);
+    assert.match(read(root, 'vite.config.ts'), /tags: \['arcade', 'fast'\]/);
     assert.match(read(root, 'vite.config.ts'), /'star-runner'/);
     assert.match(read(root, 'src/shared/i18n/generatedGames.ts'), /game_star-runner/);
     assert.match(read(root, 'public/css/base/variables.css'), /--color-star-runner: #2563eb/);

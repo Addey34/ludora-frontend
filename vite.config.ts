@@ -1000,13 +1000,58 @@ export default defineConfig({
         const path = pagePath.replace(/\\/g, '/');
         const game = games.find((g) => path.includes(`/${g.key}/`));
         // Home-page sections: each category with its games (in listed order).
-        const categories = categoryDefs.map((c) => ({
-          id: c.id,
-          label: c.label,
-          icon: c.icon,
-          color: c.color,
-          games: c.keys.map((k) => games.find((g) => g.key === k)).filter(Boolean),
-        }));
+        const categories = categoryDefs.map((c) => {
+          const categoryGames = c.keys.map((k) => games.find((g) => g.key === k)).filter(Boolean);
+          return {
+            id: c.id,
+            label: c.label,
+            icon: c.icon,
+            color: c.color,
+            games: categoryGames,
+            sidebarGames: categoryGames.slice(0, 5),
+            gameKeys: c.keys.join(' '),
+            browseHref: `/?category=${c.id}#allGamesTitle`,
+            hasMore: categoryGames.length > 5,
+          };
+        });
+        const homeGames = games.map((entry, catalogIndex) => {
+          const category = categoryDefs.find((candidate) => candidate.keys.includes(entry.key));
+          const discovery = entry as typeof entry & {
+            addedAt?: string;
+            aliases?: string[];
+            tags?: string[];
+          };
+          const searchText = [
+            entry.key,
+            entry.label,
+            CATALOG.fr[`game_${entry.key}`],
+            CATALOG.en[`seo_${entry.key}`],
+            CATALOG.fr[`seo_${entry.key}`],
+            category?.id,
+            category?.label,
+            category ? CATALOG.fr[`cat_${category.id}`] : undefined,
+            entry.mode,
+            ...(discovery.aliases ?? []),
+            ...(discovery.tags ?? []),
+          ]
+            .filter(Boolean)
+            .join(' ');
+          return {
+            ...entry,
+            category: category?.id ?? '',
+            catalogIndex,
+            addedAt: discovery.addedAt,
+            searchText,
+          };
+        });
+        // `addedAt` drives future entries; catalogue order remains the safe
+        // fallback for the existing append-only catalogue.
+        const newGames = [...homeGames]
+          .sort((a, b) => {
+            const byDate = (b.addedAt ?? '').localeCompare(a.addedAt ?? '');
+            return byDate || b.catalogIndex - a.catalogIndex;
+          })
+          .slice(0, 6);
         // Games offering a daily challenge (`?daily`), for the home "Daily" strip.
         const dailyGames = games.filter((g) => (g as { daily?: boolean }).daily === true);
 
@@ -1064,6 +1109,8 @@ export default defineConfig({
 
         return {
           games,
+          homeGames,
+          newGames,
           game,
           categories,
           dailyGames,

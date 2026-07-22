@@ -4,31 +4,199 @@
   <body class="app-body home-body">
     {{> sidebar}}
     <div class="home-main">
-      <nav class="game-grid game-grid-all" aria-label="All games" data-i18n-aria="allGames">
-        {{#each games}}
-        <a
-          href="/{{key}}"
-          class="game-tile"
-          data-game="{{key}}"
-          aria-label="{{label}}"
-          data-i18n-aria="game_{{key}}"
-          data-label="{{label}}"
-          data-i18n-label="game_{{key}}"
-          style="--nav-accent: var({{color}})"
+      <header class="home-header">
+        <div class="home-heading">
+          <p class="home-eyebrow" data-i18n="homeEyebrow">Instant browser games</p>
+          <h1 data-i18n="homeTitle">Pick a game and jump in.</h1>
+          <p class="home-intro" data-i18n="homeIntro">
+            No download, no waiting — discover a new favourite in seconds.
+          </p>
+        </div>
+        <label class="home-search" for="gameSearch">
+          <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+          <input
+            id="gameSearch"
+            type="search"
+            autocomplete="off"
+            aria-label="Search games"
+            data-i18n-aria="searchGames"
+            placeholder="Search games"
+            data-i18n-placeholder="searchGames"
+          />
+        </label>
+      </header>
+
+      <section class="home-section home-feature" aria-labelledby="featuredTitle">
+        <div class="home-section-heading">
+          <div>
+            <p class="home-section-kicker" data-i18n="featuredKicker">Fresh picks</p>
+            <h2 id="featuredTitle" data-i18n="featuredTitle">In the spotlight</h2>
+          </div>
+          <p data-i18n="featuredIntro">Today’s featured game and this week’s rewarding picks.</p>
+        </div>
+        <nav
+          class="featured-grid"
+          id="featuredGames"
+          aria-label="In the spotlight"
+          data-i18n-aria="featuredTitle"
+        ></nav>
+      </section>
+
+      <section
+        class="home-section home-personal"
+        id="recentGamesSection"
+        aria-labelledby="recentGamesTitle"
+        hidden
+      >
+        <div class="home-section-heading home-section-heading--compact">
+          <div>
+            <p class="home-section-kicker" data-i18n="recentlyPlayedKicker">Jump back in</p>
+            <h2 id="recentGamesTitle" data-i18n="recentlyPlayedTitle">Recently played</h2>
+          </div>
+        </div>
+        <nav
+          class="game-grid game-grid-personal"
+          id="recentGames"
+          aria-label="Recently played"
+          data-i18n-aria="recentlyPlayedTitle"
+        ></nav>
+      </section>
+
+      <section
+        class="home-section home-personal"
+        id="favoriteGamesSection"
+        aria-labelledby="favoriteGamesTitle"
+        hidden
+      >
+        <div class="home-section-heading home-section-heading--compact">
+          <div>
+            <p class="home-section-kicker" data-i18n="favoritesKicker">Your collection</p>
+            <h2 id="favoriteGamesTitle" data-i18n="favoritesTitle">Favorites</h2>
+          </div>
+        </div>
+        <nav
+          class="game-grid game-grid-personal"
+          id="favoriteGames"
+          aria-label="Favorites"
+          data-i18n-aria="favoritesTitle"
+        ></nav>
+      </section>
+
+      <section class="home-section home-new" aria-labelledby="newGamesTitle">
+        <div class="home-section-heading home-section-heading--compact">
+          <div>
+            <p class="home-section-kicker" data-i18n="newGamesKicker">Just landed</p>
+            <h2 id="newGamesTitle" data-i18n="newGamesTitle">New games</h2>
+          </div>
+        </div>
+        <nav class="game-grid game-grid-new" aria-label="New games" data-i18n-aria="newGamesTitle">
+          {{#each newGames}}
+          <a
+            href="/{{key}}"
+            class="game-tile"
+            data-game="{{key}}"
+            data-category="{{category}}"
+            data-search="{{searchText}}"
+            aria-label="{{label}}"
+            data-i18n-aria="game_{{key}}"
+            data-label="{{label}}"
+            data-i18n-label="game_{{key}}"
+            style="--nav-accent: var({{color}})"
+          >
+            <span
+              class="game-icon"
+              style="--game-icon: url(/icons/{{key}}.svg)"
+              aria-hidden="true"
+            ></span>
+          </a>
+          {{/each}}
+        </nav>
+      </section>
+
+      <section class="home-section home-catalogue" aria-labelledby="allGamesTitle">
+        <div class="home-section-heading home-section-heading--catalogue">
+          <div>
+            <p class="home-section-kicker" data-i18n="browseKicker">Find your next game</p>
+            <h2 id="allGamesTitle" data-i18n="allGames">All games</h2>
+          </div>
+          <div class="home-catalogue-meta">
+            <output id="gameCount" class="home-game-count" aria-live="polite"></output>
+            <button id="clearSearch" class="home-clear-search" type="button" hidden>
+              <i class="fas fa-xmark" aria-hidden="true"></i>
+              <span data-i18n="clearSearch">Clear search</span>
+            </button>
+          </div>
+        </div>
+        <div
+          class="home-filters"
+          role="group"
+          aria-label="Game categories"
+          data-i18n-aria="gameCategories"
         >
-          <span
-            class="game-icon"
-            style="--game-icon: url(/icons/{{key}}.svg)"
-            aria-hidden="true"
-          ></span>
-        </a>
-        {{/each}}
-      </nav>
+          <button
+            class="home-filter is-active"
+            type="button"
+            data-category-filter="all"
+            aria-pressed="true"
+            data-i18n="allGames"
+          >
+            All games
+          </button>
+          {{#each categories}}
+          <button
+            class="home-filter"
+            type="button"
+            data-category-filter="{{id}}"
+            aria-pressed="false"
+            style="--filter-accent: var({{color}})"
+          >
+            <i class="fas {{icon}}" aria-hidden="true"></i>
+            <span data-i18n="cat_{{id}}">{{label}}</span>
+          </button>
+          {{/each}}
+        </div>
+        <p class="home-empty" id="homeEmpty" hidden data-i18n="noGamesFound">
+          No games match your search.
+        </p>
+        <nav class="game-grid game-grid-all" aria-label="All games" data-i18n-aria="allGames">
+          {{#each homeGames}}
+          <div class="game-card" data-game-card="{{key}}">
+            <a
+              href="/{{key}}"
+              class="game-tile"
+              data-game="{{key}}"
+              data-category="{{category}}"
+              data-search="{{searchText}}"
+              aria-label="{{label}}"
+              data-i18n-aria="game_{{key}}"
+              data-label="{{label}}"
+              data-i18n-label="game_{{key}}"
+              style="--nav-accent: var({{color}})"
+            >
+              <span
+                class="game-icon"
+                style="--game-icon: url(/icons/{{key}}.svg)"
+                aria-hidden="true"
+              ></span>
+            </a>
+            <button
+              class="game-favorite"
+              type="button"
+              data-favorite-toggle
+              data-favorite-game="{{key}}"
+            >
+              <i class="fas fa-star" aria-hidden="true"></i>
+            </button>
+          </div>
+          {{/each}}
+        </nav>
+      </section>
     </div>
     <footer class="home-footer">
       <a href="/privacy">Privacy Policy</a>
       <span aria-hidden="true">·</span>
       <a href="/legal">Legal Notice</a>
     </footer>
+    <script type="module" src="/home/home-main.ts"></script>
   </body>
 </html>

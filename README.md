@@ -10,17 +10,18 @@ best-effort, so an unavailable backend never prevents local play.
 
 ## Available games
 
-Games are grouped by family on the home page:
+The catalogue currently contains **48 games** across Action, Puzzle, Words, Quiz, Board and
+Cards. The home page combines an automatic daily/weekly Spotlight, the newest catalogue
+entries, bilingual search, category filters and the complete game grid. Categories also remain
+available from the shared sidebar, without crowding the main page navigation.
 
-- **Action** — Snake · Pac-Man · Tetris · Breakout · Pong · Flappy Bird · Space Invaders ·
-  Bubble Shooter
-- **Puzzle** — 2048 · Minesweeper · Sudoku · Nonogram · Sokoban · Mastermind · Sliding Puzzle ·
-  Simon · Memory · Binairo · Kakuro
-- **Words** — Typing · Motus · Anagrams · Hangman · Word Search
-- **Quiz** — Mental Math · Geo Quiz · Trivia · Conjugation
-- **Board** — Connect 4 · Ludo · Game of the Goose · Battleship · Checkers · Reversi · Mancala ·
-  Dots and Boxes · Yahtzee
-- **Cards** — Solitaire · Blackjack
+The home page also builds a personal library: the eight most recently played games and up to
+24 favorites. Guests keep it in `localStorage`; Google-signed-in players use private Nakama
+Storage. Guest data is merged into the account on sign-in, with a local retry copy if the backend
+is temporarily unavailable.
+
+Recent additions include Dominoes, Asteroids, Quoridor, Science Quiz and Whack-a-Mole alongside
+classics such as Snake, Pac-Man, Tetris, Chess-like board games, Sudoku, Solitaire and Trivia.
 
 Online play reuses four shared families: turn-based board matches, quiz races, independent
 score races and identical-challenge completion races. Pong and Memory keep their specialised
@@ -93,6 +94,7 @@ npm run dev      # dev server on http://localhost:3000
 ```
 src/
   index.html            # home page
+  home/                 # home page scripts (home-main.ts, search, library wiring)
   games/<key>/          # one folder per game
     index.html          #   game page (served at the clean URL /<key>)
     <key>-main.ts       #   entry point (bootstrapGame)
@@ -107,6 +109,7 @@ src/
     words/              #   shared FR/EN word service
     score/              #   leaderboard manager + panel
     levels/             #   levels model + panel
+    discovery/          #   game library (favorites + recently played, local + cloud)
     net/                #   online backend, auth, realtime match
     fx/                 #   particles, screen shake, procedural sound
     ui/                 #   generic DOM chrome (sidebar, overlays, popovers, HUD…)

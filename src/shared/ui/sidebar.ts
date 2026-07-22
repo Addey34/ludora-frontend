@@ -1,9 +1,15 @@
 import { applyTranslations, getLocale, setLocale, t } from '../i18n/i18n.js';
+import { recordRecentlyPlayed } from '../discovery/gameLibrary.js';
 import { markSpotlight } from '../weekly/weeklyFeature.js';
 
 const sidebar = document.querySelector('.sidebar');
 if (sidebar) {
   const path = window.location.pathname;
+  const activeKey =
+    path
+      .replace(/^\/fr(?=\/|$)/, '')
+      .split('/')
+      .filter(Boolean)[0] ?? '';
   let activeLink: HTMLElement | null = null;
   for (const link of document.querySelectorAll<HTMLElement>('.sidebar-link')) {
     const nav = link.dataset.nav;
@@ -41,7 +47,19 @@ if (sidebar) {
 
   // Highlight the category holding the active game (no pre-open, so the desktop
   // flyout doesn't pop on load).
-  activeLink?.closest('.sidebar-cat')?.classList.add('has-active');
+  const activeCategory = activeLink?.closest('.sidebar-cat');
+  if (activeCategory) activeCategory.classList.add('has-active');
+  else {
+    if (activeKey) {
+      document
+        .querySelector<HTMLElement>(`.sidebar-cat[data-game-keys~="${activeKey}"]`)
+        ?.classList.add('has-active');
+    }
+  }
+
+  if (activeKey && document.querySelector(`.sidebar-cat[data-game-keys~="${activeKey}"]`)) {
+    void recordRecentlyPlayed(activeKey);
+  }
 
   if (path === '/' || path === '/index.html') {
     document.querySelector('.sidebar-brand')?.setAttribute('aria-current', 'page');
@@ -49,10 +67,14 @@ if (sidebar) {
 
   const toggle = document.querySelector('.sidebar-toggle');
   const scrim = document.querySelector<HTMLElement>('.sidebar-scrim');
+  const toggleIcon = toggle?.querySelector<HTMLElement>('i');
 
   const setOpen = (open: boolean): void => {
     document.body.classList.toggle('sidebar-open', open);
     toggle?.setAttribute('aria-expanded', String(open));
+    toggle?.setAttribute('aria-label', t(open ? 'closeMenu' : 'openMenu'));
+    toggleIcon?.classList.toggle('fa-bars', !open);
+    toggleIcon?.classList.toggle('fa-xmark', open);
     if (scrim) scrim.hidden = !open;
   };
 
@@ -60,6 +82,9 @@ if (sidebar) {
     setOpen(!document.body.classList.contains('sidebar-open'))
   );
   scrim?.addEventListener('click', () => setOpen(false));
+  for (const destination of document.querySelectorAll<HTMLElement>('.sidebar-destination')) {
+    destination.addEventListener('click', () => setOpen(false));
+  }
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       setOpen(false);

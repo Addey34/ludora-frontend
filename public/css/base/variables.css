@@ -238,7 +238,8 @@
   /* Shared size of every sidebar control (mobile toggle, theme/sound/lang bubbles,
      rail icons) — the WCAG 44px minimum touch target. Single source so the button
      size and the clearance calc below can never drift apart. */
-  --sidebar-control-size: 44px;
+  --tap-target-size: 44px;
+  --sidebar-control-size: var(--tap-target-size);
   /* Top band occupied by the fixed mobile sidebar toggle. Every page type that
      can reach the top edge reuses this clearance instead of duplicating the
      toggle's position and size. */

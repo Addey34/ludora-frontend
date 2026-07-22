@@ -13,6 +13,7 @@
   type="button"
   aria-label="Open menu"
   aria-expanded="false"
+  data-i18n-aria="openMenu"
 >
   <i class="fas fa-bars" aria-hidden="true"></i>
 </button>
@@ -23,8 +24,32 @@
     <span class="sidebar-label">Ludora</span>
   </a>
   <ul class="sidebar-nav">
+    <li class="sidebar-shortcut">
+      <a class="sidebar-link sidebar-destination" href="/#gameSearch">
+        <span class="sidebar-icon"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></span>
+        <span class="sidebar-label" data-i18n="searchGames">Search games</span>
+      </a>
+    </li>
+    <li class="sidebar-shortcut sidebar-shortcut--mobile">
+      <a class="sidebar-link sidebar-destination" href="/#featuredTitle">
+        <span class="sidebar-icon"><i class="fas fa-bolt" aria-hidden="true"></i></span>
+        <span class="sidebar-label" data-i18n="featuredTitle">In the spotlight</span>
+      </a>
+    </li>
+    <li class="sidebar-shortcut sidebar-shortcut--mobile">
+      <a class="sidebar-link sidebar-destination" href="/#newGamesTitle">
+        <span class="sidebar-icon"><i class="fas fa-clock" aria-hidden="true"></i></span>
+        <span class="sidebar-label" data-i18n="newGamesTitle">New games</span>
+      </a>
+    </li>
+    <li class="sidebar-shortcut sidebar-shortcut--last">
+      <a class="sidebar-link sidebar-destination" href="/#allGamesTitle">
+        <span class="sidebar-icon"><i class="fas fa-table-cells" aria-hidden="true"></i></span>
+        <span class="sidebar-label" data-i18n="allGames">All games</span>
+      </a>
+    </li>
     {{#each categories}}
-    <li class="sidebar-cat" data-cat="{{id}}" style="--cat-accent: var({{color}})">
+    <li class="sidebar-cat" data-cat="{{id}}" data-game-keys="{{gameKeys}}" style="--cat-accent: var({{color}})">
       <button
         class="sidebar-cat-head"
         type="button"
@@ -38,7 +63,7 @@
       <div class="sidebar-flyout">
         <p class="sidebar-flyout-title" data-i18n="cat_{{id}}">{{label}}</p>
         <ul class="sidebar-cat-games">
-          {{#each games}}
+          {{#each sidebarGames}}
           <li>
             <a
               class="sidebar-link"
@@ -52,6 +77,14 @@
             </a>
           </li>
           {{/each}}
+          {{#if hasMore}}
+          <li>
+            <a class="sidebar-link sidebar-view-all sidebar-destination" href="{{browseHref}}">
+              <span class="sidebar-icon"><i class="fas fa-chevron-right" aria-hidden="true"></i></span>
+              <span class="sidebar-label" data-i18n="viewAllGames">View all games</span>
+            </a>
+          </li>
+          {{/if}}
         </ul>
       </div>
     </li>
