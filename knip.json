@@ -9,5 +9,6 @@
     "src/shared/ui/zenMode.ts"
   ],
   "project": ["src/**/*.ts"],
-  "ignore": ["src/games/_template/**"]
+  "ignore": ["src/games/_template/**"],
+  "ignoreBinaries": ["firebase-tools"]
 }
